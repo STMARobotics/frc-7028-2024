@@ -170,5 +170,12 @@ out/
 
 # Simulation GUI and other tools window save file
 *-window.json
+simgui.json
+simgui-ds.json
+networktables.ini
+networktables.json*
+
+# Merge conflict diff files
+*.orig
 
 ctre_sim/
