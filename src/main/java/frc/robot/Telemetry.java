@@ -79,6 +79,8 @@ public class Telemetry {
                     .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
     };
 
+    DoubleArrayPublisher moduleStatePublisher = driveStats.getDoubleArrayTopic("Module States").publish();
+
     /* Accept the swerve drive state and telemeterize it to smartdashboard */
     public void telemeterize(SwerveDriveState state) {
         /* Telemeterize the pose */
@@ -115,5 +117,15 @@ public class Telemetry {
 
         DataLogManager.getLog().appendDoubleArray(logEntry, new double[] {pose.getX(), pose.getY(), pose.getRotation().getDegrees()}, (long)(Timer.getFPGATimestamp() * 1000000));
         DataLogManager.getLog().appendDouble(odomEntry, state.OdometryPeriod, (long)(Timer.getFPGATimestamp() * 1000000));
+
+        // Publish module states in AdvantageScope format
+        var moduleStates = new double[state.ModuleStates.length * 2];
+        for (int i = 0; i < state.ModuleStates.length; i++) {
+          var moduleState = state.ModuleStates[i];
+          moduleStates[i * 2] = moduleState.angle.getDegrees();
+          moduleStates[i * 2 + 1] = moduleState.speedMetersPerSecond;
+        }
+        moduleStatePublisher.set(moduleStates);
+
     }
 }
