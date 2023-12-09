@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.controls.ControlBindings;
@@ -41,6 +42,7 @@ public class RobotContainer {
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto", autoChooser);
 
     drivetrain.getDaqThread().setThreadPriority(99);
     drivetrain.registerTelemetry(logger::telemeterize);
