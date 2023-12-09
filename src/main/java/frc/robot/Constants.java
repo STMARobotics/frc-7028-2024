@@ -2,6 +2,7 @@ package frc.robot;
 
 import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.units.Units.FeetPerSecond;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static java.lang.Math.PI;
 
@@ -19,6 +20,9 @@ import edu.wpi.first.units.Velocity;
 public class Constants {
 
   public static final class DrivetrainConstants {
+    public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
+    public static final Measure<Distance> WHEELBASE = Inches.of(18.75);
+
     // Theoretical free speed of L2 Falcon 500 with FOC
     public static final Measure<Velocity<Distance>> MAX_VELOCITY = FeetPerSecond.of(15.7);
     public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 2);
@@ -31,6 +35,18 @@ public class Constants {
     public static final double X_RATE_LIMIT = 6.0;
     public static final double Y_RATE_LIMIT = 6.0;
     public static final double ROTATION_RATE_LIMIT = 5.0 * PI;
+
+  }
+
+  public static class AutoDriveConstants {
+
+    public static final double THETA_kP = 2.6;
+    public static final double THETA_kI = 0.001;
+    public static final double THETA_kD = 0.0;
+
+    public static final double TRANSLATION_kP = 5.0;
+    public static final double TRANSLATION_kI = 0.0;
+    public static final double TRANSLATION_kD = 0.0;
 
   }
 
@@ -61,5 +77,15 @@ public class Constants {
     /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
     
+    /**
+     * Transforms a pose to the opposite alliance's coordinate system. (0,0) is always on the right corner of your
+     * alliance wall, so for 2023, the field elements are at different coordinates for each alliance.
+     * @param poseToFlip pose to transform to the other alliance
+     * @return pose relative to the other alliance's coordinate system
+     */
+    public static Pose2d flipAlliance(Pose2d poseToFlip) {
+      return poseToFlip.relativeTo(VisionConstants.FLIPPING_POSE);
+    }
+
   }
 }

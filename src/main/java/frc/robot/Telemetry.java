@@ -11,12 +11,14 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.Constants.VisionConstants;
 
 public class Telemetry {
   private final double maxSpeed;
@@ -71,6 +73,7 @@ public class Telemetry {
   /* Keep a reference of the last pose to calculate the speeds */
   private Pose2d lastPose = new Pose2d();
   private double lastTime = Utils.getCurrentTimeSeconds();
+  private Alliance alliance = Alliance.Blue;
 
   /**
    * Construct a telemetry object, with the specified max speed of the robot
@@ -84,15 +87,25 @@ public class Telemetry {
     odomEntry = DataLogManager.getLog().start("odom period", "double");
   }
 
+  public void setAlliance(Alliance alliance) {
+    this.alliance = alliance;
+  }
+
   /* Accept the swerve drive state and telemeterize it to smartdashboard */
   public void telemeterize(SwerveDriveState state) {
     /* Telemeterize the pose */
     Pose2d pose = state.Pose;
+    var dashboardPose = pose;
+    if (alliance == Alliance.Red) {
+      // Flip the pose when red, since the dashboard field photo cannot be rotated
+      dashboardPose = VisionConstants.flipAlliance(dashboardPose);
+    }
+
     fieldTypePub.set("Field2d");
     fieldPub.set(new double[] {
-        pose.getX(),
-        pose.getY(),
-        pose.getRotation().getDegrees()
+        dashboardPose.getX(),
+        dashboardPose.getY(),
+        dashboardPose.getRotation().getDegrees()
     });
 
     /* Telemeterize the robot's general speeds */
