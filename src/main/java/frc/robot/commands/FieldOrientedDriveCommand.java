@@ -11,6 +11,8 @@ import static frc.robot.Constants.TeleopDriveConstants.Y_RATE_LIMIT;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -45,7 +47,8 @@ public class FieldOrientedDriveCommand extends Command {
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MAX_VELOCITY.times(DEADBAND).in(MetersPerSecond))
       .withRotationalDeadband(MAX_ANGULAR_VELOCITY.times(DEADBAND).in(RadiansPerSecond))
-      .withIsOpenLoop(Robot.isSimulation());
+      .withDriveRequestType(Robot.isSimulation() ? DriveRequestType.OpenLoopVoltage : DriveRequestType.Velocity)
+      .withSteerRequestType(SteerRequestType.MotionMagic);
 
   /**
    * Constructor
