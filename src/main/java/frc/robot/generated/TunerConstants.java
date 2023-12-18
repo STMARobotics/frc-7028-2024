@@ -1,6 +1,11 @@
 package frc.robot.generated;
 
 import static com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType.FusedCANcoder;
+import static frc.robot.Constants.DrivetrainConstants.DRIVE_kP;
+import static frc.robot.Constants.DrivetrainConstants.STEER_kD;
+import static frc.robot.Constants.DrivetrainConstants.STEER_kI;
+import static frc.robot.Constants.DrivetrainConstants.STEER_kP;
+import static frc.robot.Constants.DrivetrainConstants.STEER_kV;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -14,13 +19,13 @@ public class TunerConstants {
     // Both sets of gains need to be tuned to your individual robot
     // The steer motor uses MotionMagicVoltage control
     private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.05)
-        .withKS(0).withKV(1.5).withKA(0);
+        .withKP(STEER_kP).withKI(STEER_kI).withKD(STEER_kD)
+        .withKS(0).withKV(STEER_kV).withKA(0);
     // When using closed-loop control, the drive motor uses:
     // - VelocityVoltage, if DrivetrainConstants.SupportsPro is false (default)
     // - VelocityTorqueCurrentFOC, if DrivetrainConstants.SupportsPro is true
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(3).withKI(0).withKD(0)
+        .withKP(DRIVE_kP).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
 
     // The stator current at which the wheels start to slip;
