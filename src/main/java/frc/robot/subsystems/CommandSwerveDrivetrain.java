@@ -46,10 +46,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private OriginPosition originPosition = kBlueAllianceWallRightSide;
   private boolean sawTag = false;
 
-  public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
-      SwerveModuleConstants... modules) {
-    super(driveTrainConstants, OdometryUpdateFrequency, modules);
+  public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
+    super(driveTrainConstants, modules);
 
+    tareEverything();
+    
     // Start PhotonVision thread
     photonThread.setName("PhotonVision");
     photonThread.start();
