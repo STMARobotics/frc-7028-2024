@@ -26,15 +26,6 @@ public class Constants {
     // Theoretical free speed of L2 Falcon 500 with FOC
     public static final Measure<Velocity<Distance>> MAX_VELOCITY = FeetPerSecond.of(15.7);
     public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 2);
-  
-    public static final double STEER_kP = 30.0;
-    public static final double STEER_kI = 0.0;
-    public static final double STEER_kD = 0.0;
-    public static final double STEER_kV = 0.7854;
-
-    public static final double DRIVE_kP = 13.0;
-    public static final double DRIVE_kI = 0.0;
-    public static final double DRIVE_kD = 0.0;
   }
 
   public static final class TeleopDriveConstants {
