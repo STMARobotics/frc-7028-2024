@@ -50,7 +50,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     super(driveTrainConstants, modules);
 
     tareEverything();
-    
+
     // Start PhotonVision thread
     photonThread.setName("PhotonVision");
     photonThread.start();
@@ -114,14 +114,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
     super.addVisionMeasurement(visionPose2d, timestampSeconds, visionMeasurementStdDevs);
   }
-  
+
   /**
    * Sets the alliance. This is used to configure the origin of the AprilTag map
-   * @param alliance alliance
+   * 
+   * @param alliance
+   *          alliance
    */
   public void setAlliance(Alliance alliance) {
     boolean allianceChanged = false;
-    switch(alliance) {
+    switch (alliance) {
       case Blue:
         allianceChanged = (originPosition == kRedAllianceWallRightSide);
         originPosition = kBlueAllianceWallRightSide;
@@ -148,16 +150,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
-      // Overriden with workaround for https://github.com/CrossTheRoadElec/Phoenix6-Examples/issues/27
-      @Override
-      public void seedFieldRelative(Pose2d location) {
-          try {
-              m_stateLock.writeLock().lock();
-              m_cachedState.Pose = location; // Workaround: update cached state
-              m_odometry.resetPosition(Rotation2d.fromDegrees(m_yawGetter.getValue()), m_modulePositions, location);
-          } finally {
-              m_stateLock.writeLock().unlock();
-          }
-      }
+  // Overriden with workaround for https://github.com/CrossTheRoadElec/Phoenix6-Examples/issues/27
+  @Override
+  public void seedFieldRelative(Pose2d location) {
+    try {
+      m_stateLock.writeLock().lock();
+      m_cachedState.Pose = location; // Workaround: update cached state
+      m_odometry.resetPosition(Rotation2d.fromDegrees(m_yawGetter.getValue()), m_modulePositions, location);
+    } finally {
+      m_stateLock.writeLock().unlock();
+    }
+  }
 
 }
