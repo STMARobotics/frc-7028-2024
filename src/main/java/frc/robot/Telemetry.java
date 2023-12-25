@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 
@@ -7,12 +9,17 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,19 +32,20 @@ public class Telemetry {
   private final int logEntry;
   private final int odomEntry;
 
+  private final ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
+
   /* What to publish over networktables for telemetry */
   private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
   /* Robot pose for field positioning */
-  private final NetworkTable table = inst.getTable("Pose");
-  private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
-  private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
+  private final Field2d field2d = new Field2d();
+
+  private final GenericEntry drivetrainSpeed;
+  private final GenericEntry drivetrainVelocityX;
+  private final GenericEntry drivetrainVelocityY;
 
   /* Robot speeds for general checking */
   private final NetworkTable driveStats = inst.getTable("Drive");
-  private final DoublePublisher velocityX = driveStats.getDoubleTopic("Velocity X").publish();
-  private final DoublePublisher velocityY = driveStats.getDoubleTopic("Velocity Y").publish();
-  private final DoublePublisher speed = driveStats.getDoubleTopic("Speed").publish();
   private final DoublePublisher odomPeriod = driveStats.getDoubleTopic("Odometry Period").publish();
 
   /* Mechanisms to represent the swerve module states */
@@ -83,6 +91,21 @@ public class Telemetry {
    */
   public Telemetry(double maxSpeed) {
     this.maxSpeed = maxSpeed;
+
+    drivetrainTab.add(field2d).withPosition(0, 0).withSize(5, 3);
+
+    var drivetrainVelocityGrid = drivetrainTab.getLayout("Velocity", BuiltInLayouts.kGrid)
+          .withProperties(Map.of("Number of columns", 1, "Number of rows", 3))
+          .withSize(2, 3)
+          .withPosition(5, 0);
+
+    drivetrainSpeed = drivetrainVelocityGrid.add("Speed", 0).withWidget(BuiltInWidgets.kDial)
+        .withProperties(Map.of("Min", 0, "Max", Math.ceil(maxSpeed))).getEntry();
+    drivetrainVelocityX = drivetrainVelocityGrid.add("Velocity X", 0).withWidget(BuiltInWidgets.kDial)
+        .withProperties(Map.of("Min", -Math.ceil(maxSpeed), "Max", Math.ceil(maxSpeed))).getEntry();
+    drivetrainVelocityY = drivetrainVelocityGrid.add("Velocity Y", 0).withWidget(BuiltInWidgets.kDial)
+        .withProperties(Map.of("Min", -Math.ceil(maxSpeed), "Max", Math.ceil(maxSpeed))).getEntry();
+    
     logEntry = DataLogManager.getLog().start("odometry", "double[]");
     odomEntry = DataLogManager.getLog().start("odom period", "double");
   }
@@ -101,12 +124,7 @@ public class Telemetry {
       dashboardPose = VisionConstants.flipAlliance(dashboardPose);
     }
 
-    fieldTypePub.set("Field2d");
-    fieldPub.set(new double[] {
-        dashboardPose.getX(),
-        dashboardPose.getY(),
-        dashboardPose.getRotation().getDegrees()
-    });
+    field2d.setRobotPose(dashboardPose);
 
     /* Telemeterize the robot's general speeds */
     double currentTime = Utils.getCurrentTimeSeconds();
@@ -117,9 +135,10 @@ public class Telemetry {
 
     Translation2d velocities = distanceDiff.div(diffTime);
 
-    speed.set(velocities.getNorm());
-    velocityX.set(velocities.getX());
-    velocityY.set(velocities.getY());
+    drivetrainSpeed.setDouble(velocities.getNorm());
+    drivetrainVelocityX.setDouble(velocities.getX());
+    drivetrainVelocityY.setDouble(velocities.getY());
+
     odomPeriod.set(1.0 / state.OdometryPeriod);
 
     /* Telemeterize the module's states */

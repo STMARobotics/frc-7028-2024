@@ -12,8 +12,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.controls.ControlBindings;
@@ -26,10 +27,10 @@ public class RobotContainer {
 
   private final ControlBindings controlBindings;
 
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
-                                                                                            // driving in open loop
+  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
+  private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
 
   private final Telemetry logger = new Telemetry(MAX_VELOCITY.in(MetersPerSecond));
@@ -43,7 +44,7 @@ public class RobotContainer {
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto", autoChooser);
+    driverTab.add("Auto", autoChooser);
 
     drivetrain.getDaqThread().setThreadPriority(99);
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -63,8 +64,6 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
-
-    // reset the field-centric heading on left bumper press
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
   }
 
