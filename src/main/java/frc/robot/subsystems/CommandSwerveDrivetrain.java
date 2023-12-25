@@ -148,5 +148,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
+      // Overriden with workaround for https://github.com/CrossTheRoadElec/Phoenix6-Examples/issues/27
+      @Override
+      public void seedFieldRelative(Pose2d location) {
+          try {
+              m_stateLock.writeLock().lock();
+              m_cachedState.Pose = location; // Workaround: update cached state
+              m_odometry.resetPosition(Rotation2d.fromDegrees(m_yawGetter.getValue()), m_modulePositions, location);
+          } finally {
+              m_stateLock.writeLock().unlock();
+          }
+      }
 
 }
