@@ -150,16 +150,4 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
-  // Overriden with workaround for https://github.com/CrossTheRoadElec/Phoenix6-Examples/issues/27
-  @Override
-  public void seedFieldRelative(Pose2d location) {
-    m_stateLock.writeLock().lock();
-    try {
-      m_cachedState.Pose = location; // Workaround: update cached state
-      super.seedFieldRelative(location);
-    } finally {
-      m_stateLock.writeLock().unlock();
-    }
-  }
-
 }
