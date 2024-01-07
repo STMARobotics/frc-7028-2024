@@ -180,4 +180,8 @@ networktables.json*
 # Merge conflict diff files
 *.orig
 
+# Simulation data log directory
+logs/
+
+# Folder that has CTRE Phoenix Sim device config storage
 ctre_sim/
