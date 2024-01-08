@@ -6,11 +6,8 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static java.lang.Math.PI;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
@@ -58,34 +55,12 @@ public class Constants {
     public static final Transform3d APRILTAG_CAMERA_TO_ROBOT = new Transform3d(
         new Translation3d(-0.06, 0.2, -0.2127),
         new Rotation3d(0.0, degreesToRadians(15.0), degreesToRadians(-3.0)));
-
-    /** Physical location of the shooter camera on the robot, relative to the center of the robot. */
-    public static final Transform3d LIMELIGHT_TO_ROBOT = new Transform3d(
-        new Translation3d(-0.083, 0.254, -0.537),
-        new Rotation3d(0.0, degreesToRadians(-9.0), degreesToRadians(-1.0)));
-
-    public static final String LIMELIGHT_NAME = "limelight";
     
     public static final double FIELD_LENGTH_METERS = 16.54175;
     public static final double FIELD_WIDTH_METERS = 8.0137;
 
-    // Pose on the opposite side of the field. Use with `relativeTo` to flip a pose to the opposite alliance
-    public static final Pose2d FLIPPING_POSE = new Pose2d(
-        new Translation2d(FIELD_LENGTH_METERS, FIELD_WIDTH_METERS),
-        new Rotation2d(PI));
-
     /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
-    
-    /**
-     * Transforms a pose to the opposite alliance's coordinate system. (0,0) is always on the right corner of your
-     * alliance wall, so for 2023, the field elements are at different coordinates for each alliance.
-     * @param poseToFlip pose to transform to the other alliance
-     * @return pose relative to the other alliance's coordinate system
-     */
-    public static Pose2d flipAlliance(Pose2d poseToFlip) {
-      return poseToFlip.relativeTo(VisionConstants.FLIPPING_POSE);
-    }
 
   }
 }

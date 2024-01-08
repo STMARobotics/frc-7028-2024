@@ -23,6 +23,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -91,9 +92,12 @@ public class FieldOrientedDriveCommand extends Command {
 
   @Override
   public void execute() {
+    // The origin is always blue, so when on RED alliance X and Y need to be inverted based on the driver's orientation
+    var invert = 
+        DriverStation.getAlliance().map(alliance -> alliance == DriverStation.Alliance.Blue).orElse(false) ? 1: -1;
     drivetrainSubsystem.setControl(drive
-        .withVelocityX(translateXRateLimiter.calculate(translationXSupplier.get().in(MetersPerSecond)))
-        .withVelocityY(translateYRateLimiter.calculate(translationYSupplier.get().in(MetersPerSecond)))
+        .withVelocityX(translateXRateLimiter.calculate(invert * translationXSupplier.get().in(MetersPerSecond)))
+        .withVelocityY(translateYRateLimiter.calculate(invert * translationYSupplier.get().in(MetersPerSecond)))
         .withRotationalRate(rotationRateLimiter.calculate(rotationSupplier.get().in(RadiansPerSecond))));
   }
 

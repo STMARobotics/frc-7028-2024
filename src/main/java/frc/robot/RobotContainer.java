@@ -11,7 +11,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -71,12 +70,4 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-  /**
-   * Called when the alliance reported by the driverstation/FMS changes.
-   * @param alliance new alliance value
-   */
-  public void onAllianceChanged(Alliance alliance) {
-    drivetrain.setAlliance(alliance);
-    logger.setAlliance(alliance);
-  }
 }

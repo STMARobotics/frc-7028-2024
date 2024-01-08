@@ -39,8 +39,8 @@ public class PhotonRunnable implements Runnable {
         .subscribe(
             "rawBytes", new byte[] {}, PubSubOption.periodic(0.01), PubSubOption.sendAll(true));
 
-    var layout = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
-    // PV estimates will always be blue, they'll get flipped by robot thread
+    var layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    // Origin will always be blue
     layout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
     photonPoseEstimator = new PhotonPoseEstimator(
         layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new PhotonCamera(cameraName), APRILTAG_CAMERA_TO_ROBOT.inverse());
