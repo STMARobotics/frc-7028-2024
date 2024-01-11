@@ -3,7 +3,9 @@ package frc.robot;
 import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Second;
 import static java.lang.Math.PI;
 
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -29,9 +31,10 @@ public class Constants {
 
     public static final double DEADBAND = 0.1;
 
-    public static final double X_RATE_LIMIT = 6.0;
-    public static final double Y_RATE_LIMIT = 6.0;
-    public static final double ROTATION_RATE_LIMIT = 5.0 * PI;
+    public static final Measure<Velocity<Velocity<Distance>>> TRANSLATION_RATE_LIMIT =
+        MetersPerSecondPerSecond.of(6.0);
+    public static final Measure<Velocity<Velocity<Angle>>> ROTATION_RATE_LIMIT =
+        RadiansPerSecond.per(Second).of(5.0 * PI);
 
   }
 

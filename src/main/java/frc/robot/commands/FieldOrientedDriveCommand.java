@@ -1,13 +1,14 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Second;
 import static frc.robot.Constants.DrivetrainConstants.MAX_ANGULAR_VELOCITY;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
 import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
-import static frc.robot.Constants.TeleopDriveConstants.X_RATE_LIMIT;
-import static frc.robot.Constants.TeleopDriveConstants.Y_RATE_LIMIT;
+import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
 
 import java.util.function.Supplier;
 
@@ -41,9 +42,12 @@ public class FieldOrientedDriveCommand extends Command {
   private final Supplier<Measure<Velocity<Distance>>> translationYSupplier;
   private final Supplier<Measure<Velocity<Angle>>> rotationSupplier;
 
-  private final SlewRateLimiter translateXRateLimiter = new SlewRateLimiter(X_RATE_LIMIT);
-  private final SlewRateLimiter translateYRateLimiter = new SlewRateLimiter(Y_RATE_LIMIT);
-  private final SlewRateLimiter rotationRateLimiter = new SlewRateLimiter(ROTATION_RATE_LIMIT);
+  private final SlewRateLimiter translateXRateLimiter =
+      new SlewRateLimiter(TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond));
+  private final SlewRateLimiter translateYRateLimiter =
+      new SlewRateLimiter(TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond));
+  private final SlewRateLimiter rotationRateLimiter =
+      new SlewRateLimiter(ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MAX_VELOCITY.times(DEADBAND).in(MetersPerSecond))
