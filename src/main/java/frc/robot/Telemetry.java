@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -20,14 +19,8 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Telemetry {
-  private final double maxSpeed;
   private final int logEntry;
   private final int odomEntry;
 
@@ -39,44 +32,19 @@ public class Telemetry {
   /* Robot pose for field positioning */
   private final Field2d field2d = new Field2d();
 
-  private final GenericEntry drivetrainSpeed;
-  private final GenericEntry drivetrainVelocityX;
-  private final GenericEntry drivetrainVelocityY;
+  private final GenericEntry drivetrainSpeedEntry;
+  private final GenericEntry drivetrainVelocityXEntry;
+  private final GenericEntry drivetrainVelocityYEntry;
+  private final GenericEntry periodEntry;
+  private final GenericEntry readablePoseEntry;
 
   /* Robot speeds for general checking */
   private final NetworkTable driveStats = inst.getTable("Drive");
-  private final DoublePublisher odomPeriod = driveStats.getDoubleTopic("Odometry Period").publish();
 
-  /* Mechanisms to represent the swerve module states */
-  private final Mechanism2d[] moduleMechanisms = new Mechanism2d[] {
-      new Mechanism2d(1, 1),
-      new Mechanism2d(1, 1),
-      new Mechanism2d(1, 1),
-      new Mechanism2d(1, 1),
-  };
-
-  /* A direction and length changing ligament for speed representation */
-  private final MechanismLigament2d[] moduleSpeeds = new MechanismLigament2d[] {
-      moduleMechanisms[0].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-      moduleMechanisms[1].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-      moduleMechanisms[2].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-      moduleMechanisms[3].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-  };
-
-  /* A direction changing and length constant ligament for module direction */
-  private final MechanismLigament2d[] moduleDirections = new MechanismLigament2d[] {
-      moduleMechanisms[0].getRoot("RootDirection", 0.5, 0.5)
-          .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-      moduleMechanisms[1].getRoot("RootDirection", 0.5, 0.5)
-          .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-      moduleMechanisms[2].getRoot("RootDirection", 0.5, 0.5)
-          .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-      moduleMechanisms[3].getRoot("RootDirection", 0.5, 0.5)
-          .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-  };
-
-  private final DoubleArrayPublisher moduleStatePublisher = driveStats.getDoubleArrayTopic("Module States").publish();
-  private final DoubleArrayPublisher moduleTargetsPublisher = driveStats.getDoubleArrayTopic("Module Targets").publish();
+  private final DoubleArrayPublisher moduleStatePublisher = 
+      driveStats.getDoubleArrayTopic("Module States").publish();
+  private final DoubleArrayPublisher moduleTargetsPublisher =
+      driveStats.getDoubleArrayTopic("Module Targets").publish();
 
   /* Keep a reference of the last pose to calculate the speeds */
   private Pose2d lastPose = new Pose2d();
@@ -89,21 +57,27 @@ public class Telemetry {
    *          Maximum speed in meters per second
    */
   public Telemetry(double maxSpeed) {
-    this.maxSpeed = maxSpeed;
-
     drivetrainTab.add(field2d).withPosition(0, 0).withSize(5, 3);
+
+    readablePoseEntry = drivetrainTab.add("Pose", "").withWidget(BuiltInWidgets.kTextView)
+        .withSize(2, 1)
+        .withPosition(0, 3).getEntry();
 
     var drivetrainVelocityGrid = drivetrainTab.getLayout("Velocity", BuiltInLayouts.kGrid)
           .withProperties(Map.of("Number of columns", 1, "Number of rows", 3))
           .withSize(2, 3)
           .withPosition(5, 0);
 
-    drivetrainSpeed = drivetrainVelocityGrid.add("Speed", 0).withWidget(BuiltInWidgets.kDial)
+    drivetrainSpeedEntry = drivetrainVelocityGrid.add("Speed", 0).withWidget(BuiltInWidgets.kDial)
         .withProperties(Map.of("Min", 0, "Max", Math.ceil(maxSpeed))).getEntry();
-    drivetrainVelocityX = drivetrainVelocityGrid.add("Velocity X", 0).withWidget(BuiltInWidgets.kDial)
+    drivetrainVelocityXEntry = drivetrainVelocityGrid.add("Velocity X", 0).withWidget(BuiltInWidgets.kDial)
         .withProperties(Map.of("Min", -Math.ceil(maxSpeed), "Max", Math.ceil(maxSpeed))).getEntry();
-    drivetrainVelocityY = drivetrainVelocityGrid.add("Velocity Y", 0).withWidget(BuiltInWidgets.kDial)
+    drivetrainVelocityYEntry = drivetrainVelocityGrid.add("Velocity Y", 0).withWidget(BuiltInWidgets.kDial)
         .withProperties(Map.of("Min", -Math.ceil(maxSpeed), "Max", Math.ceil(maxSpeed))).getEntry();
+    
+    periodEntry = drivetrainTab.add("Update Frequency (Hz)", 0).withWidget(BuiltInWidgets.kTextView)
+        .withSize(1, 1)
+        .withPosition(7, 0) .getEntry();
     
     logEntry = DataLogManager.getLog().start("odometry", "double[]");
     odomEntry = DataLogManager.getLog().start("odom period", "double");
@@ -115,6 +89,9 @@ public class Telemetry {
     Pose2d pose = state.Pose;
     field2d.setRobotPose(pose);
 
+    readablePoseEntry.setString(String.format("(%.3f, %.3f) %.2f rad", 
+        pose.getX(), pose.getY(), pose.getRotation().getRadians()));
+
     /* Telemeterize the robot's general speeds */
     double currentTime = Utils.getCurrentTimeSeconds();
     double diffTime = currentTime - lastTime;
@@ -124,20 +101,11 @@ public class Telemetry {
 
     Translation2d velocities = distanceDiff.div(diffTime);
 
-    drivetrainSpeed.setDouble(velocities.getNorm());
-    drivetrainVelocityX.setDouble(velocities.getX());
-    drivetrainVelocityY.setDouble(velocities.getY());
+    drivetrainSpeedEntry.setDouble(velocities.getNorm());
+    drivetrainVelocityXEntry.setDouble(velocities.getX());
+    drivetrainVelocityYEntry.setDouble(velocities.getY());
 
-    odomPeriod.set(1.0 / state.OdometryPeriod);
-
-    /* Telemeterize the module's states */
-    for (int i = 0; i < 4; ++i) {
-      moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
-      moduleDirections[i].setAngle(state.ModuleStates[i].angle);
-      moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * maxSpeed));
-
-      SmartDashboard.putData("Module " + i, moduleMechanisms[i]);
-    }
+    periodEntry.setDouble(1.0 / state.OdometryPeriod);
 
     DataLogManager.getLog().appendDoubleArray(logEntry,
         new double[] { pose.getX(), pose.getY(), pose.getRotation().getDegrees() },

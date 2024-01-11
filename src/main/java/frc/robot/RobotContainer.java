@@ -43,7 +43,8 @@ public class RobotContainer {
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
-    driverTab.add("Auto", autoChooser);
+    driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
+    Shuffleboard.selectTab(driverTab.getTitle());
 
     drivetrain.getDaqThread().setThreadPriority(99);
     drivetrain.registerTelemetry(logger::telemeterize);
