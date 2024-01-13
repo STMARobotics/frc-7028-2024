@@ -39,7 +39,7 @@ public class XBoxControlBindings implements ControlBindings {
   
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
-    return () -> MAX_ANGULAR_VELOCITY.times(-modifyAxis(driverController.getRightX() / 2.0));
+    return () -> MAX_ANGULAR_VELOCITY.times(-modifyAxis(driverController.getRightX() * 0.8));
   }
   
   private static double modifyAxis(double value) {

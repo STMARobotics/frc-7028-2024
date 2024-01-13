@@ -3,6 +3,8 @@ package frc.robot;
 import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Second;
@@ -24,7 +26,11 @@ public class Constants {
 
     // Theoretical free speed of L2 Falcon 500 with FOC
     public static final Measure<Velocity<Distance>> MAX_VELOCITY = FeetPerSecond.of(15.7);
-    public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 2);
+        // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 
+        (DrivetrainConstants.MAX_VELOCITY.in(MetersPerSecond) /
+        Math.hypot(TRACKWIDTH.in(Meters) / 2.0, WHEELBASE.in(Meters) / 2.0));
+    public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 4);
   }
 
   public static final class TeleopDriveConstants {
@@ -32,9 +38,9 @@ public class Constants {
     public static final double DEADBAND = 0.1;
 
     public static final Measure<Velocity<Velocity<Distance>>> TRANSLATION_RATE_LIMIT =
-        MetersPerSecondPerSecond.of(6.0);
+        MetersPerSecondPerSecond.of(8.0);
     public static final Measure<Velocity<Velocity<Angle>>> ROTATION_RATE_LIMIT =
-        RadiansPerSecond.per(Second).of(5.0 * PI);
+        RadiansPerSecond.per(Second).of(8.0 * PI);
 
   }
 
