@@ -82,10 +82,9 @@ public class PhotonRunnable implements Runnable {
     if (packet.getSize() < 1) {
       return result;
     }
-    result.createFromPacket(packet);
+    result = PhotonPipelineResult.serde.unpack(packet);
     result.setTimestampSeconds((rawBytesSubscriber.getLastChange() / 1e6) - result.getLatencyMillis() / 1e3);
     return result;
   }
-
 
 }
