@@ -48,5 +48,50 @@ public class XBoxControlBindings implements ControlBindings {
 
     return value;
   }
+
+  @Override
+  public Optional<Trigger> sysIdDriveForwardQuasiTest() {
+    return Optional.of(driverController.povUp().and(driverController.a()));
+  }
+
+  @Override
+  public Optional<Trigger> sysIdDriveReverseQuasiTest() {
+    return Optional.of(driverController.povDown().and(driverController.a()));
+  }
+
+    @Override
+  public Optional<Trigger> sysIdDriveForwardDynamTest() {
+    return Optional.of(driverController.povUp().and(driverController.y()));
+  }
+
+  @Override
+  public Optional<Trigger> sysIdDriveReverseDynamTest() {
+    return Optional.of(driverController.povDown().and(driverController.y()));
+  }
+
+  @Override
+  public Optional<Trigger> sysIdSteerForwardQuasiTest() {
+    return Optional.of(driverController.povUp().and(driverController.b()));
+  }
+
+  @Override
+  public Optional<Trigger> sysIdSteerReverseQuasiTest() {
+    return Optional.of(driverController.povDown().and(driverController.b()));
+  }
+
+  @Override
+  public Optional<Trigger> sysIdSteerForwardDynamTest() {
+    return Optional.of(driverController.povUp().and(driverController.x()));
+  }
+
+  @Override
+  public Optional<Trigger> sysIdSteerReverseDynamTest() {
+    return Optional.of(driverController.povDown().and(driverController.x()));
+  }
+
+  @Override
+  public Optional<Trigger> sysIdDriveSlipTest() {
+    return Optional.of(driverController.povRight().and(driverController.y()));
+  }
   
 }

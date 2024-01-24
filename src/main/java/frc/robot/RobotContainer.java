@@ -5,6 +5,8 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
+import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -36,7 +38,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     // Configure control binding scheme
-    if (DriverStation.getJoystickIsXbox(0)) {
+    if (DriverStation.getJoystickIsXbox(0) || Robot.isSimulation()) {
       controlBindings = new XBoxControlBindings();
     } else {
       controlBindings = new JoystickControlBindings();
@@ -55,16 +57,42 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(new FieldOrientedDriveCommand(
-      drivetrain,
-      () -> drivetrain.getState().Pose.getRotation(),
-      controlBindings.translationX(),
-      controlBindings.translationY(),
-      controlBindings.omega()));
+        drivetrain,
+        () -> drivetrain.getState().Pose.getRotation(),
+        controlBindings.translationX(),
+        controlBindings.translationY(),
+        controlBindings.omega()));
   }
 
   private void configureButtonBindings() {
+    // Driving
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
+
+    // Reset field relative heading
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
+
+    // SysId tests
+    controlBindings.sysIdDriveForwardQuasiTest()
+        .ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveQuasiTest(kForward)));
+    controlBindings.sysIdDriveReverseQuasiTest()
+        .ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveQuasiTest(kReverse)));
+
+    controlBindings.sysIdDriveForwardDynamTest()
+        .ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveDynamTest(kForward)));
+    controlBindings.sysIdDriveReverseDynamTest()
+        .ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveDynamTest(kReverse)));
+
+    controlBindings.sysIdSteerForwardQuasiTest()
+        .ifPresent(trigger -> trigger.whileTrue(drivetrain.runSteerQuasiTest(kForward)));
+    controlBindings.sysIdSteerReverseQuasiTest()
+        .ifPresent(trigger -> trigger.whileTrue(drivetrain.runSteerQuasiTest(kReverse)));
+
+    controlBindings.sysIdSteerForwardDynamTest()
+        .ifPresent(trigger -> trigger.whileTrue(drivetrain.runSteerDynamTest(kForward)));
+    controlBindings.sysIdSteerReverseDynamTest()
+        .ifPresent(trigger -> trigger.whileTrue(drivetrain.runSteerDynamTest(kReverse)));
+
+    controlBindings.sysIdDriveSlipTest().ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveSlipTest()));
   }
 
   public Command getAutonomousCommand() {
