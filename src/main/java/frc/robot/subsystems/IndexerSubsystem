@@ -1,12 +1,7 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.IndexerConstants.COLOR_ORANGE;
 import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
-import static frc.robot.Constants.IndexerConstants.COLOR_NONE;
 import static frc.robot.Constants.IndexerConstants.DEVICE_ID_INDEXER;
-import static frc.robot.Constants.IndexerConstants.THRESHOLD_INTAKE;
-import static frc.robot.Constants.IndexerConstants.THRESHOLD_SPACE;
-import static frc.robot.Constants.IndexerConstants.BELT_kP;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
