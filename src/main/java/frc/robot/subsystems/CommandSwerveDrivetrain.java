@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAME;
+import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAMES;
+import static frc.robot.Constants.VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS;
 
 import java.util.function.Supplier;
 
@@ -32,7 +33,8 @@ import frc.robot.PhotonRunnable;
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
 
   private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
-  private final Thread photonThread = new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAME, this::addVisionMeasurement));
+  private final Thread photonThread = 
+      new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAMES, ROBOT_TO_CAMERA_TRANSFORMS, this::addVisionMeasurement));
 
   public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
