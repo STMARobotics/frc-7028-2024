@@ -14,7 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
+//import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.sim.PhysicsSim;
 
 /**
@@ -25,17 +25,19 @@ import frc.robot.sim.PhysicsSim;
  */
 public class elevatorSubsystem extends TimedRobot {
   private final TalonFX m_fx = new TalonFX(1, "canivore");
+  private final TalonFX m_fx2 = new TalonFX(1, "canivore");
   private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
   private final XboxController m_joystick = new XboxController(0);
 
   private int m_printCount = 0;
 
   // fix line 34
-  private final Mechanism m_mechanisms = new Mechanism(null, null, null);
+  //private final Mechanism m_mechanisms = new Mechanism(null, null, null);
 
   @Override
   public void simulationInit() {
     PhysicsSim.getInstance().addTalonFX(m_fx, 0.001);
+    PhysicsSim.getInstance().addTalonFX(m_fx2, 0.001);
   }
 
   @Override
@@ -71,6 +73,7 @@ public class elevatorSubsystem extends TimedRobot {
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for(int i = 0; i < 5; ++i) {
       status = m_fx.getConfigurator().apply(cfg);
+      status = m_fx2.getConfigurator().apply(cfg);
       if (status.isOK()) break;
     }
     if (!status.isOK()) {
@@ -85,9 +88,11 @@ public class elevatorSubsystem extends TimedRobot {
       System.out.println("Pos: " + m_fx.getPosition());
       System.out.println("Vel: " + m_fx.getVelocity());
       System.out.println();
+      System.out.println("Pos: " + m_fx2.getPosition());
+      System.out.println("Vel: " + m_fx2.getVelocity());
     }
-    // fix line 91
-    // m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
+    // fix line 90
+    //m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
   }
 
   @Override
@@ -108,6 +113,10 @@ public class elevatorSubsystem extends TimedRobot {
     m_fx.setControl(m_mmReq.withPosition(leftY * 10).withSlot(0));
     if(m_joystick.getBButton()) {
       m_fx.setPosition(1);
+    m_fx2.setControl(m_mmReq.withPosition(leftY * 10).withSlot(1));
+    if(m_joystick.getAButton()) {
+      m_fx2.setPosition(1);
+    }
     }
   }
 
