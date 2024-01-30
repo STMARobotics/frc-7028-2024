@@ -24,7 +24,7 @@ import frc.robot.sim.PhysicsSim;
  * project.
  */
 public class elevatorSubsystem extends TimedRobot {
-  private final TalonFX m_fx = new TalonFX(1, "canivore");
+  private final TalonFX m_fx = new TalonFX(0, "canivore");
   private final TalonFX m_fx2 = new TalonFX(1, "canivore");
   private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
   private final XboxController m_joystick = new XboxController(0);
