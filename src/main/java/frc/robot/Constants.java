@@ -82,4 +82,13 @@ public class Constants {
     public static final int ACTUATOR_CANCORDER = 3;
 
   }
+
+  public static class ClimbConstants {
+    public static DeadbandFilter CLIMB_DEADBAND_FILTER = new DeadbandFilter(-.25, .5);
+
+    public static final int DEVICE_ID_FIRST_STAGE_CLIMB = 12;
+
+    public static final double SOFT_LIMIT_FIRST_STAGE_FWD = 430000;
+    public static final double SOFT_LIMIT_FIRST_STAGE_REV = 0;
+  }
 }
