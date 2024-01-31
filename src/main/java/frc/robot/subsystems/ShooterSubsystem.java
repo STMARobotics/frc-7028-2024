@@ -19,7 +19,6 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private static final double ENCODER_CPR = 2048;
   private final TalonFX shooterLeftMotor = new TalonFX(SHOOTER_DONUT_POSITION_CONTROl);
   private final TalonFX shooterRightMotor = new TalonFX(SHOOTER_VELOCITY_CONTROl);
   private final TalonFX actuatorMotor = new TalonFX(ACTUATOR_FALCON);
@@ -91,10 +90,5 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterLeftMotor.stopMotor();
     isActiveStopped = false;
 
-  }
-
-  public static double edgesPerDecisecToRPS(double edgesPerDecisec) {
-    var rotationsPerDecisecond = edgesPerDecisec / ENCODER_CPR;
-    return rotationsPerDecisecond * 10;
   }
 }
