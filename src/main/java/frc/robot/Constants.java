@@ -23,6 +23,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.util.Color;
 
 public class Constants {
 
@@ -81,13 +82,30 @@ public class Constants {
   }
 
   public static class IndexerConstants {
-    public static final int DEVICE_ID_INDEXER = 0;
+    public static final int DEVICE_ID_LEFT = 0;
+    public static final int DEVICE_ID_RIGHT = 1;
 
     public static final int PORT_ID_FULL_SENSOR = 0;
     public static final int PORT_ID_INTAKE_SENSOR = 1;
     public static final int PORT_ID_SPACER_SENSOR = 2;
 
-    public static final double BELT_kP = 0.01;
+    /** Color of note */
+    public static final Color COLOR_NOTE = Color.kOrange;
+
+    /** Color of no note */
+    public static final Color COLOR_NONE = new Color(0.252197265625, 0.491455078125, 0.2568359375);
+
+    // Proximity thresholds for when to trip each sensor
+    public static final int THRESHOLD_INTAKE = 240;
+    public static final int THRESHOLD_SPACE = 400;
+    public static final int THRESHOLD_FULL = 225;
+
+    public static final double kP = 0d;
+    public static final double kI = 0d;
+    public static final double kD = 0d;
+    public static final double kFF = 0d;
+    public static final double RUN_SPEED = 8000;
+    public static final double SHOOT_SPEED = 8000;
   }
 
   public static class ShooterConstants {

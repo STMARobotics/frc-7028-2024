@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.littletonrobotics.urcl.URCL;
+
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -18,7 +20,8 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
 
-    SignalLogger.start();
+    SignalLogger.start(); // CTRE logger
+    URCL.start(); // REV logger https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/REV-LOGGING.md
   }
 
   @Override

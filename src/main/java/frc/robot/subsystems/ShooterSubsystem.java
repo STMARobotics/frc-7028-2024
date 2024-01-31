@@ -47,7 +47,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final PositionTorqueCurrentFOC actuatorMotorPosition = new PositionTorqueCurrentFOC(0.0);
   private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true);
 
-    // SysId routines  
+  // SysId routines  
   private SysIdRoutine shooterSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> {
@@ -113,12 +113,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return run(() -> rotateShooterWheels(distance)).finallyDo(this::stopShooter);
   }
 
-  public Command sysIdShooterDyanmic(Direction direction) {
+  public Command sysIdShooterDyanmicCommand(Direction direction) {
     return shooterSysIdRoutine.dynamic(direction).withName("Shooter dynam " + direction)
         .finallyDo(this::stopShooter);
   }
 
-  public Command sysIdShooterQuasistatic(Direction direction) {
+  public Command sysIdShooterQuasistaticCommand(Direction direction) {
     return shooterSysIdRoutine.quasistatic(direction).withName("Shooter quasi " + direction)
         .finallyDo(this::stopShooter);
   }

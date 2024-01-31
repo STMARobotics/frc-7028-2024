@@ -23,6 +23,7 @@ import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -34,6 +35,7 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -104,10 +106,16 @@ public class RobotContainer {
     tab.add("Roller Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(2, 3);
 
     // Column 3 Shooter
-    tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistatic(kForward)).withPosition(3, 0);
-    tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistatic(kReverse)).withPosition(3, 1);
-    tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDyanmic(kForward)).withPosition(3, 2);
-    tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDyanmic(kReverse)).withPosition(3, 3);
+    tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistaticCommand(kForward)).withPosition(3, 0);
+    tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse)).withPosition(3, 1);
+    tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDyanmicCommand(kForward)).withPosition(3, 2);
+    tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDyanmicCommand(kReverse)).withPosition(3, 3);
+
+    //Column 4 Indexer
+    tab.add("Index Quasi Fwd", indexerSubsystem.sysIdIndexerQuasistaticCommand(kForward)).withPosition(4, 0);
+    tab.add("Index Quasi Rev", indexerSubsystem.sysIdIndexerQuasistaticCommand(kReverse)).withPosition(4, 1);
+    tab.add("Index Dynam Fwd", indexerSubsystem.sysIdIndexerDynamicCommand(kForward)).withPosition(4, 2);
+    tab.add("Index Dynam Rev", indexerSubsystem.sysIdIndexerDynamicCommand(kReverse)).withPosition(4, 3);
   }
 
   public Command getAutonomousCommand() {
