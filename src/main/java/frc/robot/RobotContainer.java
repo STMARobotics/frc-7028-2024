@@ -83,17 +83,17 @@ public class RobotContainer {
     ShuffleboardTab tab = Shuffleboard.getTab("SysId");
     
     // Column 0 Drive
-    tab.add("Drive Quasi Fwd", drivetrain.runDriveQuasiTest(kForward)).withPosition(0, 0);
-    tab.add("Drive Quasi Rev", drivetrain.runDriveQuasiTest(kReverse)).withPosition(0, 1);
-    tab.add("Drive Dynam Fwd", drivetrain.runDriveDynamTest(kForward)).withPosition(0, 2);
-    tab.add("Drive Dynam Rev", drivetrain.runDriveDynamTest(kReverse)).withPosition(0, 3);
-    tab.add("Slip Test", drivetrain.runDriveSlipTest()).withPosition(0, 4);
+    tab.add("Drive Quasi Fwd", drivetrain.sysIdDriveQuasiCommand(kForward)).withPosition(0, 0);
+    tab.add("Drive Quasi Rev", drivetrain.sysIdDriveQuasiCommand(kReverse)).withPosition(0, 1);
+    tab.add("Drive Dynam Fwd", drivetrain.sysIdDriveDynamCommand(kForward)).withPosition(0, 2);
+    tab.add("Drive Dynam Rev", drivetrain.sysIdDriveDynamCommand(kReverse)).withPosition(0, 3);
+    tab.add("Slip Test", drivetrain.sysIdDriveSlipCommand()).withPosition(0, 4);
 
     // Column 1 Steer
-    tab.add("Steer Quasi Fwd", drivetrain.runSteerQuasiTest(kForward)).withPosition(1, 0);
-    tab.add("Steer Quasi Rev", drivetrain.runSteerQuasiTest(kReverse)).withPosition(1, 1);
-    tab.add("Steer Dynam Fwd", drivetrain.runSteerDynamTest(kForward)).withPosition(1, 2);
-    tab.add("Steer Dynam Rev", drivetrain.runSteerDynamTest(kReverse)).withPosition(1, 3);
+    tab.add("Steer Quasi Fwd", drivetrain.sysIdSteerQuasiCommand(kForward)).withPosition(1, 0);
+    tab.add("Steer Quasi Rev", drivetrain.sysIdSteerQuasiCommand(kReverse)).withPosition(1, 1);
+    tab.add("Steer Dynam Fwd", drivetrain.sysIdSteerDynamCommand(kForward)).withPosition(1, 2);
+    tab.add("Steer Dynam Rev", drivetrain.sysIdSteerDynamCommand(kReverse)).withPosition(1, 3);
 
     // Column 2 Intake
     tab.add("Deploy Quasi Fwd", intakeSubsystem.sysIdDeployQuasistaticCommand(kForward)).withPosition(2, 0);
