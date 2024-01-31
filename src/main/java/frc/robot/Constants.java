@@ -27,8 +27,6 @@ import edu.wpi.first.units.Velocity;
 public class Constants {
 
   public static final String CANIVORE_BUS_NAME = "swerve";
-  public static final boolean BIND_SYS_ID = false;
-
   public static final class DrivetrainConstants {
     public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
     public static final Measure<Distance> WHEELBASE = Inches.of(18.75);

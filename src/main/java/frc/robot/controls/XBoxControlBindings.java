@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class XBoxControlBindings implements ControlBindings {
 
   private final CommandXboxController driverController = new CommandXboxController(0);
-  private final CommandXboxController sysIdController = new CommandXboxController(5);
 
   @Override
   public Optional<Trigger> resetPose() {
@@ -49,8 +48,6 @@ public class XBoxControlBindings implements ControlBindings {
 
     return value;
   }
-
-  @Override
   public Optional<Trigger> intake() {
     return Optional.of(driverController.rightBumper());
   }
@@ -60,49 +57,4 @@ public class XBoxControlBindings implements ControlBindings {
     return Optional.of(driverController.leftBumper());
   }
 
-  @Override
-  public Optional<Trigger> sysIdDriveForwardQuasiTest() {
-    return Optional.of(sysIdController.povUp().and(sysIdController.a()));
-  }
-
-  @Override
-  public Optional<Trigger> sysIdDriveReverseQuasiTest() {
-    return Optional.of(sysIdController.povDown().and(sysIdController.a()));
-  }
-
-    @Override
-  public Optional<Trigger> sysIdDriveForwardDynamTest() {
-    return Optional.of(sysIdController.povUp().and(sysIdController.y()));
-  }
-
-  @Override
-  public Optional<Trigger> sysIdDriveReverseDynamTest() {
-    return Optional.of(sysIdController.povDown().and(sysIdController.y()));
-  }
-
-  @Override
-  public Optional<Trigger> sysIdSteerForwardQuasiTest() {
-    return Optional.of(sysIdController.povUp().and(sysIdController.b()));
-  }
-
-  @Override
-  public Optional<Trigger> sysIdSteerReverseQuasiTest() {
-    return Optional.of(sysIdController.povDown().and(sysIdController.b()));
-  }
-
-  @Override
-  public Optional<Trigger> sysIdSteerForwardDynamTest() {
-    return Optional.of(sysIdController.povUp().and(sysIdController.x()));
-  }
-
-  @Override
-  public Optional<Trigger> sysIdSteerReverseDynamTest() {
-    return Optional.of(sysIdController.povDown().and(sysIdController.x()));
-  }
-
-  @Override
-  public Optional<Trigger> sysIdDriveSlipTest() {
-    return Optional.of(sysIdController.povRight().and(sysIdController.y()));
-  }
-  
 }

@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
-import static frc.robot.Constants.BIND_SYS_ID;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -56,6 +55,7 @@ public class RobotContainer {
 
     configureDefaultCommands();
     configureButtonBindings();
+    populateSysIdDashboard();
   }
 
   private void configureDefaultCommands() {
@@ -77,31 +77,23 @@ public class RobotContainer {
     // Intake
     controlBindings.intake().ifPresent(trigger -> trigger.onTrue(intakeSubsystem.deployAndRunIntakeCommand()));
     controlBindings.retractIntake().ifPresent(trigger -> trigger.onTrue(intakeSubsystem.retractIntakeCommand()));
+  }
 
-    // SysId tests
-    if (BIND_SYS_ID) {
-      controlBindings.sysIdDriveForwardQuasiTest()
-          .ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveQuasiTest(kForward)));
-      controlBindings.sysIdDriveReverseQuasiTest()
-          .ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveQuasiTest(kReverse)));
+  public void populateSysIdDashboard() {
+    ShuffleboardTab tab = Shuffleboard.getTab("SysId");
+    
+    // Column 0
+    tab.add("Drive Quasi Fwd", drivetrain.runDriveQuasiTest(kForward)).withPosition(0, 0);
+    tab.add("Drive Quasi Rev", drivetrain.runDriveQuasiTest(kReverse)).withPosition(0, 1);
+    tab.add("Drive Dynam Fwd", drivetrain.runDriveDynamTest(kForward)).withPosition(0, 2);
+    tab.add("Drive Dynam Rev", drivetrain.runDriveDynamTest(kReverse)).withPosition(0, 3);
+    tab.add("Slip Test", drivetrain.runDriveSlipTest()).withPosition(0, 4);
 
-      controlBindings.sysIdDriveForwardDynamTest()
-          .ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveDynamTest(kForward)));
-      controlBindings.sysIdDriveReverseDynamTest()
-          .ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveDynamTest(kReverse)));
-
-      controlBindings.sysIdSteerForwardQuasiTest()
-          .ifPresent(trigger -> trigger.whileTrue(drivetrain.runSteerQuasiTest(kForward)));
-      controlBindings.sysIdSteerReverseQuasiTest()
-          .ifPresent(trigger -> trigger.whileTrue(drivetrain.runSteerQuasiTest(kReverse)));
-
-      controlBindings.sysIdSteerForwardDynamTest()
-          .ifPresent(trigger -> trigger.whileTrue(drivetrain.runSteerDynamTest(kForward)));
-      controlBindings.sysIdSteerReverseDynamTest()
-          .ifPresent(trigger -> trigger.whileTrue(drivetrain.runSteerDynamTest(kReverse)));
-
-      controlBindings.sysIdDriveSlipTest().ifPresent(trigger -> trigger.whileTrue(drivetrain.runDriveSlipTest()));
-    }
+    // Column 1
+    tab.add("Steer Quasi Fwd", drivetrain.runSteerQuasiTest(kForward)).withPosition(1, 0);
+    tab.add("Steer Quasi Rev", drivetrain.runSteerQuasiTest(kReverse)).withPosition(1, 1);
+    tab.add("Steer Dynam Fwd", drivetrain.runSteerDynamTest(kForward)).withPosition(1, 2);
+    tab.add("Steer Dynam Rev", drivetrain.runSteerDynamTest(kReverse)).withPosition(1, 3);
   }
 
   public Command getAutonomousCommand() {
