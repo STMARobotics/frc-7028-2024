@@ -24,6 +24,7 @@ import frc.robot.controls.XBoxControlBindings;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
 
@@ -32,6 +33,7 @@ public class RobotContainer {
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -100,6 +102,12 @@ public class RobotContainer {
     tab.add("Deploy Quasi Rev", intakeSubsystem.sysIdDeployQuasistaticCommand(kReverse)).withPosition(2, 1);
     tab.add("Roller Dynam Fwd", intakeSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(2, 2);
     tab.add("Roller Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(2, 3);
+
+    // Column 3 Shooter
+    tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistatic(kForward)).withPosition(3, 0);
+    tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistatic(kReverse)).withPosition(3, 1);
+    tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDyanmic(kForward)).withPosition(3, 2);
+    tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDyanmic(kReverse)).withPosition(3, 3);
   }
 
   public Command getAutonomousCommand() {

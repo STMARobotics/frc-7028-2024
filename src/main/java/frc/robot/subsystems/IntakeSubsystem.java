@@ -66,8 +66,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // SysId routines  
   private SysIdRoutine deploySysIdRoutine = new SysIdRoutine(
-    new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
-    new SysIdRoutine.Mechanism((volts) -> deployMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
+      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((volts) -> deployMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
 
   private SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),

@@ -91,10 +91,16 @@ public class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int SHOOTER_VELOCITY_CONTROl = 0;
-    public static final int SHOOTER_DONUT_POSITION_CONTROl = 1;
-    public static final int ACTUATOR_FALCON = 2;
+    public static final int DEVICE_ID_LEFT = 50;
+    public static final int DEVICE_ID_RIGHT = 51;
+    public static final int DEVICE_ID_AIM = 52;
     public static final int ACTUATOR_CANCORDER = 3;
+
+    public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG = new SlotConfigs()
+        .withKP(0.0);
+    public static final SlotConfigs SHOOTER_POSITION_SLOT_CONFIG = new SlotConfigs()
+        .withKP(0.0);
+    public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0; // TODO this should be set
   }
 
   public static class IntakeConstants {
@@ -117,7 +123,7 @@ public class Constants {
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
         .withKP(.01);
-    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0; // This should be set, but we could get away without it
+    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0; // TODO This should be set, but we could get away without it
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(100.0);
     public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
   }
