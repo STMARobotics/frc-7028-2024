@@ -11,7 +11,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -90,10 +89,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return run(() -> this.setControl(requestSupplier.get()));
   }
 
-  public Command getAutoPath(String pathName) {
-    return new PathPlannerAuto(pathName);
-  }
-
   @Override
   public void simulationPeriodic() {
     /* Assume 20ms update rate, get battery voltage from WPILib */
@@ -105,27 +100,27 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  public Command runDriveQuasiTest(Direction direction) {
+  public Command sysIdDriveQuasiCommand(Direction direction) {
     return m_driveSysIdRoutine.quasistatic(direction).withName("SysId Drive Quasistatic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
 
-  public Command runDriveDynamTest(SysIdRoutine.Direction direction) {
+  public Command sysIdDriveDynamCommand(SysIdRoutine.Direction direction) {
     return m_driveSysIdRoutine.dynamic(direction).withName("SysId Drive Dynamic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
 
-  public Command runSteerQuasiTest(Direction direction) {
+  public Command sysIdSteerQuasiCommand(Direction direction) {
     return m_steerSysIdRoutine.quasistatic(direction).withName("SysId Steer Quasistatic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
 
-  public Command runSteerDynamTest(SysIdRoutine.Direction direction) {
+  public Command sysIdSteerDynamCommand(SysIdRoutine.Direction direction) {
     return m_steerSysIdRoutine.dynamic(direction).withName("SysId Steer Dynamic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
 
-  public Command runDriveSlipTest() {
+  public Command sysIdDriveSlipCommand() {
     return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withName("SysId Drive Slip")
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
