@@ -22,7 +22,7 @@ import frc.robot.sim.PhysicsSim;
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
- * project.
+ * project. 
  */
 public class ElevatorSubsystem extends TimedRobot {
   private final TalonFX m_fx = new TalonFX(0, "canivore");
@@ -35,7 +35,7 @@ public class ElevatorSubsystem extends TimedRobot {
 
   private int m_printCount = 0;
 
-  // fix line 34
+  // KEEP IT!!!!!!!!!!!!!!!!!!!1
   private final Mechanism m_mechanisms = new Mechanism(null, null, null);
 
   @Override
@@ -97,8 +97,8 @@ public class ElevatorSubsystem extends TimedRobot {
       System.out.println("Pos: " + m_fx2.getPosition());
       System.out.println("Vel: " + m_fx2.getVelocity());
     }
-    //m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
-    m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
+    /*m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
+    FIX OR SOMEONE GETS SHOT */
   }
 
   public boolean isAtBottomLimit() {
