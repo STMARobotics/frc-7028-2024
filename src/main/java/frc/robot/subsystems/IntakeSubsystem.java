@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 import static com.ctre.phoenix6.signals.FeedbackSensorSourceValue.FusedCANcoder;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.IntakeConstants.DEPLOY_CANCODER_OFFSET;
 import static frc.robot.Constants.IntakeConstants.DEPLOY_MOTION_MAGIC_CONFIGS;
@@ -31,12 +32,16 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 /**
  * Subsystem for the intake. The intake is controlled by two TalonFX motor controllers, one to deploy the intake, and
@@ -54,10 +59,20 @@ public class IntakeSubsystem extends SubsystemBase {
   // Motor request objects
   private final MotionMagicTorqueCurrentFOC deployControl = new MotionMagicTorqueCurrentFOC(0.0);
   private final VelocityTorqueCurrentFOC rollerControl = new VelocityTorqueCurrentFOC(0.0);
+  private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true);
   
   // Status signal objects for reading data from hardware
   private final StatusSignal<Double> deployPositionSignal;
 
+  // SysId routines  
+  private SysIdRoutine deploySysIdRoutine = new SysIdRoutine(
+    new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+    new SysIdRoutine.Mechanism((volts) -> deployMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
+
+  private SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((volts) -> rollerMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
+    
   public IntakeSubsystem() {
     // Configure the deploy CANCoder
     var canCoderConfig = new CANcoderConfiguration();
@@ -145,6 +160,22 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public Command deployAndRunIntakeCommand() {
     return deployIntakeCommand().alongWith(runIntakeRollersCommand()).finallyDo(this::stopAll);
+  }
+
+  public Command sysIdDeployDynamicCommand(Direction direction) {
+    return deploySysIdRoutine.dynamic(direction);
+  }
+
+  public Command sysIdDeployQuasistaticCommand(Direction direction) {
+    return deploySysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdRollerDynamicCommand(Direction direction) {
+    return rollerSysIdRoutine.dynamic(direction);
+  }
+
+  public Command sysIdRollerQuasistaticCommand(Direction direction) {
+    return rollerSysIdRoutine.quasistatic(direction);
   }
 
   private void deployIntake() {
