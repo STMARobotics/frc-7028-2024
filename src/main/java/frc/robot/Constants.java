@@ -27,6 +27,7 @@ import edu.wpi.first.units.Velocity;
 public class Constants {
 
   public static final String CANIVORE_BUS_NAME = "swerve";
+  
   public static final class DrivetrainConstants {
     public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
     public static final Measure<Distance> WHEELBASE = Inches.of(18.75);
@@ -97,9 +98,9 @@ public class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int DEVICE_ID_DEPLOY = 1;
-    public static final int DEVICE_ID_DEPLOY_CANIVORE = 2;
-    public static final int DEVICE_ID_ROLLER = 0;
+    public static final int DEVICE_ID_DEPLOY = 40;
+    public static final int DEVICE_ID_DEPLOY_CANIVORE = 41;
+    public static final int DEVICE_ID_ROLLER = 42;
 
     public static final double DEPLOY_CANCODER_OFFSET = 0.0; // TODO this needs to be set
     public static final double DEPLOY_ROTOR_TO_SENSOR_RATIO = 1.0; // TODO this needs to be set

@@ -118,8 +118,11 @@ public class IntakeSubsystem extends SubsystemBase {
    * @return new command
    */
   public Command retractIntakeCommand() {
-    return runOnce(this::stopRoller).alongWith(
-        run(this::retractIntake).until(this::isRetracted).finallyDo(this::stopAll));
+    return runEnd(() -> {
+          stopRoller();
+          retractIntake();
+        },
+        this::stopAll).until(this::isRetracted);
   }
 
   /**
@@ -159,23 +162,31 @@ public class IntakeSubsystem extends SubsystemBase {
    * @return new command
    */
   public Command deployAndRunIntakeCommand() {
-    return deployIntakeCommand().alongWith(runIntakeRollersCommand()).finallyDo(this::stopAll);
+    return runEnd(() -> {
+      deployIntakeCommand();
+      runIntakeRollersCommand();
+    },
+    this::stopAll);
   }
 
   public Command sysIdDeployDynamicCommand(Direction direction) {
-    return deploySysIdRoutine.dynamic(direction);
+    return deploySysIdRoutine.dynamic(direction).withName("SysId intake deploy dynam " + direction)
+        .finallyDo(this::stopAll);
   }
 
   public Command sysIdDeployQuasistaticCommand(Direction direction) {
-    return deploySysIdRoutine.quasistatic(direction);
+    return deploySysIdRoutine.quasistatic(direction).withName("SysId intake deploy quasi " + direction)
+        .finallyDo(this::stopAll);
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {
-    return rollerSysIdRoutine.dynamic(direction);
+    return rollerSysIdRoutine.dynamic(direction).withName("SysId intake roller dynam " + direction)
+        .finallyDo(this::stopAll);
   }
 
   public Command sysIdRollerQuasistaticCommand(Direction direction) {
-    return rollerSysIdRoutine.quasistatic(direction);
+    return rollerSysIdRoutine.quasistatic(direction).withName("SysId intake roller quasi " + direction)
+        .finallyDo(this::stopAll);
   }
 
   private void deployIntake() {

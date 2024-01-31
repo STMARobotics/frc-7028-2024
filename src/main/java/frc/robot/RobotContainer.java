@@ -82,18 +82,24 @@ public class RobotContainer {
   public void populateSysIdDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("SysId");
     
-    // Column 0
+    // Column 0 Drive
     tab.add("Drive Quasi Fwd", drivetrain.runDriveQuasiTest(kForward)).withPosition(0, 0);
     tab.add("Drive Quasi Rev", drivetrain.runDriveQuasiTest(kReverse)).withPosition(0, 1);
     tab.add("Drive Dynam Fwd", drivetrain.runDriveDynamTest(kForward)).withPosition(0, 2);
     tab.add("Drive Dynam Rev", drivetrain.runDriveDynamTest(kReverse)).withPosition(0, 3);
     tab.add("Slip Test", drivetrain.runDriveSlipTest()).withPosition(0, 4);
 
-    // Column 1
+    // Column 1 Steer
     tab.add("Steer Quasi Fwd", drivetrain.runSteerQuasiTest(kForward)).withPosition(1, 0);
     tab.add("Steer Quasi Rev", drivetrain.runSteerQuasiTest(kReverse)).withPosition(1, 1);
     tab.add("Steer Dynam Fwd", drivetrain.runSteerDynamTest(kForward)).withPosition(1, 2);
     tab.add("Steer Dynam Rev", drivetrain.runSteerDynamTest(kReverse)).withPosition(1, 3);
+
+    // Column 2 Intake
+    tab.add("Deploy Quasi Fwd", intakeSubsystem.sysIdDeployQuasistaticCommand(kForward)).withPosition(2, 0);
+    tab.add("Deploy Quasi Rev", intakeSubsystem.sysIdDeployQuasistaticCommand(kReverse)).withPosition(2, 1);
+    tab.add("Roller Dynam Fwd", intakeSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(2, 2);
+    tab.add("Roller Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(2, 3);
   }
 
   public Command getAutonomousCommand() {
