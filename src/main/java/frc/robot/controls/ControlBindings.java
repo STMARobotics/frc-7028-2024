@@ -15,40 +15,4 @@ public interface ControlBindings {
   Supplier<Measure<Velocity<Distance>>> translationX();
   Supplier<Measure<Velocity<Distance>>> translationY();
   Supplier<Measure<Velocity<Angle>>> omega();
-
-  default Optional<Trigger> sysIdDriveForwardQuasiTest() {
-    return Optional.empty();
-  }
-
-    default Optional<Trigger> sysIdDriveReverseQuasiTest() {
-    return Optional.empty();
-  }
-
-  default Optional<Trigger> sysIdDriveForwardDynamTest() {
-    return Optional.empty();
-  }
-
-  default Optional<Trigger> sysIdDriveReverseDynamTest() {
-    return Optional.empty();
-  }
-
-  default Optional<Trigger> sysIdSteerForwardQuasiTest() {
-    return Optional.empty();
-  }
-
-  default Optional<Trigger> sysIdSteerReverseQuasiTest() {
-    return Optional.empty();
-  }
-
-  default Optional<Trigger> sysIdSteerForwardDynamTest() {
-    return Optional.empty();
-  }
-
-  default Optional<Trigger> sysIdSteerReverseDynamTest() {
-    return Optional.empty();
-  }
-
-  default Optional<Trigger> sysIdDriveSlipTest() {
-    return Optional.empty();
-  }
 }
