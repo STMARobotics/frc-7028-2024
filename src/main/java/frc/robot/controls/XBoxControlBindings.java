@@ -50,6 +50,16 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> intake() {
+    return Optional.of(driverController.rightBumper());
+  }
+
+  @Override
+  public Optional<Trigger> retractIntake() {
+    return Optional.of(driverController.leftBumper());
+  }
+
+  @Override
   public Optional<Trigger> sysIdDriveForwardQuasiTest() {
     return Optional.of(driverController.povUp().and(driverController.a()));
   }

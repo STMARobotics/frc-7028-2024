@@ -15,6 +15,8 @@ public interface ControlBindings {
   Supplier<Measure<Velocity<Distance>>> translationX();
   Supplier<Measure<Velocity<Distance>>> translationY();
   Supplier<Measure<Velocity<Angle>>> omega();
+  Optional<Trigger> intake();
+  Optional<Trigger> retractIntake();
 
   default Optional<Trigger> sysIdDriveForwardQuasiTest() {
     return Optional.empty();

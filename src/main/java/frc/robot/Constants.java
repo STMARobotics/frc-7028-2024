@@ -7,8 +7,14 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static java.lang.Math.PI;
+
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.SlotConfigs;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -19,6 +25,8 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 
 public class Constants {
+
+  public static final String CANIVORE_BUS_NAME = "swerve";
 
   public static final class DrivetrainConstants {
     public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
@@ -80,5 +88,37 @@ public class Constants {
     public static final int PORT_ID_SPACER_SENSOR = 2;
 
     public static final double BELT_kP = 0.01;
+  }
+
+  public static class ShooterConstants {
+    public static final int SHOOTER_VELOCITY_CONTROl = 0;
+    public static final int SHOOTER_DONUT_POSITION_CONTROl = 1;
+    public static final int ACTUATOR_FALCON = 2;
+    public static final int ACTUATOR_CANCORDER = 3;
+  }
+
+  public static class IntakeConstants {
+    public static final int DEVICE_ID_DEPLOY = 1;
+    public static final int DEVICE_ID_DEPLOY_CANIVORE = 2;
+    public static final int DEVICE_ID_ROLLER = 0;
+
+    public static final double DEPLOY_CANCODER_OFFSET = 0.0; // TODO this needs to be set
+    public static final double DEPLOY_ROTOR_TO_SENSOR_RATIO = 1.0; // TODO this needs to be set
+    public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0.01)
+        .withKG(0.0)
+        .withGravityType(GravityTypeValue.Arm_Cosine);
+    public static final MotionMagicConfigs DEPLOY_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(0.01);
+    
+    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(0.0);
+    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.25);
+    public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
+
+    public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(.01);
+    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0; // This should be set, but we could get away without it
+    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(100.0);
+    public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
   }
 }
