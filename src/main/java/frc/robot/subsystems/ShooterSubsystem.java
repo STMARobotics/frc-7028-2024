@@ -27,6 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // Constants.java
 
   private boolean isActiveStopped = false;
+  public boolean hasRing = false;
 
   private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
       false);
