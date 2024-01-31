@@ -6,23 +6,17 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.RobotState;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-
 
 public class IntakeSubsystem extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  public IntakeSubsystem() {}
 
   private final CANSparkMax intakeMotor = new CANSparkMax(1, MotorType.kBrushless);
 
-   public void IntakeSubsystem() {
+  public IntakeSubsystem() {
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.enableVoltageCompensation(12);
     intakeMotor.setOpenLoopRampRate(.1);
@@ -32,75 +26,25 @@ public class IntakeSubsystem extends SubsystemBase {
   public void intake() {
     intakeMotor.set(1d);
   }
-  
+
   public void reverse() {
     intakeMotor.set(-1d);
   }
-  
+
   public void stop() {
     intakeMotor.set(0);
   }
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-
-   public Command ExampleCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          //nothing
-        });
+  public Command runIntakeMotorCommand() {
+    return run(this::intake).finallyDo(this::stop);
   }
 
-  public Command RunIntakeMotor() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          intake();
-        });
+  public Command reverseIntakeMotorCommand() {
+    return run(this::reverse).finallyDo(this::stop);
   }
 
-  public Command ReverseIntakeMotor() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          reverse();
-        });
+  public Command stopMotorCommand() {
+    return runOnce(this::stop);
   }
 
-  public Command StopMotor() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          stop();
-        });
-  }
-
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
-  
 }
