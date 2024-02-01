@@ -42,7 +42,7 @@ public class IndexerSubsystem extends SubsystemBase {
   private ColorMatch colorMatch = new ColorMatch();
 
   // SysId routines  
-  private SysIdRoutine shooterSysIdRoutine = new SysIdRoutine(
+  private SysIdRoutine indexerSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism((volts) -> {
         indexerLeftMotor.setVoltage(volts.in(Volts));
@@ -101,12 +101,12 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public Command sysIdIndexerDynamicCommand(Direction direction) {
-    return shooterSysIdRoutine.dynamic(direction).withName("SysId indexer dynam " + direction)
+    return indexerSysIdRoutine.dynamic(direction).withName("SysId indexer dynam " + direction)
         .finallyDo(this::stop);
   }
 
   public Command sysIdIndexerQuasistaticCommand(Direction direction) {
-    return shooterSysIdRoutine.quasistatic(direction).withName("SysId indexer quasi " + direction)
+    return indexerSysIdRoutine.quasistatic(direction).withName("SysId indexer quasi " + direction)
         .finallyDo(this::stop);
   }
 

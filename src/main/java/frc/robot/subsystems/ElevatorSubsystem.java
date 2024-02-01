@@ -47,7 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   // SysId routines  
   private SysIdRoutine elevatorRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Config(null, Volts.of(5.0), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> {
         elevatorMotor0.setControl(voltageControl.withOutput(volts.in(Volts)));
         elevatorMotor1.setControl(voltageControl.withOutput(volts.in(Volts)));

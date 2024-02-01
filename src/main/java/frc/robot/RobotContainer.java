@@ -110,20 +110,26 @@ public class RobotContainer {
     // Column 3 Shooter
     tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistaticCommand(kForward)).withPosition(3, 0);
     tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse)).withPosition(3, 1);
-    tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDyanmicCommand(kForward)).withPosition(3, 2);
-    tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDyanmicCommand(kReverse)).withPosition(3, 3);
+    tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDynamicCommand(kForward)).withPosition(3, 2);
+    tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDynamicCommand(kReverse)).withPosition(3, 3);
 
-    //Column 4 Indexer
-    tab.add("Index Quasi Fwd", indexerSubsystem.sysIdIndexerQuasistaticCommand(kForward)).withPosition(4, 0);
-    tab.add("Index Quasi Rev", indexerSubsystem.sysIdIndexerQuasistaticCommand(kReverse)).withPosition(4, 1);
-    tab.add("Index Dynam Fwd", indexerSubsystem.sysIdIndexerDynamicCommand(kForward)).withPosition(4, 2);
-    tab.add("Index Dynam Rev", indexerSubsystem.sysIdIndexerDynamicCommand(kReverse)).withPosition(4, 3);
+    // Column 4 Shooter Aim
+    tab.add("Aim Quasi Fwd", shooterSubsystem.sysIdAimQuasistaticCommand(kForward)).withPosition(4, 0);
+    tab.add("Aim Quasi Rev", shooterSubsystem.sysIdAimQuasistaticCommand(kReverse)).withPosition(4, 1);
+    tab.add("Aim Dynam Fwd", shooterSubsystem.sysIdAimDynamicCommand(kForward)).withPosition(4, 2);
+    tab.add("Aim Dynam Rev", shooterSubsystem.sysIdAimDynamicCommand(kReverse)).withPosition(4, 3);
 
-    //Column 5 Elevator
-    tab.add("Elevator Quasi Fwd", elevatorSubsystem.sysIdQuasistaticCommand(kForward)).withPosition(5, 0);
-    tab.add("Elevator Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(5, 1);
-    tab.add("Elevator Dynam Fwd", elevatorSubsystem.sysIdDynamicCommand(kForward)).withPosition(5, 2);
-    tab.add("Elevator Dynam Rev", elevatorSubsystem.sysIdDynamicCommand(kReverse)).withPosition(5, 3);
+    //Column 5 Indexer
+    tab.add("Index Quasi Fwd", indexerSubsystem.sysIdIndexerQuasistaticCommand(kForward)).withPosition(5, 0);
+    tab.add("Index Quasi Rev", indexerSubsystem.sysIdIndexerQuasistaticCommand(kReverse)).withPosition(5, 1);
+    tab.add("Index Dynam Fwd", indexerSubsystem.sysIdIndexerDynamicCommand(kForward)).withPosition(5, 2);
+    tab.add("Index Dynam Rev", indexerSubsystem.sysIdIndexerDynamicCommand(kReverse)).withPosition(5, 3);
+
+    //Column 6 Elevator
+    tab.add("Elev Quasi Fwd", elevatorSubsystem.sysIdQuasistaticCommand(kForward)).withPosition(6, 0);
+    tab.add("Elev Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(6, 1);
+    tab.add("Elev Dynam Fwd", elevatorSubsystem.sysIdDynamicCommand(kForward)).withPosition(6, 2);
+    tab.add("Elev Dynam Rev", elevatorSubsystem.sysIdDynamicCommand(kReverse)).withPosition(6, 3);
 
   }
 

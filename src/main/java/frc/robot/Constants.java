@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import static java.lang.Math.PI;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -23,6 +24,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.util.Color;
 
 public class Constants {
@@ -119,6 +121,16 @@ public class Constants {
     public static final SlotConfigs SHOOTER_POSITION_SLOT_CONFIG = new SlotConfigs()
         .withKP(0.0);
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0; // TODO this should be set
+  
+    public static double AIM_kP = 0.01;
+    public static double AIM_kI = 0d;
+    public static double AIM_kD = 0d;
+
+    public static final Measure<Angle> AIM_OFFSET = Rotations.of(0.0);
+    public static float AIM_FORWARD_LIMIT = 0.5f;
+    public static float AIM_REVERSE_LIMIT = 0.0f;
+    public static Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.1);
+
   }
 
   public static class IntakeConstants {
