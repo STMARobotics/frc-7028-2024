@@ -23,6 +23,7 @@ import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -36,6 +37,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -116,6 +118,13 @@ public class RobotContainer {
     tab.add("Index Quasi Rev", indexerSubsystem.sysIdIndexerQuasistaticCommand(kReverse)).withPosition(4, 1);
     tab.add("Index Dynam Fwd", indexerSubsystem.sysIdIndexerDynamicCommand(kForward)).withPosition(4, 2);
     tab.add("Index Dynam Rev", indexerSubsystem.sysIdIndexerDynamicCommand(kReverse)).withPosition(4, 3);
+
+    //Column 5 Elevator
+    tab.add("Elevator Quasi Fwd", elevatorSubsystem.sysIdQuasistaticCommand(kForward)).withPosition(5, 0);
+    tab.add("Elevator Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(5, 1);
+    tab.add("Elevator Dynam Fwd", elevatorSubsystem.sysIdDynamicCommand(kForward)).withPosition(5, 2);
+    tab.add("Elevator Dynam Rev", elevatorSubsystem.sysIdDynamicCommand(kReverse)).withPosition(5, 3);
+
   }
 
   public Command getAutonomousCommand() {

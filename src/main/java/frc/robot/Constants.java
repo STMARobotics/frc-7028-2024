@@ -145,4 +145,30 @@ public class Constants {
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(100.0);
     public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
   }
+
+  public static class ElevatorConstants {
+    public static int DEVICE_ID_MOTOR_0 = 60;
+    public static int DEVICE_ID_MOTOR_1 = 61;
+    public static int DEVICE_PORT_TOP_LIMIT = 5;
+    public static int DEVICE_PORT_BOTTOM_LIMIT = 6;
+
+    public static double METERS_PER_REVOLUTION = 0.001;
+
+    public static SlotConfigs SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0.01)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.0)
+        .withKV(0.0)
+        .withKA(0.0)
+        .withKG(0.01)
+        .withGravityType(GravityTypeValue.Elevator_Static);
+    
+    public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+        .withMotionMagicAcceleration(0.01)
+        .withMotionMagicCruiseVelocity(0.01);
+    
+    public static final Measure<Distance> TOP_LIMIT = Meters.of(0.5);
+    public static final Measure<Distance> BOTTOM_LIMIT = Meters.zero();
+  }
 }
