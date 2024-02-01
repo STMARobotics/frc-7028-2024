@@ -27,6 +27,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,7 +43,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final DigitalInput topLimitSwitch = new DigitalInput(DEVICE_PORT_TOP_LIMIT);
   private final DigitalInput bottomLimitSwitch = new DigitalInput(DEVICE_PORT_BOTTOM_LIMIT);
 
-  private final VoltageOut voltageControl = new VoltageOut(0);
+  private final VoltageOut voltageControl = new VoltageOut(0).withEnableFOC(true);
   private final MotionMagicTorqueCurrentFOC motionMagicControl = new MotionMagicTorqueCurrentFOC(0);
 
   // SysId routines  
@@ -69,16 +70,45 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor1.setControl(new Follower(elevatorMotor0.getDeviceID(), false));
   }
 
+  /**
+   * Indicates if the top limit switch is tripped
+   * @return true if the limit switch is tripped, otherwise false
+   */
   public boolean isAtTopLimit() {
     return !topLimitSwitch.get();
   }
 
+  /**
+   * Indicates if the bottom limit switch is tripped
+   * @return true if the bottom limit switch is tripped, otherwise false
+   */
   public boolean isAtBottomLimit() {
     return !bottomLimitSwitch.get();
   }
 
+  /**
+   * Returns a new command to move the elevator to a given position
+   * @param position position to move the elevator to
+   * @return new command
+   */
   public Command moveToPositionCommand(Measure<Distance> position) {
     return run(() -> this.moveToPosition(position)).finallyDo(this::stop);
+  }
+
+  /**
+   * Returns a new command to manually move the elevator up at a fixed speed. Probably only for use when testing.
+   * @return new command
+   */
+  public Command manualUpCommand() {
+    return run(() -> move(Volts.of(3.0))).finallyDo(this::stop);
+  }
+
+  /**
+   * Returns a new command to manually move the elevator down at a fixed speed. Probably only for use when testing.
+   * @return new command
+   */
+  public Command manualDownCommand() {
+    return run(() -> move(Volts.of(-1.0))).finallyDo(this::stop);
   }
 
   public Command sysIdDynamicCommand(Direction direction) {
@@ -94,6 +124,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   private void moveToPosition(Measure<Distance> position) {
     elevatorMotor0.setControl(motionMagicControl
         .withPosition(position.in(Meters) * METERS_PER_REVOLUTION)
+        .withLimitForwardMotion(isAtTopLimit())
+        .withLimitReverseMotion(isAtBottomLimit()));
+  }
+
+  private void move(Measure<Voltage> volts) {
+    elevatorMotor0.setControl(voltageControl.withOutput(volts.in(Volts))
         .withLimitForwardMotion(isAtTopLimit())
         .withLimitReverseMotion(isAtBottomLimit()));
   }

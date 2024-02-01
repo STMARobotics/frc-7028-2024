@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.color;
 
 import edu.wpi.first.wpilibj.util.Color;
 

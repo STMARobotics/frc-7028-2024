@@ -5,6 +5,9 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RevolutionsPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
@@ -71,6 +74,7 @@ public class RobotContainer {
         controlBindings.translationX(),
         controlBindings.translationY(),
         controlBindings.omega()));
+    indexerSubsystem.setDefaultCommand(indexerSubsystem.intakeCommand());
   }
 
   private void configureButtonBindings() {
@@ -82,7 +86,19 @@ public class RobotContainer {
 
     // Intake
     controlBindings.intake().ifPresent(trigger -> trigger.onTrue(intakeSubsystem.deployAndRunIntakeCommand()));
-    controlBindings.retractIntake().ifPresent(trigger -> trigger.onTrue(intakeSubsystem.retractIntakeCommand()));
+    controlBindings.retractIntake().ifPresent(trigger -> trigger.onTrue(
+        intakeSubsystem.retractIntakeCommand().alongWith(indexerSubsystem.unloadCommand())));
+    
+    // Elevator
+    controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualUpCommand()));
+    controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualDownCommand()));
+
+    // Manual shoot - spin up for 1 second, then run indexer to shoot
+    controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
+      shooterSubsystem.spinShooterAndAimCommand(RevolutionsPerSecond.of(60), Rotations.of(0.6))
+        .alongWith(waitSeconds(1).andThen(indexerSubsystem.shootCommand()))
+    ));
+
   }
 
   public void populateSysIdDashboard() {

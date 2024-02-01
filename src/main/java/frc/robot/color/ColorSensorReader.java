@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.color;
 
 
 import static frc.robot.Constants.IndexerConstants.PORT_ID_FULL_SENSOR;
@@ -8,8 +8,6 @@ import static frc.robot.Constants.IndexerConstants.PORT_ID_SPACER_SENSOR;
 import java.util.concurrent.atomic.AtomicReference;
 
 import edu.wpi.first.wpilibj.I2C.Port;
-import frc.robot.util.ColorSensorValues;
-import frc.robot.util.MultiplexedColorSensor;
 
 /**
  * Runnable to use with the WPILib Notifier to update the color sensors in the background.

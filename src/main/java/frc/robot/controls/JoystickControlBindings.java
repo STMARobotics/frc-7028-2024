@@ -58,5 +58,20 @@ public class JoystickControlBindings implements ControlBindings {
   public Optional<Trigger> retractIntake() {
     return Optional.of(rightJoystick.button(2));
   }
+
+  @Override
+  public Optional<Trigger> manualShoot() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> elevatorUp() {
+    return Optional.empty();
+  }
   
+  @Override
+  public Optional<Trigger> elevatorDown() {
+    return Optional.empty();
+  }
+
 }

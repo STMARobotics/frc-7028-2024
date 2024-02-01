@@ -17,4 +17,7 @@ public interface ControlBindings {
   Supplier<Measure<Velocity<Angle>>> omega();
   Optional<Trigger> intake();
   Optional<Trigger> retractIntake();
+  Optional<Trigger> manualShoot();
+  Optional<Trigger> elevatorUp();
+  Optional<Trigger> elevatorDown();
 }

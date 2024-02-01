@@ -131,6 +131,13 @@ public class ShooterSubsystem extends SubsystemBase {
     return run(() -> spinShooterWheels(velocity)).finallyDo(this::stopShooter);
   }
 
+  public Command spinShooterAndAimCommand(Measure<Velocity<Angle>> velocity, Measure<Angle> aimAngle) {
+    return run(() -> {
+      spinShooterWheels(velocity);
+      setAimPosition(aimAngle);
+    }).finallyDo(this::stopShooter);
+  }
+
   /**
    * Returns a new command to rotate the shooter a given distance
    * @param distance distance to rotate, relative to the current position

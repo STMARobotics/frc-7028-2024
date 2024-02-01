@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.IndexerConstants;
-import frc.robot.commands.ColorSensorReader;
+import frc.robot.color.ColorSensorReader;
 
 public class IndexerSubsystem extends SubsystemBase {
 
