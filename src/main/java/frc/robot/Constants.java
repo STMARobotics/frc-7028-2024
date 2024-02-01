@@ -78,7 +78,6 @@ public class Constants {
   public static class ShooterConstants {
     public static final int SHOOTER_VELOCITY_CONTROl = 0;
     public static final int SHOOTER_DONUT_POSITION_CONTROl = 1;
-    public static final int ACTUATOR_FALCON = 2;
     public static final int ACTUATOR_CANCORDER = 3;
 
   }

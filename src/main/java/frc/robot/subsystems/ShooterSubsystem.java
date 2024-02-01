@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
+import static com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle;
 import static frc.robot.Constants.ShooterConstants.ACTUATOR_CANCORDER;
-import static frc.robot.Constants.ShooterConstants.ACTUATOR_FALCON;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_DONUT_POSITION_CONTROl;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_CONTROl;
 
@@ -15,19 +15,30 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeftMotor = new TalonFX(SHOOTER_DONUT_POSITION_CONTROl);
   private final TalonFX shooterRightMotor = new TalonFX(SHOOTER_VELOCITY_CONTROl);
-  private final TalonFX actuatorMotor = new TalonFX(ACTUATOR_FALCON);
+  private final CANSparkMax actuatorMotor = new CANSparkMax(2, MotorType.kBrushless);
   private final CANcoder canCoder = new CANcoder(ACTUATOR_CANCORDER);
-  // creates new talonfx devices and sets them to the device Ids set in
+  // creates new devices and sets them to the device Ids set in
   // Constants.java
 
   private boolean isActiveStopped = false;
   public boolean hasRing = false;
+  private SparkAbsoluteEncoder actuatorEncoder;
+  private final SparkPIDController pidController;
+
+  // Offset in rotations to add to encoder value - offset from arm horizontal to
+  // sensor zero
+  private static final double ENCODER_OFFSET = -0.2285f;
 
   private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
       false);
@@ -55,6 +66,36 @@ public class ShooterSubsystem extends SubsystemBase {
     actuatorConfig.Voltage.PeakForwardVoltage = 8;
     actuatorConfig.Voltage.PeakReverseVoltage = -8;
 
+    actuatorMotor.restoreFactoryDefaults();
+    actuatorMotor.enableVoltageCompensation(12);
+    actuatorMotor.setOpenLoopRampRate(.1);
+    actuatorMotor.burnFlash();
+
+    // Get the through-bore-encoder absolute encoder
+    actuatorEncoder = actuatorMotor.getAbsoluteEncoder(kDutyCycle);
+    actuatorEncoder.setInverted(true);
+    actuatorEncoder.setAverageDepth(64);
+    pidController = actuatorMotor.getPIDController();
+    pidController.setFeedbackDevice(actuatorEncoder);
+
+    double kP = 3.9;
+    double kI = 0;
+    double kD = 0;
+    double kIz = 0;
+    double kFF = 0;
+    double kMaxOutput = .4;
+    double kMinOutput = -.3;
+
+    pidController.setP(kP);
+    pidController.setI(kI);
+    pidController.setD(kD);
+    pidController.setIZone(kIz);
+    pidController.setFF(kFF);
+    pidController.setOutputRange(kMinOutput, kMaxOutput);
+    pidController.setPositionPIDWrappingMaxInput(1);
+    pidController.setPositionPIDWrappingMinInput(0);
+    pidController.setPositionPIDWrappingEnabled(true);
+
     shooterLeftMotor.setInverted(true);
 
     shooterRightMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -63,13 +104,11 @@ public class ShooterSubsystem extends SubsystemBase {
     canCoder.getConfigurator().apply(canCoderConfig);
     shooterLeftMotor.getConfigurator().apply(shooterMotorConfig);
     shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
-    actuatorMotor.getConfigurator().apply(actuatorConfig);
   }
 
   public void spinShooterWheel(int x) {
     shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(x));
     shooterRightMotor.setControl(shooterMotorVelocity.withVelocity(x));
-    actuatorMotor.setControl(actuatorMotorVelocity.withVelocity(x));
   }
 
   public void activeStop() {
@@ -78,6 +117,24 @@ public class ShooterSubsystem extends SubsystemBase {
       shooterRightMotor.setControl(actuatorMotorVelocity.withVelocity(0));
     }
     isActiveStopped = true;
+  }
+
+  /**
+   * Gets the wrist position Zero is horizontal, up is positive
+   * 
+   * @return position in radians
+   */
+  public double getWristPosition() {
+    return Units.rotationsToRadians(actuatorEncoder.getPosition() + ENCODER_OFFSET);
+  }
+
+  /**
+   * Gets the wrist velocity in radians per second
+   * 
+   * @return wrist velocity in radians per second
+   */
+  public double getWristVelocity() {
+    return Units.rotationsToDegrees(actuatorEncoder.getVelocity());
   }
 
   public void shootDutyCycle(double speed) {
