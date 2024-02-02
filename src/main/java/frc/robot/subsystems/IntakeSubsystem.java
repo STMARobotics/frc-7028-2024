@@ -65,11 +65,11 @@ public class IntakeSubsystem extends SubsystemBase {
   private final StatusSignal<Double> deployPositionSignal;
 
   // SysId routines  
-  private SysIdRoutine deploySysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine deploySysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, Volts.of(3.0), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> deployMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
 
-  private SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> rollerMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
     

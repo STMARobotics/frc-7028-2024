@@ -29,7 +29,7 @@ public class MultiplexedColorSensor {
   private final I2C multiplexer;
 
   // The actual sensor
-  private ColorSensorV3 sensor;
+  private final ColorSensorV3 sensor;
   
   // What port on the multiplexer the color sensor is plugged into.
   private final int port;

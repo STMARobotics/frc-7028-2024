@@ -39,10 +39,10 @@ public class IndexerSubsystem extends SubsystemBase {
   private final Notifier colorSensorNotifier = new Notifier(colorSensorReader);
   private final Debouncer fullSensorDebouncer = new Debouncer(0.1, DebounceType.kFalling);
 
-  private ColorMatch colorMatch = new ColorMatch();
+  private final ColorMatch colorMatch = new ColorMatch();
 
   // SysId routines  
-  private SysIdRoutine indexerSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine indexerSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism((volts) -> {
         indexerLeftMotor.setVoltage(volts.in(Volts));

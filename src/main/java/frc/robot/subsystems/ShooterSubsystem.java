@@ -60,20 +60,20 @@ public class ShooterSubsystem extends SubsystemBase {
   private final PositionTorqueCurrentFOC shooterPositionControl = new PositionTorqueCurrentFOC(0.0);
   private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true);
 
-  private double aimTargetRotations = 0.0;
-  private boolean holdAimPosition = false;
-
   // SysId routines  
-  private SysIdRoutine shooterSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine shooterSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> {
         shooterLeftMotor.setControl(voltageControl.withOutput(volts.in(Volts)));
         shooterRightMotor.setControl(voltageControl.withOutput(volts.in(Volts)));
       }, null, this));
 
-  private SysIdRoutine aimSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine aimSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, Volts.of(3.0), null, null),
       new SysIdRoutine.Mechanism((volts) -> aimMotor.setVoltage(volts.in(Volts)), null, this));
+  
+  private double aimTargetRotations = 0.0;
+  private boolean holdAimPosition = false;
 
   public ShooterSubsystem() {
     // Configure shooter motors

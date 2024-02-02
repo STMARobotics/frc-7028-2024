@@ -40,17 +40,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
   private final Thread photonThread = new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAME, this::addVisionMeasurement));
 
-  private VoltageSwerveRequest voltageRequest = new VoltageSwerveRequest();
+  private final VoltageSwerveRequest voltageRequest = new VoltageSwerveRequest();
 
-  private SysIdRoutine m_driveSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine m_driveSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(voltageRequest.withDriveVoltage(volts)), null, this));
 
-  private SysIdRoutine m_steerSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine m_steerSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(voltageRequest.withSteerVoltage(volts)), null, this));
 
-  private SysIdRoutine m_slipSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine m_slipSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(voltageRequest.withDriveVoltage(volts)), null, this));
 

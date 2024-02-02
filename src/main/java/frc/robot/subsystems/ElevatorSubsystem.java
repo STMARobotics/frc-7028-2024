@@ -47,7 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final MotionMagicTorqueCurrentFOC motionMagicControl = new MotionMagicTorqueCurrentFOC(0);
 
   // SysId routines  
-  private SysIdRoutine elevatorRoutine = new SysIdRoutine(
+  private final SysIdRoutine elevatorRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, Volts.of(5.0), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> {
         elevatorMotor0.setControl(voltageControl.withOutput(volts.in(Volts)));

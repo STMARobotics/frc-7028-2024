@@ -21,9 +21,9 @@ public class ColorSensorReader implements Runnable {
   private final MultiplexedColorSensor fullColorSensor = new MultiplexedColorSensor(Port.kMXP, PORT_ID_FULL_SENSOR);
   
   // These are AtomicReferences to ensure safe memory access across threads
-  private AtomicReference<ColorSensorValues> intakeValues = new AtomicReference<>();
-  private AtomicReference<ColorSensorValues> spacerValues = new AtomicReference<>();
-  private AtomicReference<ColorSensorValues> fullValues = new AtomicReference<>();
+  private final AtomicReference<ColorSensorValues> intakeValues = new AtomicReference<>();
+  private final AtomicReference<ColorSensorValues> spacerValues = new AtomicReference<>();
+  private final AtomicReference<ColorSensorValues> fullValues = new AtomicReference<>();
 
    /**
    * Updates the color sensor values. It is safe to call this on a daemon thread and
