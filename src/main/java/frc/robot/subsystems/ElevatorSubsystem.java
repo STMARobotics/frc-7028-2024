@@ -21,7 +21,7 @@ import static frc.robot.Constants.ElevatorConstants.TOP_LIMIT;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -44,7 +44,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final DigitalInput bottomLimitSwitch = new DigitalInput(DEVICE_PORT_BOTTOM_LIMIT);
 
   private final VoltageOut voltageControl = new VoltageOut(0).withEnableFOC(true);
-  private final MotionMagicTorqueCurrentFOC motionMagicControl = new MotionMagicTorqueCurrentFOC(0);
+  private final MotionMagicVoltage motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true);
 
   // SysId routines  
   private final SysIdRoutine elevatorRoutine = new SysIdRoutine(

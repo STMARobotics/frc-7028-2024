@@ -29,7 +29,7 @@ import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -57,7 +57,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final AbsoluteEncoder aimEncoder;
 
   private final VelocityTorqueCurrentFOC shooterVelocityControl = new VelocityTorqueCurrentFOC(0.0);
-  private final PositionTorqueCurrentFOC shooterPositionControl = new PositionTorqueCurrentFOC(0.0);
+  private final PositionVoltage shooterPositionControl = new PositionVoltage(0.0).withEnableFOC(true);
   private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true);
 
   // SysId routines  

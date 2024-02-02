@@ -117,9 +117,14 @@ public class Constants {
     public static final int ACTUATOR_CANCORDER = 3;
 
     public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG = new SlotConfigs()
-        .withKP(0.0);
+        .withKP(0.0)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.0);
     public static final SlotConfigs SHOOTER_POSITION_SLOT_CONFIG = new SlotConfigs()
-        .withKP(0.0);
+        .withKP(0.0)
+        .withKI(0.0)
+        .withKD(0.0);
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0; // TODO this should be set
   
     public static double AIM_kP = 0.01;
@@ -142,6 +147,11 @@ public class Constants {
     public static final double DEPLOY_ROTOR_TO_SENSOR_RATIO = 1.0; // TODO this needs to be set
     public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.01)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.0)
+        .withKV(0.0)
+        .withKA(0.0)
         .withKG(0.0)
         .withGravityType(GravityTypeValue.Arm_Cosine);
     public static final MotionMagicConfigs DEPLOY_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
@@ -152,7 +162,10 @@ public class Constants {
     public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(.01);
+        .withKP(.01)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.0);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0; // TODO This should be set, but we could get away without it
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(100.0);
     public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
