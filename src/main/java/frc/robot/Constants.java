@@ -17,6 +17,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.util.Color;
 
 public class Constants {
 
@@ -89,5 +90,29 @@ public class Constants {
 
     public static final double SOFT_LIMIT_FIRST_STAGE_FWD = 430000;
     public static final double SOFT_LIMIT_FIRST_STAGE_REV = 0;
+  }
+
+  public final class IndexerConstants {
+    public static final int PORT_ID_INTAKE_SENSOR = 3;
+    public static final int PORT_ID_SPACER_SENSOR = 4;
+    public static final int PORT_ID_FULL_SENSOR = 2;
+
+    public static final int DEVICE_ID_INDEXER = 6;
+
+    // Proximity thresholds for when to trip each sensor
+    public static final int THRESHOLD_INTAKE = 240;
+    public static final int THRESHOLD_SPACE = 400;
+    public static final int THRESHOLD_FULL = 225;
+
+    public static final double BELT_kP = 0d;
+    public static final double BELT_RUN_SPEED = 8000;
+    public static final double BELT_SHOOT_SPEED = 8000;
+
+    /** Color of ring */
+    public static final Color COLOR_ORANGE = new Color(0.15283203125, 0.407958984375, 0.439453125);
+
+    /** Color of no cargo */
+    public static final Color COLOR_NONE = new Color(0.252197265625, 0.491455078125, 0.2568359375);
+
   }
 }

@@ -2,9 +2,9 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.ClimbConstants.DEVICE_ID_FIRST_STAGE_CLIMB;
 
-import java.util.function.BooleanSupplier;
-
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -12,21 +12,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbSubsystem extends SubsystemBase {
   
-  private final TalonFX firstStageClimb = new TalonFX(DEVICE_ID_FIRST_STAGE_CLIMB);
+  private final TalonFX climbConfig = new TalonFX(DEVICE_ID_FIRST_STAGE_CLIMB);
 
-  // Indicator that soft limits have been temporarily disabled (keep)
-  private boolean limitsDisabled = false;
+  public ClimbSubsystem() {
 
-
-  public ClimbSubsystem(BooleanSupplier isTurretClear) {
-
-/*  firstStageClimb.configFactoryDefault();
-    firstStageClimb.setSafetyEnabled(true);
-    firstStageClimb.setNeutralMode(NeutralModeValue.Brake);
-    firstStageClimb.configForwardSoftLimitEnable(true);
-    firstStageClimb.configReverseSoftLimitEnable(true);
-    firstStageClimb.configForwardSoftLimitThreshold(SOFT_LIMIT_FIRST_STAGE_FWD);
-    firstStageClimb.configReverseSoftLimitThreshold(SOFT_LIMIT_FIRST_STAGE_REV); */
+  
+    climbConfig.setSafetyEnabled(true);
+    climbConfig.setNeutralMode(NeutralModeValue.Brake);
+    climbConfig.getConfigurator().apply(new TalonFXConfiguration());
   }
 
   public void addDriverDashboardWidgets(ShuffleboardTab driverTab) {
@@ -35,32 +28,13 @@ public class ClimbSubsystem extends SubsystemBase {
   }
 
   public void stopFirstStage() {
-    firstStageClimb.stopMotor();
+    climbConfig.stopMotor();
   }
 
   public boolean isFirstStageRaised() {
-    var rotorPosSignal = firstStageClimb.getRotorPosition();
+    var rotorPosSignal = climbConfig.getRotorPosition();
     var rotorPos = rotorPosSignal.getValue();
     assert rotorPos > 3000;
       return true;
   }
- 
-  /**
-   * Temporarily disable limits to allow the climb to be calibrated. Use
-   * {@link #resetAndEnableLimits()} when the climb is at its new reverse limit
-
-  public void disableLimits() {
-    limitsDisabled = true;
-    firstStageClimb.configReverseSoftLimitEnable(false);
-    firstStageClimb.configForwardSoftLimitEnable(false);
-  }
-
-  /**
-   * Resets the reverse limit to the current position and enables the limits
-   
-  public void resetAndEnableLimits() {
-    limitsDisabled = false;
-    firstStageClimb.setSelectedSensorPosition(SOFT_LIMIT_FIRST_STAGE_REV);
-    firstStageClimb.configReverseSoftLimitEnable(true);
-    firstStageClimb.configForwardSoftLimitEnable(true); */
-  }
+}
