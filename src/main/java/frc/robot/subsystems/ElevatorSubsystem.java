@@ -15,14 +15,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.sim.PhysicsSim;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project. 
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the
+ * name of this class or
+ * the package after creating this project, you must also update the
+ * build.gradle file in the
+ * project.
  */
 public class ElevatorSubsystem extends TimedRobot {
   private final TalonFX m_fx = new TalonFX(0, "canivore");
@@ -34,9 +36,6 @@ public class ElevatorSubsystem extends TimedRobot {
   private final DigitalInput bottomLimitSwitch = new DigitalInput(9);
 
   private int m_printCount = 0;
-
-  // KEEP IT!!!!!!!!!!!!!!!!!!!1
-  private final Mechanism m_mechanisms = new Mechanism(null, null, null);
 
   @Override
   public void simulationInit() {
@@ -50,7 +49,8 @@ public class ElevatorSubsystem extends TimedRobot {
   }
 
   /**
-   * This function is run when the robot is first started up and should be used for any
+   * This function is run when the robot is first started up and should be used
+   * for any
    * initialization code.
    */
   @Override
@@ -61,7 +61,7 @@ public class ElevatorSubsystem extends TimedRobot {
     MotionMagicConfigs mm = cfg.MotionMagic;
     mm.MotionMagicCruiseVelocity = 5; // 5 rotations per second cruise
     mm.MotionMagicAcceleration = 10; // Take approximately 0.5 seconds to reach max vel
-    // Take approximately 0.2 seconds to reach max accel 
+    // Take approximately 0.2 seconds to reach max accel
     mm.MotionMagicJerk = 50;
 
     Slot0Configs slot0 = cfg.Slot0;
@@ -74,13 +74,12 @@ public class ElevatorSubsystem extends TimedRobot {
     FeedbackConfigs fdb = cfg.Feedback;
     fdb.SensorToMechanismRatio = 12.8;
 
-  
-
     StatusCode status = StatusCode.StatusCodeNotInitialized;
-    for(int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 5; ++i) {
       status = m_fx.getConfigurator().apply(cfg);
       status = m_fx2.getConfigurator().apply(cfg);
-      if (status.isOK()) break;
+      if (status.isOK())
+        break;
     }
     if (!status.isOK()) {
       System.out.println("Could not configure device. Error: " + status.toString());
@@ -97,8 +96,10 @@ public class ElevatorSubsystem extends TimedRobot {
       System.out.println("Pos: " + m_fx2.getPosition());
       System.out.println("Vel: " + m_fx2.getVelocity());
     }
-    /*m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
-    FIX OR SOMEONE GETS SHOT */
+    /*
+     * m_mechanisms.update(m_fx.getPosition(), m_fx.getVelocity());
+     * FIX OR SOMEONE GETS SHOT
+     */
   }
 
   public boolean isAtBottomLimit() {
@@ -110,39 +111,47 @@ public class ElevatorSubsystem extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+  }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+  }
 
   @Override
   public void teleopPeriodic() {
     /* Deadband the joystick */
     double leftY = m_joystick.getLeftY();
-    if(leftY > -0.1 && leftY < 0.1) leftY = 0;
+    if (leftY > -0.1 && leftY < 0.1)
+      leftY = 0;
 
     m_fx.setControl(m_mmReq.withPosition(leftY * 10).withSlot(0));
-    if(m_joystick.getBButton()) {
+    if (m_joystick.getBButton()) {
       m_fx.setPosition(1);
-    m_fx2.setControl(m_mmReq.withPosition(leftY * 10).withSlot(1));
-    if(m_joystick.getAButton()) {
-      m_fx2.setPosition(1);
-    }
+      m_fx2.setControl(m_mmReq.withPosition(leftY * 10).withSlot(1));
+      if (m_joystick.getAButton()) {
+        m_fx2.setPosition(1);
+      }
     }
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+  }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 }
