@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ShooterConstants.ACTUATOR_CANCORDER;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_DONUT_POSITION_CONTROl;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_CONTROl;
@@ -9,6 +10,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -21,7 +23,11 @@ import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeftMotor = new TalonFX(SHOOTER_DONUT_POSITION_CONTROl);
@@ -38,6 +44,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Offset in rotations to add to encoder value - offset from arm horizontal to
   // sensor zero
+
+  private VoltageOut voltageRequest = new VoltageOut(0);
+
+  private SysIdRoutine ShooterMotorSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((volts) -> {
+        shooterRightMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
+        shooterLeftMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
+      }, null, this));
+
   private static final double ENCODER_OFFSET = -0.2285f;
 
   private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
@@ -109,6 +125,16 @@ public class ShooterSubsystem extends SubsystemBase {
   public void spinShooterWheel(int x) {
     shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(x));
     shooterRightMotor.setControl(shooterMotorVelocity.withVelocity(x));
+  }
+
+  public Command sysIdShooterMotorQuasiCommand(Direction direction) {
+    return ShooterMotorSysIdRoutine.quasistatic(direction).withName("SysId Drive Quasistatic " + direction)
+        .finallyDo(this::stop);
+  }
+
+  public Command sysIdShooterMotorDynamCommand(Direction direction) {
+    return ShooterMotorSysIdRoutine.dynamic(direction).withName("SysId Drive Quasistatic " + direction)
+        .finallyDo(this::stop);
   }
 
   public void activeStop() {

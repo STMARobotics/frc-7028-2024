@@ -6,27 +6,38 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 
 
 public class IntakeSubsystem extends SubsystemBase {
-  /**
-   * 
-   */
-  public IntakeSubsystem() {
-  var shooterMotorConfig = new TalonFXConfiguration();
-  shooterMotorConfig.Slot0.kP = 5; // An error of 1 rotation per second results in 5 amps output
-  shooterMotorConfig.Slot0.kI = 0.1; // An error of 1 rotation per second increases output by 0.1 amps every second
-  shooterMotorConfig.Slot0.kD = 0.001; // A change of 1000 rotation per second squared results in 1 amp output
-  }
-
+  
+  private VoltageOut voltageRequest = new VoltageOut(0);
   private final TalonFX IntakeMotor = new TalonFX(1);
+
+  private SysIdRoutine intakeMotorSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((volts) -> 
+        IntakeMotor.setControl(voltageRequest.withOutput(volts.in(Volts))), null, this));
+
+  public IntakeSubsystem() {
+  var intakeMotorConfig = new TalonFXConfiguration();
+  intakeMotorConfig.Slot0.kP = 5; // An error of 1 rotation per second results in 5 amps output
+  intakeMotorConfig.Slot0.kI = 0.1; // An error of 1 rotation per second increases output by 0.1 amps every second
+  intakeMotorConfig.Slot0.kD = 0.001; // A change of 1000 rotation per second squared results in 1 amp output
+  IntakeMotor.getConfigurator().apply(intakeMotorConfig);  
+}
 
   private final VelocityTorqueCurrentFOC IntakerMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
       false);
@@ -57,6 +68,16 @@ public class IntakeSubsystem extends SubsystemBase {
           IntakeMotor.setControl(IntakerMotorVelocity.withVelocity(-1));
         });
       }
+      public Command sysIdIntakeMotorQuasiCommand(Direction direction) {
+        return intakeMotorSysIdRoutine.quasistatic(direction).withName("SysId Drive Quasistatic " + direction)
+            .finallyDo(this::Stop);
+      }
+    
+      public Command sysIdIntakeMotorDynamCommand(Direction direction) {
+        return intakeMotorSysIdRoutine.dynamic(direction).withName("SysId Drive Quasistatic " + direction)
+            .finallyDo(this::Stop);
+      }
+
 
   public Command Stop() {
     return runOnce(
