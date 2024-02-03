@@ -62,7 +62,7 @@ public class IndexerSubsystem extends SubsystemBase {
     colorMatch.addColorMatch(COLOR_NONE);
   }
 
-  private SparkPIDController configureMotor(CANSparkMax sparkMax, boolean invert) {
+  private static SparkPIDController configureMotor(CANSparkMax sparkMax, boolean invert) {
     sparkMax.restoreFactoryDefaults();
     sparkMax.enableVoltageCompensation(12);
     sparkMax.setIdleMode(kCoast);
@@ -170,8 +170,8 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   private void unload() {
-    indexerLeftMotor.set(-.5);
-    indexerRightMotor.set(-.5);
+    indexerLeftMotor.set(-.35);
+    indexerRightMotor.set(-.35);
   }
 
   private void shoot() {

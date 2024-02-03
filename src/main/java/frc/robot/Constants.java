@@ -84,8 +84,8 @@ public class Constants {
   }
 
   public static class IndexerConstants {
-    public static final int DEVICE_ID_LEFT = 0;
-    public static final int DEVICE_ID_RIGHT = 1;
+    public static final int DEVICE_ID_LEFT = 1;
+    public static final int DEVICE_ID_RIGHT = 2;
 
     public static final int PORT_ID_FULL_SENSOR = 0;
     public static final int PORT_ID_INTAKE_SENSOR = 1;
@@ -131,8 +131,8 @@ public class Constants {
     public static double AIM_kI = 0d;
     public static double AIM_kD = 0d;
 
-    public static final Measure<Angle> AIM_OFFSET = Rotations.of(0.0);
-    public static float AIM_FORWARD_LIMIT = 0.5f;
+    public static final Measure<Angle> AIM_OFFSET = Rotations.of(-0.0584373);
+    public static float AIM_FORWARD_LIMIT = 0.35f;
     public static float AIM_REVERSE_LIMIT = 0.0f;
     public static Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.1);
 

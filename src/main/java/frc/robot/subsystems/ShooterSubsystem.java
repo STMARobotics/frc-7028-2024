@@ -97,6 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
     aimMotor.setIdleMode(kBrake);
     aimMotor.getForwardLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
     aimMotor.getReverseLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
+    aimMotor.setInverted(true);
 
     aimPidController.setP(AIM_kP);
     aimPidController.setI(AIM_kI);
@@ -107,6 +108,7 @@ public class ShooterSubsystem extends SubsystemBase {
     
     // Configure aim encoder
     aimEncoder = aimMotor.getAbsoluteEncoder(kDutyCycle);
+    aimEncoder.setInverted(true);
     aimEncoder.setAverageDepth(64);
     aimEncoder.setZeroOffset(AIM_OFFSET.in(Rotations));
     aimPidController.setFeedbackDevice(aimEncoder);
