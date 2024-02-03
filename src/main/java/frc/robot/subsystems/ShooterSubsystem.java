@@ -5,6 +5,10 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_ACTUATOR_MOTOR;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_LEFT;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_RIGHT;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_OFFSET;
+import static frc.robot.Constants.ShooterConstants.WRIST_POSITION_OFFSET;
+
+import java.util.Objects;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
@@ -16,12 +20,15 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
+
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeftMotor = new TalonFX(DEVICE_ID_SHOOTER_LEFT);
@@ -30,6 +37,13 @@ public class ShooterSubsystem extends SubsystemBase {
   // creates new devices and sets them to the device Ids set in
   // Constants.java
 
+  private TrapezoidProfile.State goal = null;
+  private static final double ENCODER_OFFSET = -0.2285f;
+  private static final float LIMIT_BOTTOM = 0.12f;
+  private static final float LIMIT_TOP = 0.4272f;
+  private static final double LIMIT_TOP_RADIANS = Units.rotationsToRadians(LIMIT_TOP + ENCODER_OFFSET);
+  private static final double LIMIT_BOTTOM_RADIANS = Units.rotationsToRadians(LIMIT_BOTTOM + ENCODER_OFFSET);
+  private static final TrapezoidProfile.Constraints PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(40, 11);
   private boolean isActiveStopped = false;
   public boolean hasRing = false;
   private SparkAbsoluteEncoder actuatorEncoder;
@@ -46,8 +60,6 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterRightMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
         shooterLeftMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
       }, null, this));
-
-  private static final double ENCODER_OFFSET = -0.2285f;
 
   private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
       false);
@@ -133,6 +145,14 @@ public class ShooterSubsystem extends SubsystemBase {
     return Units.rotationsToDegrees(actuatorEncoder.getVelocity());
   }
 
+  public boolean checkWristPosition(double radiansToRotate) {
+    return (Math.abs(getWristPosition() - radiansToRotate) <= WRIST_POSITION_OFFSET);
+  }
+
+  public boolean checkShooterSpeed(double shooterSpeedGoal) {
+    return (Math.abs(getWristVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_OFFSET);
+  }
+
   public void shootDutyCycle(double speed) {
     shooterRightMotor.set(speed);
     shooterLeftMotor.set(speed);
@@ -145,6 +165,18 @@ public class ShooterSubsystem extends SubsystemBase {
     isActiveStopped = false;
 
   }
+
+  public void actuatorRotate(double radians) {
+    var target = MathUtil.clamp(radians, LIMIT_BOTTOM_RADIANS, LIMIT_TOP_RADIANS);
+    // Set the target position, but move in execute() so feed forward keeps updating
+    var newGoal = new TrapezoidProfile.State(target, 0.0);
+    if (!Objects.equals(newGoal, goal)) {
+      var currentState = new TrapezoidProfile.State(getWristPosition(), 0);
+      new TrapezoidProfile(PROFILE_CONSTRAINTS);
+    }
+    goal = newGoal;
+  }
+
   public void actuatorStop() {
     actuatorMotor.setVoltage(0);
   }

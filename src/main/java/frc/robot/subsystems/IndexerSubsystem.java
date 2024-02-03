@@ -14,6 +14,8 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -137,6 +139,11 @@ public class IndexerSubsystem extends SubsystemBase {
   public Command sysIdIndexerMotorDynamCommand(Direction direction) {
     return indexerSysIdRoutine.dynamic(direction).withName("SysId Deploy Motor Quasistatic " + direction)
         .finallyDo(this::stop);
+  }
+  public void fireDonut(Measure<Voltage> volts) {
+    leftIndexerMotor.setVoltage(volts.in(Volts));
+    rightIndexerMotor.setVoltage(volts.in(Volts));
+
   }
 
 }

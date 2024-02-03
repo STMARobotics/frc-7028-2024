@@ -80,7 +80,8 @@ public class Constants {
     public static final int DEVICE_ID_SHOOTER_RIGHT = 51;
     public static final int DEVICE_ID_SHOOTER_LEFT = 50;
     public static final int DEVICE_ID_ACTUATOR_MOTOR = 52;
- 
+    public static final int SHOOTER_VELOCITY_OFFSET = 0;
+    public static final int WRIST_POSITION_OFFSET = 0;
   }
 
   public static class ClimbConstants {
