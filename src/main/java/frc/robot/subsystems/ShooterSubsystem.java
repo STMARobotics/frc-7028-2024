@@ -2,11 +2,11 @@ package frc.robot.subsystems;
 
 import static com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.Constants.ShooterConstants.DEVICE_ID_ACTUATOR_MOTOR;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_LEFT;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_RIGHT;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,7 +26,7 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeftMotor = new TalonFX(DEVICE_ID_SHOOTER_LEFT);
   private final TalonFX shooterRightMotor = new TalonFX(DEVICE_ID_SHOOTER_RIGHT);
-  private final CANSparkMax actuatorMotor = new CANSparkMax(2, MotorType.kBrushless);
+  private final CANSparkMax actuatorMotor = new CANSparkMax(DEVICE_ID_ACTUATOR_MOTOR, MotorType.kBrushless);
   // creates new devices and sets them to the device Ids set in
   // Constants.java
 
@@ -51,8 +51,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
       false);
-  private final PositionTorqueCurrentFOC actuatorMotorVelocity = new PositionTorqueCurrentFOC(0, 0, 0, 1, false,
-      false, false);
 
   public ShooterSubsystem() {
     var shooterMotorConfig = new TalonFXConfiguration();
@@ -94,9 +92,9 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
   }
 
-  public void spinShooterWheel(int x) {
-    shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(x));
-    shooterRightMotor.setControl(shooterMotorVelocity.withVelocity(x));
+  public void spinShooterWheel(double shooterRPS) {
+    shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(shooterRPS));
+    shooterRightMotor.setControl(shooterMotorVelocity.withVelocity(shooterRPS));
   }
 
   public Command sysIdShooterMotorQuasiCommand(Direction direction) {
@@ -111,8 +109,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void activeStop() {
     if (!isActiveStopped) {
-      shooterLeftMotor.setControl(actuatorMotorVelocity.withVelocity(0));
-      shooterRightMotor.setControl(actuatorMotorVelocity.withVelocity(0));
+      shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(0));
+      shooterRightMotor.setControl(shooterMotorVelocity.withVelocity(0));
     }
     isActiveStopped = true;
   }
@@ -146,5 +144,8 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterLeftMotor.stopMotor();
     isActiveStopped = false;
 
+  }
+  public void actuatorStop() {
+    actuatorMotor.setVoltage(0);
   }
 }
