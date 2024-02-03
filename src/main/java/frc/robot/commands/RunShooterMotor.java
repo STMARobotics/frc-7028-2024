@@ -7,13 +7,12 @@ import frc.robot.subsystems.ShooterSubsystem;
 /**
  * Command to run shooter motors
  */
-public class ShootDonutCommand extends Command {
+public class RunShooterMotor extends Command {
 
   private static final double SHOOT_TIME = 0.25;
   private final ShooterSubsystem shooterSubsystem;
   private final Timer shootTimer = new Timer();
   protected double shooterRPS = 1;
-  private boolean allready = false;
 
   /**
    * Constructor
@@ -21,7 +20,7 @@ public class ShootDonutCommand extends Command {
    * @param shooterRPS       velocity of shooter in rotations per second
    * @param shooterSubsystem shooter
    */
-  public ShootDonutCommand(double shooterRPS, ShooterSubsystem shooterSubsystem) {
+  public RunShooterMotor(double shooterRPS, ShooterSubsystem shooterSubsystem) {
     this.shooterRPS = shooterRPS;
     this.shooterSubsystem = shooterSubsystem;
   }
@@ -33,13 +32,8 @@ public class ShootDonutCommand extends Command {
 
   @Override
   public void execute() {
-    
-    
-    
-    
-    if(allready) {
     shooterSubsystem.spinShooterWheel(shooterRPS);
-    shootTimer.start(); }
+    shootTimer.start();
   }
 
   @Override

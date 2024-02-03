@@ -97,10 +97,10 @@ public class Constants {
     public static final int DEVICE_ID_ROLLERS_MOTOR = 42;
   }
     public static class ElevatorConstants {
-      public static final int DEVICE_ID_MOTOR_1 = 60;
-      public static final int DEVICE_ID_MOTOR_2 = 61;
-      public static final int TOP_LIMIT = 5;
-      public static final int BOTTOM_LIMIT = 6;
+      public static final int ELEVATOR_LEADER_ID = 40;
+    public static final int ELEVATOR_FOLLOWER_ID = 41;
+    public static final int ANALOG_SENSOR_CHANNEL = 0;
+    public static final double ELEVATOR_PARK_HEIGHT = .06;
   } 
   public static class IndexerConstants {
     public static final int PORT_ID_INTAKE_SENSOR = 3;
