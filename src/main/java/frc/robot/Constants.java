@@ -77,10 +77,10 @@ public class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int SHOOTER_VELOCITY_CONTROl = 0;
-    public static final int SHOOTER_DONUT_POSITION_CONTROl = 1;
-    public static final int ACTUATOR_CANCORDER = 3;
-
+    public static final int DEVICE_ID_SHOOTER_RIGHT = 51;
+    public static final int DEVICE_ID_SHOOTER_LEFT = 50;
+    public static final int DEVICE_ID_ACTUATOR_MOTOR = 52;
+ 
   }
 
   public static class ClimbConstants {
@@ -91,18 +91,27 @@ public class Constants {
     public static final double SOFT_LIMIT_FIRST_STAGE_FWD = 430000;
     public static final double SOFT_LIMIT_FIRST_STAGE_REV = 0;
   }
-
-  public final class IndexerConstants {
+  public static class IntakeConstants {
+  public static final int DEVICE_ID_DEPLOY_MOTOR = 40;
+    public static final int DEVICE_ID_DEPLOY_CANCODER = 41;
+    public static final int DEVICE_ID_ROLLERS_MOTOR = 42;
+  }
+    public static class ElevatorConstants {
+      public static final int DEVICE_ID_MOTOR_1 = 60;
+      public static final int DEVICE_ID_MOTOR_2 = 61;
+      public static final int TOP_LIMIT = 5;
+      public static final int BOTTOM_LIMIT = 6;
+  } 
+  public static class IndexerConstants {
     public static final int PORT_ID_INTAKE_SENSOR = 3;
-    public static final int PORT_ID_SPACER_SENSOR = 4;
-    public static final int PORT_ID_FULL_SENSOR = 2;
+    public static final int PORT_ID_SHOOTER_SENSOR = 2;
 
-    public static final int DEVICE_ID_INDEXER = 6;
+    public static final int DEVICE_ID_INDEXER_LEFT_MOTOR = 1;
+    public static final int DEVICE_ID_INDEXER_RIGHT_MOTOR = 2;
 
     // Proximity thresholds for when to trip each sensor
     public static final int THRESHOLD_INTAKE = 240;
-    public static final int THRESHOLD_SPACE = 400;
-    public static final int THRESHOLD_FULL = 225;
+    public static final int THRESHOLD_SHOOTER = 225;
 
     public static final double BELT_kP = 0d;
     public static final double BELT_RUN_SPEED = 8000;

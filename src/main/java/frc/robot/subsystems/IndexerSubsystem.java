@@ -1,7 +1,8 @@
 package frc.robot.subsystems;
 
 import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
-import static frc.robot.Constants.IndexerConstants.DEVICE_ID_INDEXER;
+import static frc.robot.Constants.IndexerConstants.DEVICE_ID_INDEXER_LEFT_MOTOR;
+import static frc.robot.Constants.IndexerConstants.DEVICE_ID_INDEXER_RIGHT_MOTOR;
 import static frc.robot.Constants.IndexerConstants.THRESHOLD_INTAKE;
 import static frc.robot.Constants.IndexerConstants.THRESHOLD_SHOOTER;
 
@@ -55,23 +56,16 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setReference(IndexerConstants.BELT_RUN_SPEED, ControlType.kVelocity);
   }
 
-  private final CANSparkMax indexer = new CANSparkMax(DEVICE_ID_INDEXER, kBrushless);
-  private SparkPIDController pidController;
+
+  private final CANSparkMax leftIndexer = new CANSparkMax(DEVICE_ID_INDEXER_LEFT_MOTOR, kBrushless);
+  private final CANSparkMax rightIndexer = new CANSparkMax(DEVICE_ID_INDEXER_RIGHT_MOTOR, kBrushless);
+  private static SparkPIDController pidController;
   private final ColorSensorReader colorSensorReader = new ColorSensorReader();
   private final Notifier colorSensorNotifier = new Notifier(colorSensorReader);
  
   public IndexerSubsystem() {
-        indexer.restoreFactoryDefaults();
-        indexer.enableVoltageCompensation(12);
-        indexer.setOpenLoopRampRate(0.1);
-        indexer.setClosedLoopRampRate(0.1);
-        indexer.setInverted(true);
-        pidController = indexer.getPIDController();
-        pidController.setP(IndexerConstants.BELT_kP);
-        pidController.setFF(0.00009);
-        indexer.getEncoder();
-        indexer.burnFlash();
-        indexer.setIdleMode(IdleMode.kCoast);
+        indexerMotorConfig(leftIndexer, true);
+        indexerMotorConfig(rightIndexer, false);
 
         colorSensorReader.run();
         // Update the color sensors in the background to prevent loop overrun
@@ -113,12 +107,18 @@ public class IndexerSubsystem extends SubsystemBase {
       }
     }
 
-    public void prepareToShoot() {
-      if (isShooterSensorTripped()) {
-        stop();
-      } else {
-        load();
-      }
+    private static SparkPIDController indexerMotorConfig(CANSparkMax sparkMax, boolean invert) {
+      sparkMax.restoreFactoryDefaults();
+      sparkMax.enableVoltageCompensation(12);
+      sparkMax.setOpenLoopRampRate(0.1);
+      sparkMax.setClosedLoopRampRate(0.1);
+      sparkMax.setInverted(true);
+      pidController = sparkMax.getPIDController();
+      pidController.setP(IndexerConstants.BELT_kP);
+      pidController.setFF(0.00009);
+      sparkMax.getEncoder();
+      sparkMax.burnFlash();
+      sparkMax.setIdleMode(IdleMode.kCoast);
+      return pidController;
     }
-
 }
