@@ -9,6 +9,7 @@ import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
 import static com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle;
 import static com.revrobotics.SparkLimitSwitch.Type.kNormallyOpen;
 import static com.revrobotics.SparkPIDController.ArbFFUnits.kVoltage;
+import static edu.wpi.first.math.util.Units.rotationsToRadians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -38,7 +39,6 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -184,7 +184,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     if (holdAimPosition) {
       // Need to periodically set the reference because gravity FF will change as the shooter moves
-      var cosineScalar = Units.rotationsToRadians(aimEncoder.getPosition());
+      var cosineScalar = Math.cos(rotationsToRadians(aimEncoder.getPosition()));
       var gravityFF = AIM_GRAVITY_FF.in(Volts) * cosineScalar;
 
       aimPidController.setReference(aimTargetRotations, kPosition, 0, gravityFF, kVoltage);
