@@ -83,14 +83,8 @@ public class IntakeSubsystem extends SubsystemBase {
   /**
    * @return
    */
-  public Command Spit() {
-    return runOnce(
-        () -> {
-          // READ THIS!!!!!
-          // IDK what the motor velocity number should actually be, just set it to -1 for
-          // now
-          DeployMotor.setControl(IntakerMotorVelocity.withVelocity(-1));
-        });
+  public void Spit() {
+    DeployMotor.setControl(IntakerMotorVelocity.withVelocity(-1));
   }
 
   public Command sysIdDeployMotorQuasiCommand(Direction direction) {

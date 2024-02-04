@@ -20,14 +20,11 @@ public class ShootDonutCommand extends Command {
   private static final double SHOOT_TIME = 0.25;
   private final ShooterSubsystem shooterSubsystem;
   private final IndexerSubsystem indexerSubsystem;
-  private final VelocityAngleInterpolator VelocityAngleInterpolator;
-  private final Supplier<Pose2d> robotSupplier;
+  private final VelocityAngleInterpolator velocityAngleInterpolator;
+  private final Supplier<Pose2d> robotPoseSupplier;
 
   private final Timer shootTimer = new Timer();
   protected double shooterRPS = 1;
-  private double shooterSpeedGoal;
-  private double radiansToRotate;
-  private double distance;
 
   /**
    * Constructor
@@ -37,18 +34,12 @@ public class ShootDonutCommand extends Command {
    */
   public ShootDonutCommand(VelocityAngleInterpolator velocityAngleInterpolator, ShooterSubsystem shooterSubsystem,
       IndexerSubsystem indexerSubsystem, Supplier<Pose2d> robotPoseSupplier) {
-    this.VelocityAngleInterpolator = velocityAngleInterpolator;
+    this.velocityAngleInterpolator = velocityAngleInterpolator;
     this.shooterSubsystem = shooterSubsystem;
     this.indexerSubsystem = indexerSubsystem;
-    this.robotSupplier = robotPoseSupplier;
+    this.robotPoseSupplier = robotPoseSupplier;
 
     addRequirements(indexerSubsystem, shooterSubsystem);
-  }
-
-  public double findDistance() {
-    var targetTranslation = new Translation2d(0.5, 2);
-    double distanceToTarget = robotPoseSupplier.getTranslation().getDistance(targetTranslation);
-    return distanceToTarget;
   }
 
   @Override
@@ -58,10 +49,13 @@ public class ShootDonutCommand extends Command {
 
   @Override
   public void execute() {
-    shooterSubsystem.actuatorRotate(radiansToRotate);
-    shooterSubsystem.spinShooterWheel(VelocityAngleInterpolator.calculate(findDistance()));
-    if (shooterSubsystem.checkShooterSpeed(shooterSpeedGoal) &&
-        shooterSubsystem.checkWristPosition(radiansToRotate)) {
+    var targetTranslation = new Translation2d(0.5, 2);
+    double distanceToTarget = robotPoseSupplier.get().getTranslation().getDistance(targetTranslation);
+    var donutShooterSettings = velocityAngleInterpolator.calculate(distanceToTarget);
+    shooterSubsystem.actuatorRotate(donutShooterSettings.angle);
+    shooterSubsystem.spinShooterWheel(donutShooterSettings.velocity);
+    if (shooterSubsystem.checkShooterSpeed(donutShooterSettings.velocity) &&
+        shooterSubsystem.checkWristPosition(donutShooterSettings.angle)) {
       indexerSubsystem.fireDonut(Volts.of(3));
       shootTimer.start();
     }
