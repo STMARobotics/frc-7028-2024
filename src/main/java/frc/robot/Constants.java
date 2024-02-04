@@ -80,7 +80,7 @@ public class Constants {
     public static final int DEVICE_ID_SHOOTER_RIGHT = 51;
     public static final int DEVICE_ID_SHOOTER_LEFT = 50;
     public static final int DEVICE_ID_ACTUATOR_MOTOR = 52;
- 
+
   }
 
   public static class ClimbConstants {
@@ -91,17 +91,20 @@ public class Constants {
     public static final double SOFT_LIMIT_FIRST_STAGE_FWD = 430000;
     public static final double SOFT_LIMIT_FIRST_STAGE_REV = 0;
   }
+
   public static class IntakeConstants {
-  public static final int DEVICE_ID_DEPLOY_MOTOR = 40;
+    public static final int DEVICE_ID_DEPLOY_MOTOR = 40;
     public static final int DEVICE_ID_DEPLOY_CANCODER = 41;
     public static final int DEVICE_ID_ROLLERS_MOTOR = 42;
   }
-    public static class ElevatorConstants {
-      public static final int DEVICE_ID_MOTOR_1 = 60;
-      public static final int DEVICE_ID_MOTOR_2 = 61;
-      public static final int TOP_LIMIT = 5;
-      public static final int BOTTOM_LIMIT = 6;
-  } 
+
+  public static class ElevatorConstants {
+    public static final int DEVICE_ID_MOTOR_1 = 60;
+    public static final int DEVICE_ID_MOTOR_2 = 61;
+    public static final int TOP_LIMIT = 5;
+    public static final int BOTTOM_LIMIT = 6;
+  }
+
   public static class IndexerConstants {
     public static final int PORT_ID_INTAKE_SENSOR = 3;
     public static final int PORT_ID_SHOOTER_SENSOR = 2;
@@ -117,11 +120,10 @@ public class Constants {
     public static final double BELT_RUN_SPEED = 8000;
     public static final double BELT_SHOOT_SPEED = 8000;
 
-    /** Color of ring */
-    public static final Color COLOR_ORANGE = new Color(0.15283203125, 0.407958984375, 0.439453125);
+    /** Color of note */
+    public static final Color COLOR_NOTE = new Color(.487, .393, .12);
 
-    /** Color of no cargo */
-    public static final Color COLOR_NONE = new Color(0.252197265625, 0.491455078125, 0.2568359375);
-
+    /** Color of no note */
+    public static final Color COLOR_NONE = new Color(0.253, 0.49, 0.255);
   }
 }
