@@ -32,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private VoltageOut voltageRequest = new VoltageOut(0);
   private final TalonFX DeployMotor = new TalonFX(DEVICE_ID_DEPLOY_MOTOR, CANIVORE_BUS_NAME);
   private final TalonFX RollersMotor = new TalonFX(DEVICE_ID_ROLLERS_MOTOR, CANIVORE_BUS_NAME);
-  private final CANcoder canCoder = new CANcoder(DEVICE_ID_DEPLOY_CANCODER);
+  private final CANcoder canCoder = new CANcoder(DEVICE_ID_DEPLOY_CANCODER, CANIVORE_BUS_NAME);
 
   private SysIdRoutine deployMotorSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),

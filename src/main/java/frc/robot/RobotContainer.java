@@ -82,40 +82,42 @@ public class RobotContainer {
 
   public void configureSysidDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("sysid");
-    tab.add("Shoot Quasi F", shooterSubsystem.sysIdShooterMotorQuasiCommand(kForward));
-    tab.add("Shoot Dynam F", shooterSubsystem.sysIdShooterMotorDynamCommand(kForward));
-    tab.add("Shoot Quasi R", shooterSubsystem.sysIdShooterMotorQuasiCommand(kReverse));
-    tab.add("Shoot Dynam R", shooterSubsystem.sysIdShooterMotorDynamCommand(kReverse));
+    tab.add("Shoot Quasi F", shooterSubsystem.sysIdShooterMotorQuasiCommand(kForward)).withPosition(0, 0);
+    tab.add("Shoot Dynam F", shooterSubsystem.sysIdShooterMotorDynamCommand(kForward)).withPosition(0, 1);
+    tab.add("Shoot Quasi R", shooterSubsystem.sysIdShooterMotorQuasiCommand(kReverse)).withPosition(0, 2);
+    tab.add("Shoot Dynam R", shooterSubsystem.sysIdShooterMotorDynamCommand(kReverse)).withPosition(0, 3);
 
-    tab.add("Intake Roll Quasi F", intakeSubsystem.sysIdRollersMotorQuasiCommand(kForward));
-    tab.add("Intake Roll Dynam F", intakeSubsystem.sysIdRollersMotorDynamCommand(kForward));
-    tab.add("Intake Roll Quasi R", intakeSubsystem.sysIdRollersMotorQuasiCommand(kReverse));
-    tab.add("Intake Roll Dynam R", intakeSubsystem.sysIdRollersMotorDynamCommand(kReverse));
+    tab.add("Intake Roll Quasi F", intakeSubsystem.sysIdRollersMotorQuasiCommand(kForward)).withPosition(1, 0);
+    tab.add("Intake Roll Dynam F", intakeSubsystem.sysIdRollersMotorDynamCommand(kForward)).withPosition(1, 1);
+    tab.add("Intake Roll Quasi R", intakeSubsystem.sysIdRollersMotorQuasiCommand(kReverse)).withPosition(1, 2);
+    tab.add("Intake Roll Dynam R", intakeSubsystem.sysIdRollersMotorDynamCommand(kReverse)).withPosition(1, 3);
 
-    tab.add("Intake Deploy Quasi F", intakeSubsystem.sysIdDeployMotorQuasiCommand(kForward));
-    tab.add("Intake Deploy Dynam F", intakeSubsystem.sysIdDeployMotorDynamCommand(kForward));
-    tab.add("Intake Deploy Quasi R", intakeSubsystem.sysIdDeployMotorQuasiCommand(kReverse));
-    tab.add("Intake Deploy Dynam R", intakeSubsystem.sysIdDeployMotorDynamCommand(kReverse));
+    tab.add("Intake Deploy Quasi F", intakeSubsystem.sysIdDeployMotorQuasiCommand(kForward)).withPosition(2, 0);
+    tab.add("Intake Deploy Dynam F", intakeSubsystem.sysIdDeployMotorDynamCommand(kForward)).withPosition(2, 1);
+    tab.add("Intake Deploy Quasi R", intakeSubsystem.sysIdDeployMotorQuasiCommand(kReverse)).withPosition(2, 2);
+    tab.add("Intake Deploy Dynam R", intakeSubsystem.sysIdDeployMotorDynamCommand(kReverse)).withPosition(2, 3);
 
-    tab.add("Indexer Quasi F", indexerSubsystem.sysIdIndexerMotorQuasiCommand(kForward));
-    tab.add("Indexer Dynam F", indexerSubsystem.sysIdIndexerMotorDynamCommand(kForward));
-    tab.add("Indexer Quasi R", indexerSubsystem.sysIdIndexerMotorQuasiCommand(kReverse));
-    tab.add("Indexer Dynam R", indexerSubsystem.sysIdIndexerMotorDynamCommand(kReverse));
+    tab.add("Indexer Quasi F", indexerSubsystem.sysIdIndexerMotorQuasiCommand(kForward)).withPosition(3, 0);
+    tab.add("Indexer Dynam F", indexerSubsystem.sysIdIndexerMotorDynamCommand(kForward)).withPosition(3, 1);
+    tab.add("Indexer Quasi R", indexerSubsystem.sysIdIndexerMotorQuasiCommand(kReverse)).withPosition(3, 2);
+    tab.add("Indexer Dynam R", indexerSubsystem.sysIdIndexerMotorDynamCommand(kReverse)).withPosition(3, 3);
 
-    tab.add("Drive Steer Quasi F", driveTrain.sysIdSteerQuasiCommand(kForward));
-    tab.add("Drive Steer Dynam F", driveTrain.sysIdSteerDynamCommand(kForward));
-    tab.add("Drive Steer Quasi R", driveTrain.sysIdSteerQuasiCommand(kReverse));
-    tab.add("Drive Steer Dynam R", driveTrain.sysIdSteerDynamCommand(kReverse));
+    tab.add("Drive Steer Quasi F", driveTrain.sysIdSteerQuasiCommand(kForward)).withPosition(4, 0);
+    tab.add("Drive Steer Dynam F", driveTrain.sysIdSteerDynamCommand(kForward)).withPosition(4, 1);
+    tab.add("Drive Steer Quasi R", driveTrain.sysIdSteerQuasiCommand(kReverse)).withPosition(4, 2);
+    tab.add("Drive Steer Dynam R", driveTrain.sysIdSteerDynamCommand(kReverse)).withPosition(4, 3);
 
-    tab.add("Drive Drive Quasi F", driveTrain.sysIdDriveQuasiCommand(kForward));
-    tab.add("Drive Drive Dynam F", driveTrain.sysIdDriveDynamCommand(kForward));
-    tab.add("Drive Drive Quasi R", driveTrain.sysIdDriveQuasiCommand(kReverse));
-    tab.add("Drive Drive Dynam R", driveTrain.sysIdDriveDynamCommand(kReverse));
+    tab.add("Drive Drive Quasi F", driveTrain.sysIdDriveQuasiCommand(kForward)).withPosition(5, 0);
+    tab.add("Drive Drive Dynam F", driveTrain.sysIdDriveDynamCommand(kForward)).withPosition(5, 1);
+    tab.add("Drive Drive Quasi R", driveTrain.sysIdDriveQuasiCommand(kReverse)).withPosition(5, 2);
+    tab.add("Drive Drive Dynam R", driveTrain.sysIdDriveDynamCommand(kReverse)).withPosition(5, 3);
 
-    tab.add("Elevator Quasi F", elevatorSubsystem.sysIdElevatorQuasiCommand(kForward));
-    tab.add("Elevator Dynam F", elevatorSubsystem.sysIdElevatorDynamCommand(kForward));
-    tab.add("Elevator Quasi R", elevatorSubsystem.sysIdElevatorQuasiCommand(kReverse));
-    tab.add("Elevator Dynam R", elevatorSubsystem.sysIdElevatorDynamCommand(kReverse));
+    tab.add("Drive Slip F", driveTrain.sysIdDriveSlipCommand()).withPosition(7, 0);
+
+    tab.add("Elevator Quasi F", elevatorSubsystem.sysIdElevatorQuasiCommand(kForward)).withPosition(6, 0);
+    tab.add("Elevator Dynam F", elevatorSubsystem.sysIdElevatorDynamCommand(kForward)).withPosition(6, 1);
+    tab.add("Elevator Quasi R", elevatorSubsystem.sysIdElevatorQuasiCommand(kReverse)).withPosition(6, 2);
+    tab.add("Elevator Dynam R", elevatorSubsystem.sysIdElevatorDynamCommand(kReverse)).withPosition(6, 3);
 
   }
 }
