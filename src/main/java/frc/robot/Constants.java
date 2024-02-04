@@ -92,10 +92,10 @@ public class Constants {
     public static final int PORT_ID_SPACER_SENSOR = 2;
 
     /** Color of note */
-    public static final Color COLOR_NOTE = Color.kOrange;
+    public static final Color COLOR_NOTE = new Color(.487, .393, .12);
 
     /** Color of no note */
-    public static final Color COLOR_NONE = new Color(0.252197265625, 0.491455078125, 0.2568359375);
+    public static final Color COLOR_NONE = new Color(0.253, 0.49, 0.255);
 
     // Proximity thresholds for when to trip each sensor
     public static final int THRESHOLD_INTAKE = 240;
