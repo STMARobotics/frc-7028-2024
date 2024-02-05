@@ -55,7 +55,7 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> retractIntake() {
+  public Optional<Trigger> intakeReverse() {
     return Optional.of(rightJoystick.button(2));
   }
 

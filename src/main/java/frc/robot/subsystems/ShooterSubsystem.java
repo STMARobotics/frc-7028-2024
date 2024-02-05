@@ -13,6 +13,7 @@ import static edu.wpi.first.math.util.Units.rotationsToRadians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ShooterConstants.AIM_FORWARD_LIMIT;
 import static frc.robot.Constants.ShooterConstants.AIM_GRAVITY_FF;
 import static frc.robot.Constants.ShooterConstants.AIM_OFFSET;
@@ -49,8 +50,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private final TalonFX shooterLeftMotor = new TalonFX(DEVICE_ID_LEFT);
-  private final TalonFX shooterRightMotor = new TalonFX(DEVICE_ID_RIGHT);
+  private final TalonFX shooterLeftMotor = new TalonFX(DEVICE_ID_LEFT, CANIVORE_BUS_NAME);
+  private final TalonFX shooterRightMotor = new TalonFX(DEVICE_ID_RIGHT, CANIVORE_BUS_NAME);
 
   private final CANSparkMax aimMotor = new CANSparkMax(DEVICE_ID_AIM, kBrushless);
   private final SparkPIDController aimPidController = aimMotor.getPIDController();
@@ -82,10 +83,24 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotorConfig.Slot1 = Slot1Configs.from(SHOOTER_POSITION_SLOT_CONFIG);
     shooterMotorConfig.MotorOutput.NeutralMode = Coast;
     shooterMotorConfig.Feedback.SensorToMechanismRatio = SHOOTER_SENSOR_TO_MECHANISM_RATIO;
+    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+    shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
     shooterLeftMotor.getConfigurator().apply(shooterMotorConfig);
 
-    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
+    // Configure aim encoder
+    aimEncoder = aimMotor.getAbsoluteEncoder(kDutyCycle);
+    aimEncoder.setInverted(true);
+    aimEncoder.setAverageDepth(64);
+    aimEncoder.setZeroOffset(AIM_OFFSET.in(Rotations));
+    aimPidController.setFeedbackDevice(aimEncoder);
+
+    aimPidController.setP(AIM_kP);
+    aimPidController.setI(AIM_kI);
+    aimPidController.setD(AIM_kD);
+    aimPidController.setPositionPIDWrappingMinInput(0);
+    aimPidController.setPositionPIDWrappingMaxInput(1);
+    aimPidController.setPositionPIDWrappingEnabled(true);
 
     // Configure aim motor
     aimMotor.restoreFactoryDefaults();
@@ -98,20 +113,6 @@ public class ShooterSubsystem extends SubsystemBase {
     aimMotor.getForwardLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
     aimMotor.getReverseLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
     aimMotor.setInverted(true);
-
-    aimPidController.setP(AIM_kP);
-    aimPidController.setI(AIM_kI);
-    aimPidController.setD(AIM_kD);
-    aimPidController.setPositionPIDWrappingMinInput(0);
-    aimPidController.setPositionPIDWrappingMaxInput(1);
-    aimPidController.setPositionPIDWrappingEnabled(true);
-    
-    // Configure aim encoder
-    aimEncoder = aimMotor.getAbsoluteEncoder(kDutyCycle);
-    aimEncoder.setInverted(true);
-    aimEncoder.setAverageDepth(64);
-    aimEncoder.setZeroOffset(AIM_OFFSET.in(Rotations));
-    aimPidController.setFeedbackDevice(aimEncoder);
 
     aimMotor.burnFlash();
   }

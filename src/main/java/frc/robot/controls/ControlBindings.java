@@ -16,7 +16,7 @@ public interface ControlBindings {
   Supplier<Measure<Velocity<Distance>>> translationY();
   Supplier<Measure<Velocity<Angle>>> omega();
   Optional<Trigger> intake();
-  Optional<Trigger> retractIntake();
+  Optional<Trigger> intakeReverse();
   Optional<Trigger> manualShoot();
   Optional<Trigger> elevatorUp();
   Optional<Trigger> elevatorDown();

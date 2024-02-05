@@ -74,7 +74,6 @@ public class RobotContainer {
         controlBindings.translationX(),
         controlBindings.translationY(),
         controlBindings.omega()));
-    indexerSubsystem.setDefaultCommand(indexerSubsystem.intakeCommand());
   }
 
   private void configureButtonBindings() {
@@ -85,9 +84,11 @@ public class RobotContainer {
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
 
     // Intake
-    controlBindings.intake().ifPresent(trigger -> trigger.onTrue(intakeSubsystem.deployAndRunIntakeCommand()));
-    controlBindings.retractIntake().ifPresent(trigger -> trigger.onTrue(
-        intakeSubsystem.retractIntakeCommand().alongWith(indexerSubsystem.unloadCommand())));
+    controlBindings.intake().ifPresent(trigger -> trigger.toggleOnTrue(
+        intakeSubsystem.deployAndRunIntakeCommand().alongWith(indexerSubsystem.intakeCommand())));
+    
+    controlBindings.intakeReverse().ifPresent(trigger -> trigger.whileTrue(
+        intakeSubsystem.deployAndReverseIntakeCommand().alongWith(indexerSubsystem.unloadCommand())));
     
     // Elevator
     controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualUpCommand()));
@@ -95,7 +96,7 @@ public class RobotContainer {
 
     // Manual shoot - spin up for 1 second, then run indexer to shoot
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
-      shooterSubsystem.spinShooterAndAimCommand(RevolutionsPerSecond.of(60), Rotations.of(0.6))
+      shooterSubsystem.spinShooterAndAimCommand(RevolutionsPerSecond.of(50), Rotations.of(0.3))
         .alongWith(waitSeconds(1).andThen(indexerSubsystem.shootCommand()))
     ));
 

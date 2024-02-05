@@ -7,6 +7,7 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.signals.FeedbackSensorSourceValue.FusedCANcoder;
+import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -35,7 +36,9 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -77,11 +80,13 @@ public class IntakeSubsystem extends SubsystemBase {
     // Configure the deploy CANCoder
     var canCoderConfig = new CANcoderConfiguration();
     canCoderConfig.MagnetSensor.MagnetOffset = DEPLOY_CANCODER_OFFSET;
+    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     deployCanCoder.getConfigurator().apply(canCoderConfig);
 
     // Configure the deploy motor
     var deployConfig = new TalonFXConfiguration();
-    deployConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    deployConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    deployConfig.MotorOutput.NeutralMode = Brake;
     deployConfig.Feedback.RotorToSensorRatio = DEPLOY_ROTOR_TO_SENSOR_RATIO;
     deployConfig.Feedback.FeedbackRemoteSensorID = DEVICE_ID_DEPLOY_CANIVORE;
     deployConfig.Feedback.FeedbackSensorSource = FusedCANcoder;
@@ -158,15 +163,32 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns a new command that deploys and runs the intake
+   * Returns a new command that deploys and runs the rollers. Retracts the intake and stops the rollers when cancelled.
    * @return new command
    */
   public Command deployAndRunIntakeCommand() {
     return runEnd(() -> {
-      deployIntakeCommand();
-      runIntakeRollersCommand();
-    },
-    this::stopAll);
+      deployIntake();
+      rollerIntake();
+    }, () -> {
+      stopRoller();
+      retractIntake();
+    });
+  }
+
+  /**
+   * Returns a new command that deploys and runs the rollers in reverse. Retracts the intake and stops the rollers when
+   * cancelled.
+   * @return new command
+   */
+  public Command deployAndReverseIntakeCommand() {
+    return runEnd(() -> {
+      deployIntake();
+      rollerReverse();
+    }, () -> {
+      stopRoller();
+      retractIntake();
+    });
   }
 
   public Command sysIdDeployDynamicCommand(Direction direction) {

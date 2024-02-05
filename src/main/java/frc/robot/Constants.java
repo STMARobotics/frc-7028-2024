@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.util.Color;
 
 public class Constants {
 
-  public static final String CANIVORE_BUS_NAME = "swerve";
+  public static final String CANIVORE_BUS_NAME = "canivore";
   
   public static final class DrivetrainConstants {
     public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
@@ -120,21 +120,22 @@ public class Constants {
         .withKP(0.0)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.0);
+        .withKS(0.46179);
     public static final SlotConfigs SHOOTER_POSITION_SLOT_CONFIG = new SlotConfigs()
         .withKP(0.0)
         .withKI(0.0)
         .withKD(0.0);
-    public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0; // TODO this should be set
+    public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
-    public static double AIM_kP = 0.01;
-    public static double AIM_kI = 0d;
-    public static double AIM_kD = 0d;
+    public static final double AIM_kP = 0.01;
+    public static final double AIM_kI = 0d;
+    public static final double AIM_kD = 0d;
 
     public static final Measure<Angle> AIM_OFFSET = Rotations.of(-0.0584373);
-    public static float AIM_FORWARD_LIMIT = 0.35f;
-    public static float AIM_REVERSE_LIMIT = 0.0f;
-    public static Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.1);
+    public static final float AIM_FORWARD_LIMIT = 0.32f;
+    public static final float AIM_REVERSE_LIMIT = 0.0f;
+    public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.1); //TODO configure
+    public static final double AIM_CONVERSION_FACTOR = 1.0 / 5.0;
 
   }
 
@@ -143,8 +144,8 @@ public class Constants {
     public static final int DEVICE_ID_DEPLOY_CANIVORE = 41;
     public static final int DEVICE_ID_ROLLER = 42;
 
-    public static final double DEPLOY_CANCODER_OFFSET = 0.0; // TODO this needs to be set
-    public static final double DEPLOY_ROTOR_TO_SENSOR_RATIO = 1.0; // TODO this needs to be set
+    public static final double DEPLOY_CANCODER_OFFSET = 0.417725;
+    public static final double DEPLOY_ROTOR_TO_SENSOR_RATIO = 351.1133117;
     public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.01)
         .withKI(0.0)
@@ -157,8 +158,8 @@ public class Constants {
     public static final MotionMagicConfigs DEPLOY_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(0.01);
     
-    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(0.0);
-    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.25);
+    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.126);
+    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.3055);
     public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
