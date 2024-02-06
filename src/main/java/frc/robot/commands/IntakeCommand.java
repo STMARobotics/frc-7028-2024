@@ -21,7 +21,7 @@ public class IntakeCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return !indexerSubsystem.shouldContinue();
+    return !indexerSubsystem.shouldContinueRunning();
   }
 
   @Override

@@ -36,91 +36,6 @@ public class IndexerSubsystem extends SubsystemBase {
   private final ColorSensorV3 indexerColorSensor = new ColorSensorV3(Port.kOnboard);
   private final ColorMatch indexerColorMatch = new ColorMatch();
 
-
-  public IndexerSubsystem() {
-    leftPidController = indexerMotorConfig(leftIndexerMotor, true);
-    rightPidController = indexerMotorConfig(rightIndexerMotor, false);
-
-    indexerColorMatch.addColorMatch(COLOR_NOTE);
-    indexerColorMatch.addColorMatch(COLOR_NONE);
-  }
-  
-  public boolean shouldContinue() {
-    return indexerColorMatch.matchClosestColor(indexerColorSensor.getColor()).color == COLOR_NOTE;
-  }
-
-  // Check actual motor values for dash board debugging
-  public boolean isActive() {
-    return leftIndexerMotor.get() > 0 || rightIndexerMotor.get() > 0;
-  }
-
-  public void runIndexer() {
-    leftPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
-    rightPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
-  }
-
-  public void stopIndexer() {
-    leftPidController.setReference(0, ControlType.kVelocity);
-    rightPidController.setReference(0, ControlType.kVelocity);
-  } 
-
-  // Intake is intended to be called multiple times as it's called in "execute" for "IntakeCommand.java"
-  public void intake() {
-    if (shouldContinue()) {
-      runIndexer();
-    } else {
-      stopIndexer();
-    }
-  }
-
-  private SysIdRoutine indexerSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism((volts) -> {
-        leftIndexerMotor.setVoltage(volts.in(Volts));
-        rightIndexerMotor.setVoltage(volts.in(Volts));
-      }, null, this));
-  
-  public Command sysIdIndexerMotorQuasiCommand(Direction direction) {
-    return indexerSysIdRoutine.quasistatic(direction).withName("SysId Deploy Motor Quasistatic " + direction)
-        .finallyDo(this::stopIndexer);
-  }
-
-  public Command sysIdIndexerMotorDynamCommand(Direction direction) {
-    return indexerSysIdRoutine.dynamic(direction).withName("SysId Deploy Motor Quasistatic " + direction)
-        .finallyDo(this::stopIndexer);
-  }
-
-  // Subsystem tab
-  public void addSubsystemDashboardWidgets(ShuffleboardLayout indexerLayout) {
-    indexerLayout.addBoolean("Ring detected", this::shouldContinue);
-    indexerLayout.addBoolean("Active motors", this::isActive);
-  }
-
-  // Driver tab 
-  public void addDriverDashboardWidgets(ShuffleboardTab driverDashboardTab) {
-    driverDashboardTab.addBoolean("Ring detected", this::shouldContinue);
-    driverDashboardTab.addBoolean("Active indexer motors", this::isActive);
-  }
-
-  // Semioperable implementation of smart dashboard, edited by me before I did a small revamp above
-  // public void addDashboardWidgets_(ShuffleboardLayout dashboard) {
-  //   var detailDashboard = dashboard.getLayout("Detail", BuiltInLayouts.kGrid)
-  //       .withProperties(Map.of("Number of columns", 2, "Number of rows", 3)).withPosition(0, 0);
-  //   detailDashboard.addBoolean("Detects ring", () -> shouldContinue()).withPosition(0, 0);
-  //   detailDashboard.addBoolean("Is active", () -> isActive());
-  // }
-
-  // public void addDriverDashboardWidgets_(ShuffleboardTab dashboard) {
-  //   dashboard.addBoolean("Ring Position", () -> shouldContinue()).withWidget(BuiltInWidgets.kDial)
-  //       .withProperties(Map.of("Min", 0, "Max", 2)).withSize(1, 1).withPosition(8, 3);
-  //   var colorSensorLayout = dashboard.getLayout("Indexer", BuiltInLayouts.kGrid)
-  //       .withProperties(Map.of("Number of columns", 1, "Number of rows", 3))
-  //       .withSize(1, 3).withPosition(8, 0);
-  //   colorSensorLayout.addBoolean("Shooter", () -> true).withPosition(0, 1);
-  //   colorSensorLayout.addBoolean("Intake", () -> true).withPosition(0, 2);
-
-  // }
-
   private static SparkPIDController indexerMotorConfig(CANSparkMax sparkMax, boolean invert) {
     SparkPIDController pidController = sparkMax.getPIDController();
     sparkMax.restoreFactoryDefaults();
@@ -134,6 +49,71 @@ public class IndexerSubsystem extends SubsystemBase {
     sparkMax.burnFlash();
     sparkMax.setIdleMode(IdleMode.kCoast);
     return pidController;
+  }
+  
+   private SysIdRoutine indexerSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((volts) -> {
+        leftIndexerMotor.setVoltage(volts.in(Volts));
+        rightIndexerMotor.setVoltage(volts.in(Volts));
+      }, null, this));
+
+  public IndexerSubsystem() {
+    leftPidController = indexerMotorConfig(leftIndexerMotor, true);
+    rightPidController = indexerMotorConfig(rightIndexerMotor, false);
+
+    indexerColorMatch.addColorMatch(COLOR_NOTE);
+    indexerColorMatch.addColorMatch(COLOR_NONE);
+  }
+  
+  public boolean shouldContinueRunning() {
+    return !(indexerColorMatch.matchClosestColor(indexerColorSensor.getColor()).color == COLOR_NOTE);
+  }
+
+  // Check actual motor values for dash board debugging
+  public boolean isActive() {
+    return leftIndexerMotor.getOutputCurrent() > 0 || rightIndexerMotor.getOutputCurrent() > 0;
+  }
+
+  public void runIndexer() {
+    leftPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
+    rightPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
+  }
+
+  public void stopIndexer() {
+    leftIndexerMotor.stopMotor();
+    rightIndexerMotor.stopMotor();
+  } 
+
+  // Intake is intended to be called multiple times as it's called in "execute" for "IntakeCommand.java"
+  public void intake() {
+    if (shouldContinueRunning()) {
+      runIndexer();
+    } else {
+      stopIndexer();
+    }
+  }
+  
+  public Command sysIdIndexerMotorQuasiCommand(Direction direction) {
+    return indexerSysIdRoutine.quasistatic(direction).withName("SysId Deploy Motor Quasistatic " + direction)
+        .finallyDo(this::stopIndexer);
+  }
+
+  public Command sysIdIndexerMotorDynamCommand(Direction direction) {
+    return indexerSysIdRoutine.dynamic(direction).withName("SysId Deploy Motor Quasistatic " + direction)
+        .finallyDo(this::stopIndexer);
+  }
+
+  // Subsystem tab
+  public void addSubsystemDashboardWidgets(ShuffleboardLayout indexerLayout) {
+    indexerLayout.addBoolean("Ring detected", this::shouldContinueRunning);
+    indexerLayout.addBoolean("Active motors", this::isActive);
+  }
+
+  // Driver tab 
+  public void addDriverDashboardWidgets(ShuffleboardTab driverDashboardTab) {
+    driverDashboardTab.addBoolean("Ring detected", this::shouldContinueRunning);
+    driverDashboardTab.addBoolean("Active indexer motors", this::isActive);
   }
 
   public void fireDonut(Measure<Voltage> volts) {
