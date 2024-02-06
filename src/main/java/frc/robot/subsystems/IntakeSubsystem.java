@@ -7,6 +7,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_DEPLOY_CANCODER;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_DEPLOY_MOTOR;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_ROLLERS_MOTOR;
@@ -29,9 +30,9 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 public class IntakeSubsystem extends SubsystemBase {
 
   private VoltageOut voltageRequest = new VoltageOut(0);
-  private final TalonFX DeployMotor = new TalonFX(DEVICE_ID_DEPLOY_MOTOR);
-  private final TalonFX RollersMotor = new TalonFX(DEVICE_ID_ROLLERS_MOTOR);
-  private final CANcoder canCoder = new CANcoder(DEVICE_ID_DEPLOY_CANCODER);
+  private final TalonFX DeployMotor = new TalonFX(DEVICE_ID_DEPLOY_MOTOR, CANIVORE_BUS_NAME);
+  private final TalonFX RollersMotor = new TalonFX(DEVICE_ID_ROLLERS_MOTOR, CANIVORE_BUS_NAME);
+  private final CANcoder canCoder = new CANcoder(DEVICE_ID_DEPLOY_CANCODER, CANIVORE_BUS_NAME);
 
   private SysIdRoutine deployMotorSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
@@ -83,14 +84,8 @@ public class IntakeSubsystem extends SubsystemBase {
   /**
    * @return
    */
-  public Command Spit() {
-    return runOnce(
-        () -> {
-          // READ THIS!!!!!
-          // IDK what the motor velocity number should actually be, just set it to -1 for
-          // now
-          DeployMotor.setControl(IntakerMotorVelocity.withVelocity(-1));
-        });
+  public void Spit() {
+    DeployMotor.setControl(IntakerMotorVelocity.withVelocity(-1));
   }
 
   public Command sysIdDeployMotorQuasiCommand(Direction direction) {

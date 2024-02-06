@@ -10,6 +10,8 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static java.lang.Math.PI;
 
+import com.ctre.phoenix6.configs.SlotConfigs;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -20,6 +22,8 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.util.Color;
 
 public class Constants {
+
+  public static final String CANIVORE_BUS_NAME = "canivore";
 
   public static final class DrivetrainConstants {
     public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
@@ -81,6 +85,15 @@ public class Constants {
     public static final int DEVICE_ID_SHOOTER_LEFT = 50;
     public static final int DEVICE_ID_ACTUATOR_MOTOR = 52;
 
+    public static final int SHOOTER_VELOCITY_OFFSET = 0;
+    public static final int WRIST_POSITION_OFFSET = 0;
+    public static final int SHOOTER_MOTOR_RATIO = 1;
+    
+    public static final SlotConfigs SHOOTER_SLOT_CONFIGS = new SlotConfigs()
+    .withKP(0)
+    .withKI(0)
+    .withKD(0)
+    .withKS(0);
   }
 
   public static class ClimbConstants {

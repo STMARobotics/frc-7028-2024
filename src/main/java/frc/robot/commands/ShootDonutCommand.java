@@ -1,77 +1,75 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.math.VelocityAngleInterpolator;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
- * Basic command to position elevator and wrist, and then shoot
+ * Command to run shooter motors
  */
 public class ShootDonutCommand extends Command {
 
   private static final double SHOOT_TIME = 0.25;
-
   private final ShooterSubsystem shooterSubsystem;
+  private final IndexerSubsystem indexerSubsystem;
+  private final VelocityAngleInterpolator velocityAngleInterpolator;
+  private final Supplier<Pose2d> robotPoseSupplier;
+
   private final Timer shootTimer = new Timer();
-
-
-  protected double elevatorMeters;
-  protected double wristRadians;
-  protected double shooterRPS;
-  
-  private boolean isShooting = false;
-
+  protected double shooterRPS = 1;
 
   /**
    * Constructor
-   * @param elevatorMeters position of elevator in meters
-   * @param wristRadians position of wrist in radians
-   * @param shooterRPS velocity of shooter in rotations per second
-   * @param elevatorSubsystem elevator
-   * @param wristSubsystem wrist
+   * 
+   * @param shooterRPS       velocity of shooter in rotations per second
    * @param shooterSubsystem shooter
    */
-  public ShootDonutCommand(double elevatorMeters, double wristRadians, double shooterRPS, Color ledColor,
-      ElevatorSubsystem elevatorSubsystem, ShooterSubsystem shooterSubsystem) {
-    this.elevatorMeters = elevatorMeters;
-    this.wristRadians = wristRadians;
-    this.shooterRPS = shooterRPS;
-
+  public ShootDonutCommand(VelocityAngleInterpolator velocityAngleInterpolator, ShooterSubsystem shooterSubsystem,
+      IndexerSubsystem indexerSubsystem, Supplier<Pose2d> robotPoseSupplier) {
+    this.velocityAngleInterpolator = velocityAngleInterpolator;
     this.shooterSubsystem = shooterSubsystem;
+    this.indexerSubsystem = indexerSubsystem;
+    this.robotPoseSupplier = robotPoseSupplier;
+
+    addRequirements(indexerSubsystem, shooterSubsystem);
   }
 
   @Override
   public void initialize() {
     shootTimer.reset();
-    isShooting = false;
-    shooterSubsystem.activeStop();
   }
 
   @Override
   public void execute() {
-    if (isShooting) {
-      shooterSubsystem.spinShooterWheel(shooterRPS);
+    var targetTranslation = new Translation2d(0.5, 2);
+    double distanceToTarget = robotPoseSupplier.get().getTranslation().getDistance(targetTranslation);
+    var donutShooterSettings = velocityAngleInterpolator.calculate(distanceToTarget);
+    shooterSubsystem.actuatorRotate(donutShooterSettings.angle);
+    shooterSubsystem.spinShooterWheel(donutShooterSettings.velocity);
+    if (shooterSubsystem.checkShooterSpeed(donutShooterSettings.velocity) &&
+        shooterSubsystem.checkWristPosition(donutShooterSettings.angle)) {
+      indexerSubsystem.fireDonut(Volts.of(3));
       shootTimer.start();
-      isShooting = true;
     }
   }
 
   @Override
   public boolean isFinished() {
-    return isShooting && shootTimer.hasElapsed(SHOOT_TIME);
+    return (shootTimer.hasElapsed(SHOOT_TIME));
   }
 
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.actuatorStop();
-    if (isShooting) {
-      shooterSubsystem.stop();
-    } else {
-      shooterSubsystem.activeStop();
-    }
+    shooterSubsystem.stop();
     shootTimer.stop();
   }
-
 }
