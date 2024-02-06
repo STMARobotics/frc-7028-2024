@@ -38,7 +38,7 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private final IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
+  private final ShuffleboardTab driverTab = Shuffleboard.getTab("driver");
   private final ShuffleboardTab subsystemTab = Shuffleboard.getTab("Subsystem");
   private final SendableChooser<Command> autoChooser;
 
@@ -104,8 +104,8 @@ public class RobotContainer {
 
   private void configureDriverTab() {
     indexerSubsystem.addDriverDashboardWidgets(driverTab);
-  }
-}
+  };
+  
  public void configureSysidDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("sysid");
     tab.add("Shoot Quasi F", shooterSubsystem.sysIdShooterMotorQuasiCommand(kForward)).withPosition(0, 0);

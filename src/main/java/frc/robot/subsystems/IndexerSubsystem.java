@@ -17,11 +17,7 @@ import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
-
 import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -112,11 +108,6 @@ public class IndexerSubsystem extends SubsystemBase {
   public void addSubsystemDashboardWidgets(ShuffleboardLayout indexerLayout) {
     indexerLayout.addBoolean("Ring detected", this::shouldContinueRunning);
     indexerLayout.addBoolean("Active motors", this::isActive);
-  }
-  public void fireDonut(Measure<Voltage> volts) {
-    leftIndexerMotor.setVoltage(volts.in(Volts));
-    rightIndexerMotor.setVoltage(volts.in(Volts));
-
   }
 
   // Driver tab 

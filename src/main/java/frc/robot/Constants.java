@@ -116,6 +116,7 @@ public class Constants {
     public static final int DEVICE_ID_MOTOR_2 = 61;
     public static final int TOP_LIMIT = 5;
     public static final int BOTTOM_LIMIT = 6;
+    public static final int ELEVATOR_PARK_HEIGHT = 0; // We don't what it will be yet 
   }
 
   public static class IndexerConstants {
