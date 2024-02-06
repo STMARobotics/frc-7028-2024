@@ -18,7 +18,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -55,10 +54,6 @@ private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
 
   private static final double GRAVITY_FEED_FORWARD = 0.05;
 
-  // Mutiply by sensor position to get meters
-  private static final double ANALOG_SENSOR_COEFFICIENT = ELEVATOR_HEIGHT / (ANALOG_TOP - ANALOG_BOTTOM);
-
-  private final AnalogInput analogSensor;
 
   // Limit switches - FALSE means at limit
   private final DigitalInput topLimitSwitch = new DigitalInput(8);
@@ -71,7 +66,6 @@ private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
   elevatorFollower.getConfigurator().apply(new TalonFXConfiguration());
 
     // Configure potentiometer
-    analogSensor = new AnalogInput(ElevatorConstants.ANALOG_SENSOR_CHANNEL);
 
     // Configure closed-loop control
     double kP = 0.13;
@@ -163,10 +157,6 @@ private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
 
   public boolean isAtTopLimit() {
     return !topLimitSwitch.get();
-  }
-
-  private double getElevatorAnalogPositionMeters() {
-    return (getElevatorPosition() - ANALOG_BOTTOM) * ANALOG_SENSOR_COEFFICIENT;
   }
 
   static double motorPositionToMeters(double motorPosition) {

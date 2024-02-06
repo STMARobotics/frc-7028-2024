@@ -48,7 +48,6 @@ public class IndexerSubsystem extends SubsystemBase {
     return indexerColorMatch.matchClosestColor(indexerColorSensor.getColor()).color == COLOR_NOTE;
   }
 
-  // Check actual motor values for dash board debugging
   public boolean isActive() {
     return leftIndexerMotor.get() > 0 || rightIndexerMotor.get() > 0;
   }
@@ -63,8 +62,6 @@ public class IndexerSubsystem extends SubsystemBase {
     rightPidController.setReference(0, ControlType.kVelocity);
   }
 
-  // Intake is intended to be called multiple times as it's called in "execute"
-  // for "IntakeCommand.java"
   public void intake() {
     if (shouldContinue()) {
       runIndexer();
@@ -101,30 +98,6 @@ public class IndexerSubsystem extends SubsystemBase {
     driverDashboardTab.addBoolean("Ring detected", this::shouldContinue);
     driverDashboardTab.addBoolean("Active indexer motors", this::isActive);
   }
-
-  // Semioperable implementation of smart dashboard, edited by me before I did a
-  // small revamp above
-  // public void addDashboardWidgets_(ShuffleboardLayout dashboard) {
-  // var detailDashboard = dashboard.getLayout("Detail", BuiltInLayouts.kGrid)
-  // .withProperties(Map.of("Number of columns", 2, "Number of rows",
-  // 3)).withPosition(0, 0);
-  // detailDashboard.addBoolean("Detects ring", () ->
-  // shouldContinue()).withPosition(0, 0);
-  // detailDashboard.addBoolean("Is active", () -> isActive());
-  // }
-
-  // public void addDriverDashboardWidgets_(ShuffleboardTab dashboard) {
-  // dashboard.addBoolean("Ring Position", () ->
-  // shouldContinue()).withWidget(BuiltInWidgets.kDial)
-  // .withProperties(Map.of("Min", 0, "Max", 2)).withSize(1, 1).withPosition(8,
-  // 3);
-  // var colorSensorLayout = dashboard.getLayout("Indexer", BuiltInLayouts.kGrid)
-  // .withProperties(Map.of("Number of columns", 1, "Number of rows", 3))
-  // .withSize(1, 3).withPosition(8, 0);
-  // colorSensorLayout.addBoolean("Shooter", () -> true).withPosition(0, 1);
-  // colorSensorLayout.addBoolean("Intake", () -> true).withPosition(0, 2);
-
-  // }
 
   private static SparkPIDController indexerMotorConfig(CANSparkMax sparkMax, boolean invert) {
     SparkPIDController pidController = sparkMax.getPIDController();
