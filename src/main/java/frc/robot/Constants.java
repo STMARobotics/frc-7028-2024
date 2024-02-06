@@ -130,7 +130,7 @@ public class Constants {
     public static final double BELT_SHOOT_SPEED = 8000;
 
     /** Color of ring */
-    public static final Color COLOR_ORANGE = new Color(0.15283203125, 0.407958984375, 0.439453125);
+    public static final Color COLOR_NOTE = new Color(0.15283203125, 0.407958984375, 0.439453125);
 
     /** Color of no cargo */
     public static final Color COLOR_NONE = new Color(0.252197265625, 0.491455078125, 0.2568359375);
