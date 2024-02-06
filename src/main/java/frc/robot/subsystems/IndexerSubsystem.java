@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
 import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
-import edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.IndexerConstants.BELT_RUN_SPEED;
 import static frc.robot.Constants.IndexerConstants.COLOR_NONE;
 import static frc.robot.Constants.IndexerConstants.COLOR_NOTE;
@@ -17,6 +15,8 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
