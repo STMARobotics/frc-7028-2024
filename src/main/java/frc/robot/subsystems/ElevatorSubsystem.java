@@ -7,7 +7,9 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ElevatorConstants.ELEVATOR_PARK_HEIGHT;
+import static frc.robot.Constants.ElevatorConstants.ELEVATOR_SLOT_CONFIGS;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -87,11 +89,7 @@ private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
     double maxAcc = 30000;
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0.kP = kP;
-    config.Slot0.kI = kI;
-    config.Slot0.kD = kD;
-    config.Slot0.kV = kV;
-    config.Slot0.kS = kS; 
+    config.Slot0 = Slot0Configs.from(ELEVATOR_SLOT_CONFIGS);
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     elevatorLeader.getConfigurator().apply(config);

@@ -8,11 +8,14 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
+import static frc.robot.Constants.IntakeConstants.DEPLOY_SLOT_CONFIGS;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_DEPLOY_CANCODER;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_DEPLOY_MOTOR;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_ROLLERS_MOTOR;
+import static frc.robot.Constants.IntakeConstants.ROLLERS_SLOT_CONFIGS;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -45,16 +48,12 @@ public class IntakeSubsystem extends SubsystemBase {
           this));
 
   public IntakeSubsystem() {
-    var intakeMotorConfig = new TalonFXConfiguration();
-    intakeMotorConfig.Slot0.kP = 5; // An error of 1 rotation per second results in 5 amps output
-    intakeMotorConfig.Slot0.kI = 0.1; // An error of 1 rotation per second increases output by 0.1 amps every second
-    intakeMotorConfig.Slot0.kD = 0.001; // A change of 1000 rotation per second squared results in 1 amp output
-    DeployMotor.getConfigurator().apply(intakeMotorConfig);
-    var rollersMotorConfig = new TalonFXConfiguration();
-    rollersMotorConfig.Slot0.kP = 5; // An error of 1 rotation per second results in 5 amps output
-    rollersMotorConfig.Slot0.kI = 0.1; // An error of 1 rotation per second increases output by 0.1 amps every second
-    rollersMotorConfig.Slot0.kD = 0.001; // A change of 1000 rotation per second squared results in 1 amp output
-    RollersMotor.getConfigurator().apply(rollersMotorConfig);
+    var intakeRollersConfig = new TalonFXConfiguration();
+    var intakeDeployConfig = new TalonFXConfiguration();
+    intakeRollersConfig.Slot0 = Slot0Configs.from(ROLLERS_SLOT_CONFIGS);
+    RollersMotor.getConfigurator().apply(intakeRollersConfig);
+    intakeDeployConfig.Slot0 = Slot0Configs.from(DEPLOY_SLOT_CONFIGS);
+    DeployMotor.getConfigurator().apply(intakeDeployConfig);
     CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
     canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;

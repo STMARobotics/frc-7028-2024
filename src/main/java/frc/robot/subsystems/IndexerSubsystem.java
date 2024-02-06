@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
 import static edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import static frc.robot.Constants.IndexerConstants.BELT_RUN_SPEED;
 import static frc.robot.Constants.IndexerConstants.COLOR_NONE;
 import static frc.robot.Constants.IndexerConstants.COLOR_NOTE;
@@ -17,6 +15,8 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -36,7 +36,6 @@ public class IndexerSubsystem extends SubsystemBase {
   private final ColorSensorV3 indexerColorSensor = new ColorSensorV3(Port.kOnboard);
   private final ColorMatch indexerColorMatch = new ColorMatch();
 
-
   public IndexerSubsystem() {
     leftPidController = indexerMotorConfig(leftIndexerMotor, true);
     rightPidController = indexerMotorConfig(rightIndexerMotor, false);
@@ -44,7 +43,7 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerColorMatch.addColorMatch(COLOR_NOTE);
     indexerColorMatch.addColorMatch(COLOR_NONE);
   }
-  
+
   public boolean shouldContinue() {
     return indexerColorMatch.matchClosestColor(indexerColorSensor.getColor()).color == COLOR_NOTE;
   }
@@ -62,9 +61,10 @@ public class IndexerSubsystem extends SubsystemBase {
   public void stopIndexer() {
     leftPidController.setReference(0, ControlType.kVelocity);
     rightPidController.setReference(0, ControlType.kVelocity);
-  } 
+  }
 
-  // Intake is intended to be called multiple times as it's called in "execute" for "IntakeCommand.java"
+  // Intake is intended to be called multiple times as it's called in "execute"
+  // for "IntakeCommand.java"
   public void intake() {
     if (shouldContinue()) {
       runIndexer();
@@ -79,7 +79,7 @@ public class IndexerSubsystem extends SubsystemBase {
         leftIndexerMotor.setVoltage(volts.in(Volts));
         rightIndexerMotor.setVoltage(volts.in(Volts));
       }, null, this));
-  
+
   public Command sysIdIndexerMotorQuasiCommand(Direction direction) {
     return indexerSysIdRoutine.quasistatic(direction).withName("SysId Deploy Motor Quasistatic " + direction)
         .finallyDo(this::stopIndexer);
@@ -96,28 +96,33 @@ public class IndexerSubsystem extends SubsystemBase {
     indexerLayout.addBoolean("Active motors", this::isActive);
   }
 
-  // Driver tab 
+  // Driver tab
   public void addDriverDashboardWidgets(ShuffleboardTab driverDashboardTab) {
     driverDashboardTab.addBoolean("Ring detected", this::shouldContinue);
     driverDashboardTab.addBoolean("Active indexer motors", this::isActive);
   }
 
-  // Semioperable implementation of smart dashboard, edited by me before I did a small revamp above
+  // Semioperable implementation of smart dashboard, edited by me before I did a
+  // small revamp above
   // public void addDashboardWidgets_(ShuffleboardLayout dashboard) {
-  //   var detailDashboard = dashboard.getLayout("Detail", BuiltInLayouts.kGrid)
-  //       .withProperties(Map.of("Number of columns", 2, "Number of rows", 3)).withPosition(0, 0);
-  //   detailDashboard.addBoolean("Detects ring", () -> shouldContinue()).withPosition(0, 0);
-  //   detailDashboard.addBoolean("Is active", () -> isActive());
+  // var detailDashboard = dashboard.getLayout("Detail", BuiltInLayouts.kGrid)
+  // .withProperties(Map.of("Number of columns", 2, "Number of rows",
+  // 3)).withPosition(0, 0);
+  // detailDashboard.addBoolean("Detects ring", () ->
+  // shouldContinue()).withPosition(0, 0);
+  // detailDashboard.addBoolean("Is active", () -> isActive());
   // }
 
   // public void addDriverDashboardWidgets_(ShuffleboardTab dashboard) {
-  //   dashboard.addBoolean("Ring Position", () -> shouldContinue()).withWidget(BuiltInWidgets.kDial)
-  //       .withProperties(Map.of("Min", 0, "Max", 2)).withSize(1, 1).withPosition(8, 3);
-  //   var colorSensorLayout = dashboard.getLayout("Indexer", BuiltInLayouts.kGrid)
-  //       .withProperties(Map.of("Number of columns", 1, "Number of rows", 3))
-  //       .withSize(1, 3).withPosition(8, 0);
-  //   colorSensorLayout.addBoolean("Shooter", () -> true).withPosition(0, 1);
-  //   colorSensorLayout.addBoolean("Intake", () -> true).withPosition(0, 2);
+  // dashboard.addBoolean("Ring Position", () ->
+  // shouldContinue()).withWidget(BuiltInWidgets.kDial)
+  // .withProperties(Map.of("Min", 0, "Max", 2)).withSize(1, 1).withPosition(8,
+  // 3);
+  // var colorSensorLayout = dashboard.getLayout("Indexer", BuiltInLayouts.kGrid)
+  // .withProperties(Map.of("Number of columns", 1, "Number of rows", 3))
+  // .withSize(1, 3).withPosition(8, 0);
+  // colorSensorLayout.addBoolean("Shooter", () -> true).withPosition(0, 1);
+  // colorSensorLayout.addBoolean("Intake", () -> true).withPosition(0, 2);
 
   // }
 

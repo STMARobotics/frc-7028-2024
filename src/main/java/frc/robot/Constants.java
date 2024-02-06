@@ -87,12 +87,12 @@ public class Constants {
     public static final int SHOOTER_VELOCITY_OFFSET = 0;
     public static final int WRIST_POSITION_OFFSET = 0;
     public static final int SHOOTER_MOTOR_RATIO = 1;
-    
+
     public static final SlotConfigs SHOOTER_SLOT_CONFIGS = new SlotConfigs()
-    .withKP(0)
-    .withKI(0)
-    .withKD(0)
-    .withKS(0);
+        .withKP(0.59)
+        .withKI(0)
+        .withKD(0.001)
+        .withKS(0);
   }
 
   public static class ClimbConstants {
@@ -103,17 +103,35 @@ public class Constants {
     public static final double SOFT_LIMIT_FIRST_STAGE_FWD = 430000;
     public static final double SOFT_LIMIT_FIRST_STAGE_REV = 0;
   }
+
   public static class IntakeConstants {
-  public static final int DEVICE_ID_DEPLOY_MOTOR = 40;
+    public static final int DEVICE_ID_DEPLOY_MOTOR = 40;
     public static final int DEVICE_ID_DEPLOY_CANCODER = 41;
     public static final int DEVICE_ID_ROLLERS_MOTOR = 42;
+    public static final SlotConfigs ROLLERS_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0.59)
+        .withKI(0)
+        .withKD(0.001)
+        .withKS(0);
+    public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0.59)
+        .withKI(0)
+        .withKD(0.001)
+        .withKS(0);
   }
-    public static class ElevatorConstants {
-      public static final int ELEVATOR_LEADER_ID = 60;
+
+  public static class ElevatorConstants {
+    public static final int ELEVATOR_LEADER_ID = 60;
     public static final int ELEVATOR_FOLLOWER_ID = 61;
     public static final int ANALOG_SENSOR_CHANNEL = 0;
     public static final double ELEVATOR_PARK_HEIGHT = .06;
-  } 
+    public static final SlotConfigs ELEVATOR_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0.59)
+        .withKI(0)
+        .withKD(0.001)
+        .withKS(0);
+  }
+
   public static class IndexerConstants {
     public static final int PORT_ID_INTAKE_SENSOR = 3;
     public static final int PORT_ID_SHOOTER_SENSOR = 2;
