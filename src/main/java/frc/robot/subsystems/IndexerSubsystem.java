@@ -53,13 +53,13 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void runIndexer() {
-    LeftPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
-    RightPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
+    leftPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
+    rightPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
   }
 
   public void stopIndexer() {
-    LeftPidController.setReference(0, ControlType.kVelocity);
-    RightPidController.setReference(0, ControlType.kVelocity);
+    leftPidController.setReference(0, ControlType.kVelocity);
+    rightPidController.setReference(0, ControlType.kVelocity);
   } 
 
   // Intake is intended to be called multiple times as it's called in "execute" for "IntakeCommand.java"
