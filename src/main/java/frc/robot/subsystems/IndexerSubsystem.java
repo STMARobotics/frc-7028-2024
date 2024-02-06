@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
 import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Measure;
+import static edu.wpi.first.units.Voltage;
 import static frc.robot.Constants.IndexerConstants.BELT_RUN_SPEED;
 import static frc.robot.Constants.IndexerConstants.COLOR_NONE;
 import static frc.robot.Constants.IndexerConstants.COLOR_NOTE;
@@ -120,7 +122,7 @@ public class IndexerSubsystem extends SubsystemBase {
   // }
 
   private static SparkPIDController indexerMotorConfig(CANSparkMax sparkMax, boolean invert) {
-    SparkPIDController pidController = sparkMax.sparkMax.getPIDController();
+    SparkPIDController pidController = sparkMax.getPIDController();
     sparkMax.restoreFactoryDefaults();
     sparkMax.enableVoltageCompensation(12);
     sparkMax.setOpenLoopRampRate(0.1);
