@@ -28,15 +28,16 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 public class IndexerSubsystem extends SubsystemBase {
   private final CANSparkMax leftIndexerMotor = new CANSparkMax(DEVICE_ID_INDEXER_LEFT_MOTOR, kBrushless);
   private final CANSparkMax rightIndexerMotor = new CANSparkMax(DEVICE_ID_INDEXER_RIGHT_MOTOR, kBrushless);
-  private static SparkPIDController pidController;
+  private static SparkPIDController leftPidController;
+  private static SparkPIDController rightPidController;
 
   private final ColorSensorV3 indexerColorSensor = new ColorSensorV3(Port.kOnboard);
   private final ColorMatch indexerColorMatch = new ColorMatch();
 
 
   public IndexerSubsystem() {
-    indexerMotorConfig(leftIndexerMotor, true);
-    indexerMotorConfig(rightIndexerMotor, false);
+    leftPidController = indexerMotorConfig(leftIndexerMotor, true);
+    rightPidController = indexerMotorConfig(rightIndexerMotor, false);
 
     indexerColorMatch.addColorMatch(COLOR_NOTE);
     indexerColorMatch.addColorMatch(COLOR_NONE);
@@ -52,11 +53,13 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void runIndexer() {
-    pidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
+    LeftPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
+    RightPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
   }
 
   public void stopIndexer() {
-    pidController.setReference(0, ControlType.kVelocity);
+    LeftPidController.setReference(0, ControlType.kVelocity);
+    RightPidController.setReference(0, ControlType.kVelocity);
   } 
 
   // Intake is intended to be called multiple times as it's called in "execute" for "IntakeCommand.java"
@@ -117,12 +120,12 @@ public class IndexerSubsystem extends SubsystemBase {
   // }
 
   private static SparkPIDController indexerMotorConfig(CANSparkMax sparkMax, boolean invert) {
+    SparkPIDController pidController = sparkMax.sparkMax.getPIDController();
     sparkMax.restoreFactoryDefaults();
     sparkMax.enableVoltageCompensation(12);
     sparkMax.setOpenLoopRampRate(0.1);
     sparkMax.setClosedLoopRampRate(0.1);
-    sparkMax.setInverted(true);
-    pidController = sparkMax.getPIDController();
+    sparkMax.setInverted(invert);
     pidController.setP(IndexerConstants.BELT_kP);
     pidController.setFF(0.00009);
     sparkMax.getEncoder();
