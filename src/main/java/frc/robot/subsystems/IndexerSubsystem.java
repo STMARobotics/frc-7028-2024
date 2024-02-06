@@ -130,4 +130,9 @@ public class IndexerSubsystem extends SubsystemBase {
     sparkMax.setIdleMode(IdleMode.kCoast);
     return pidController;
   }
+
+  public void fireDonut(Measure<Voltage> volts) {
+    leftIndexerMotor.setVoltage(volts.in(Volts));
+    rightIndexerMotor.setVoltage(volts.in(Volts));
+  }
 }
