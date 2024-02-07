@@ -38,13 +38,11 @@ public class ShooterSubsystem extends SubsystemBase {
   // creates new devices and sets them to the device Ids set in
   // Constants.java
 
-  private TrapezoidProfile.State goal = null;
   private static final double ENCODER_OFFSET = -0.2285f;
   private static final float LIMIT_BOTTOM = 0.12f;
   private static final float LIMIT_TOP = 0.4272f;
   private static final double LIMIT_TOP_RADIANS = Units.rotationsToRadians(LIMIT_TOP + ENCODER_OFFSET);
   private static final double LIMIT_BOTTOM_RADIANS = Units.rotationsToRadians(LIMIT_BOTTOM + ENCODER_OFFSET);
-  private static final TrapezoidProfile.Constraints PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(40, 11);
   private boolean isActiveStopped = false;
   public boolean hasRing = false;
   private SparkAbsoluteEncoder actuatorEncoder;
@@ -164,9 +162,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void actuatorRotate(double radians) {
     var target = MathUtil.clamp(radians, LIMIT_BOTTOM_RADIANS, LIMIT_TOP_RADIANS);
-    // Set the target position, but move in execute() so feed forward keeps updating
-    var newGoal = new TrapezoidProfile.State(target, 0.0);
-    goal = newGoal;
+    new TrapezoidProfile.State(target, 0.0);
   }
 
   public void actuatorStop() {
