@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static com.revrobotics.CANSparkBase.ControlType.kVelocity;
 import static com.revrobotics.CANSparkBase.IdleMode.kCoast;
 import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.IndexerConstants.COLOR_NONE;
 import static frc.robot.Constants.IndexerConstants.COLOR_NOTE;
@@ -18,6 +19,9 @@ import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -91,6 +95,15 @@ public class IndexerSubsystem extends SubsystemBase {
     return run(this::shoot).finallyDo(this::stop);
   }
 
+  /**
+   * Returns a new command to run the indexer
+   * @param velocity target velocity
+   * @return new command
+   */
+  public Command runCommand(Measure<Velocity<Angle>> velocity) {
+    return run(() -> runIndexer(velocity)).finallyDo(this::stop);
+  }
+
   public Command sysIdIndexerDynamicCommand(Direction direction) {
     return indexerSysIdRoutine.dynamic(direction).withName("SysId indexer dynam " + direction)
         .finallyDo(this::stop);
@@ -127,8 +140,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   private void load() {
-    leftPidController.setReference(IndexerConstants.RUN_SPEED, kVelocity);
-    rightPidController.setReference(IndexerConstants.RUN_SPEED, kVelocity);
+    runIndexer(IndexerConstants.RUN_SPEED);
   }
 
   private void unload() {
@@ -137,13 +149,17 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   private void shoot() {
-    leftPidController.setReference(IndexerConstants.SHOOT_SPEED, kVelocity);
-    rightPidController.setReference(IndexerConstants.SHOOT_SPEED, kVelocity);
+    runIndexer(IndexerConstants.SHOOT_SPEED);
   }
 
   private void stop() {
     indexerLeftMotor.stopMotor();
     indexerRightMotor.stopMotor();
+  }
+
+  private void runIndexer(Measure<Velocity<Angle>> velocity) {
+    leftPidController.setReference(velocity.in(RotationsPerSecond), kVelocity);
+    rightPidController.setReference(velocity.in(RotationsPerSecond), kVelocity);
   }
 
 }

@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ElevatorConstants.BOTTOM_LIMIT;
@@ -36,8 +37,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  private final TalonFX elevatorMotor0 = new TalonFX(DEVICE_ID_MOTOR_0, CANIVORE_BUS_NAME);
-  private final TalonFX elevatorMotor1 = new TalonFX(DEVICE_ID_MOTOR_1, CANIVORE_BUS_NAME);
+  private final TalonFX elevatorLeader = new TalonFX(DEVICE_ID_MOTOR_0, CANIVORE_BUS_NAME);
+  private final TalonFX elevatorFollower = new TalonFX(DEVICE_ID_MOTOR_1, CANIVORE_BUS_NAME);
 
   // Limit switches - FALSE means at limit
   private final DigitalInput topLimitSwitch = new DigitalInput(DEVICE_PORT_TOP_LIMIT);
@@ -50,8 +51,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final SysIdRoutine elevatorRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, Volts.of(5.0), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> {
-        elevatorMotor0.setControl(voltageControl.withOutput(volts.in(Volts)));
-        elevatorMotor1.setControl(voltageControl.withOutput(volts.in(Volts)));
+        elevatorLeader.setControl(voltageControl.withOutput(volts.in(Volts)));
+        elevatorFollower.setControl(voltageControl.withOutput(volts.in(Volts)));
       }, null, this));
   
   public ElevatorSubsystem() {
@@ -60,14 +61,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     motorConfig.MotionMagic = MOTION_MAGIC_CONFIGS;
     motorConfig.MotorOutput.NeutralMode = Brake;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = TOP_LIMIT.in(Meters) / METERS_PER_REVOLUTION;
+    motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        TOP_LIMIT.in(Meters) / METERS_PER_REVOLUTION.in(Meters.per(Rotations));
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = BOTTOM_LIMIT.in(Meters) / METERS_PER_REVOLUTION;
+    motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        BOTTOM_LIMIT.in(Meters) / METERS_PER_REVOLUTION.in(Meters.per(Rotations));
 
-    elevatorMotor0.getConfigurator().apply(motorConfig);
-    elevatorMotor1.getConfigurator().apply(motorConfig);
+    elevatorLeader.getConfigurator().apply(motorConfig);
+    elevatorFollower.getConfigurator().apply(motorConfig);
 
-    elevatorMotor1.setControl(new Follower(elevatorMotor0.getDeviceID(), false));
+    elevatorFollower.setControl(new Follower(elevatorLeader.getDeviceID(), false));
   }
 
   /**
@@ -100,7 +103,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @return new command
    */
   public Command manualUpCommand() {
-    return run(() -> move(Volts.of(3.0))).finallyDo(this::stop);
+    return run(() -> move(Volts.of(5.0))).finallyDo(this::stop);
   }
 
   /**
@@ -108,7 +111,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @return new command
    */
   public Command manualDownCommand() {
-    return run(() -> move(Volts.of(-1.0))).finallyDo(this::stop);
+    return run(() -> move(Volts.of(-2.0))).finallyDo(this::stop);
   }
 
   public Command sysIdDynamicCommand(Direction direction) {
@@ -122,20 +125,20 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   private void moveToPosition(Measure<Distance> position) {
-    elevatorMotor0.setControl(motionMagicControl
-        .withPosition(position.in(Meters) * METERS_PER_REVOLUTION)
+    elevatorLeader.setControl(motionMagicControl
+        .withPosition(position.in(Meters) * METERS_PER_REVOLUTION.in(Meters.per(Rotations)))
         .withLimitForwardMotion(isAtTopLimit())
         .withLimitReverseMotion(isAtBottomLimit()));
   }
 
   private void move(Measure<Voltage> volts) {
-    elevatorMotor0.setControl(voltageControl.withOutput(volts.in(Volts))
+    elevatorLeader.setControl(voltageControl.withOutput(volts.in(Volts))
         .withLimitForwardMotion(isAtTopLimit())
         .withLimitReverseMotion(isAtBottomLimit()));
   }
 
   private void stop() {
-    elevatorMotor0.stopMotor();
+    elevatorLeader.stopMotor();
   }
 
 }

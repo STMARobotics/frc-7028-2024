@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.util.Color;
@@ -75,8 +76,8 @@ public class Constants {
         new Translation3d(-0.06, 0.2, -0.2127),
         new Rotation3d(0.0, degreesToRadians(15.0), degreesToRadians(-3.0)));
 
-    public static final double FIELD_LENGTH_METERS = 16.54175;
-    public static final double FIELD_WIDTH_METERS = 8.0137;
+    public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
+    public static final Measure<Distance> FIELD_WIDTH = Meters.of(8.0137);
 
     /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
@@ -106,8 +107,8 @@ public class Constants {
     public static final double kI = 0d;
     public static final double kD = 0d;
     public static final double kFF = 0d;
-    public static final double RUN_SPEED = 8000;
-    public static final double SHOOT_SPEED = 8000;
+    public static final Measure<Velocity<Angle>> RUN_SPEED = RotationsPerSecond.of(30);
+    public static final Measure<Velocity<Angle>> SHOOT_SPEED = RotationsPerSecond.of(30);
   }
 
   public static class ShooterConstants {
@@ -135,8 +136,6 @@ public class Constants {
     public static final float AIM_FORWARD_LIMIT = 0.32f;
     public static final float AIM_REVERSE_LIMIT = 0.0f;
     public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.1); //TODO configure
-    public static final double AIM_CONVERSION_FACTOR = 1.0 / 5.0;
-
   }
 
   public static class IntakeConstants {
@@ -144,7 +143,7 @@ public class Constants {
     public static final int DEVICE_ID_DEPLOY_CANIVORE = 41;
     public static final int DEVICE_ID_ROLLER = 42;
 
-    public static final double DEPLOY_CANCODER_OFFSET = 0.417725;
+    public static final Measure<Angle> DEPLOY_CANCODER_OFFSET = Rotations.of(0.417725);
     public static final double DEPLOY_ROTOR_TO_SENSOR_RATIO = 351.1133117;
     public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.01)
@@ -178,7 +177,7 @@ public class Constants {
     public static int DEVICE_PORT_TOP_LIMIT = 5;
     public static int DEVICE_PORT_BOTTOM_LIMIT = 6;
 
-    public static double METERS_PER_REVOLUTION = 0.001;
+    public static Measure<Per<Distance, Angle>> METERS_PER_REVOLUTION = Meters.per(Rotations).of(0.001);
 
     public static SlotConfigs SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.01)

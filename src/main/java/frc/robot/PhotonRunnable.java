@@ -1,9 +1,10 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static frc.robot.Constants.VisionConstants.APRILTAG_AMBIGUITY_THRESHOLD;
 import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_TO_ROBOT;
-import static frc.robot.Constants.VisionConstants.FIELD_LENGTH_METERS;
-import static frc.robot.Constants.VisionConstants.FIELD_WIDTH_METERS;
+import static frc.robot.Constants.VisionConstants.FIELD_LENGTH;
+import static frc.robot.Constants.VisionConstants.FIELD_WIDTH;
 
 import java.util.function.BiConsumer;
 
@@ -64,8 +65,8 @@ public class PhotonRunnable implements Runnable {
           photonPoseEstimator.update(photonResults).ifPresent(estimatedRobotPose -> {
             var estimatedPose = estimatedRobotPose.estimatedPose;
             // Make sure the measurement is on the field
-            if (estimatedPose.getX() > 0.0 && estimatedPose.getX() <= FIELD_LENGTH_METERS
-                && estimatedPose.getY() > 0.0 && estimatedPose.getY() <= FIELD_WIDTH_METERS) {
+            if (estimatedPose.getX() > 0.0 && estimatedPose.getX() <= FIELD_LENGTH.in(Meters)
+                && estimatedPose.getY() > 0.0 && estimatedPose.getY() <= FIELD_WIDTH.in(Meters)) {
                   poseConsumer.accept(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
             }
           });

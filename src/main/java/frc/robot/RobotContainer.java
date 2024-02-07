@@ -7,19 +7,27 @@ package frc.robot;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
@@ -65,6 +73,7 @@ public class RobotContainer {
     configureDefaultCommands();
     configureButtonBindings();
     populateSysIdDashboard();
+    populateSubsystemDashboard();
   }
 
   private void configureDefaultCommands() {
@@ -104,50 +113,143 @@ public class RobotContainer {
 
   public void populateSysIdDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("SysId");
+    int columnIndex = 0;
     
     // Column 0 Drive
-    tab.add("Drive Quasi Fwd", drivetrain.sysIdDriveQuasiCommand(kForward)).withPosition(0, 0);
-    tab.add("Drive Quasi Rev", drivetrain.sysIdDriveQuasiCommand(kReverse)).withPosition(0, 1);
-    tab.add("Drive Dynam Fwd", drivetrain.sysIdDriveDynamCommand(kForward)).withPosition(0, 2);
-    tab.add("Drive Dynam Rev", drivetrain.sysIdDriveDynamCommand(kReverse)).withPosition(0, 3);
-    tab.add("Slip Test", drivetrain.sysIdDriveSlipCommand()).withPosition(0, 4);
+    tab.add("Drive Quasi Fwd", drivetrain.sysIdDriveQuasiCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Drive Quasi Rev", drivetrain.sysIdDriveQuasiCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Drive Dynam Fwd", drivetrain.sysIdDriveDynamCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Drive Dynam Rev", drivetrain.sysIdDriveDynamCommand(kReverse)).withPosition(columnIndex, 3);
+    tab.add("Slip Test", drivetrain.sysIdDriveSlipCommand()).withPosition(columnIndex, 4);
 
     // Column 1 Steer
-    tab.add("Steer Quasi Fwd", drivetrain.sysIdSteerQuasiCommand(kForward)).withPosition(1, 0);
-    tab.add("Steer Quasi Rev", drivetrain.sysIdSteerQuasiCommand(kReverse)).withPosition(1, 1);
-    tab.add("Steer Dynam Fwd", drivetrain.sysIdSteerDynamCommand(kForward)).withPosition(1, 2);
-    tab.add("Steer Dynam Rev", drivetrain.sysIdSteerDynamCommand(kReverse)).withPosition(1, 3);
+    columnIndex++;
+    tab.add("Steer Quasi Fwd", drivetrain.sysIdSteerQuasiCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Steer Quasi Rev", drivetrain.sysIdSteerQuasiCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Steer Dynam Fwd", drivetrain.sysIdSteerDynamCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Steer Dynam Rev", drivetrain.sysIdSteerDynamCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 2 Intake
-    tab.add("Deploy Quasi Fwd", intakeSubsystem.sysIdDeployQuasistaticCommand(kForward)).withPosition(2, 0);
-    tab.add("Deploy Quasi Rev", intakeSubsystem.sysIdDeployQuasistaticCommand(kReverse)).withPosition(2, 1);
-    tab.add("Roller Dynam Fwd", intakeSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(2, 2);
-    tab.add("Roller Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(2, 3);
+    // Column 2 Rotation
+    columnIndex++;
+    tab.add("Rotate Quasi Fwd", drivetrain.sysIdRotationQuasiCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Rotate Quasi Rev", drivetrain.sysIdRotationQuasiCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Rotate Dynam Fwd", drivetrain.sysIdRotationDynamCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Rotate Dynam Rev", drivetrain.sysIdRotationDynamCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 3 Shooter
-    tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistaticCommand(kForward)).withPosition(3, 0);
-    tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse)).withPosition(3, 1);
-    tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDynamicCommand(kForward)).withPosition(3, 2);
-    tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDynamicCommand(kReverse)).withPosition(3, 3);
+    // Column 3 Intake
+    columnIndex++;
+    tab.add("Deploy Quasi Fwd", intakeSubsystem.sysIdDeployQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Deploy Quasi Rev", intakeSubsystem.sysIdDeployQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Roller Dynam Fwd", intakeSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Roller Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 4 Shooter Aim
-    tab.add("Aim Quasi Fwd", shooterSubsystem.sysIdAimQuasistaticCommand(kForward)).withPosition(4, 0);
-    tab.add("Aim Quasi Rev", shooterSubsystem.sysIdAimQuasistaticCommand(kReverse)).withPosition(4, 1);
-    tab.add("Aim Dynam Fwd", shooterSubsystem.sysIdAimDynamicCommand(kForward)).withPosition(4, 2);
-    tab.add("Aim Dynam Rev", shooterSubsystem.sysIdAimDynamicCommand(kReverse)).withPosition(4, 3);
+    // Column 4 Shooter
+    columnIndex++;
+    tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    //Column 5 Indexer
-    tab.add("Index Quasi Fwd", indexerSubsystem.sysIdIndexerQuasistaticCommand(kForward)).withPosition(5, 0);
-    tab.add("Index Quasi Rev", indexerSubsystem.sysIdIndexerQuasistaticCommand(kReverse)).withPosition(5, 1);
-    tab.add("Index Dynam Fwd", indexerSubsystem.sysIdIndexerDynamicCommand(kForward)).withPosition(5, 2);
-    tab.add("Index Dynam Rev", indexerSubsystem.sysIdIndexerDynamicCommand(kReverse)).withPosition(5, 3);
+    // Column 5 Shooter Aim
+    columnIndex++;
+    tab.add("Aim Quasi Fwd", shooterSubsystem.sysIdAimQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Aim Quasi Rev", shooterSubsystem.sysIdAimQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Aim Dynam Fwd", shooterSubsystem.sysIdAimDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Aim Dynam Rev", shooterSubsystem.sysIdAimDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    //Column 6 Elevator
-    tab.add("Elev Quasi Fwd", elevatorSubsystem.sysIdQuasistaticCommand(kForward)).withPosition(6, 0);
-    tab.add("Elev Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(6, 1);
-    tab.add("Elev Dynam Fwd", elevatorSubsystem.sysIdDynamicCommand(kForward)).withPosition(6, 2);
-    tab.add("Elev Dynam Rev", elevatorSubsystem.sysIdDynamicCommand(kReverse)).withPosition(6, 3);
+    //Column 6 Indexer
+    columnIndex++;
+    tab.add("Index Quasi Fwd", indexerSubsystem.sysIdIndexerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Index Quasi Rev", indexerSubsystem.sysIdIndexerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Index Dynam Fwd", indexerSubsystem.sysIdIndexerDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Index Dynam Rev", indexerSubsystem.sysIdIndexerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
+    //Column 7 Elevator
+    columnIndex++;
+    tab.add("Elev Quasi Fwd", elevatorSubsystem.sysIdQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Elev Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Elev Dynam Fwd", elevatorSubsystem.sysIdDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Elev Dynam Rev", elevatorSubsystem.sysIdDynamicCommand(kReverse)).withPosition(columnIndex, 3);
+
+  }
+
+  public void populateSubsystemDashboard() {
+    var tab = Shuffleboard.getTab("Subsystems");
+
+    // Intake grid
+    var intakeGrid = tab.getLayout("Run Intake", BuiltInLayouts.kGrid)
+        .withPosition(0, 0).withSize(2, 2)
+        .withProperties(Map.of("Number of rows", 2, "Number of columns", 2));
+        
+    // Intake velocity
+    var intakeVelocityWidget = intakeGrid.add("Velocity Intake", 0.0)
+        .withPosition(0, 0);
+    MutableMeasure<Velocity<Angle>> intakeVelocity = MutableMeasure.zero(RotationsPerSecond);
+
+    var intakeVelocityCommand = Commands.run(() -> {
+      var dashboardVelocity = intakeVelocityWidget.getEntry().getDouble(0);
+      intakeVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
+    }).alongWith(intakeSubsystem.runIntakeRollersCommand(intakeVelocity)).withName("Intake Rollers");
+
+    intakeGrid.add(intakeVelocityCommand).withPosition(1, 0);
+
+    // Intake position
+    var intakePositionWidget = intakeGrid.add("Position", 0.0)
+        .withPosition(0, 1);
+    MutableMeasure<Angle> intakePosition = MutableMeasure.zero(Rotations);
+
+    var intakePositionCommand = Commands.run(() -> {
+      var dashboardPosition = intakePositionWidget.getEntry().getDouble(0);
+      intakePosition.mut_replace(dashboardPosition, Rotations);
+    }).alongWith(intakeSubsystem.setIntakePosition(intakePosition)).withName("Intake Deploy");
+
+    intakeGrid.add(intakePositionCommand).withPosition(1, 1);
+
+    // Indexer grid
+    var indexerGrid = tab.getLayout("Run Indexer", BuiltInLayouts.kGrid)
+        .withPosition(2, 0).withSize(2, 1)
+        .withProperties(Map.of("Number of rows", 1, "Number of columns", 2));
+
+    // Indexer velocity
+    var indexerVelocityWidget = indexerGrid.add("Velocity Indexer", 0.0)
+        .withPosition(0, 0);
+    MutableMeasure<Velocity<Angle>> indexerVelocity = MutableMeasure.zero(RotationsPerSecond);
+    
+    var indexerVelocityCommand = Commands.run(() -> {
+      var dashboardVelocity = indexerVelocityWidget.getEntry().getDouble(0);
+      indexerVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
+    }).alongWith(indexerSubsystem.runCommand(indexerVelocity)).withName("Indexer Velocity");
+
+    indexerGrid.add(indexerVelocityCommand).withPosition(1, 0);
+
+    // Shooter grid
+    var shooterGrid = tab.getLayout("Run Shooter", BuiltInLayouts.kGrid)
+        .withPosition(4, 0).withSize(2, 2)
+        .withProperties(Map.of("Number of rows", 2, "Number of columns", 2));
+    
+    // Shooter velocity
+    var shooterVelocityWidget = shooterGrid.add("Velocity Shooter", 0.0)
+        .withPosition(0, 0);
+    MutableMeasure<Velocity<Angle>> shooterVelocity = MutableMeasure.zero(RotationsPerSecond);
+    
+    var shooterVelocityCommand = Commands.run(() -> {
+      var dashboardVelocity = shooterVelocityWidget.getEntry().getDouble(0);
+      shooterVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
+    }).alongWith(shooterSubsystem.spinShooterCommand(shooterVelocity)).withName("Shooter Velocity");
+
+    shooterGrid.add(shooterVelocityCommand).withPosition(1, 0);
+
+    // Shooter Position
+    var shooterPositoinWidget = shooterGrid.add("Position Shooter", 0.0)
+        .withPosition(0, 1);
+    MutableMeasure<Angle> shooterPosition = MutableMeasure.zero(Rotations);
+    
+    var shooterPositionCommand = Commands.run(() -> {
+      var dashboardPosition = shooterPositoinWidget.getEntry().getDouble(0);
+      shooterPosition.mut_replace(dashboardPosition, Rotations);
+    }).alongWith(shooterSubsystem.setAimAngleCommand(shooterPosition)).withName("Shooter Position");
+
+    shooterGrid.add(shooterPositionCommand).withPosition(1, 1);
   }
 
   public Command getAutonomousCommand() {

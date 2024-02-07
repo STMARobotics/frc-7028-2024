@@ -40,6 +40,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -79,7 +82,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     // Configure the deploy CANCoder
     var canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.MagnetOffset = DEPLOY_CANCODER_OFFSET;
+    canCoderConfig.MagnetSensor.MagnetOffset = DEPLOY_CANCODER_OFFSET.in(Rotations);
     canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     deployCanCoder.getConfigurator().apply(canCoderConfig);
 
@@ -144,6 +147,24 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public Command runIntakeRollersCommand() {
     return run(this::rollerIntake).finallyDo(this::stopRoller);
+  }
+
+  /**
+   * Returns a new command to run the intake rollers
+   * @param velocity target velocity
+   * @return new command
+   */
+  public Command runIntakeRollersCommand(Measure<Velocity<Angle>> velocity) {
+    return run(() -> this.rollerIntake(velocity)).finallyDo(this::stopRoller);
+  }
+
+  /**
+   * Returns a new command to set the intake position
+   * @param position target position
+   * @return new command
+   */
+  public Command setIntakePosition(Measure<Angle> position) {
+    return run(() -> this.setIntakePosition(position)).finallyDo(this::stopRoller);
   }
 
   /**
@@ -220,7 +241,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   private void rollerIntake() {
-    rollerMotor.setControl(rollerControl.withVelocity(ROLLER_INTAKE_VELOCITY.in(RotationsPerSecond)));
+    rollerIntake(ROLLER_INTAKE_VELOCITY);
+  }
+
+  private void rollerIntake(Measure<Velocity<Angle>> velocity) {
+    rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
   }
 
   private void rollerReverse() {
