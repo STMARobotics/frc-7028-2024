@@ -2,7 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAME;
+import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAMES;
+import static frc.robot.Constants.VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS;
 
 import java.util.function.Supplier;
 
@@ -42,12 +43,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private static final Rotation2d redAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
   private static final Rotation2d blueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
 
+
+  private final Thread photonThread =
+      new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAMES, ROBOT_TO_CAMERA_TRANSFORMS, this::addVisionMeasurement));
+
   private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
   private final SwerveRequest.SysIdSwerveTranslation translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
   private final SwerveRequest.SysIdSwerveRotation rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
   private final SwerveRequest.SysIdSwerveSteerGains steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
-
-  private final Thread photonThread = new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAME, this::addVisionMeasurement));
 
   private final SysIdRoutine translationSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
