@@ -68,6 +68,7 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_SLOT_CONFIGS);
     shooterMotorConfig.MotorOutput.NeutralMode = Coast;
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    shooterMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 1;
     shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
     shooterLeftMotor.getConfigurator().apply(shooterMotorConfig);
 

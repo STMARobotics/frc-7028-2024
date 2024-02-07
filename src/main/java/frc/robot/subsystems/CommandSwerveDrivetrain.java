@@ -2,7 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAME;
+import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAMES;
+import static frc.robot.Constants.VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS;
 
 import java.util.function.Supplier;
 
@@ -15,10 +16,12 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,31 +32,41 @@ import frc.robot.Constants.AutoDriveConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.PhotonRunnable;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
-import frc.robot.subsystems.sysid.VoltageSwerveRequest;
 
 /**
- * Class that extends the Phoenix SwerveDrivetrain class and implements
- * subsystem
+ * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
  * so it can be used in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
 
+  /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
+  private static final Rotation2d redAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
+  private static final Rotation2d blueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
+
+
+  private final Thread photonThread =
+      new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAMES, ROBOT_TO_CAMERA_TRANSFORMS, this::addVisionMeasurement));
+
   private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
-  private final Thread photonThread = new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAME, this::addVisionMeasurement));
+  private final SwerveRequest.SysIdSwerveTranslation translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
+  private final SwerveRequest.SysIdSwerveRotation rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+  private final SwerveRequest.SysIdSwerveSteerGains steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
 
-  private VoltageSwerveRequest voltageRequest = new VoltageSwerveRequest();
-
-  private SysIdRoutine m_driveSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine translationSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism((volts) -> setControl(voltageRequest.withDriveVoltage(volts)), null, this));
+      new SysIdRoutine.Mechanism((volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
 
-  private SysIdRoutine m_steerSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine steerSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism((volts) -> setControl(voltageRequest.withSteerVoltage(volts)), null, this));
+      new SysIdRoutine.Mechanism((volts) -> setControl(steerCharacterization.withVolts(volts)), null, this));
 
-  private SysIdRoutine m_slipSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine rotationSysIdRoutine  = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism((volts) -> setControl(voltageRequest.withDriveVoltage(volts)), null, this));
+      new SysIdRoutine.Mechanism((volts) -> setControl(rotationCharacterization.withVolts(volts)), null, this));
+      
+  private final SysIdRoutine slipSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
 
   public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     super(driveTrainConstants, modules);
@@ -65,6 +78,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     photonThread.start();
 
     configurePathPlanner();
+  }
+
+  @Override
+  public void periodic() {
+    /* When we get alliance data from Driver Station, forward it to the drivetrain so it knows what perspective is forward for operator control */
+    DriverStation.getAlliance().ifPresent(alliance -> setOperatorPerspectiveForward(
+        alliance == Alliance.Red ? redAlliancePerspectiveRotation : blueAlliancePerspectiveRotation));
   }
 
   private void configurePathPlanner() {
@@ -94,7 +114,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public void simulationPeriodic() {
     /* Assume 20ms update rate, get battery voltage from WPILib */
     updateSimState(0.02, RobotController.getBatteryVoltage());
-    SmartDashboard.putString("Command", getCurrentCommand() == null ? "" : getCurrentCommand().getName());
+    SmartDashboard.putString("Command", getCurrentCommand() == null ? "" :getCurrentCommand().getName());
   }
 
   public ChassisSpeeds getCurrentRobotChassisSpeeds() {
@@ -102,27 +122,37 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   public Command sysIdDriveQuasiCommand(Direction direction) {
-    return m_driveSysIdRoutine.quasistatic(direction).withName("SysId Drive Quasistatic " + direction)
+    return translationSysIdRoutine.quasistatic(direction).withName("SysId Drive Quasistatic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
 
   public Command sysIdDriveDynamCommand(SysIdRoutine.Direction direction) {
-    return m_driveSysIdRoutine.dynamic(direction).withName("SysId Drive Dynamic " + direction)
+    return translationSysIdRoutine.dynamic(direction).withName("SysId Drive Dynamic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
 
   public Command sysIdSteerQuasiCommand(Direction direction) {
-    return m_steerSysIdRoutine.quasistatic(direction).withName("SysId Steer Quasistatic " + direction)
+    return steerSysIdRoutine.quasistatic(direction).withName("SysId Steer Quasistatic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
 
   public Command sysIdSteerDynamCommand(SysIdRoutine.Direction direction) {
-    return m_steerSysIdRoutine.dynamic(direction).withName("SysId Steer Dynamic " + direction)
+    return steerSysIdRoutine.dynamic(direction).withName("SysId Steer Dynamic " + direction)
+        .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
+  }
+
+  public Command sysIdRotationDynamCommand(SysIdRoutine.Direction direction) {
+    return rotationSysIdRoutine.dynamic(direction).withName("SysId Rotate Dynamic " + direction)
+        .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
+  }
+
+  public Command sysIdRotationQuasiCommand(SysIdRoutine.Direction direction) {
+    return rotationSysIdRoutine.quasistatic(direction).withName("SysId Rotate Quasistatic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
 
   public Command sysIdDriveSlipCommand() {
-    return m_slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withName("SysId Drive Slip")
+    return slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward).withName("SysId Drive Slip")
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds()));
   }
 

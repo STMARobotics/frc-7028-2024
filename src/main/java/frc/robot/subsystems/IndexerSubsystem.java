@@ -37,8 +37,8 @@ public class IndexerSubsystem extends SubsystemBase {
   private final ColorMatch indexerColorMatch = new ColorMatch();
 
   public IndexerSubsystem() {
-    leftPidController = indexerMotorConfig(leftIndexerMotor, true);
-    rightPidController = indexerMotorConfig(rightIndexerMotor, false);
+    leftPidController = indexerMotorConfig(leftIndexerMotor, false);
+    rightPidController = indexerMotorConfig(rightIndexerMotor, true);
 
     indexerColorMatch.addColorMatch(COLOR_NOTE);
     indexerColorMatch.addColorMatch(COLOR_NONE);
