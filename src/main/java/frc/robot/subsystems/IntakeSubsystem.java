@@ -61,12 +61,13 @@ public class IntakeSubsystem extends SubsystemBase {
     canCoder.getConfigurator().apply(canCoderConfig);
   }
 
-  private final VelocityTorqueCurrentFOC IntakeRollersMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
+  private final VelocityTorqueCurrentFOC IntakeRollersMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false,
+      false,
       false);
 
-  private final VelocityTorqueCurrentFOC IntakeDeployMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
+  private final VelocityTorqueCurrentFOC IntakeDeployMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false,
+      false,
       false);
-
 
   /**
    * Example command factory method.
@@ -82,17 +83,17 @@ public class IntakeSubsystem extends SubsystemBase {
           deployMotor.setControl(IntakeRollersMotorVelocity.withVelocity(1));
         });
   }
+
   public void deploy(double rps) {
     deployMotor.setControl(IntakeDeployMotorVelocity.withVelocity(rps));
   }
-
 
   // Spit means to reverse the motor direction to 'spit' the game piece out
   /**
    * @return
    */
   public void spit(double rps) {
-    deployMotor.setControl(IntakeRollersMotorVelocity.withVelocity(0-rps));
+    deployMotor.setControl(IntakeRollersMotorVelocity.withVelocity(0 - rps));
   }
 
   public Command sysIdDeployMotorQuasiCommand(Direction direction) {
@@ -116,31 +117,31 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void stop() {
-          // READ THIS!!!!!
-          // IDK what the motor velocity number should actually be, just set it to 0 for
-          // now
-          deployMotor.setControl(IntakeDeployMotorVelocity.withVelocity(0));
-          RollersMotor.setControl(IntakeRollersMotorVelocity.withVelocity(0));
-        }
-
-    // Cringe example things I think I should keep
-    /// **
-    // * An example method querying a boolean state of the subsystem (for example, a
-    // digital sensor).
-    // *
-    // * @return value of some boolean subsystem state, such as a digital sensor.
-    // */
-    // public boolean exampleCondition() {
-    // // Query some boolean state, such as a digital sensor.
-    // return false;
-    // }
-    //
-    // @Override
-    // public void periodic() {
-    // // This method will be called once per scheduler run
-    // }
-    //
-    // @Override
-    // public void simulationPeriodic() {
-    // // This method will be called once per scheduler run during simulation
+    // READ THIS!!!!!
+    // IDK what the motor velocity number should actually be, just set it to 0 for
+    // now
+    deployMotor.setControl(IntakeDeployMotorVelocity.withVelocity(0));
+    RollersMotor.setControl(IntakeRollersMotorVelocity.withVelocity(0));
   }
+
+  // Cringe example things I think I should keep
+  /// **
+  // * An example method querying a boolean state of the subsystem (for example, a
+  // digital sensor).
+  // *
+  // * @return value of some boolean subsystem state, such as a digital sensor.
+  // */
+  // public boolean exampleCondition() {
+  // // Query some boolean state, such as a digital sensor.
+  // return false;
+  // }
+  //
+  // @Override
+  // public void periodic() {
+  // // This method will be called once per scheduler run
+  // }
+  //
+  // @Override
+  // public void simulationPeriodic() {
+  // // This method will be called once per scheduler run during simulation
+}

@@ -11,12 +11,11 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbSubsystem extends SubsystemBase {
-  
+
   private final TalonFX climbConfig = new TalonFX(DEVICE_ID_FIRST_STAGE_CLIMB);
 
   public ClimbSubsystem() {
 
-  
     climbConfig.setSafetyEnabled(true);
     climbConfig.setNeutralMode(NeutralModeValue.Brake);
     climbConfig.getConfigurator().apply(new TalonFXConfiguration());
@@ -24,7 +23,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public void addDriverDashboardWidgets(ShuffleboardTab driverTab) {
     driverTab.addBoolean("Climb Down", () -> !this.isFirstStageRaised()).withWidget(BuiltInWidgets.kBooleanBox)
-         .withPosition(11, 0).withSize(0, 0);
+        .withPosition(11, 0).withSize(0, 0);
   }
 
   public void stopFirstStage() {
@@ -35,6 +34,6 @@ public class ClimbSubsystem extends SubsystemBase {
     var rotorPosSignal = climbConfig.getRotorPosition();
     var rotorPos = rotorPosSignal.getValue();
     assert rotorPos > 3000;
-      return true;
+    return true;
   }
 }

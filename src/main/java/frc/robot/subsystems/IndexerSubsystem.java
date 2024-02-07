@@ -118,6 +118,7 @@ public class IndexerSubsystem extends SubsystemBase {
     leftIndexerMotor.setVoltage(volts.in(Volts));
     rightIndexerMotor.setVoltage(volts.in(Volts));
   }
+
   public void stop() {
     leftIndexerMotor.setVoltage(0);
     rightIndexerMotor.setVoltage(0);

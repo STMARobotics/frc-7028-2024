@@ -28,18 +28,18 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
+  private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
 
-private final TalonFX elevatorLeader = new TalonFX(ElevatorConstants.ELEVATOR_LEADER_ID, CANIVORE_BUS_NAME);
-private final TalonFX elevatorFollower = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID, CANIVORE_BUS_NAME);
+  private final TalonFX elevatorLeader = new TalonFX(ElevatorConstants.ELEVATOR_LEADER_ID, CANIVORE_BUS_NAME);
+  private final TalonFX elevatorFollower = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID, CANIVORE_BUS_NAME);
 
-private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
-    new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
-    new SysIdRoutine.Mechanism((volts) -> {
-      elevatorLeader.setControl(voltageRequest.withOutput(volts.in(Volts)));
-    }, null, this));
+  private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((volts) -> {
+        elevatorLeader.setControl(voltageRequest.withOutput(volts.in(Volts)));
+      }, null, this));
 
-// Elevator travel distance, in meters
+  // Elevator travel distance, in meters
   private static final double ELEVATOR_HEIGHT = 1.002;
 
   // Motor's encoder limits, in encoder ticks
@@ -54,7 +54,6 @@ private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
 
   private static final double GRAVITY_FEED_FORWARD = 0.05;
 
-
   // Limit switches - FALSE means at limit
   private final DigitalInput topLimitSwitch = new DigitalInput(8);
   private final DigitalInput bottomLimitSwitch = new DigitalInput(9);
@@ -62,15 +61,15 @@ private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
   private double targetPosition = 0;
 
   public ElevatorSubsystem() {
-  elevatorLeader.getConfigurator().apply(new TalonFXConfiguration());
-  elevatorFollower.getConfigurator().apply(new TalonFXConfiguration());
+    elevatorLeader.getConfigurator().apply(new TalonFXConfiguration());
+    elevatorFollower.getConfigurator().apply(new TalonFXConfiguration());
 
     // Configure potentiometer
 
     // Configure closed-loop control
     double kP = 0.13;
     double kI = 0;
-    double kD = 0; 
+    double kD = 0;
     double kV = 0.12;
     double kIz = 0;
     double kS = 0.25;
@@ -103,7 +102,7 @@ private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
     } else if (isAtTopLimit()) {
       elevatorLeader.setPosition(MOTOR_TOP);
     }
-    
+
     // Retrieve the profiled setpoint for the next timestep. This setpoint moves
     // toward the goal while obeying the constraints.
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
@@ -118,6 +117,7 @@ private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
     targetPosition = meters;
     elevatorLeader.set(meters);
   }
+
   public Command sysIdElevatorQuasiCommand(Direction direction) {
     return elavatorSysidRoutine.quasistatic(direction).withName("SysId Shooter Motors Quasistatic " + direction)
         .finallyDo(this::stop);
@@ -168,16 +168,12 @@ private SysIdRoutine elavatorSysidRoutine = new SysIdRoutine(
   }
 
   private static double kDt = 0.02;
-  
 
   // Create a motion profile with the given maximum velocity and maximum
   // acceleration constraints for the next setpoint.
-  private final TrapezoidProfile m_profile =
-      new TrapezoidProfile(new TrapezoidProfile.Constraints(1.75, 0.75));
+  private final TrapezoidProfile m_profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(1.75, 0.75));
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_feedforward = new TrapezoidProfile.State();
 
-
-  
 }

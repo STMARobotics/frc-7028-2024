@@ -11,8 +11,6 @@ import static frc.robot.Constants.ShooterConstants.SHOOTER_SLOT_CONFIGS;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_OFFSET;
 import static frc.robot.Constants.ShooterConstants.WRIST_POSITION_OFFSET;
 
-import java.util.Objects;
-
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
@@ -32,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
-
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterLeftMotor = new TalonFX(DEVICE_ID_SHOOTER_LEFT, CANIVORE_BUS_NAME);
@@ -169,10 +166,6 @@ public class ShooterSubsystem extends SubsystemBase {
     var target = MathUtil.clamp(radians, LIMIT_BOTTOM_RADIANS, LIMIT_TOP_RADIANS);
     // Set the target position, but move in execute() so feed forward keeps updating
     var newGoal = new TrapezoidProfile.State(target, 0.0);
-    if (!Objects.equals(newGoal, goal)) {
-      var currentState = new TrapezoidProfile.State(getWristPosition(), 0);
-      new TrapezoidProfile(PROFILE_CONSTRAINTS);
-    }
     goal = newGoal;
   }
 

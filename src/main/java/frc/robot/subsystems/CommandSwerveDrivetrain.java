@@ -32,7 +32,8 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 import frc.robot.subsystems.sysid.VoltageSwerveRequest;
 
 /**
- * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
+ * Class that extends the Phoenix SwerveDrivetrain class and implements
+ * subsystem
  * so it can be used in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
@@ -93,7 +94,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public void simulationPeriodic() {
     /* Assume 20ms update rate, get battery voltage from WPILib */
     updateSimState(0.02, RobotController.getBatteryVoltage());
-    SmartDashboard.putString("Command", getCurrentCommand() == null ? "" :getCurrentCommand().getName());
+    SmartDashboard.putString("Command", getCurrentCommand() == null ? "" : getCurrentCommand().getName());
   }
 
   public ChassisSpeeds getCurrentRobotChassisSpeeds() {

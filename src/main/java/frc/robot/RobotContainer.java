@@ -94,8 +94,8 @@ public class RobotContainer {
         () -> intakeSubsystem.intakeRollers(), intakeSubsystem::stop, intakeSubsystem)));
     controlBindings.deployIntake().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(
         () -> intakeSubsystem.deploy(1), intakeSubsystem::stop, intakeSubsystem)));
-    
-        // elevator
+
+    // elevator
     controlBindings.elevatorVelocity().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(
         () -> elevatorSubsystem.moveElevator(1), elevatorSubsystem::stop, elevatorSubsystem)));
   }

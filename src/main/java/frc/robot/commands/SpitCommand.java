@@ -20,7 +20,7 @@ public class SpitCommand extends Command {
 
   @Override
   public void execute() {
-    intakeSubsystem.Spit();
+    intakeSubsystem.spit(1);
     shootTimer.start();
   }
 

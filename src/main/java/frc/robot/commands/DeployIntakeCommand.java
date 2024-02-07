@@ -24,7 +24,7 @@ public class DeployIntakeCommand extends Command {
 
   @Override
   public void execute() {
-    intakeSubsystem.deploy();
+    intakeSubsystem.deploy(1);
     deployTimer.start();
   }
 
