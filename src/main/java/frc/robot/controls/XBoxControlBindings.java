@@ -31,22 +31,48 @@ public class XBoxControlBindings implements ControlBindings {
   public Supplier<Measure<Velocity<Distance>>> translationX() {
     return () -> MAX_VELOCITY.times(-modifyAxis(driverController.getLeftY()));
   }
+
+  @Override
+  public Optional<Trigger> intakeRollers() {
+    return Optional.of(driverController.leftTrigger());
+  }
+  @Override
+  public Optional<Trigger> indexerRun() {
+    return Optional.of(driverController.x());
+  }
+  @Override
+  public Optional<Trigger> elevatorVelocity() {
+    return Optional.of(driverController.leftBumper());
+  }
   
+  @Override
+  public Optional<Trigger> shootDutyCycle() {
+    return Optional.of(driverController.rightTrigger());
+  }
+  @Override
+  public Optional<Trigger> deployIntake() {
+    return Optional.of(driverController.rightBumper());
+  }
+  @Override
+  public Optional<Trigger> spit() {
+    return Optional.of(driverController.a());
+  }
+
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
     return () -> MAX_VELOCITY.times(-modifyAxis(driverController.getLeftX()));
   }
-  
+
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
     return () -> MAX_ANGULAR_VELOCITY.times(-modifyAxis(driverController.getRightX() * 0.8));
   }
-  
+
   private static double modifyAxis(double value) {
     // Square the axis
     value = Math.copySign(value * value, value);
 
     return value;
   }
-  
+
 }

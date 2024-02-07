@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
@@ -72,8 +74,30 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+
+    // drive
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(driveTrain.applyRequest(() -> brake)));
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(driveTrain.runOnce(driveTrain::seedFieldRelative)));
+
+    // shooter
+    controlBindings.shootDutyCycle().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+        () -> shooterSubsystem.shootDutyCycle(1), shooterSubsystem::stop, shooterSubsystem)));
+
+    // indexer
+    controlBindings.indexerRun().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+        () -> indexerSubsystem.fireDonut(Volts.of(3)), indexerSubsystem::stop, indexerSubsystem)));
+
+    // intake
+    controlBindings.spit().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+        () -> intakeSubsystem.spit(1), intakeSubsystem::stop, intakeSubsystem)));
+    controlBindings.intakeRollers().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+        () -> intakeSubsystem.intakeRollers(), intakeSubsystem::stop, intakeSubsystem)));
+    controlBindings.deployIntake().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(
+        () -> intakeSubsystem.deploy(1), intakeSubsystem::stop, intakeSubsystem)));
+    
+        // elevator
+    controlBindings.elevatorVelocity().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(
+        () -> elevatorSubsystem.moveElevator(1), elevatorSubsystem::stop, elevatorSubsystem)));
   }
 
   public Command getAutonomousCommand() {
