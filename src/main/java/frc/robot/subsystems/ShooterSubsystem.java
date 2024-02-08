@@ -17,6 +17,7 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -25,10 +26,13 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -47,10 +51,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean hasRing = false;
   private SparkAbsoluteEncoder actuatorEncoder;
   private final SparkPIDController pidController;
-
-  // Offset in rotations to add to encoder value - offset from arm horizontal to
-  // sensor zero
-
   private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
 
   private SysIdRoutine shooterMotorSysIdRoutine = new SysIdRoutine(
@@ -80,23 +80,20 @@ public class ShooterSubsystem extends SubsystemBase {
     pidController = actuatorMotor.getPIDController();
     pidController.setFeedbackDevice(actuatorEncoder);
 
-    double kP = 3.9;
-    double kI = 0;
-    double kD = 0;
-    double kIz = 0;
-    double kFF = 0;
-    double kMaxOutput = .4;
-    double kMinOutput = -.3;
-
-    pidController.setP(kP);
-    pidController.setI(kI);
-    pidController.setD(kD);
-    pidController.setIZone(kIz);
-    pidController.setFF(kFF);
-    pidController.setOutputRange(kMinOutput, kMaxOutput);
-    pidController.setPositionPIDWrappingMaxInput(1);
-    pidController.setPositionPIDWrappingMinInput(0);
-    pidController.setPositionPIDWrappingEnabled(true);
+  }
+  private static SparkPIDController indexerMotorConfig(CANSparkMax sparkMax, boolean invert) {
+    SparkPIDController pidController = sparkMax.getPIDController();
+    sparkMax.restoreFactoryDefaults();
+    sparkMax.enableVoltageCompensation(12);
+    sparkMax.setOpenLoopRampRate(0.1);
+    sparkMax.setClosedLoopRampRate(0.1);
+    sparkMax.setInverted(invert);
+    pidController.setP(IndexerConstants.BELT_kP);
+    pidController.setFF(0.00009);
+    sparkMax.getEncoder();
+    sparkMax.burnFlash();
+    sparkMax.setIdleMode(IdleMode.kCoast);
+    return pidController;
 
   }
 
@@ -130,6 +127,15 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public double getWristPosition() {
     return Units.rotationsToRadians(actuatorEncoder.getPosition() + ENCODER_OFFSET);
+  }
+
+  public void actuatorUp(Measure<Voltage> volts) {
+    indexerMotorConfig(actuatorMotor, true);
+    actuatorMotor.setVoltage(volts.in(Volts));
+  }
+  public void actuatorDown(Measure<Voltage> volts) {
+    indexerMotorConfig(actuatorMotor, false);
+    actuatorMotor.setVoltage(volts.in(Volts));
   }
 
   /**

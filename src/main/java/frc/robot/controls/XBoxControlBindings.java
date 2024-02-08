@@ -43,6 +43,21 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> actuatorDown() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> actuatorUp() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> runShooterMotor() {
+    return Optional.of(driverController.leftBumper());
+  }
+
+  @Override
   public Optional<Trigger> elevatorVelocity() {
     return Optional.empty();
   }
@@ -61,10 +76,12 @@ public class XBoxControlBindings implements ControlBindings {
   public Optional<Trigger> spit() {
     return Optional.of(driverController.a());
   }
+
   @Override
   public Optional<Trigger> evilDeploy() {
     return Optional.of(driverController.b());
   }
+
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
     return () -> MAX_VELOCITY.times(-modifyAxis(driverController.getLeftX()));
