@@ -27,6 +27,7 @@ public class DeployIntakeCommand extends Command {
   @Override
   public void execute() {
     intakeSubsystem.deploy(Volts.of(3));
+    intakeSubsystem.intakeRollers(Volts.of(3));
     deployTimer.start();
   }
 

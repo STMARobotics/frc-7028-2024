@@ -19,6 +19,9 @@ public interface ControlBindings {
   Optional<Trigger> deployIntake();
   Optional<Trigger> evilDeploy();
   Optional<Trigger> indexerRun();
+  Optional<Trigger> actuatorUp();
+  Optional<Trigger> actuatorDown();
+  Optional<Trigger> runShooterMotor();
   Supplier<Measure<Velocity<Distance>>> translationX();
   Supplier<Measure<Velocity<Distance>>> translationY();
   Supplier<Measure<Velocity<Angle>>> omega();
