@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -24,7 +26,7 @@ public class DeployIntakeCommand extends Command {
 
   @Override
   public void execute() {
-    intakeSubsystem.deploy(1);
+    intakeSubsystem.deploy(Volts.of(3));
     deployTimer.start();
   }
 

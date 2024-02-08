@@ -17,6 +17,7 @@ public interface ControlBindings {
   Optional<Trigger> spit();
   Optional<Trigger> intakeRollers();
   Optional<Trigger> deployIntake();
+  Optional<Trigger> evilDeploy();
   Optional<Trigger> indexerRun();
   Supplier<Measure<Velocity<Distance>>> translationX();
   Supplier<Measure<Velocity<Distance>>> translationY();

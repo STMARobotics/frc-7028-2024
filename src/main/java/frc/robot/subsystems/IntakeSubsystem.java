@@ -22,8 +22,11 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -51,6 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
     var intakeRollersConfig = new TalonFXConfiguration();
     var intakeDeployConfig = new TalonFXConfiguration();
     intakeRollersConfig.Slot0 = Slot0Configs.from(ROLLERS_SLOT_CONFIGS);
+    intakeRollersConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     RollersMotor.getConfigurator().apply(intakeRollersConfig);
     intakeDeployConfig.Slot0 = Slot0Configs.from(DEPLOY_SLOT_CONFIGS);
     deployMotor.getConfigurator().apply(intakeDeployConfig);
@@ -74,18 +78,24 @@ public class IntakeSubsystem extends SubsystemBase {
    *
    * @return a command
    */
-  public Command intakeRollers() {
-    return runOnce(
-        () -> {
-          // READ THIS!!!!!
-          // IDK what the motor velocity number should actually be, just set it to 1 for
-          // now
-          deployMotor.setControl(IntakeRollersMotorVelocity.withVelocity(1));
-        });
+  public void intakeRollers(Measure<Voltage> volts) {
+    RollersMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
   }
 
-  public void deploy(double rps) {
-    deployMotor.setControl(IntakeDeployMotorVelocity.withVelocity(rps));
+  public void deploy(Measure<Voltage> volts) {
+    var intakeDeployConfig = new TalonFXConfiguration();
+    intakeDeployConfig.Slot0 = Slot0Configs.from(DEPLOY_SLOT_CONFIGS);
+    intakeDeployConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    deployMotor.getConfigurator().apply(intakeDeployConfig);
+    deployMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
+  }
+
+  public void evilDeploy(Measure<Voltage> volts) {
+    var intakeDeployConfig = new TalonFXConfiguration();
+    intakeDeployConfig.Slot0 = Slot0Configs.from(DEPLOY_SLOT_CONFIGS);
+    intakeDeployConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    deployMotor.getConfigurator().apply(intakeDeployConfig);
+    deployMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
   }
 
   // Spit means to reverse the motor direction to 'spit' the game piece out

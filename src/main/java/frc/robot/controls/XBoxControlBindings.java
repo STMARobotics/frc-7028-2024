@@ -36,28 +36,35 @@ public class XBoxControlBindings implements ControlBindings {
   public Optional<Trigger> intakeRollers() {
     return Optional.of(driverController.leftTrigger());
   }
+
   @Override
   public Optional<Trigger> indexerRun() {
     return Optional.of(driverController.x());
   }
+
   @Override
   public Optional<Trigger> elevatorVelocity() {
-    return Optional.of(driverController.leftBumper());
+    return Optional.empty();
   }
-  
+
   @Override
   public Optional<Trigger> shootDutyCycle() {
     return Optional.of(driverController.rightTrigger());
   }
+
   @Override
   public Optional<Trigger> deployIntake() {
     return Optional.of(driverController.rightBumper());
   }
+
   @Override
   public Optional<Trigger> spit() {
     return Optional.of(driverController.a());
   }
-
+  @Override
+  public Optional<Trigger> evilDeploy() {
+    return Optional.of(driverController.b());
+  }
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
     return () -> MAX_VELOCITY.times(-modifyAxis(driverController.getLeftX()));

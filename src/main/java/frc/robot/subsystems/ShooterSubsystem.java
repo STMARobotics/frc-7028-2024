@@ -67,10 +67,11 @@ public class ShooterSubsystem extends SubsystemBase {
     var shooterMotorConfig = new TalonFXConfiguration();
     shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_SLOT_CONFIGS);
     shooterMotorConfig.MotorOutput.NeutralMode = Coast;
-    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     shooterMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 1;
-    shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
+    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     shooterLeftMotor.getConfigurator().apply(shooterMotorConfig);
+    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
 
     // Get the through-bore-encoder absolute encoder
     actuatorEncoder = actuatorMotor.getAbsoluteEncoder(kDutyCycle);

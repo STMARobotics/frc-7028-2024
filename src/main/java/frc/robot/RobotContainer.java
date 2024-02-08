@@ -91,9 +91,11 @@ public class RobotContainer {
     controlBindings.spit().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
         () -> intakeSubsystem.spit(1), intakeSubsystem::stop, intakeSubsystem)));
     controlBindings.intakeRollers().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.intakeRollers(), intakeSubsystem::stop, intakeSubsystem)));
-    controlBindings.deployIntake().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(
-        () -> intakeSubsystem.deploy(1), intakeSubsystem::stop, intakeSubsystem)));
+        () -> intakeSubsystem.intakeRollers(Volts.of(3)), intakeSubsystem::stop, intakeSubsystem)));
+    controlBindings.deployIntake().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+        () -> intakeSubsystem.deploy(Volts.of(3)), intakeSubsystem::stop, intakeSubsystem)));
+    controlBindings.evilDeploy().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+        () ->intakeSubsystem.evilDeploy(Volts.of(3)), intakeSubsystem::stop, intakeSubsystem)));
 
     // elevator
     controlBindings.elevatorVelocity().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(
