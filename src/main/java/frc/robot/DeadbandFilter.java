@@ -1,7 +1,8 @@
 package frc.robot;
 
 /**
- * A filter that can handle a deadband, useful for joysticks that don't center at exactly 0.
+ * A filter that can handle a deadband, useful for joysticks that don't center
+ * at exactly 0.
  */
 public class DeadbandFilter {
 
@@ -10,6 +11,7 @@ public class DeadbandFilter {
 
   /**
    * Constructor. Values above the low and below high limit are filtered to zero.
+   * 
    * @param low  low limit
    * @param high high limit
    */
@@ -20,6 +22,7 @@ public class DeadbandFilter {
 
   /**
    * Gets the high limit
+   * 
    * @return the high limit
    */
   public double getHigh() {
@@ -28,6 +31,7 @@ public class DeadbandFilter {
 
   /**
    * Gets the low limit
+   * 
    * @return the low limit
    */
   public double getZoneLow() {
@@ -36,8 +40,10 @@ public class DeadbandFilter {
 
   /**
    * Applies the filter to a value
+   * 
    * @param value value to filter
-   * @return zero if the given value is within the deadband, otherwise the original value
+   * @return zero if the given value is within the deadband, otherwise the
+   *         original value
    */
   public double calculate(double value) {
     if (value > this.low && value < this.high) {

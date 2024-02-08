@@ -32,9 +32,10 @@ public class PhotonRunnable implements Runnable {
   private final PhotonPoseEstimator[] photonPoseEstimators;
   // Array of subscribers for camera subtables
   private final RawSubscriber[] rawBytesSubscribers;
-  // Array of subscriber wait handles for camera subtables, used to lookup camera index from wait handle
+  // Array of subscriber wait handles for camera subtables, used to lookup camera
+  // index from wait handle
   private final int[] waitHandles;
-  
+
   // Consumer of pose estimates
   private final BiConsumer<Pose2d, Double> poseConsumer;
 
@@ -84,7 +85,7 @@ public class PhotonRunnable implements Runnable {
             // Make sure the measurement is on the field
             if (estimatedPose.getX() > 0.0 && estimatedPose.getX() <= FIELD_LENGTH.in(Meters)
                 && estimatedPose.getY() > 0.0 && estimatedPose.getY() <= FIELD_WIDTH.in(Meters)) {
-                  poseConsumer.accept(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
+              poseConsumer.accept(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
             }
           });
         }
@@ -95,6 +96,7 @@ public class PhotonRunnable implements Runnable {
 
   /**
    * Find the camera index for a table wait handle
+   * 
    * @param signaledHandle handle
    * @return index, or -1 if not found
    */
@@ -115,7 +117,8 @@ public class PhotonRunnable implements Runnable {
       return result;
     }
     result = PhotonPipelineResult.serde.unpack(packet);
-    result.setTimestampSeconds((rawBytesSubscribers[cameraIndex].getLastChange() / 1e6) - result.getLatencyMillis() / 1e3);
+    result.setTimestampSeconds(
+        (rawBytesSubscribers[cameraIndex].getLastChange() / 1e6) - result.getLatencyMillis() / 1e3);
     return result;
   }
 

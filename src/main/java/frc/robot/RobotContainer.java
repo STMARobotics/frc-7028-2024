@@ -33,7 +33,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class RobotContainer {
 
   private final ControlBindings controlBindings;
-  
+
   private final CommandSwerveDrivetrain driveTrain = TunerConstants.DriveTrain;
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -96,7 +96,7 @@ public class RobotContainer {
     controlBindings.deployIntake().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
         () -> intakeSubsystem.deploy(Volts.of(3)), intakeSubsystem::stop, intakeSubsystem)));
     controlBindings.retractIntake().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () ->intakeSubsystem.retractIntake(Volts.of(3)), intakeSubsystem::stop, intakeSubsystem)));
+        () -> intakeSubsystem.retractIntake(Volts.of(3)), intakeSubsystem::stop, intakeSubsystem)));
 
     // elevator
     controlBindings.elevatorVelocity().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(

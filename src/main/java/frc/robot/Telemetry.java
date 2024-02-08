@@ -41,10 +41,9 @@ public class Telemetry {
   /* Robot speeds for general checking */
   private final NetworkTable driveStats = inst.getTable("Drive");
 
-  private final DoubleArrayPublisher moduleStatePublisher = 
-      driveStats.getDoubleArrayTopic("Module States").publish();
-  private final DoubleArrayPublisher moduleTargetsPublisher =
-      driveStats.getDoubleArrayTopic("Module Targets").publish();
+  private final DoubleArrayPublisher moduleStatePublisher = driveStats.getDoubleArrayTopic("Module States").publish();
+  private final DoubleArrayPublisher moduleTargetsPublisher = driveStats.getDoubleArrayTopic("Module Targets")
+      .publish();
 
   /* Keep a reference of the last pose to calculate the speeds */
   private Pose2d lastPose = new Pose2d();
@@ -54,7 +53,7 @@ public class Telemetry {
    * Construct a telemetry object, with the specified max speed of the robot
    * 
    * @param maxSpeed
-   *          Maximum speed in meters per second
+   *                 Maximum speed in meters per second
    */
   public Telemetry(double maxSpeed) {
     drivetrainTab.add(field2d).withPosition(0, 0).withSize(5, 3);
@@ -64,9 +63,9 @@ public class Telemetry {
         .withPosition(0, 3).getEntry();
 
     var drivetrainVelocityGrid = drivetrainTab.getLayout("Velocity", BuiltInLayouts.kGrid)
-          .withProperties(Map.of("Number of columns", 1, "Number of rows", 3))
-          .withSize(2, 3)
-          .withPosition(5, 0);
+        .withProperties(Map.of("Number of columns", 1, "Number of rows", 3))
+        .withSize(2, 3)
+        .withPosition(5, 0);
 
     drivetrainSpeedEntry = drivetrainVelocityGrid.add("Speed", 0).withWidget(BuiltInWidgets.kDial)
         .withProperties(Map.of("Min", 0, "Max", Math.ceil(maxSpeed))).getEntry();
@@ -74,11 +73,11 @@ public class Telemetry {
         .withProperties(Map.of("Min", -Math.ceil(maxSpeed), "Max", Math.ceil(maxSpeed))).getEntry();
     drivetrainVelocityYEntry = drivetrainVelocityGrid.add("Velocity Y", 0).withWidget(BuiltInWidgets.kDial)
         .withProperties(Map.of("Min", -Math.ceil(maxSpeed), "Max", Math.ceil(maxSpeed))).getEntry();
-    
+
     periodEntry = drivetrainTab.add("Update Frequency (Hz)", 0).withWidget(BuiltInWidgets.kTextView)
         .withSize(1, 1)
-        .withPosition(7, 0) .getEntry();
-    
+        .withPosition(7, 0).getEntry();
+
     logEntry = DataLogManager.getLog().start("odometry", "double[]");
     odomEntry = DataLogManager.getLog().start("odom period", "double");
   }
@@ -89,7 +88,7 @@ public class Telemetry {
     Pose2d pose = state.Pose;
     field2d.setRobotPose(pose);
 
-    readablePoseEntry.setString(String.format("(%.3f, %.3f) %.2f rad", 
+    readablePoseEntry.setString(String.format("(%.3f, %.3f) %.2f rad",
         pose.getX(), pose.getY(), pose.getRotation().getRadians()));
 
     /* Telemeterize the robot's general speeds */
@@ -118,8 +117,10 @@ public class Telemetry {
   }
 
   /**
-   * Publishes an array of SwerveModuleStates in an array in the format expected for AdvantageScope
-   * @param states swerve module states to publish
+   * Publishes an array of SwerveModuleStates in an array in the format expected
+   * for AdvantageScope
+   * 
+   * @param states    swerve module states to publish
    * @param publisher NT publisher
    */
   private static void publishModuleStates(SwerveModuleState[] states, DoubleArrayPublisher publisher) {

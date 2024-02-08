@@ -81,6 +81,7 @@ public class ShooterSubsystem extends SubsystemBase {
     pidController.setFeedbackDevice(actuatorEncoder);
 
   }
+
   private static SparkPIDController indexerMotorConfig(CANSparkMax sparkMax, boolean invert) {
     SparkPIDController pidController = sparkMax.getPIDController();
     sparkMax.restoreFactoryDefaults();
@@ -133,6 +134,7 @@ public class ShooterSubsystem extends SubsystemBase {
     indexerMotorConfig(actuatorMotor, true);
     actuatorMotor.setVoltage(volts.in(Volts));
   }
+
   public void actuatorDown(Measure<Voltage> volts) {
     indexerMotorConfig(actuatorMotor, false);
     actuatorMotor.setVoltage(volts.in(Volts));

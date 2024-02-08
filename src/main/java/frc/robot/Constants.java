@@ -64,12 +64,14 @@ public class Constants {
   public static class VisionConstants {
 
     /**
-     * Array of PhotonVision camera names. The values here match ROBOT_TO_CAMERA_TRANSFORMS for the camera's location.
-    */
-    public static final String[] APRILTAG_CAMERA_NAMES = {"Camera-1", "Camera-2"};
+     * Array of PhotonVision camera names. The values here match
+     * ROBOT_TO_CAMERA_TRANSFORMS for the camera's location.
+     */
+    public static final String[] APRILTAG_CAMERA_NAMES = { "Camera-1", "Camera-2" };
 
     /**
-     * Physical location of the apriltag cameras on the robot, relative to the center of the robot.
+     * Physical location of the apriltag cameras on the robot, relative to the
+     * center of the robot.
      * The values here math APRILTAG_CAMERA_NAMES for the camera's name.
      */
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
@@ -79,19 +81,19 @@ public class Constants {
         new Transform3d(
             new Translation3d(0.06, -0.2, 0.2127),
             new Rotation3d(0.0, degreesToRadians(-15.0), degreesToRadians(3.0))),
-      };
+    };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
     public static final Measure<Distance> FIELD_WIDTH = Meters.of(8.0137);
 
     /**
-     * Minimum target ambiguity. Targets with higher ambiguity will be discarded. Not appliable when multiple tags are
+     * Minimum target ambiguity. Targets with higher ambiguity will be discarded.
+     * Not appliable when multiple tags are
      * in view in a single camera.
      */
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
 
   }
-
 
   public static class ShooterConstants {
     public static final int DEVICE_ID_SHOOTER_RIGHT = 51;

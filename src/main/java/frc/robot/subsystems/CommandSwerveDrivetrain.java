@@ -34,7 +34,8 @@ import frc.robot.PhotonRunnable;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 /**
- * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
+ * Class that extends the Phoenix SwerveDrivetrain class and implements
+ * subsystem
  * so it can be used in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
@@ -43,9 +44,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private static final Rotation2d redAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
   private static final Rotation2d blueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
 
-
-  private final Thread photonThread =
-      new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAMES, ROBOT_TO_CAMERA_TRANSFORMS, this::addVisionMeasurement));
+  private final Thread photonThread = new Thread(
+      new PhotonRunnable(APRILTAG_CAMERA_NAMES, ROBOT_TO_CAMERA_TRANSFORMS, this::addVisionMeasurement));
 
   private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
   private final SwerveRequest.SysIdSwerveTranslation translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -60,10 +60,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(steerCharacterization.withVolts(volts)), null, this));
 
-  private final SysIdRoutine rotationSysIdRoutine  = new SysIdRoutine(
+  private final SysIdRoutine rotationSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(rotationCharacterization.withVolts(volts)), null, this));
-      
+
   private final SysIdRoutine slipSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
@@ -82,7 +82,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   @Override
   public void periodic() {
-    /* When we get alliance data from Driver Station, forward it to the drivetrain so it knows what perspective is forward for operator control */
+    /*
+     * When we get alliance data from Driver Station, forward it to the drivetrain
+     * so it knows what perspective is forward for operator control
+     */
     DriverStation.getAlliance().ifPresent(alliance -> setOperatorPerspectiveForward(
         alliance == Alliance.Red ? redAlliancePerspectiveRotation : blueAlliancePerspectiveRotation));
   }
@@ -114,7 +117,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public void simulationPeriodic() {
     /* Assume 20ms update rate, get battery voltage from WPILib */
     updateSimState(0.02, RobotController.getBatteryVoltage());
-    SmartDashboard.putString("Command", getCurrentCommand() == null ? "" :getCurrentCommand().getName());
+    SmartDashboard.putString("Command", getCurrentCommand() == null ? "" : getCurrentCommand().getName());
   }
 
   public ChassisSpeeds getCurrentRobotChassisSpeeds() {
