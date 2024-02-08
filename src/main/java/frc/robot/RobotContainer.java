@@ -18,10 +18,12 @@ import java.util.Map;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -250,6 +252,11 @@ public class RobotContainer {
     }).alongWith(shooterSubsystem.setAimAngleCommand(shooterPosition)).withName("Shooter Position");
 
     shooterGrid.add(shooterPositionCommand).withPosition(1, 1);
+  }
+
+  public void setAlliance(Alliance alliance) {
+    drivetrain.setOperatorPerspectiveForward(
+        alliance == Alliance.Red ? Rotation2d.fromDegrees(180) : new Rotation2d());
   }
 
   public Command getAutonomousCommand() {

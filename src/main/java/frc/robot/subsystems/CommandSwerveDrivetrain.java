@@ -16,12 +16,10 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,11 +36,6 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
  * so it can be used in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
-
-  /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-  private static final Rotation2d redAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
-  private static final Rotation2d blueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
-
 
   private final Thread photonThread =
       new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAMES, ROBOT_TO_CAMERA_TRANSFORMS, this::addVisionMeasurement));
@@ -78,13 +71,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     photonThread.start();
 
     configurePathPlanner();
-  }
-
-  @Override
-  public void periodic() {
-    /* When we get alliance data from Driver Station, forward it to the drivetrain so it knows what perspective is forward for operator control */
-    DriverStation.getAlliance().ifPresent(alliance -> setOperatorPerspectiveForward(
-        alliance == Alliance.Red ? redAlliancePerspectiveRotation : blueAlliancePerspectiveRotation));
   }
 
   private void configurePathPlanner() {
