@@ -78,7 +78,7 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> evilDeploy() {
+  public Optional<Trigger> retractIntake() {
     return Optional.of(driverController.b());
   }
 

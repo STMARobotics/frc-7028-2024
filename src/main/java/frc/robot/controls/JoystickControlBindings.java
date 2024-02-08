@@ -64,7 +64,7 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> evilDeploy() {
+  public Optional<Trigger> retractIntake() {
     return Optional.empty();
   }
 

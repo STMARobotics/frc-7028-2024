@@ -90,7 +90,7 @@ public class IntakeSubsystem extends SubsystemBase {
     deployMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
   }
 
-  public void evilDeploy(Measure<Voltage> volts) {
+  public void retractIntake(Measure<Voltage> volts) {
     var intakeDeployConfig = new TalonFXConfiguration();
     intakeDeployConfig.Slot0 = Slot0Configs.from(DEPLOY_SLOT_CONFIGS);
     intakeDeployConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

@@ -17,7 +17,7 @@ public interface ControlBindings {
   Optional<Trigger> spit();
   Optional<Trigger> intakeRollers();
   Optional<Trigger> deployIntake();
-  Optional<Trigger> evilDeploy();
+  Optional<Trigger> retractIntake();
   Optional<Trigger> indexerRun();
   Optional<Trigger> actuatorUp();
   Optional<Trigger> actuatorDown();
