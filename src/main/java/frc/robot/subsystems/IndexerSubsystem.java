@@ -14,7 +14,6 @@ import static frc.robot.Constants.IndexerConstants.kP;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorSensorV3;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.filter.Debouncer;
@@ -22,7 +21,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,7 +36,8 @@ public class IndexerSubsystem extends SubsystemBase {
   private final SparkPIDController leftPidController;
   private final SparkPIDController rightPidController;
   
-  private final ColorSensorV3 colorSensorV3 = new ColorSensorV3(Port.kOnboard);
+  private final ColorSensorReader colorSensorReader = new ColorSensorReader();
+  private final Notifier colorSensorNotifier = new Notifier(colorSensorReader);
   private final Debouncer fullSensorDebouncer = new Debouncer(0.1, DebounceType.kFalling);
   private final ColorMatch colorMatch = new ColorMatch();
 
@@ -52,6 +52,9 @@ public class IndexerSubsystem extends SubsystemBase {
   public IndexerSubsystem() {
     leftPidController = configureMotor(indexerLeftMotor, false);
     rightPidController = configureMotor(indexerRightMotor, true);
+
+    colorSensorNotifier.setName("Indexer Color Sensor");
+    colorSensorNotifier.startPeriodic(.02);
 
     colorMatch.addColorMatch(COLOR_NOTE);
     colorMatch.addColorMatch(COLOR_NONE);
@@ -127,7 +130,7 @@ public class IndexerSubsystem extends SubsystemBase {
    * @return the color detected
    */
   public Color getFullColor() {
-    return colorMatch.matchClosestColor(colorSensorV3.getColor()).color;
+    return colorMatch.matchClosestColor(colorSensorReader.getValues().color).color;
   }
 
   /**
@@ -135,7 +138,7 @@ public class IndexerSubsystem extends SubsystemBase {
    * @return true if the full sensor is tripped, otherwise false
    */
   public boolean isFullSensorTripped() {
-    var sensorTripped = colorMatch.matchClosestColor(colorSensorV3.getColor()).color != COLOR_NONE;
+    var sensorTripped = colorMatch.matchClosestColor(colorSensorReader.getValues().color).color != COLOR_NONE;
     return fullSensorDebouncer.calculate(sensorTripped);
   }
 
