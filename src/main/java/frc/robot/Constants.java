@@ -126,20 +126,33 @@ public class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int DEVICE_ID_LEFT = 50;
-    public static final int DEVICE_ID_RIGHT = 51;
+    public static final int DEVICE_ID_TOP = 50;
+    public static final int DEVICE_ID_BOTTOM = 51;
     public static final int DEVICE_ID_AIM = 52;
     public static final int ACTUATOR_CANCORDER = 3;
 
-    public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG = new SlotConfigs()
-        .withKP(0.0)
+    public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_TOP = new SlotConfigs()
+        .withKP(9.0)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.46179);
-    public static final SlotConfigs SHOOTER_POSITION_SLOT_CONFIG = new SlotConfigs()
-        .withKP(0.0)
+        .withKS(0.040599);
+
+    public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM = new SlotConfigs()
+        .withKP(15.0)
         .withKI(0.0)
-        .withKD(0.0);
+        .withKD(0.0)
+        .withKS(0.096656);
+  
+    public static final SlotConfigs SHOOTER_POSITION_SLOT_CONFIG_TOP = new SlotConfigs()
+        .withKP(35.59)
+        .withKI(0.0)
+        .withKD(1.2791);
+
+    public static final SlotConfigs SHOOTER_POSITION_SLOT_CONFIG_BOTTOM = new SlotConfigs()
+        .withKP(36.957)
+        .withKI(0.0)
+        .withKD(1.4008);
+    
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
     public static final double AIM_kP = 0.01;

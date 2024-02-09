@@ -22,11 +22,13 @@ import static frc.robot.Constants.ShooterConstants.AIM_kD;
 import static frc.robot.Constants.ShooterConstants.AIM_kI;
 import static frc.robot.Constants.ShooterConstants.AIM_kP;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_AIM;
-import static frc.robot.Constants.ShooterConstants.DEVICE_ID_LEFT;
-import static frc.robot.Constants.ShooterConstants.DEVICE_ID_RIGHT;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_POSITION_SLOT_CONFIG;
+import static frc.robot.Constants.ShooterConstants.DEVICE_ID_BOTTOM;
+import static frc.robot.Constants.ShooterConstants.DEVICE_ID_TOP;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_POSITION_SLOT_CONFIG_BOTTOM;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_POSITION_SLOT_CONFIG_TOP;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_SENSOR_TO_MECHANISM_RATIO;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_TOP;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
@@ -50,23 +52,26 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private final TalonFX shooterLeftMotor = new TalonFX(DEVICE_ID_LEFT, CANIVORE_BUS_NAME);
-  private final TalonFX shooterRightMotor = new TalonFX(DEVICE_ID_RIGHT, CANIVORE_BUS_NAME);
+  private final TalonFX shooterTopMotor = new TalonFX(DEVICE_ID_TOP, CANIVORE_BUS_NAME);
+  private final TalonFX shooterBottomMotor = new TalonFX(DEVICE_ID_BOTTOM, CANIVORE_BUS_NAME);
 
   private final CANSparkMax aimMotor = new CANSparkMax(DEVICE_ID_AIM, kBrushless);
   private final SparkPIDController aimPidController = aimMotor.getPIDController();
   private final AbsoluteEncoder aimEncoder;
 
-  private final VelocityTorqueCurrentFOC shooterVelocityControl = new VelocityTorqueCurrentFOC(0.0);
-  private final PositionVoltage shooterPositionControl = new PositionVoltage(0.0).withEnableFOC(true);
+  private final VelocityTorqueCurrentFOC shooterVelocityControl = new VelocityTorqueCurrentFOC(0.0)
+      .withSlot(0);
+  private final PositionVoltage shooterPositionControl = new PositionVoltage(0.0)
+      .withSlot(1)
+      .withEnableFOC(true);
   private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true);
 
   // SysId routines  
   private final SysIdRoutine shooterSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> {
-        shooterLeftMotor.setControl(voltageControl.withOutput(volts.in(Volts)));
-        shooterRightMotor.setControl(voltageControl.withOutput(volts.in(Volts)));
+        shooterTopMotor.setControl(voltageControl.withOutput(volts.in(Volts)));
+        shooterBottomMotor.setControl(voltageControl.withOutput(volts.in(Volts)));
       }, null, this));
 
   private final SysIdRoutine aimSysIdRoutine = new SysIdRoutine(
@@ -79,14 +84,17 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     // Configure shooter motors
     var shooterMotorConfig = new TalonFXConfiguration();
-    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG);
-    shooterMotorConfig.Slot1 = Slot1Configs.from(SHOOTER_POSITION_SLOT_CONFIG);
+    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM);
+    shooterMotorConfig.Slot1 = Slot1Configs.from(SHOOTER_POSITION_SLOT_CONFIG_BOTTOM);
     shooterMotorConfig.MotorOutput.NeutralMode = Coast;
     shooterMotorConfig.Feedback.SensorToMechanismRatio = SHOOTER_SENSOR_TO_MECHANISM_RATIO;
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
-    shooterLeftMotor.getConfigurator().apply(shooterMotorConfig);
+    shooterBottomMotor.getConfigurator().apply(shooterMotorConfig);
+    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);
+    shooterMotorConfig.Slot1 = Slot1Configs.from(SHOOTER_POSITION_SLOT_CONFIG_TOP);
+    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    shooterTopMotor.getConfigurator().apply(shooterMotorConfig);
 
     // Configure aim encoder
     aimEncoder = aimMotor.getAbsoluteEncoder(kDutyCycle);
@@ -193,22 +201,22 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void spinShooterWheels(Measure<Velocity<Angle>> velocity) {
-    shooterLeftMotor.setControl(shooterVelocityControl.withVelocity(velocity.in(RotationsPerSecond)));
-    shooterRightMotor.setControl(shooterVelocityControl.withVelocity(velocity.in(RotationsPerSecond)));
+    shooterTopMotor.setControl(shooterVelocityControl.withVelocity(velocity.in(RotationsPerSecond)));
+    shooterBottomMotor.setControl(shooterVelocityControl.withVelocity(velocity.in(RotationsPerSecond)));
   }
 
   private void rotateShooterWheels(Measure<Angle> distance) {
-    shooterLeftMotor.setPosition(0.0);
-    shooterLeftMotor.setControl(shooterPositionControl.withPosition(distance.in(Rotations)));
-    shooterRightMotor.setPosition(0.0);
-    shooterRightMotor.setControl(shooterPositionControl.withPosition(distance.in(Rotations)));
+    shooterTopMotor.setPosition(0.0);
+    shooterTopMotor.setControl(shooterPositionControl.withPosition(distance.in(Rotations)));
+    shooterBottomMotor.setPosition(0.0);
+    shooterBottomMotor.setControl(shooterPositionControl.withPosition(distance.in(Rotations)));
   }
 
   private void activeStopShooter() {
-    shooterLeftMotor.setPosition(0.0);
-    shooterLeftMotor.setControl(shooterPositionControl.withPosition(0.0));
-    shooterRightMotor.setPosition(0.0);
-    shooterRightMotor.setControl(shooterPositionControl.withPosition(0.0));
+    shooterTopMotor.setPosition(0.0);
+    shooterTopMotor.setControl(shooterPositionControl.withPosition(0.0));
+    shooterBottomMotor.setPosition(0.0);
+    shooterBottomMotor.setControl(shooterPositionControl.withPosition(0.0));
   }
 
   private void setAimPosition(Measure<Angle> angle) {
@@ -217,8 +225,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void stopShooter() {
-    shooterRightMotor.stopMotor();
-    shooterLeftMotor.stopMotor();
+    shooterBottomMotor.stopMotor();
+    shooterTopMotor.stopMotor();
   }
 
   private void stopAim() {
