@@ -120,7 +120,7 @@ public class ShooterSubsystem extends SubsystemBase {
     aimMotor.setIdleMode(kBrake);
     aimMotor.getForwardLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
     aimMotor.getReverseLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
-    aimMotor.setInverted(true);
+    aimMotor.setInverted(false);
 
     aimMotor.burnFlash();
   }
