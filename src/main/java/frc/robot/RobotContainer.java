@@ -58,6 +58,8 @@ public class RobotContainer {
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
     Shuffleboard.selectTab(driverTab.getTitle());
 
+    indexerSubsystem.addDriverDashboardWidgets(driverTab);
+
     driveTrain.getDaqThread().setThreadPriority(99);
     driveTrain.registerTelemetry(logger::telemeterize);
 
@@ -83,20 +85,22 @@ public class RobotContainer {
     // shooter
     controlBindings.shootDutyCycle().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
         () -> shooterSubsystem.shootDutyCycle(2), shooterSubsystem::stop, shooterSubsystem)));
+  //  controlBindings.shootDonutCommand().ifPresent(trigger -> trigger.whileTrue(
+   //   new ShootDonutCommand(null, shooterSubsystem, indexerSubsystem, null)));
 
     // indexer
     controlBindings.indexerRun().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> indexerSubsystem.fireDonut(Volts.of(3)), indexerSubsystem::stop, indexerSubsystem)));
+        () -> indexerSubsystem.intake(), indexerSubsystem::stop, indexerSubsystem)));
 
     // intake
     controlBindings.spit().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
         () -> intakeSubsystem.spit(1), intakeSubsystem::stop, intakeSubsystem)));
     controlBindings.intakeRollers().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.intakeRollers(Volts.of(3)), intakeSubsystem::stop, intakeSubsystem)));
+        () -> intakeSubsystem.intakeRollers(Volts.of(9)), intakeSubsystem::stop, intakeSubsystem)));
     controlBindings.deployIntake().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.deploy(Volts.of(3)), intakeSubsystem::stop, intakeSubsystem)));
+        () -> intakeSubsystem.deploy(Volts.of(9)), intakeSubsystem::stop, intakeSubsystem)));
     controlBindings.retractIntake().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.retractIntake(Volts.of(3)), intakeSubsystem::stop, intakeSubsystem)));
+        () -> intakeSubsystem.retractIntake(Volts.of(-9)), intakeSubsystem::stop, intakeSubsystem)));
 
     // elevator
     controlBindings.elevatorVelocity().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(

@@ -69,7 +69,7 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> runShooterMotor() {
+  public Optional<Trigger> shootDonutCommand() {
     return Optional.empty();
   }
 

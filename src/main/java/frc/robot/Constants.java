@@ -99,8 +99,8 @@ public class Constants {
     public static final int DEVICE_ID_SHOOTER_RIGHT = 51;
     public static final int DEVICE_ID_SHOOTER_LEFT = 50;
     public static final int DEVICE_ID_ACTUATOR_MOTOR = 52;
-    public static final int SHOOTER_VELOCITY_OFFSET = 0;
-    public static final int WRIST_POSITION_OFFSET = 0;
+    public static final int SHOOTER_VELOCITY_TOLERANCE = 0;
+    public static final int WRIST_POSITION_TOLERANCE = 0;
     public static final int SHOOTER_MOTOR_RATIO = 1;
 
     public static final SlotConfigs SHOOTER_SLOT_CONFIGS = new SlotConfigs()
@@ -140,6 +140,8 @@ public class Constants {
     public static final int ELEVATOR_FOLLOWER_ID = 61;
     public static final int ANALOG_SENSOR_CHANNEL = 0;
     public static final double ELEVATOR_PARK_HEIGHT = .06;
+    public static final Measure<Distance> ELEVATOR_DISTANCE_PER_REVOLUTION = Meters.of(5); // not known yet 
+    public static final Measure<Distance> ELEVATOR_MAX_HEIGHT = Inches.of(31); 
     public static final SlotConfigs ELEVATOR_SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.59)
         .withKI(0)
@@ -162,11 +164,11 @@ public class Constants {
     public static final double BELT_RUN_SPEED = 8000;
     public static final double BELT_SHOOT_SPEED = 8000;
 
-    /** Color of ring */
-    public static final Color COLOR_NOTE = new Color(0.15283203125, 0.407958984375, 0.439453125);
+    /** Color of donut */
+    public static final Color COLOR_NOTE = new Color(0.487, 0.393, 0.12);
 
-    /** Color of no cargo */
-    public static final Color COLOR_NONE = new Color(0.252197265625, 0.491455078125, 0.2568359375);
+    /** Color of no donut */
+    public static final Color COLOR_NONE = new Color(0.253, 0.49, 0.255);
 
   }
 }

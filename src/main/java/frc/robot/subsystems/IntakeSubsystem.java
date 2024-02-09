@@ -83,18 +83,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void deploy(Measure<Voltage> volts) {
-    var intakeDeployConfig = new TalonFXConfiguration();
-    intakeDeployConfig.Slot0 = Slot0Configs.from(DEPLOY_SLOT_CONFIGS);
-    intakeDeployConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    deployMotor.getConfigurator().apply(intakeDeployConfig);
     deployMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
   }
 
   public void retractIntake(Measure<Voltage> volts) {
-    var intakeDeployConfig = new TalonFXConfiguration();
-    intakeDeployConfig.Slot0 = Slot0Configs.from(DEPLOY_SLOT_CONFIGS);
-    intakeDeployConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    deployMotor.getConfigurator().apply(intakeDeployConfig);
     deployMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
   }
 

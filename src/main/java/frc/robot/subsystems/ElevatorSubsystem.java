@@ -4,14 +4,17 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
+import static frc.robot.Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT;
 import static frc.robot.Constants.ElevatorConstants.ELEVATOR_PARK_HEIGHT;
 import static frc.robot.Constants.ElevatorConstants.ELEVATOR_SLOT_CONFIGS;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -24,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -53,6 +57,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final int ANALOG_TOP = 1796;
 
   private static final double GRAVITY_FEED_FORWARD = 0.05;
+
+  private final MotionMagicVoltage motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true);
 
   // Limit switches - FALSE means at limit
   private final DigitalInput topLimitSwitch = new DigitalInput(8);
@@ -92,6 +98,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorFollower.getConfigurator().refresh(config);
 
     elevatorFollower.setControl(new Follower(elevatorLeader.getDeviceID(), false));
+    setDefaultCommand(new MoveElevatorCommand(this));
   }
 
   @Override
@@ -116,6 +123,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void moveToPosition(double meters) {
     targetPosition = meters;
     elevatorLeader.set(meters);
+  }
+
+  public void toPositionWithPercent(double percent) {
+    elevatorLeader.setControl(
+      motionMagicControl.withPosition(ELEVATOR_MAX_HEIGHT.in(Meters) * percent)
+      );
   }
 
   public Command sysIdElevatorQuasiCommand(Direction direction) {

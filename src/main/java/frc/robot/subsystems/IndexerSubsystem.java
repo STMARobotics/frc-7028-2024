@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.IndexerConstants.BELT_RUN_SPEED;
 import static frc.robot.Constants.IndexerConstants.COLOR_NONE;
 import static frc.robot.Constants.IndexerConstants.COLOR_NOTE;
 import static frc.robot.Constants.IndexerConstants.DEVICE_ID_INDEXER_LEFT_MOTOR;
@@ -45,7 +44,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public boolean shouldContinue() {
-    return indexerColorMatch.matchClosestColor(indexerColorSensor.getColor()).color == COLOR_NOTE;
+    return indexerColorMatch.matchClosestColor(indexerColorSensor.getColor()).color != COLOR_NOTE;
   }
 
   public boolean isActive() {
@@ -53,8 +52,10 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void runIndexer() {
-    leftPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
-    rightPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
+    leftIndexerMotor.setVoltage(4);
+    rightIndexerMotor.setVoltage(4);
+  //  leftPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
+  //  rightPidController.setReference(BELT_RUN_SPEED, ControlType.kVelocity);
   }
 
   public void stopIndexer() {
@@ -110,7 +111,7 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setFF(0.00009);
     sparkMax.getEncoder();
     sparkMax.burnFlash();
-    sparkMax.setIdleMode(IdleMode.kCoast);
+    sparkMax.setIdleMode(IdleMode.kBrake);
     return pidController;
   }
 

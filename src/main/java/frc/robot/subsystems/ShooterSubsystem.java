@@ -8,8 +8,8 @@ import static frc.robot.Constants.ShooterConstants.DEVICE_ID_ACTUATOR_MOTOR;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_LEFT;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_RIGHT;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_SLOT_CONFIGS;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_OFFSET;
-import static frc.robot.Constants.ShooterConstants.WRIST_POSITION_OFFSET;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_TOLERANCE;
+import static frc.robot.Constants.ShooterConstants.WRIST_POSITION_TOLERANCE;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -149,12 +149,16 @@ public class ShooterSubsystem extends SubsystemBase {
     return Units.rotationsToDegrees(actuatorEncoder.getVelocity());
   }
 
+  public double getShooterVelocity() {
+    return 2;
+  }
+
   public boolean checkWristPosition(double radiansToRotate) {
-    return (Math.abs(getWristPosition() - radiansToRotate) <= WRIST_POSITION_OFFSET);
+    return (Math.abs(getWristPosition() - radiansToRotate) <= WRIST_POSITION_TOLERANCE);
   }
 
   public boolean checkShooterSpeed(double shooterSpeedGoal) {
-    return (Math.abs(getWristVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_OFFSET);
+    return (Math.abs(getWristVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE);
   }
 
   public void shootDutyCycle(double speed) {

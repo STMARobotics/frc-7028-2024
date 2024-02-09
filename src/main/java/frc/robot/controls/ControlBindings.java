@@ -21,7 +21,7 @@ public interface ControlBindings {
   Optional<Trigger> indexerRun();
   Optional<Trigger> actuatorUp();
   Optional<Trigger> actuatorDown();
-  Optional<Trigger> runShooterMotor();
+  Optional<Trigger> shootDonutCommand();
   Supplier<Measure<Velocity<Distance>>> translationX();
   Supplier<Measure<Velocity<Distance>>> translationY();
   Supplier<Measure<Velocity<Angle>>> omega();
