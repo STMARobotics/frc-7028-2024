@@ -13,8 +13,6 @@ import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForwa
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
-import java.util.Map;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -180,13 +178,11 @@ public class RobotContainer {
     var tab = Shuffleboard.getTab("Subsystems");
 
     // Intake grid
-    var intakeGrid = tab.getLayout("Run Intake", BuiltInLayouts.kList)
-        .withPosition(0, 0).withSize(2, 3)
-        .withProperties(Map.of("Number of rows", 2, "Number of columns", 2));
+    var intakeList = tab.getLayout("Run Intake", BuiltInLayouts.kList)
+        .withPosition(0, 0).withSize(2, 3);
         
     // Intake velocity
-    var intakeVelocityWidget = intakeGrid.add("Velocity Intake", 0.0)
-        .withPosition(0, 0);
+    var intakeVelocityWidget = intakeList.add("Set Roller Velocity", 0.0);
     MutableMeasure<Velocity<Angle>> intakeVelocity = MutableMeasure.zero(RotationsPerSecond);
 
     var intakeVelocityCommand = Commands.run(() -> {
@@ -194,11 +190,10 @@ public class RobotContainer {
       intakeVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
     }).alongWith(intakeSubsystem.runIntakeRollersCommand(intakeVelocity)).withName("Intake Rollers");
 
-    intakeGrid.add(intakeVelocityCommand).withPosition(1, 0);
+    intakeList.add(intakeVelocityCommand);
 
     // Intake position
-    var intakePositionWidget = intakeGrid.add("Position", 0.0)
-        .withPosition(0, 1);
+    var intakePositionWidget = intakeList.add("Set Deploy Position", 0.0);
     MutableMeasure<Angle> intakePosition = MutableMeasure.zero(Rotations);
 
     var intakePositionCommand = Commands.run(() -> {
@@ -206,33 +201,29 @@ public class RobotContainer {
       intakePosition.mut_replace(dashboardPosition, Rotations);
     }).alongWith(intakeSubsystem.setIntakePosition(intakePosition)).withName("Intake Deploy");
 
-    intakeGrid.add(intakePositionCommand).withPosition(1, 1);
+    intakeList.add(intakePositionCommand);
 
     // Indexer grid
-    var indexerGrid = tab.getLayout("Run Indexer", BuiltInLayouts.kList)
-        .withPosition(2, 0).withSize(2, 2)
-        .withProperties(Map.of("Number of rows", 1, "Number of columns", 2));
+    var indexerList = tab.getLayout("Run Indexer", BuiltInLayouts.kList)
+        .withPosition(2, 0).withSize(2, 2);
 
     // Indexer velocity
-    var indexerVelocityWidget = indexerGrid.add("Velocity Indexer", 0.0)
-        .withPosition(0, 0);
+    var indexerVelocityWidget = indexerList.add("Set Velocity", 0.0);
     MutableMeasure<Velocity<Angle>> indexerVelocity = MutableMeasure.zero(RotationsPerSecond);
     
     var indexerVelocityCommand = Commands.run(() -> {
       var dashboardVelocity = indexerVelocityWidget.getEntry().getDouble(0);
       indexerVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
-    }).alongWith(indexerSubsystem.runCommand(indexerVelocity)).withName("Indexer Velocity");
+    }).alongWith(indexerSubsystem.runCommand(indexerVelocity)).withName("Indexer");
 
-    indexerGrid.add(indexerVelocityCommand).withPosition(1, 0);
+    indexerList.add(indexerVelocityCommand);
 
     // Shooter grid
-    var shooterGrid = tab.getLayout("Run Shooter", BuiltInLayouts.kList)
-        .withPosition(4, 0).withSize(2, 3)
-        .withProperties(Map.of("Number of rows", 2, "Number of columns", 2));
+    var shooterList = tab.getLayout("Run Shooter", BuiltInLayouts.kList)
+        .withPosition(4, 0).withSize(2, 3);
     
     // Shooter velocity
-    var shooterVelocityWidget = shooterGrid.add("Velocity Shooter", 0.0)
-        .withPosition(0, 0);
+    var shooterVelocityWidget = shooterList.add("Set Velocity", 0.0);
     MutableMeasure<Velocity<Angle>> shooterVelocity = MutableMeasure.zero(RotationsPerSecond);
     
     var shooterVelocityCommand = Commands.run(() -> {
@@ -240,19 +231,33 @@ public class RobotContainer {
       shooterVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
     }).alongWith(shooterSubsystem.spinShooterCommand(shooterVelocity)).withName("Shooter Velocity");
 
-    shooterGrid.add(shooterVelocityCommand).withPosition(1, 0);
+    shooterList.add(shooterVelocityCommand);
 
-    // Shooter Position
-    var shooterPositoinWidget = shooterGrid.add("Position Shooter", 0.0)
-        .withPosition(0, 1);
-    MutableMeasure<Angle> shooterPosition = MutableMeasure.zero(Rotations);
+    // Shooter wheel rotation / position
+    var shooterPositoinWidget = shooterList.add("Set Rotations", 0.0);
+    MutableMeasure<Angle> shooterRotations = MutableMeasure.zero(Rotations);
     
     var shooterPositionCommand = Commands.run(() -> {
-      var dashboardPosition = shooterPositoinWidget.getEntry().getDouble(0);
-      shooterPosition.mut_replace(dashboardPosition, Rotations);
-    }).alongWith(shooterSubsystem.setAimAngleCommand(shooterPosition)).withName("Shooter Position");
+      var dashboardRotations = shooterPositoinWidget.getEntry().getDouble(0);
+      shooterRotations.mut_replace(dashboardRotations, Rotations);
+    }).alongWith(shooterSubsystem.rotateShooterCommand(shooterRotations)).withName("Shooter Rotation");
 
-    shooterGrid.add(shooterPositionCommand).withPosition(1, 1);
+    shooterList.add(shooterPositionCommand);
+    
+    // Shooter aim grid
+    var shooterAimList = tab.getLayout("Aim Shooter", BuiltInLayouts.kList)
+        .withPosition(6, 0).withSize(2, 2);
+
+    // Aim Shooter
+    var shooterAimWidget = shooterAimList.add("Set Position", 0.0);
+    MutableMeasure<Angle> shooterAimPosition = MutableMeasure.zero(Rotations);
+    
+    var shooterAimPCommand = Commands.run(() -> {
+      var dashboardPosition = shooterAimWidget.getEntry().getDouble(0);
+      shooterAimPosition.mut_replace(dashboardPosition, Rotations);
+    }).alongWith(shooterSubsystem.setAimAngleCommand(shooterRotations)).withName("Aim Position");
+
+    shooterAimList.add(shooterAimPCommand);
   }
 
   public void setAlliance(Alliance alliance) {
