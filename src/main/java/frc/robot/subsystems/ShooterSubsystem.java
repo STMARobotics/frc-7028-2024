@@ -46,6 +46,7 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -168,6 +169,15 @@ public class ShooterSubsystem extends SubsystemBase {
     return runOnce(() -> setAimPosition(angle));
   }
 
+  /**
+   * Returns a new command to set the shooter's aim motor to a voltage. This should only be used for testing.
+   * @param volts voltage to apply to shooter aim motor
+   * @return new command
+   */
+  public Command setAimVoltageCommand(Measure<Voltage> volts) {
+    return run(() -> setAimVoltage(volts)).finallyDo(this::stopAim);
+  }
+
   public Command sysIdShooterDynamicCommand(Direction direction) {
     return shooterSysIdRoutine.dynamic(direction).withName("Shooter dynam " + direction)
         .finallyDo(this::stopShooter);
@@ -223,6 +233,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private void setAimPosition(Measure<Angle> angle) {
     holdAimPosition = true;
     aimTargetRotations = angle.in(Rotations);
+  }
+
+  private void setAimVoltage(Measure<Voltage> volts) {
+    aimMotor.setVoltage(volts.in(Volts));
   }
 
   private void stopShooter() {

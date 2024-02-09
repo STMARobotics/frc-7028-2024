@@ -3,7 +3,8 @@ package frc.robot.subsystems;
 import static com.revrobotics.CANSparkBase.ControlType.kVelocity;
 import static com.revrobotics.CANSparkBase.IdleMode.kBrake;
 import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Minute;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.IndexerConstants.COLOR_NONE;
 import static frc.robot.Constants.IndexerConstants.COLOR_NOTE;
@@ -142,6 +143,22 @@ public class IndexerSubsystem extends SubsystemBase {
     return fullSensorDebouncer.calculate(sensorTripped);
   }
 
+  /**
+   * Gets the velocity of the left wheels
+   * @return velocity of the left wheels
+   */
+  public Measure<Velocity<Angle>> getLeftVelocity() {
+    return Rotations.per(Minute).of(indexerLeftMotor.getEncoder().getVelocity());
+  }
+
+  /**
+   * Gets the velocity of the right wheels
+   * @return velocity of right wheels
+   */
+  public Measure<Velocity<Angle>> getRightVelocity() {
+    return Rotations.per(Minute).of(indexerRightMotor.getEncoder().getVelocity());
+  }
+
   private void load() {
     runIndexer(IndexerConstants.RUN_SPEED);
   }
@@ -161,8 +178,8 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   private void runIndexer(Measure<Velocity<Angle>> velocity) {
-    leftPidController.setReference(velocity.in(RotationsPerSecond), kVelocity);
-    rightPidController.setReference(velocity.in(RotationsPerSecond), kVelocity);
+    leftPidController.setReference(velocity.in(Rotations.per(Minute)), kVelocity);
+    rightPidController.setReference(velocity.in(Rotations.per(Minute)), kVelocity);
   }
 
 }

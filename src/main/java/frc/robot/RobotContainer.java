@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
@@ -20,9 +21,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -205,10 +208,10 @@ public class RobotContainer {
 
     // Indexer grid
     var indexerList = tab.getLayout("Run Indexer", BuiltInLayouts.kList)
-        .withPosition(2, 0).withSize(2, 2);
+        .withPosition(2, 0).withSize(2, 6);
 
     // Indexer velocity
-    var indexerVelocityWidget = indexerList.add("Set Velocity", 0.0);
+    var indexerVelocityWidget = indexerList.add("Set Velocity", 0.0).withPosition(0, 0);
     MutableMeasure<Velocity<Angle>> indexerVelocity = MutableMeasure.zero(RotationsPerSecond);
     
     var indexerVelocityCommand = Commands.run(() -> {
@@ -216,7 +219,13 @@ public class RobotContainer {
       indexerVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
     }).alongWith(indexerSubsystem.runCommand(indexerVelocity)).withName("Indexer");
 
-    indexerList.add(indexerVelocityCommand);
+    indexerList.add(indexerVelocityCommand).withPosition(0, 1);
+
+    // Indexer current velocity
+    indexerList.addDouble("Left Velocity", () -> indexerSubsystem.getLeftVelocity().in(RotationsPerSecond))
+        .withWidget(BuiltInWidgets.kGraph).withPosition(0, 2);
+    indexerList.addDouble("Right Velocity", () -> indexerSubsystem.getRightVelocity().in(RotationsPerSecond))
+        .withWidget(BuiltInWidgets.kGraph).withPosition(0, 3);
 
     // Shooter grid
     var shooterList = tab.getLayout("Run Shooter", BuiltInLayouts.kList)
@@ -246,18 +255,30 @@ public class RobotContainer {
     
     // Shooter aim grid
     var shooterAimList = tab.getLayout("Aim Shooter", BuiltInLayouts.kList)
-        .withPosition(6, 0).withSize(2, 2);
+        .withPosition(6, 0).withSize(2, 3);
 
     // Aim Shooter
     var shooterAimWidget = shooterAimList.add("Set Position", 0.0);
     MutableMeasure<Angle> shooterAimPosition = MutableMeasure.zero(Rotations);
     
-    var shooterAimPCommand = Commands.run(() -> {
+    var shooterAimCommand = Commands.run(() -> {
       var dashboardPosition = shooterAimWidget.getEntry().getDouble(0);
       shooterAimPosition.mut_replace(dashboardPosition, Rotations);
     }).alongWith(shooterSubsystem.setAimAngleCommand(shooterRotations)).withName("Aim Position");
 
-    shooterAimList.add(shooterAimPCommand);
+    shooterAimList.add(shooterAimCommand);
+
+    // Aim Voltage
+    var shooterAimVoltageWidget = shooterAimList.add("Set Voltage", 0.0);
+    MutableMeasure<Voltage> shooterAimVoltage = MutableMeasure.zero(Volts);
+    
+    var shooterAimVoltageCommand = Commands.run(() -> {
+      var dashboardVoltage = shooterAimVoltageWidget.getEntry().getDouble(0);
+      shooterAimVoltage.mut_replace(dashboardVoltage, Volts);
+    }).alongWith(shooterSubsystem.setAimVoltageCommand(shooterAimVoltage)).withName("Aim Voltage");
+
+    shooterAimList.add(shooterAimVoltageCommand);
+
   }
 
   public void setAlliance(Alliance alliance) {
