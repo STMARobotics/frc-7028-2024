@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import static com.revrobotics.CANSparkBase.ControlType.kVelocity;
-import static com.revrobotics.CANSparkBase.IdleMode.kCoast;
+import static com.revrobotics.CANSparkBase.IdleMode.kBrake;
 import static com.revrobotics.CANSparkLowLevel.MotorType.kBrushless;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -63,7 +63,7 @@ public class IndexerSubsystem extends SubsystemBase {
   private static SparkPIDController configureMotor(CANSparkMax sparkMax, boolean invert) {
     sparkMax.restoreFactoryDefaults();
     sparkMax.enableVoltageCompensation(12);
-    sparkMax.setIdleMode(kCoast);
+    sparkMax.setIdleMode(kBrake);
     sparkMax.setOpenLoopRampRate(0.1);
     sparkMax.setClosedLoopRampRate(0.1);
     sparkMax.setInverted(invert);
