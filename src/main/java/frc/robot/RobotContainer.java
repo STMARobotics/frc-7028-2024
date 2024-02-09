@@ -114,7 +114,7 @@ public class RobotContainer {
   }
 
   public void populateSysIdDashboard() {
-    ShuffleboardTab tab = Shuffleboard.getTab("SysId");
+    var tab = Shuffleboard.getTab("Drive SysId");
     int columnIndex = 0;
     
     // Column 0 Drive
@@ -124,50 +124,51 @@ public class RobotContainer {
     tab.add("Drive Dynam Rev", drivetrain.sysIdDriveDynamCommand(kReverse)).withPosition(columnIndex, 3);
     tab.add("Slip Test", drivetrain.sysIdDriveSlipCommand()).withPosition(columnIndex, 4);
 
-    // Column 1 Steer
-    columnIndex++;
+    // Column 2 Steer
+    columnIndex += 2;
     tab.add("Steer Quasi Fwd", drivetrain.sysIdSteerQuasiCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Steer Quasi Rev", drivetrain.sysIdSteerQuasiCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Steer Dynam Fwd", drivetrain.sysIdSteerDynamCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Steer Dynam Rev", drivetrain.sysIdSteerDynamCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 2 Rotation
-    columnIndex++;
+    // Column 4 Rotation
+    columnIndex += 2;
     tab.add("Rotate Quasi Fwd", drivetrain.sysIdRotationQuasiCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Rotate Quasi Rev", drivetrain.sysIdRotationQuasiCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Rotate Dynam Fwd", drivetrain.sysIdRotationDynamCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Rotate Dynam Rev", drivetrain.sysIdRotationDynamCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 3 Intake
-    columnIndex++;
+    tab = Shuffleboard.getTab("Sub SysId");
+    // Column 0 Intake
+    columnIndex = 0;
     tab.add("Deploy Quasi Fwd", intakeSubsystem.sysIdDeployQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Deploy Quasi Rev", intakeSubsystem.sysIdDeployQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Roller Dynam Fwd", intakeSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Roller Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 4 Shooter
-    columnIndex++;
+    // Column 2 Shooter
+    columnIndex += 2;
     tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 5 Shooter Aim
-    columnIndex++;
+    // Column 4 Shooter Aim
+    columnIndex += 2;
     tab.add("Aim Quasi Fwd", shooterSubsystem.sysIdAimQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Aim Quasi Rev", shooterSubsystem.sysIdAimQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Aim Dynam Fwd", shooterSubsystem.sysIdAimDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Aim Dynam Rev", shooterSubsystem.sysIdAimDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
     //Column 6 Indexer
-    columnIndex++;
+    columnIndex += 2;
     tab.add("Index Quasi Fwd", indexerSubsystem.sysIdIndexerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Index Quasi Rev", indexerSubsystem.sysIdIndexerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Index Dynam Fwd", indexerSubsystem.sysIdIndexerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Index Dynam Rev", indexerSubsystem.sysIdIndexerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    //Column 7 Elevator
-    columnIndex++;
+    //Column 8 Elevator
+    columnIndex += 2;
     tab.add("Elev Quasi Fwd", elevatorSubsystem.sysIdQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Elev Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Elev Dynam Fwd", elevatorSubsystem.sysIdDynamicCommand(kForward)).withPosition(columnIndex, 2);
@@ -179,8 +180,8 @@ public class RobotContainer {
     var tab = Shuffleboard.getTab("Subsystems");
 
     // Intake grid
-    var intakeGrid = tab.getLayout("Run Intake", BuiltInLayouts.kGrid)
-        .withPosition(0, 0).withSize(2, 2)
+    var intakeGrid = tab.getLayout("Run Intake", BuiltInLayouts.kList)
+        .withPosition(0, 0).withSize(2, 3)
         .withProperties(Map.of("Number of rows", 2, "Number of columns", 2));
         
     // Intake velocity
@@ -208,8 +209,8 @@ public class RobotContainer {
     intakeGrid.add(intakePositionCommand).withPosition(1, 1);
 
     // Indexer grid
-    var indexerGrid = tab.getLayout("Run Indexer", BuiltInLayouts.kGrid)
-        .withPosition(2, 0).withSize(2, 1)
+    var indexerGrid = tab.getLayout("Run Indexer", BuiltInLayouts.kList)
+        .withPosition(2, 0).withSize(2, 2)
         .withProperties(Map.of("Number of rows", 1, "Number of columns", 2));
 
     // Indexer velocity
@@ -225,8 +226,8 @@ public class RobotContainer {
     indexerGrid.add(indexerVelocityCommand).withPosition(1, 0);
 
     // Shooter grid
-    var shooterGrid = tab.getLayout("Run Shooter", BuiltInLayouts.kGrid)
-        .withPosition(4, 0).withSize(2, 2)
+    var shooterGrid = tab.getLayout("Run Shooter", BuiltInLayouts.kList)
+        .withPosition(4, 0).withSize(2, 3)
         .withProperties(Map.of("Number of rows", 2, "Number of columns", 2));
     
     // Shooter velocity
