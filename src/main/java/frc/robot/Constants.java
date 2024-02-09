@@ -159,7 +159,7 @@ public class Constants {
     public static final double AIM_kI = 0d;
     public static final double AIM_kD = 0d;
 
-    public static final Measure<Angle> AIM_OFFSET = Rotations.of(-0.0584373);
+    public static final Measure<Angle> AIM_OFFSET = Rotations.of(0.9503065);
     public static final float AIM_FORWARD_LIMIT = 0.84f;
     public static final float AIM_REVERSE_LIMIT = 0.67f;
     public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.1); //TODO configure

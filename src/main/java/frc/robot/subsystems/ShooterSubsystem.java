@@ -98,6 +98,18 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     shooterTopMotor.getConfigurator().apply(shooterMotorConfig);
 
+    // Configure aim motor
+    aimMotor.restoreFactoryDefaults();
+    aimMotor.setInverted(true);
+    aimMotor.enableVoltageCompensation(12.0);
+    aimMotor.setSoftLimit(kForward, AIM_FORWARD_LIMIT);
+    aimMotor.setSoftLimit(kReverse, AIM_REVERSE_LIMIT);
+    aimMotor.enableSoftLimit(kForward, true);
+    aimMotor.enableSoftLimit(kReverse, true);
+    aimMotor.setIdleMode(kBrake);
+    aimMotor.getForwardLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
+    aimMotor.getReverseLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
+
     // Configure aim encoder
     aimEncoder = aimMotor.getAbsoluteEncoder(kDutyCycle);
     aimEncoder.setInverted(true);
@@ -111,18 +123,6 @@ public class ShooterSubsystem extends SubsystemBase {
     aimPidController.setPositionPIDWrappingMinInput(0);
     aimPidController.setPositionPIDWrappingMaxInput(1);
     aimPidController.setPositionPIDWrappingEnabled(true);
-
-    // Configure aim motor
-    aimMotor.restoreFactoryDefaults();
-    aimMotor.enableVoltageCompensation(12.0);
-    aimMotor.setSoftLimit(kForward, AIM_FORWARD_LIMIT);
-    aimMotor.setSoftLimit(kReverse, AIM_REVERSE_LIMIT);
-    aimMotor.enableSoftLimit(kForward, true);
-    aimMotor.enableSoftLimit(kReverse, true);
-    aimMotor.setIdleMode(kBrake);
-    aimMotor.getForwardLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
-    aimMotor.getReverseLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
-    aimMotor.setInverted(false);
 
     aimMotor.burnFlash();
   }
