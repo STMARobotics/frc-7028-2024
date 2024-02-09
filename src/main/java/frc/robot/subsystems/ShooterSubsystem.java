@@ -12,6 +12,7 @@ import static com.revrobotics.SparkPIDController.ArbFFUnits.kVoltage;
 import static edu.wpi.first.math.util.Units.rotationsToRadians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ShooterConstants.AIM_FORWARD_LIMIT;
@@ -75,7 +76,7 @@ public class ShooterSubsystem extends SubsystemBase {
       }, null, this));
 
   private final SysIdRoutine aimSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(null, Volts.of(3.0), null, null),
+      new SysIdRoutine.Config(Volts.per(Second).of(1.5), null, null, null),
       new SysIdRoutine.Mechanism((volts) -> aimMotor.setVoltage(volts.in(Volts)), null, this));
   
   private double aimTargetRotations = 0.0;
