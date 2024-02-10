@@ -82,8 +82,8 @@ public class Constants {
   }
 
   public static class TurretConstants {
-    public static final int DEVICE_ID_ROT_CONTROL_LEADER = 5;
-    public static final int DEVICE_ID_ROT_CONTROL_FOLLOWER = 6;
+    public static final int DEVICE_ID_TURRET_ROT_CONTROL_LEADER = 5;
+    public static final int DEVICE_ID_TURRET_ROT_CONTROL_FOLLOWER = 6;
 
   }
 
@@ -100,5 +100,6 @@ public class Constants {
 
   public static class TrapAmpShooterConstants {
     public static final int DEVICE_ID_TRAP_AMP_SHOOTER = 10;
+    
   }
 }
