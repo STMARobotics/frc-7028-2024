@@ -181,7 +181,7 @@ public class Constants {
     public static final Measure<Angle> DEPLOY_CANCODER_OFFSET = Rotations.of(0.417725);
     public static final double DEPLOY_ROTOR_TO_SENSOR_RATIO = 351.1133117;
     public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(75)
+        .withKP(25)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(0.6)
@@ -190,8 +190,8 @@ public class Constants {
         .withKG(0.45)
         .withGravityType(GravityTypeValue.Arm_Cosine);
     public static final MotionMagicConfigs DEPLOY_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(8)
-        .withMotionMagicCruiseVelocity(2);
+        .withMotionMagicAcceleration(6)
+        .withMotionMagicCruiseVelocity(.75);
     
     public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.126);
     public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.295);
