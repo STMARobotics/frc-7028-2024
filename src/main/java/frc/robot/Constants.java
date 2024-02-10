@@ -72,4 +72,33 @@ public class Constants {
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
 
   }
+
+  public static class ShooterConstants {
+    public static final int DEVICE_ID_SHOOTER_LEADER = 1;
+    public static final int DEVICE_ID_SHOOTER_FOLLOWER = 2;
+    public static final int DEVICE_ID_SHOOTER_ALTITUDE_CONTROL = 3;
+    public static final int DEVICE_ID_SHOOTER_MOTOR_INTAKE = 4;
+
+  }
+
+  public static class TurretConstants {
+    public static final int DEVICE_ID_ROT_CONTROL_LEADER = 5;
+    public static final int DEVICE_ID_ROT_CONTROL_FOLLOWER = 6;
+
+  }
+
+  public static class IntakeConstants {
+    public static final int DEVICE_ID_INTAKE = 7;
+
+  }
+
+  public static class ElevatorClimbConstants {
+    public static final int DEVICE_ID_ELEVATOR_HEIGHT_CONTROL_LEADER = 8;
+    public static final int DEVICE_ID_ELEVATOR_HEIGHT_CONTROL_FOLLOWER = 9;
+
+  }
+
+  public static class TrapAmpShooterConstants {
+    public static final int DEVICE_ID_TRAP_AMP_SHOOTER = 10;
+  }
 }
