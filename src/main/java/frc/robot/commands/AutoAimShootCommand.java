@@ -14,7 +14,7 @@ import frc.robot.subsystems.TurretSubsystem;
 
 public class AutoAimShootCommand extends Command {
 
-  // To be determined
+  // To be determined and may be moved to another file
   private final Translation2d speakerPosition = new Translation2d(123, 123); 
 
   private CommandSwerveDrivetrain drivetrain;
@@ -55,9 +55,10 @@ public class AutoAimShootCommand extends Command {
   @Override
   public void execute() {
     update();
-    
 
-    if (isFinished()) {
+    // I will add rest of logic later; this is just the base logic for autoaiming 
+
+    if (isFacingSpeaker()) {
       shooter.shootDonut();
       hasShot = true;
     }
@@ -71,5 +72,6 @@ public class AutoAimShootCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     turret.stop();
+    // Will add drivetrain logic later 
   }
 }
