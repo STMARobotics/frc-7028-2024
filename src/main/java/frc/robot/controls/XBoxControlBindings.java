@@ -62,7 +62,7 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> intakeReverse() {
+  public Optional<Trigger> intakeRetract() {
     return Optional.of(driverController.leftBumper());
   }
 

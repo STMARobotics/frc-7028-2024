@@ -72,7 +72,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // SysId routines  
   private final SysIdRoutine deploySysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(null, Volts.of(3.0), null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> deployMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
 
   private final SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
@@ -106,6 +106,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // Configure the roller motor
     var rollerConfig = new TalonFXConfiguration();
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rollerConfig.Feedback.SensorToMechanismRatio = ROLLER_SENSOR_TO_MECHANISM_RATIO;
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
 
@@ -163,8 +164,8 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param position target position
    * @return new command
    */
-  public Command setIntakePosition(Measure<Angle> position) {
-    return run(() -> this.setIntakePosition(position)).finallyDo(this::stopRoller);
+  public Command setIntakePositionCommand(Measure<Angle> position) {
+    return run(() -> this.setIntakePosition(position)).finallyDo(this::stopDeploy);
   }
 
   /**
@@ -233,11 +234,15 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   private void deployIntake() {
-    deployMotor.setControl(deployControl.withPosition(DEPLOY_POSITION_DEPLOYED.in(Rotations)));
+    setIntakePosition(DEPLOY_POSITION_DEPLOYED);
   }
 
   private void retractIntake() {
-    deployMotor.setControl(deployControl.withPosition(DEPLOY_POSITION_RETRACTED.in(Rotations)));
+    setIntakePosition(DEPLOY_POSITION_RETRACTED);
+  }
+
+  private void setIntakePosition(Measure<Angle> position) {
+    deployMotor.setControl(deployControl.withPosition(position.in(Rotations)));
   }
 
   private void rollerIntake() {
@@ -254,6 +259,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private void stopRoller() {
     rollerMotor.stopMotor();
+  }
+
+  private void stopDeploy() {
+    deployMotor.stopMotor();
   }
 
   private void stopAll() {

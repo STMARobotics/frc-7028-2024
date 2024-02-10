@@ -68,7 +68,6 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
-    Shuffleboard.selectTab(driverTab.getTitle());
 
     drivetrain.getDaqThread().setThreadPriority(99);
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -99,8 +98,8 @@ public class RobotContainer {
     controlBindings.intake().ifPresent(trigger -> trigger.toggleOnTrue(
         intakeSubsystem.deployAndRunIntakeCommand().alongWith(indexerSubsystem.intakeCommand())));
     
-    controlBindings.intakeReverse().ifPresent(trigger -> trigger.whileTrue(
-        intakeSubsystem.deployAndReverseIntakeCommand().alongWith(indexerSubsystem.unloadCommand())));
+    controlBindings.intakeRetract().ifPresent(trigger -> trigger.onTrue(
+        intakeSubsystem.retractIntakeCommand().alongWith(indexerSubsystem.stopCommand())));
     
     // Elevator
     controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualUpCommand()));
@@ -144,31 +143,38 @@ public class RobotContainer {
     columnIndex = 0;
     tab.add("Deploy Quasi Fwd", intakeSubsystem.sysIdDeployQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Deploy Quasi Rev", intakeSubsystem.sysIdDeployQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Deploy Dynam Fwd", intakeSubsystem.sysIdDeployDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Deploy Dynam Rev", intakeSubsystem.sysIdDeployDynamicCommand(kReverse)).withPosition(columnIndex, 3);
+
+    // Column 2 Intake
+    columnIndex += 2;
+    tab.add("Roller Quasi Fwd", intakeSubsystem.sysIdRollerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Roller Quasi Rev", intakeSubsystem.sysIdRollerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Roller Dynam Fwd", intakeSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Roller Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 2 Shooter
+    // Column 4 Shooter
     columnIndex += 2;
     tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 4 Shooter Aim
+    // Column 6 Shooter Aim
     columnIndex += 2;
     tab.add("Aim Quasi Fwd", shooterSubsystem.sysIdAimQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Aim Quasi Rev", shooterSubsystem.sysIdAimQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Aim Dynam Fwd", shooterSubsystem.sysIdAimDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Aim Dynam Rev", shooterSubsystem.sysIdAimDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    //Column 6 Indexer
+    //Column 8 Indexer
     columnIndex += 2;
     tab.add("Index Quasi Fwd", indexerSubsystem.sysIdIndexerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Index Quasi Rev", indexerSubsystem.sysIdIndexerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Index Dynam Fwd", indexerSubsystem.sysIdIndexerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Index Dynam Rev", indexerSubsystem.sysIdIndexerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    //Column 8 Elevator
+    //Column 10 Elevator
     columnIndex += 2;
     tab.add("Elev Quasi Fwd", elevatorSubsystem.sysIdQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Elev Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
@@ -202,7 +208,7 @@ public class RobotContainer {
     var intakePositionCommand = Commands.run(() -> {
       var dashboardPosition = intakePositionWidget.getEntry().getDouble(0);
       intakePosition.mut_replace(dashboardPosition, Rotations);
-    }).alongWith(intakeSubsystem.setIntakePosition(intakePosition)).withName("Intake Deploy");
+    }).alongWith(intakeSubsystem.setIntakePositionCommand(intakePosition)).withName("Intake Deploy");
 
     intakeList.add(intakePositionCommand);
 

@@ -117,10 +117,18 @@ public class Constants {
     public static final int THRESHOLD_SPACE = 400;
     public static final int THRESHOLD_FULL = 225;
 
-    public static final double kP = 0d;
-    public static final double kI = 0d;
-    public static final double kD = 0d;
-    public static final double kFF = 0d;
+    public static final double kP = 0.000006d;
+    public static final double kI = 0.0d;
+    public static final double kD = 0.0d;
+
+    public static final double LEFT_kS = 0.4387;
+    public static final double LEFT_kV = 0.00115;
+    public static final double LEFT_kA = 0.00013792;
+
+    public static final double RIGHT_kS = 0.4387;
+    public static final double RIGHT_kV = 0.0013;
+    public static final double RIGHT_kA = 0.00013792;
+
     public static final Measure<Velocity<Angle>> RUN_SPEED = RotationsPerSecond.of(30);
     public static final Measure<Velocity<Angle>> SHOOT_SPEED = RotationsPerSecond.of(30);
   }
@@ -155,14 +163,14 @@ public class Constants {
     
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
-    public static final double AIM_kP = 0.01;
+    public static final double AIM_kP = 0.015;
     public static final double AIM_kI = 0d;
     public static final double AIM_kD = 0d;
 
     public static final Measure<Angle> AIM_OFFSET = Rotations.of(0.9503065);
-    public static final float AIM_FORWARD_LIMIT = 0.84f;
-    public static final float AIM_REVERSE_LIMIT = 0.67f;
-    public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.1); //TODO configure
+    public static final float AIM_FORWARD_LIMIT = 0.32f;
+    public static final float AIM_REVERSE_LIMIT = 0.12f;
+    public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(3.5);
   }
 
   public static class IntakeConstants {
@@ -173,28 +181,29 @@ public class Constants {
     public static final Measure<Angle> DEPLOY_CANCODER_OFFSET = Rotations.of(0.417725);
     public static final double DEPLOY_ROTOR_TO_SENSOR_RATIO = 351.1133117;
     public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(0.01)
+        .withKP(75)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.0)
-        .withKV(0.0)
+        .withKS(0.6)
+        .withKV(8.0)
         .withKA(0.0)
-        .withKG(0.0)
+        .withKG(0.45)
         .withGravityType(GravityTypeValue.Arm_Cosine);
     public static final MotionMagicConfigs DEPLOY_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(0.01);
+        .withMotionMagicAcceleration(8)
+        .withMotionMagicCruiseVelocity(2);
     
     public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.126);
-    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.3055);
+    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.295);
     public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(.01)
+        .withKP(9.0)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.0);
-    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0; // TODO This should be set, but we could get away without it
-    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(100.0);
+        .withKS(0.243);
+    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
+    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(40.0);
     public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
   }
 
