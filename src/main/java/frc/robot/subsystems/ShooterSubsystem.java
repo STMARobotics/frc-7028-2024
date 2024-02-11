@@ -115,8 +115,8 @@ public class ShooterSubsystem extends SubsystemBase {
     aimEncoder.setInverted(true);
     aimEncoder.setAverageDepth(64);
     aimEncoder.setZeroOffset(AIM_OFFSET.in(Rotations));
-    aimPidController.setFeedbackDevice(aimEncoder);
 
+    aimPidController.setFeedbackDevice(aimEncoder);
     aimPidController.setP(AIM_kP);
     aimPidController.setI(AIM_kI);
     aimPidController.setD(AIM_kD);
@@ -144,6 +144,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return run(() -> spinShooterWheels(velocity)).finallyDo(this::stopShooter);
   }
 
+  /**
+   * Returns a new command to spin the shooter at a velocity and aim
+   * @param velocity velocity to spin the shooter
+   * @param aimAngle angle to aim
+   * @return new command
+   */
   public Command spinShooterAndAimCommand(Measure<Velocity<Angle>> velocity, Measure<Angle> aimAngle) {
     return run(() -> {
       spinShooterWheels(velocity);
@@ -166,7 +172,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return new command
    */
   public Command setAimAngleCommand(Measure<Angle> angle) {
-    return runOnce(() -> setAimPosition(angle));
+    return run(() -> setAimPosition(angle));
   }
 
   /**
@@ -236,6 +242,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void setAimVoltage(Measure<Voltage> volts) {
+    holdAimPosition = false;
     aimMotor.setVoltage(volts.in(Volts));
   }
 
@@ -245,6 +252,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void stopAim() {
+    holdAimPosition = false;
     aimMotor.stopMotor();
   }
 

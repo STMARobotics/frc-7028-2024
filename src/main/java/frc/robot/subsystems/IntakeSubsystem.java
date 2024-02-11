@@ -123,6 +123,15 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
+   * Returns true if the intake is in the deployed position
+   * @return true if the intake is in the deployed position, otherwise false
+   */
+  public boolean isDeployed() {
+    return Math.abs(deployPositionSignal.refresh().getValueAsDouble() - DEPLOY_POSITION_DEPLOYED.in(Rotations))
+       <= DEPLOY_TOLERANCE.in(Rotations);
+  }
+
+  /**
    * Returns a new command to stop and retract the intake
    * @return new command
    */

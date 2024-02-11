@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
@@ -96,18 +97,23 @@ public class RobotContainer {
 
     // Intake
     controlBindings.intake().ifPresent(trigger -> trigger.toggleOnTrue(
-        intakeSubsystem.deployAndRunIntakeCommand().alongWith(indexerSubsystem.intakeCommand())));
+        intakeSubsystem.deployAndRunIntakeCommand().alongWith(indexerSubsystem.intakeCommand())
+            .until(indexerSubsystem::isFullSensorTripped)));
     
     controlBindings.intakeRetract().ifPresent(trigger -> trigger.onTrue(
         intakeSubsystem.retractIntakeCommand().alongWith(indexerSubsystem.stopCommand())));
+
+    controlBindings.intakeReverse().ifPresent(trigger -> trigger.whileTrue(
+        intakeSubsystem.deployAndReverseIntakeCommand().alongWith(
+          waitUntil(intakeSubsystem::isDeployed).andThen(indexerSubsystem.unloadCommand()))));
     
     // Elevator
     controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualUpCommand()));
-    controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualDownCommand()));
+    controlBindings.elevatorDown().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualDownCommand()));
 
     // Manual shoot - spin up for 1 second, then run indexer to shoot
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
-      shooterSubsystem.spinShooterAndAimCommand(RevolutionsPerSecond.of(50), Rotations.of(0.3))
+      shooterSubsystem.spinShooterCommand(RevolutionsPerSecond.of(50))
         .alongWith(waitSeconds(1).andThen(indexerSubsystem.shootCommand()))
     ));
 
@@ -270,7 +276,7 @@ public class RobotContainer {
     var shooterAimCommand = Commands.run(() -> {
       var dashboardPosition = shooterAimWidget.getEntry().getDouble(0);
       shooterAimPosition.mut_replace(dashboardPosition, Rotations);
-    }).alongWith(shooterSubsystem.setAimAngleCommand(shooterRotations)).withName("Aim Position");
+    }).alongWith(shooterSubsystem.setAimAngleCommand(shooterAimPosition)).withName("Aim Position");
 
     shooterAimList.add(shooterAimCommand);
 
@@ -284,6 +290,20 @@ public class RobotContainer {
     }).alongWith(shooterSubsystem.setAimVoltageCommand(shooterAimVoltage)).withName("Aim Voltage");
 
     shooterAimList.add(shooterAimVoltageCommand);
+
+    // Elevator
+    var elevatorList = tab.getLayout("Elevator", BuiltInLayouts.kList)
+        .withPosition(8, 0).withSize(2, 3);
+
+    var elevatorWidget = elevatorList.add("Set Voltage", 0.0);
+    MutableMeasure<Voltage> elevatorVoltage = MutableMeasure.zero(Volts);
+    
+    var elevatorVoltageCommand = Commands.run(() -> {
+      var dashboardVoltage = elevatorWidget.getEntry().getDouble(0);
+      elevatorVoltage.mut_replace(dashboardVoltage, Volts);
+    }).alongWith(elevatorSubsystem.elevatorVoltageCommand(elevatorVoltage)).withName("Elevator Voltage");
+
+    elevatorList.add(elevatorVoltageCommand);
 
   }
 

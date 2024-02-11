@@ -67,6 +67,11 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> intakeReverse() {
+    return Optional.of(driverController.x());
+  }
+
+  @Override
   public Optional<Trigger> manualShoot() {
     return Optional.of(driverController.a());
   }

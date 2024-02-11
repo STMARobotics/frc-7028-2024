@@ -25,6 +25,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -66,6 +67,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
         BOTTOM_LIMIT.in(Meters) / METERS_PER_REVOLUTION.in(Meters.per(Rotations));
+    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     elevatorLeader.getConfigurator().apply(motorConfig);
     elevatorFollower.getConfigurator().apply(motorConfig);
@@ -103,7 +105,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @return new command
    */
   public Command manualUpCommand() {
-    return run(() -> move(Volts.of(5.0))).finallyDo(this::stop);
+    return run(() -> move(Volts.of(1.0))).finallyDo(this::stop);
   }
 
   /**
@@ -111,7 +113,16 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @return new command
    */
   public Command manualDownCommand() {
-    return run(() -> move(Volts.of(-2.0))).finallyDo(this::stop);
+    return run(() -> move(Volts.of(-0.5))).finallyDo(this::stop);
+  }
+
+  /**
+   * Returns a new command to run the elevator with voltage. Probably only for use when testing.
+   * @param voltage voltage to run the elevator
+   * @return new command
+   */
+  public Command elevatorVoltageCommand(Measure<Voltage> voltage) {
+    return run(() -> move(voltage)).finallyDo(this::stop);
   }
 
   public Command sysIdDynamicCommand(Direction direction) {
