@@ -5,6 +5,8 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
+import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -21,11 +23,12 @@ import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
 
   private final ControlBindings controlBindings;
-
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
@@ -55,11 +58,11 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(new FieldOrientedDriveCommand(
-      drivetrain,
-      () -> drivetrain.getState().Pose.getRotation(),
-      controlBindings.translationX(),
-      controlBindings.translationY(),
-      controlBindings.omega()));
+        drivetrain,
+        () -> drivetrain.getState().Pose.getRotation(),
+        controlBindings.translationX(),
+        controlBindings.translationY(),
+        controlBindings.omega()));
   }
 
   private void configureButtonBindings() {
@@ -71,4 +74,12 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
+  public void configureSysidDashboard() {
+    ShuffleboardTab tab = Shuffleboard.getTab("sysid");
+    tab.add("Shoot Quasi F", shooterSubsystem.sysIdShooterMotorQuasiCommand(kForward)).withPosition(0, 0);
+    tab.add("Shoot Dynam F", shooterSubsystem.sysIdShooterMotorDynamCommand(kForward)).withPosition(0, 1);
+    tab.add("Shoot Quasi R", shooterSubsystem.sysIdShooterMotorQuasiCommand(kReverse)).withPosition(0, 2);
+    tab.add("Shoot Dynam R", shooterSubsystem.sysIdShooterMotorDynamCommand(kReverse)).withPosition(0, 3);
+
+  }
 }
