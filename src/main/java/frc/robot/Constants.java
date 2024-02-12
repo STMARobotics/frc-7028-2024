@@ -10,6 +10,8 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static java.lang.Math.PI;
 
+import com.ctre.phoenix6.configs.SlotConfigs;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -19,6 +21,8 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 
 public class Constants {
+
+  public static final String CANIVORE_BUS_NAME = "canivore";
 
   public static final class DrivetrainConstants {
     public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
@@ -79,6 +83,11 @@ public class Constants {
     public static final int DEVICE_ID_SHOOTER_ALTITUDE_CONTROL = 3;
     public static final int DEVICE_ID_SHOOTER_MOTOR_INTAKE = 4;
 
+    public static final SlotConfigs SHOOTER_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0.59)
+        .withKI(0)
+        .withKD(0.001)
+        .withKS(0);
   }
 
   public static class TurretConstants {
