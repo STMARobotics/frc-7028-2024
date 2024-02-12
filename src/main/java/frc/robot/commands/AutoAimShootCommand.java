@@ -59,7 +59,7 @@ public class AutoAimShootCommand extends Command {
     // I will add rest of logic later; this is just the base logic for autoaiming 
 
     if (isFacingSpeaker()) {
-      shooter.shootDonut();
+      shooter.spinShooterWheel();
       hasShot = true;
     }
   }
