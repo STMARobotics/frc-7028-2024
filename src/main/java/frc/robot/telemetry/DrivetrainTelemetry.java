@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.telemetry;
 
 import java.util.Map;
 
@@ -20,13 +20,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
-public class Telemetry {
+public class DrivetrainTelemetry {
   private final int logEntry;
   private final int odomEntry;
 
   private final ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
 
-  /* What to publish over networktables for telemetry */
   private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
   /* Robot pose for field positioning */
@@ -56,7 +55,7 @@ public class Telemetry {
    * @param maxSpeed
    *          Maximum speed in meters per second
    */
-  public Telemetry(double maxSpeed) {
+  public DrivetrainTelemetry(double maxSpeed) {
     drivetrainTab.add(field2d).withPosition(0, 0).withSize(5, 3);
 
     readablePoseEntry = drivetrainTab.add("Pose", "").withWidget(BuiltInWidgets.kTextView)

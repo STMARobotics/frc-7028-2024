@@ -27,6 +27,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,6 +47,8 @@ public class IndexerSubsystem extends SubsystemBase {
   private final SimpleMotorFeedforward leftMotorFeedforward =  new SimpleMotorFeedforward(LEFT_kS, LEFT_kV, LEFT_kA);
   private final SimpleMotorFeedforward rightMotorFeedForward = new SimpleMotorFeedforward(RIGHT_kS, RIGHT_kV, RIGHT_kA);
 
+  private final BooleanConsumer telemetryFunction;
+
   // SysId routines  
   private final SysIdRoutine indexerSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(),
@@ -54,7 +57,8 @@ public class IndexerSubsystem extends SubsystemBase {
         rightMotor.setVoltage(volts.in(Volts));
       }, null, this));
 
-  public IndexerSubsystem() {
+  public IndexerSubsystem(BooleanConsumer telemetryFunction) {
+    this.telemetryFunction = telemetryFunction;
     leftPidController = configureMotor(leftMotor, false);
     rightPidController = configureMotor(rightMotor, true);
   }
@@ -72,6 +76,13 @@ public class IndexerSubsystem extends SubsystemBase {
     pidController.setD(kD);
     sparkMax.burnFlash();
     return pidController;
+  }
+
+  @Override
+  public void periodic() {
+    if (telemetryFunction != null) {
+      telemetryFunction.accept(isFullSensorTripped());
+    }
   }
 
   /**

@@ -19,6 +19,8 @@ import static frc.robot.Constants.ElevatorConstants.MOTION_MAGIC_CONFIGS;
 import static frc.robot.Constants.ElevatorConstants.SLOT_CONFIGS;
 import static frc.robot.Constants.ElevatorConstants.TOP_LIMIT;
 
+import java.util.function.Consumer;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -36,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
+import frc.robot.telemetry.ElevatorState;
 
 public class ElevatorSubsystem extends SubsystemBase {
   private final TalonFX elevatorLeader = new TalonFX(DEVICE_ID_MOTOR_0, CANIVORE_BUS_NAME);
@@ -48,6 +51,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final VoltageOut voltageControl = new VoltageOut(0).withEnableFOC(true);
   private final MotionMagicVoltage motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true);
 
+  private final ElevatorState elevatorState = new ElevatorState();
+  private final Consumer<ElevatorState> telemetryFunction;
+
   // SysId routines  
   private final SysIdRoutine elevatorRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, Volts.of(5.0), null, SysIdRoutineSignalLogger.logState()),
@@ -56,7 +62,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorFollower.setControl(voltageControl.withOutput(volts.in(Volts)));
       }, null, this));
   
-  public ElevatorSubsystem() {
+  public ElevatorSubsystem(Consumer<ElevatorState> telemetryFunction) {
+    this.telemetryFunction = telemetryFunction;
+
     var motorConfig = new TalonFXConfiguration();
     motorConfig.Slot0 = Slot0Configs.from(SLOT_CONFIGS);
     motorConfig.MotionMagic = MOTION_MAGIC_CONFIGS;
@@ -73,6 +81,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorFollower.getConfigurator().apply(motorConfig);
 
     elevatorFollower.setControl(new Follower(elevatorLeader.getDeviceID(), false));
+  }
+
+  @Override
+  public void periodic() {
+    elevatorState.isAtBottomLimit = isAtBottomLimit();
+    elevatorState.isAtTopLimit = isAtTopLimit();
+    if (telemetryFunction != null) {
+      telemetryFunction.accept(elevatorState);
+    }
   }
 
   /**

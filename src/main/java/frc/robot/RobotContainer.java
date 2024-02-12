@@ -42,22 +42,25 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.telemetry.DriverTelemetry;
+import frc.robot.telemetry.DrivetrainTelemetry;
 
 public class RobotContainer {
 
   private final ControlBindings controlBindings;
 
+  private final DriverTelemetry driverTelemetry = new DriverTelemetry();
+  private final DrivetrainTelemetry drivetrainTelemetry = new DrivetrainTelemetry(MAX_VELOCITY.in(MetersPerSecond));
+
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private final IndexerSubsystem indexerSubsystem = new IndexerSubsystem(driverTelemetry::telemeterizeIndexer);
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(driverTelemetry::telemeterizeElevator);
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
-
-  private final Telemetry logger = new Telemetry(MAX_VELOCITY.in(MetersPerSecond));
 
   public RobotContainer() {
     // Configure control binding scheme
@@ -71,7 +74,7 @@ public class RobotContainer {
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
 
     drivetrain.getDaqThread().setThreadPriority(99);
-    drivetrain.registerTelemetry(logger::telemeterize);
+    drivetrain.registerTelemetry(drivetrainTelemetry::telemeterize);
 
     configureDefaultCommands();
     configureButtonBindings();
