@@ -85,8 +85,6 @@ public class RobotContainer {
     // shooter
     controlBindings.shootDutyCycle().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
         () -> shooterSubsystem.shootDutyCycle(2), shooterSubsystem::stop, shooterSubsystem)));
-  //  controlBindings.shootDonutCommand().ifPresent(trigger -> trigger.whileTrue(
-   //   new ShootDonutCommand(null, shooterSubsystem, indexerSubsystem, null)));
 
     // indexer
     controlBindings.indexerRun().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
