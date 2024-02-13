@@ -111,7 +111,6 @@ public class Constants {
   }
 
   public static class ClimbConstants {
-    public static DeadbandFilter CLIMB_DEADBAND_FILTER = new DeadbandFilter(-.25, .5);
 
     public static final int DEVICE_ID_FIRST_STAGE_CLIMB = 12;
 
