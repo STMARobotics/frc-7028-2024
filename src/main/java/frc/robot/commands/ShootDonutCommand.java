@@ -24,7 +24,6 @@ public class ShootDonutCommand extends Command {
   private final Supplier<Pose2d> robotPoseSupplier;
 
   private final Timer shootTimer = new Timer();
-  protected double shooterRPS = 1;
 
   /**
    * Constructor
