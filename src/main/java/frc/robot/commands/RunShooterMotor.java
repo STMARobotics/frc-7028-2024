@@ -23,11 +23,12 @@ public class RunShooterMotor extends Command {
   public RunShooterMotor(double shooterRPS, ShooterSubsystem shooterSubsystem) {
     this.shooterRPS = shooterRPS;
     this.shooterSubsystem = shooterSubsystem;
+  
+    addRequirements(shooterSubsystem);
   }
 
   @Override
   public void initialize() {
-    shooterSubsystem.activeStop();
   }
 
   @Override
@@ -43,7 +44,6 @@ public class RunShooterMotor extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.actuatorStop();
     shooterSubsystem.stop();
     shootTimer.stop();
   }

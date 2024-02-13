@@ -14,11 +14,12 @@ public class DeployIntakeCommand extends Command {
   private final IntakeSubsystem intakeSubsystem;
   private final IndexerSubsystem indexerSubsystem;
   private final Timer deployTimer = new Timer();
-  protected double shooterRPS = 1;
 
-  public DeployIntakeCommand(double shooterRPS, IntakeSubsystem intakeSubsystem, IndexerSubsystem indexer) {
+  public DeployIntakeCommand(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexer) {
     this.intakeSubsystem = intakeSubsystem;
     indexerSubsystem = indexer;
+  
+    addRequirements(indexerSubsystem, intakeSubsystem);
   }
 
   @Override
