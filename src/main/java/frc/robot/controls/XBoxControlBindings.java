@@ -53,11 +53,6 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> shootDonutCommand() {
-    return Optional.of(driverController.leftBumper());
-  }
-
-  @Override
   public Optional<Trigger> elevatorVelocity() {
     return Optional.empty();
   }
