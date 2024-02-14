@@ -137,6 +137,9 @@ public class IntakeSubsystem extends SubsystemBase {
         .finallyDo(this::stopRollers);
   }
 
+  public void cancel() {
+  }
+
   public void stopDeploy() {
     deployMotor.stopMotor();
   }
