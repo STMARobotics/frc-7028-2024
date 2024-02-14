@@ -80,6 +80,11 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> shoot() {
+    return Optional.empty();
+  }
+
+  @Override
   public Optional<Trigger> elevatorUp() {
     return Optional.empty();
   }

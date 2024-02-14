@@ -19,6 +19,7 @@ public interface ControlBindings {
   Optional<Trigger> intakeRetract();
   Optional<Trigger> intakeReverse();
   Optional<Trigger> manualShoot();
+  Optional<Trigger> shoot();
   Optional<Trigger> elevatorUp();
   Optional<Trigger> elevatorDown();
 }

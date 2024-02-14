@@ -15,6 +15,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
+import static frc.robot.Constants.ShooterConstants.AIM_ERROR_TOLERANCE;
 import static frc.robot.Constants.ShooterConstants.AIM_FORWARD_LIMIT;
 import static frc.robot.Constants.ShooterConstants.AIM_GRAVITY_FF;
 import static frc.robot.Constants.ShooterConstants.AIM_OFFSET;
@@ -25,12 +26,15 @@ import static frc.robot.Constants.ShooterConstants.AIM_kP;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_AIM;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_TOP;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_ERROR_TOLERANCE;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_POSITION_SLOT_CONFIG_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_POSITION_SLOT_CONFIG_TOP;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_SENSOR_TO_MECHANISM_RATIO;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_TOP;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -67,6 +71,11 @@ public class ShooterSubsystem extends SubsystemBase {
       .withSlot(1)
       .withEnableFOC(true);
   private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true);
+
+  private final StatusSignal<Double> shooterBottomVelocity;
+  private final StatusSignal<Double> shooterTopVelocity;
+
+  private double targetVelocity = 0;
 
   // SysId routines  
   private final SysIdRoutine shooterSysIdRoutine = new SysIdRoutine(
@@ -109,6 +118,9 @@ public class ShooterSubsystem extends SubsystemBase {
     aimMotor.setIdleMode(kBrake);
     aimMotor.getForwardLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
     aimMotor.getReverseLimitSwitch(kNormallyOpen).enableLimitSwitch(false);
+
+    shooterTopVelocity = shooterTopMotor.getVelocity();
+    shooterBottomVelocity = shooterBottomMotor.getVelocity();
 
     // Configure aim encoder
     aimEncoder = aimMotor.getAbsoluteEncoder(kDutyCycle);
@@ -218,8 +230,35 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void spinShooterWheels(Measure<Velocity<Angle>> velocity) {
-    shooterTopMotor.setControl(shooterVelocityControl.withVelocity(velocity.in(RotationsPerSecond)));
-    shooterBottomMotor.setControl(shooterVelocityControl.withVelocity(velocity.in(RotationsPerSecond)));
+    targetVelocity = velocity.in(RotationsPerSecond);
+    shooterTopMotor.setControl(shooterVelocityControl.withVelocity(targetVelocity));
+    shooterBottomMotor.setControl(shooterVelocityControl.withVelocity(targetVelocity));
+  }
+
+  public void prepareToShoot(Measure<Velocity<Angle>> shooterVelocity, Measure<Angle> aimAngle) {
+    spinShooterWheels(shooterVelocity);
+    setAimPosition(aimAngle);
+  }
+
+  public boolean isReadyToShoot() {
+    return isShooterAtTargetVelocity() && isAimAtTargetPosition();
+  }
+
+  public void stop() {
+    stopAim();
+    stopShooter();
+  }
+
+  private boolean isShooterAtTargetVelocity() {
+    var errorToleranceRPS = SHOOTER_ERROR_TOLERANCE.in(RotationsPerSecond);
+    BaseStatusSignal.refreshAll(shooterBottomVelocity, shooterTopVelocity);
+
+    return Math.abs(shooterBottomVelocity.getValueAsDouble() - targetVelocity) < errorToleranceRPS
+        && Math.abs(shooterTopVelocity.getValueAsDouble() - targetVelocity) < errorToleranceRPS;
+  }
+
+  private boolean isAimAtTargetPosition() {
+    return Math.abs(aimEncoder.getPosition() - aimTargetRotations) < AIM_ERROR_TOLERANCE.in(Rotations);
   }
 
   private void rotateShooterWheels(Measure<Angle> distance) {

@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
@@ -18,7 +17,9 @@ import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.FieldOrientedDriveCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
@@ -61,7 +63,7 @@ public class RobotContainer {
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
-
+  
   public RobotContainer() {
     // Configure control binding scheme
     if (DriverStation.getJoystickIsXbox(0) || Robot.isSimulation()) {
@@ -96,7 +98,8 @@ public class RobotContainer {
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
 
     // Reset field relative heading
-    controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
+    controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(() -> 
+        drivetrain.seedFieldRelative(new Pose2d(1.5,  Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0))))));
 
     // Intake
     controlBindings.intake().ifPresent(trigger -> trigger.toggleOnTrue(
@@ -114,11 +117,14 @@ public class RobotContainer {
     controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualUpCommand()));
     controlBindings.elevatorDown().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualDownCommand()));
 
-    // Manual shoot - spin up for 1 second, then run indexer to shoot
+    // Manual shoot - spin up, then run indexer to shoot
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
-      shooterSubsystem.spinShooterCommand(RevolutionsPerSecond.of(50))
-        .alongWith(waitSeconds(1).andThen(indexerSubsystem.shootCommand()))
+      shooterSubsystem.spinShooterCommand(RevolutionsPerSecond.of(40))
+        .alongWith(waitUntil(shooterSubsystem::isReadyToShoot).andThen(indexerSubsystem.shootCommand()))
     ));
+
+    controlBindings.shoot().ifPresent(trigger -> trigger.whileTrue(
+      new ShootCommand(drivetrain, indexerSubsystem, shooterSubsystem)));
 
   }
 

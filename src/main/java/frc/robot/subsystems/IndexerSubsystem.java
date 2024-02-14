@@ -164,6 +164,15 @@ public class IndexerSubsystem extends SubsystemBase {
     return Rotations.per(Minute).of(rightMotor.getEncoder().getVelocity());
   }
 
+  public void shoot() {
+    runIndexer(IndexerConstants.SHOOT_SPEED);
+  }
+
+  public void stop() {
+    leftMotor.stopMotor();
+    rightMotor.stopMotor();
+  }
+
   private void load() {
     runIndexer(IndexerConstants.RUN_SPEED);
   }
@@ -171,15 +180,6 @@ public class IndexerSubsystem extends SubsystemBase {
   private void unload() {
     leftMotor.set(UNLOAD_SPEED.in(Rotations.per(Minute)));
     rightMotor.set(UNLOAD_SPEED.in(Rotations.per(Minute)));
-  }
-
-  private void shoot() {
-    runIndexer(IndexerConstants.SHOOT_SPEED);
-  }
-
-  private void stop() {
-    leftMotor.stopMotor();
-    rightMotor.stopMotor();
   }
 
   private void stopNow() {

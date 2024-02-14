@@ -77,6 +77,11 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> shoot() {
+    return Optional.of(driverController.rightTrigger());
+  }
+
+  @Override
   public Optional<Trigger> elevatorUp() {
     return Optional.of(driverController.y());
   }

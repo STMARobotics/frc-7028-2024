@@ -1,6 +1,7 @@
 package frc.robot;
 
 import static edu.wpi.first.math.util.Units.degreesToRadians;
+import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -19,6 +20,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
@@ -49,14 +51,14 @@ public class Constants {
     public static final double DEADBAND = 0.1;
 
     public static final Measure<Velocity<Velocity<Distance>>> TRANSLATION_RATE_LIMIT = MetersPerSecondPerSecond.of(8.0);
-    public static final Measure<Velocity<Velocity<Angle>>> ROTATION_RATE_LIMIT = RadiansPerSecond.per(Second)
-        .of(8.0 * PI);
+    public static final Measure<Velocity<Velocity<Angle>>> ROTATION_RATE_LIMIT =
+        RadiansPerSecond.per(Second).of(8.0 * PI);
 
   }
 
   public static class AutoDriveConstants {
 
-    public static final double THETA_kP = 2.6;
+    public static final double THETA_kP = 4.0;
     public static final double THETA_kI = 0.001;
     public static final double THETA_kD = 0.0;
 
@@ -159,7 +161,8 @@ public class Constants {
     public static final float AIM_REVERSE_LIMIT = 0.1f;
     public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.7);
 
-    public static final Measure<Velocity<Angle>> SHOOTER_VELOCITY_TOLERANCE = RotationsPerSecond.of(2);
+    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(5.0);
+    public static final Measure<Angle> AIM_ERROR_TOLERANCE = Rotations.of(.02);
   }
 
   public static class IntakeConstants {
@@ -222,4 +225,14 @@ public class Constants {
     public static final Measure<Distance> TOP_LIMIT = Meters.of(0.45);
     public static final Measure<Distance> BOTTOM_LIMIT = Meters.zero();
   }
+
+  public static class ShootingConstants {
+
+    public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(652.73), inchesToMeters(218.42));
+    public static final Translation2d SPEAKER_BLUE = new Translation2d(0.0, inchesToMeters(218.42));
+
+    public static final double SHOOT_TIME = 2.0;
+
+  }
+
 }
