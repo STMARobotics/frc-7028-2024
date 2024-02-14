@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import static java.lang.Math.PI;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -23,6 +24,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 
 public class Constants {
 
@@ -99,6 +101,13 @@ public class Constants {
   }
 
   public static class ShooterConstants {
+    public static final Measure<Angle> ACTUATOR_ERROR_TOLERANCE = Rotations.of(5);
+    public static final Measure<Angle> AIM_OFFSET = Rotations.of(0.9403065);
+    public static final float AIM_FORWARD_LIMIT = 0.32f;
+    public static final float AIM_REVERSE_LIMIT = 0.1f;
+    public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.7);
+    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(1.0);
+    public static final Measure<Angle> AIM_ERROR_TOLERANCE = Rotations.of(.01);
     public static final int DEVICE_ID_SHOOTER_RIGHT = 51;
     public static final int DEVICE_ID_SHOOTER_LEFT = 50;
     public static final int DEVICE_ID_ACTUATOR_MOTOR = 52;
