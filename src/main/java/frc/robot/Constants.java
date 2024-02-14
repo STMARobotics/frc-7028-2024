@@ -80,7 +80,7 @@ public class Constants {
     /**
      * Array of PhotonVision camera names. The values here match ROBOT_TO_CAMERA_TRANSFORMS for the camera's location.
     */
-    public static final String[] APRILTAG_CAMERA_NAMES = {"Camera-1", "Camera-2"};
+    public static final String[] APRILTAG_CAMERA_NAMES = {"Right", "Left"};
 
     /**
      * Physical location of the apriltag cameras on the robot, relative to the center of the robot.
@@ -88,11 +88,11 @@ public class Constants {
      */
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
-            new Translation3d(0.06, -0.2, 0.2127),
-            new Rotation3d(0.0, degreesToRadians(-15.0), degreesToRadians(3.0))),
+            new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
+            new Rotation3d(0, degreesToRadians(-25), -PI)),
         new Transform3d(
-            new Translation3d(0.06, -0.2, 0.2127),
-            new Rotation3d(0.0, degreesToRadians(-15.0), degreesToRadians(3.0))),
+            new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
+            new Rotation3d(0, degreesToRadians(-25), PI))
       };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
