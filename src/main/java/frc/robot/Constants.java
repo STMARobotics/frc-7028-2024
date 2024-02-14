@@ -112,6 +112,16 @@ public class Constants {
   public static class IntakeConstants {
     public static final int DEVICE_ID_INTAKE = 7;
 
+    public static final int DEVICE_ID_ROLLERS_MOTOR = 42;
+
+    public static final double MagnetOffsetValue = 0.4;
+
+    public static final SlotConfigs INTAKE_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0.1)
+        .withKI(0.1)
+        .withKD(0)
+        .withKS(0.59);
+
   }
 
   public static class ElevatorConstants {
