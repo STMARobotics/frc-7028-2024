@@ -1,12 +1,14 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
+import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
+import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
@@ -52,6 +54,7 @@ public class ShootCommand extends Command {
     swerveRequest.ForwardReference = ForwardReference.RedAlliance;
     swerveRequest.HeadingController = new PhoenixPIDController(THETA_kP, THETA_kI, THETA_kD);
     swerveRequest.HeadingController.enableContinuousInput(-PI, PI);
+    swerveRequest.HeadingController.setTolerance(AIM_TOLERANCE.in(Radians));
   }
 
   @Override
@@ -70,16 +73,20 @@ public class ShootCommand extends Command {
     // Distance between the robot and the speaker
     var distanceToSpeaker = robotTranslation.getDistance(speakerTranslation);
 
+    // Lookup shooter settings for this distance
+    var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
+
     // Angle to turn the robot. The shooter is on the back, so it's the angle to the speaker plus PI radians.
     var angleToSpeaker = speakerTranslation.minus(robotTranslation).getAngle().rotateBy(fromRadians(PI));
 
     // Prepare shooter
-    shooter.prepareToShoot(RotationsPerSecond.of(40), Rotations.of(0.35));
+    shooter.prepareToShoot(shootingSettings.getVelocity(), shootingSettings.getAngle());
+    
     // Aim drivetrain
     drivetrain.setControl(swerveRequest.withTargetDirection(angleToSpeaker));
 
-    // When shooter is spun up, and drivetrain aimed, shoot and run timer
-    if (shooter.isReadyToShoot() && Math.abs(robotPose.getRotation().minus(angleToSpeaker).getDegrees()) < 3) {
+    // When shooter is spun up and drivetrain aimed, shoot and run timer
+    if (shooter.isReadyToShoot() && swerveRequest.HeadingController.atSetpoint()) {
       indexer.shoot();
       shootTimer.start();
     }
@@ -87,7 +94,7 @@ public class ShootCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return shootTimer.hasElapsed(SHOOT_TIME);
+    return shootTimer.hasElapsed(SHOOT_TIME.in(Seconds));
   }
 
   @Override

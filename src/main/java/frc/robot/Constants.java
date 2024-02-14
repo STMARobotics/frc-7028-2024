@@ -2,6 +2,7 @@ package frc.robot;
 
 import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.math.util.Units.inchesToMeters;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -11,8 +12,12 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.math.VelocityAngleInterpolator.ShootingSettings.distance;
 import static java.lang.Math.PI;
+
+import java.util.List;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
@@ -26,8 +31,10 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Per;
+import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
+import frc.robot.math.VelocityAngleInterpolator;
 
 public class Constants {
 
@@ -231,7 +238,12 @@ public class Constants {
     public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(652.73), inchesToMeters(218.42));
     public static final Translation2d SPEAKER_BLUE = new Translation2d(0.0, inchesToMeters(218.42));
 
-    public static final double SHOOT_TIME = 2.0;
+    public static final Measure<Time> SHOOT_TIME = Seconds.of(2.0);
+    public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(3.0);
+
+    public static final VelocityAngleInterpolator SHOOTER_INTERPOLATOR = new VelocityAngleInterpolator(List.of(
+      distance(Meters.of(1)).velocity(RotationsPerSecond.of(40)).angle(Rotations.of(0.35)).height(Meters.zero())
+    ));
 
   }
 
