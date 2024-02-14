@@ -87,23 +87,14 @@ public class RobotContainer {
     controlBindings.spinShooterWheel().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
         () -> shooterSubsystem.spinShooterWheel(40), shooterSubsystem::stop, shooterSubsystem)));
     controlBindings.shootDonutCommand().ifPresent(trigger -> trigger.whileTrue(
-      new ShootDonutCommand(shooterSubsystem, indexerSubsystem)));
-
-    // indexer
-    controlBindings.indexerRun().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> indexerSubsystem.intake(), indexerSubsystem::stop, indexerSubsystem)));
+        new ShootDonutCommand(shooterSubsystem, indexerSubsystem, driveTrain)));
 
     // intake
-    controlBindings.spit().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.spit(1), intakeSubsystem::stopRollers, intakeSubsystem)));
-    controlBindings.intakeRollers().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.rollers(), intakeSubsystem::stopRollers, intakeSubsystem)));
+    controlBindings.retractIntake().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+        () -> intakeSubsystem.cancel(), intakeSubsystem::stopRollers, intakeSubsystem)));
     controlBindings.deployIntake().ifPresent(trigger -> trigger.onTrue(
-      new DeployIntakeCommand(intakeSubsystem, indexerSubsystem)));
+        new DeployIntakeCommand(intakeSubsystem, indexerSubsystem)));
 
-    // elevator
-    controlBindings.elevatorVelocity().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(
-        () -> elevatorSubsystem.moveElevator(1), elevatorSubsystem::stop, elevatorSubsystem)));
   }
 
   public Command getAutonomousCommand() {

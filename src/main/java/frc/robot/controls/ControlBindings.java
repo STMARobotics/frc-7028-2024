@@ -10,17 +10,11 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public interface ControlBindings {
-  Optional<Trigger> elevatorVelocity();
   Optional<Trigger> resetPose();
   Optional<Trigger> wheelsToX();
   Optional<Trigger> spinShooterWheel();
-  Optional<Trigger> spit();
-  Optional<Trigger> intakeRollers();
-  Optional<Trigger> deployIntake();
   Optional<Trigger> retractIntake();
-  Optional<Trigger> indexerRun();
-  Optional<Trigger> actuatorUp();
-  Optional<Trigger> actuatorDown();
+  Optional<Trigger> deployIntake();
   Optional<Trigger> shootDonutCommand();
   Supplier<Measure<Velocity<Distance>>> translationX();
   Supplier<Measure<Velocity<Distance>>> translationY();
