@@ -114,11 +114,36 @@ public class Constants {
 
   }
 
-  public static class ElevatorClimbConstants {
-    public static final int DEVICE_ID_ELEVATOR_HEIGHT_CONTROL_LEADER = 8;
-    public static final int DEVICE_ID_ELEVATOR_HEIGHT_CONTROL_FOLLOWER = 9;
+  public static class ElevatorConstants {
+
+    public static final int ELEVATOR_LEADER_ID = 40;
+    public static final int ELEVATOR_FOLLOWER_ID = 41;
+    public static final int ANALOG_SENSOR_CHANNEL = 0;
+    public static final double ELEVATOR_PARK_HEIGHT = .06;
+
+    // Elevator travel distance, in meters
+    public static final double ELEVATOR_HEIGHT = 1.002;
+    
+    // Motor's encoder limits, in encoder ticks
+    public static final double MOTOR_BOTTOM = 0;
+    public static final double MOTOR_TOP = 56530;
+    
+    // Mutiply by sensor position to get meters
+    public static final double MOTOR_ENCODER_POSITION_COEFFICIENT = ELEVATOR_HEIGHT / (MOTOR_TOP - MOTOR_BOTTOM);
+    
+    public static final int ANALOG_BOTTOM = 758;
+    public static final int ANALOG_TOP = 1796;
 
   }
+
+  public static final class ClimbConstants {
+    public static final int DEVICE_ID_FIRST_STAGE_CLIMB = 12;
+    public static final double SOFT_LIMIT_FIRST_STAGE_FWD = 430000;
+    public static final double SOFT_LIMIT_FIRST_STAGE_REV = 0;
+    public static final double CHAIN_HEIGHT = 0.75;
+
+  }
+
 
   public static class TrapAmpShooterConstants {
     public static final int DEVICE_ID_TRAP_AMP_SHOOTER = 10;
