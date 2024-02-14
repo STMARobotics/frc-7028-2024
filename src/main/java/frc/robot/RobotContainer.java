@@ -5,7 +5,6 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
@@ -19,7 +18,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
+import frc.robot.commands.ShootDonutCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
@@ -83,8 +84,10 @@ public class RobotContainer {
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(driveTrain.runOnce(driveTrain::seedFieldRelative)));
 
     // shooter
-    controlBindings.shootDutyCycle().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> shooterSubsystem.shootDutyCycle(2), shooterSubsystem::stop, shooterSubsystem)));
+    controlBindings.spinShooterWheel().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+        () -> shooterSubsystem.spinShooterWheel(40), shooterSubsystem::stop, shooterSubsystem)));
+    controlBindings.shootDonutCommand().ifPresent(trigger -> trigger.whileTrue(
+      new ShootDonutCommand(shooterSubsystem, indexerSubsystem)));
 
     // indexer
     controlBindings.indexerRun().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
@@ -92,13 +95,11 @@ public class RobotContainer {
 
     // intake
     controlBindings.spit().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.spit(1), intakeSubsystem::stop, intakeSubsystem)));
+        () -> intakeSubsystem.spit(1), intakeSubsystem::stopRollers, intakeSubsystem)));
     controlBindings.intakeRollers().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.intakeRollers(Volts.of(9)), intakeSubsystem::stop, intakeSubsystem)));
-    controlBindings.deployIntake().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.deploy(Volts.of(9)), intakeSubsystem::stop, intakeSubsystem)));
-    controlBindings.retractIntake().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.retractIntake(Volts.of(-9)), intakeSubsystem::stop, intakeSubsystem)));
+        () -> intakeSubsystem.rollers(), intakeSubsystem::stopRollers, intakeSubsystem)));
+    controlBindings.deployIntake().ifPresent(trigger -> trigger.onTrue(
+      new DeployIntakeCommand(intakeSubsystem, indexerSubsystem)));
 
     // elevator
     controlBindings.elevatorVelocity().ifPresent(trigger -> trigger.onTrue(Commands.startEnd(

@@ -13,7 +13,7 @@ public interface ControlBindings {
   Optional<Trigger> elevatorVelocity();
   Optional<Trigger> resetPose();
   Optional<Trigger> wheelsToX();
-  Optional<Trigger> shootDutyCycle();
+  Optional<Trigger> spinShooterWheel();
   Optional<Trigger> spit();
   Optional<Trigger> intakeRollers();
   Optional<Trigger> deployIntake();
@@ -21,6 +21,7 @@ public interface ControlBindings {
   Optional<Trigger> indexerRun();
   Optional<Trigger> actuatorUp();
   Optional<Trigger> actuatorDown();
+  Optional<Trigger> shootDonutCommand();
   Supplier<Measure<Velocity<Distance>>> translationX();
   Supplier<Measure<Velocity<Distance>>> translationY();
   Supplier<Measure<Velocity<Angle>>> omega();

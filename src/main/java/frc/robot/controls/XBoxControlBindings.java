@@ -58,7 +58,7 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> shootDutyCycle() {
+  public Optional<Trigger> spinShooterWheel() {
     return Optional.of(driverController.rightTrigger());
   }
 
@@ -66,7 +66,10 @@ public class XBoxControlBindings implements ControlBindings {
   public Optional<Trigger> deployIntake() {
     return Optional.of(driverController.rightBumper());
   }
-
+@Override
+public Optional<Trigger> shootDonutCommand() {
+  return Optional.of(driverController.rightTrigger());
+}
   @Override
   public Optional<Trigger> spit() {
     return Optional.of(driverController.a());

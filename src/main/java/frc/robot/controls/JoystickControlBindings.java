@@ -29,12 +29,16 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> shootDutyCycle() {
+  public Optional<Trigger> spinShooterWheel() {
     return Optional.empty();
   }
 
   @Override
   public Optional<Trigger> indexerRun() {
+    return Optional.empty();
+  }
+  @Override
+  public Optional<Trigger> shootDonutCommand() {
     return Optional.empty();
   }
 

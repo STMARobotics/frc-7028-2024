@@ -7,7 +7,8 @@ import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_ACTUATOR_MOTOR;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_LEFT;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_RIGHT;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_SLOT_CONFIGS;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_TOP;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_TOLERANCE;
 import static frc.robot.Constants.ShooterConstants.WRIST_POSITION_TOLERANCE;
 
@@ -61,15 +62,17 @@ public class ShooterSubsystem extends SubsystemBase {
       }, null, this));
 
   private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
-      false);
+      false).withSlot(0);
 
   public ShooterSubsystem() {
     var shooterMotorConfig = new TalonFXConfiguration();
-    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_SLOT_CONFIGS);
+    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);
     shooterMotorConfig.MotorOutput.NeutralMode = Coast;
+    shooterMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 1;
     shooterMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 1;
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     shooterLeftMotor.getConfigurator().apply(shooterMotorConfig);
+    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM);
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
 
@@ -149,8 +152,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return Units.rotationsToDegrees(actuatorEncoder.getVelocity());
   }
 
-  public double getShooterVelocity() {
-    return 2;
+  public double getShooterLeftVelocity() {
+    return shooterLeftMotor.getVelocity().getValueAsDouble();
+  }
+
+  public double getShooterRightVelocity() {
+    return shooterRightMotor.getVelocity().getValueAsDouble();
   }
 
   public boolean checkWristPosition(double radiansToRotate) {
@@ -158,7 +165,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean checkShooterSpeed(double shooterSpeedGoal) {
-    return (Math.abs(getWristVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE);
+    return ((Math.abs(getShooterLeftVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE) &&
+    (Math.abs(getShooterRightVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE));
   }
 
   public void shootDutyCycle(double speed) {

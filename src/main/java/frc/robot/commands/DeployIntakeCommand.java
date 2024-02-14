@@ -1,8 +1,5 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Volts;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -13,41 +10,35 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class DeployIntakeCommand extends Command {
   private final IntakeSubsystem intakeSubsystem;
   private final IndexerSubsystem indexerSubsystem;
-  private final Timer deployTimer = new Timer();
 
   public DeployIntakeCommand(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexer) {
     this.intakeSubsystem = intakeSubsystem;
     indexerSubsystem = indexer;
-  
+
     addRequirements(indexerSubsystem, intakeSubsystem);
   }
 
   @Override
   public void initialize() {
-     deployTimer.start();
   }
 
   @Override
   public void execute() {
     indexerSubsystem.intake();
-  
-    if (deployTimer.hasElapsed(1)) {
-      intakeSubsystem.stop();
-    } else {
-      intakeSubsystem.deploy(Volts.of(3));
-      intakeSubsystem.intakeRollers(Volts.of(3));
-    }
+
+    intakeSubsystem.deployIntake();
+    intakeSubsystem.rollers();
   }
 
   @Override
   public boolean isFinished() {
-    return !indexerSubsystem.shouldContinue();
+    return indexerSubsystem.hasDonut();
   }
 
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.stop();
+    intakeSubsystem.retractIntake();
+    intakeSubsystem.stopRollers();
     indexerSubsystem.stopIndexer();
-    deployTimer.stop();
   }
 }
