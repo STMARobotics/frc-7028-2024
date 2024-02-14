@@ -34,5 +34,6 @@
     "source.organizeImports": "explicit"
   },
   "editor.detectIndentation": false,
-  "java.format.settings.url": ".vscode/eclipse-formatter.xml"
+  "java.format.settings.url": ".vscode/eclipse-formatter.xml",
+  "java.inlayHints.parameterNames.enabled": "none"
 }
