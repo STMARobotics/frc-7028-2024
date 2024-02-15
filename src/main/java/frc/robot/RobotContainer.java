@@ -101,18 +101,6 @@ public class RobotContainer {
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(() -> 
         drivetrain.seedFieldRelative(new Pose2d(1.5,  Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0))))));
 
-    // Intake
-    controlBindings.intake().ifPresent(trigger -> trigger.toggleOnTrue(
-        intakeSubsystem.deployAndRunIntakeCommand().alongWith(indexerSubsystem.intakeCommand())
-            .until(indexerSubsystem::isFullSensorTripped)));
-    
-    controlBindings.intakeRetract().ifPresent(trigger -> trigger.onTrue(
-        intakeSubsystem.retractIntakeCommand().alongWith(indexerSubsystem.stopCommand())));
-
-    controlBindings.intakeReverse().ifPresent(trigger -> trigger.whileTrue(
-        intakeSubsystem.deployAndReverseIntakeCommand().alongWith(
-          waitUntil(intakeSubsystem::isDeployed).andThen(indexerSubsystem.unloadCommand()))));
-    
     // Elevator
     controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualUpCommand()));
     controlBindings.elevatorDown().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualDownCommand()));
@@ -156,40 +144,33 @@ public class RobotContainer {
     tab = Shuffleboard.getTab("Sub SysId");
     // Column 0 Intake
     columnIndex = 0;
-    tab.add("Deploy Quasi Fwd", intakeSubsystem.sysIdDeployQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
-    tab.add("Deploy Quasi Rev", intakeSubsystem.sysIdDeployQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
-    tab.add("Deploy Dynam Fwd", intakeSubsystem.sysIdDeployDynamicCommand(kForward)).withPosition(columnIndex, 2);
-    tab.add("Deploy Dynam Rev", intakeSubsystem.sysIdDeployDynamicCommand(kReverse)).withPosition(columnIndex, 3);
-
-    // Column 2 Intake
-    columnIndex += 2;
     tab.add("Roller Quasi Fwd", intakeSubsystem.sysIdRollerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Roller Quasi Rev", intakeSubsystem.sysIdRollerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Roller Dynam Fwd", intakeSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Roller Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 4 Shooter
+    // Column 2 Shooter
     columnIndex += 2;
     tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Column 6 Shooter Aim
+    // Column 4 Shooter Aim
     columnIndex += 2;
     tab.add("Aim Quasi Fwd", shooterSubsystem.sysIdAimQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Aim Quasi Rev", shooterSubsystem.sysIdAimQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Aim Dynam Fwd", shooterSubsystem.sysIdAimDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Aim Dynam Rev", shooterSubsystem.sysIdAimDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    //Column 8 Indexer
+    //Column 6 Indexer
     columnIndex += 2;
     tab.add("Index Quasi Fwd", indexerSubsystem.sysIdIndexerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Index Quasi Rev", indexerSubsystem.sysIdIndexerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Index Dynam Fwd", indexerSubsystem.sysIdIndexerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Index Dynam Rev", indexerSubsystem.sysIdIndexerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    //Column 10 Elevator
+    //Column 8 Elevator
     columnIndex += 2;
     tab.add("Elev Quasi Fwd", elevatorSubsystem.sysIdQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Elev Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
@@ -212,20 +193,9 @@ public class RobotContainer {
     var intakeVelocityCommand = Commands.run(() -> {
       var dashboardVelocity = intakeVelocityWidget.getEntry().getDouble(0);
       intakeVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
-    }).alongWith(intakeSubsystem.runIntakeRollersCommand(intakeVelocity)).withName("Intake Rollers");
+    }).alongWith(Commands.run(() -> intakeSubsystem.runRollers(intakeVelocity))).withName("Intake Rollers");
 
     intakeList.add(intakeVelocityCommand);
-
-    // Intake position
-    var intakePositionWidget = intakeList.add("Set Deploy Position", 0.0);
-    MutableMeasure<Angle> intakePosition = MutableMeasure.zero(Rotations);
-
-    var intakePositionCommand = Commands.run(() -> {
-      var dashboardPosition = intakePositionWidget.getEntry().getDouble(0);
-      intakePosition.mut_replace(dashboardPosition, Rotations);
-    }).alongWith(intakeSubsystem.setIntakePositionCommand(intakePosition)).withName("Intake Deploy");
-
-    intakeList.add(intakePositionCommand);
 
     // Indexer grid
     var indexerList = tab.getLayout("Run Indexer", BuiltInLayouts.kList)
