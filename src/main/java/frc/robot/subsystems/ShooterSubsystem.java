@@ -34,13 +34,11 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterTopMotor = new TalonFX(DEVICE_ID_TOP, CANIVORE_BUS_NAME);
   private final TalonFX shooterBottomMotor = new TalonFX(DEVICE_ID_BOTTOM, CANIVORE_BUS_NAME);
 
-  private final VelocityTorqueCurrentFOC shooterVelocityControl = new VelocityTorqueCurrentFOC(0.0)
-      .withSlot(0);
+  private final VelocityTorqueCurrentFOC shooterVelocityControl = new VelocityTorqueCurrentFOC(0.0);
 
   private final StatusSignal<Double> shooterBottomVelocity;
   private final StatusSignal<Double> shooterTopVelocity;
 
-  private double targetVelocity = 0;
   private final TorqueCurrentFOC sysIdControl = new TorqueCurrentFOC(0.0);
   
   // SysId routine - NOTE: the output type is amps, NOT volts (even though it says volts)
@@ -80,7 +78,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void spinShooterWheels(Measure<Velocity<Angle>> velocity) {
-    targetVelocity = velocity.in(RotationsPerSecond);
+    var targetVelocity = velocity.in(RotationsPerSecond);
     shooterTopMotor.setControl(shooterVelocityControl.withVelocity(targetVelocity));
     shooterBottomMotor.setControl(shooterVelocityControl.withVelocity(targetVelocity));
   }
@@ -97,8 +95,8 @@ public class ShooterSubsystem extends SubsystemBase {
     var errorToleranceRPS = SHOOTER_ERROR_TOLERANCE.in(RotationsPerSecond);
     BaseStatusSignal.refreshAll(shooterBottomVelocity, shooterTopVelocity);
 
-    return Math.abs(shooterBottomVelocity.getValueAsDouble() - targetVelocity) < errorToleranceRPS
-        && Math.abs(shooterTopVelocity.getValueAsDouble() - targetVelocity) < errorToleranceRPS;
+    return Math.abs(shooterBottomVelocity.getValueAsDouble() - shooterVelocityControl.Velocity) < errorToleranceRPS
+        && Math.abs(shooterTopVelocity.getValueAsDouble() - shooterVelocityControl.Velocity) < errorToleranceRPS;
   }
 
   public void stop() {
