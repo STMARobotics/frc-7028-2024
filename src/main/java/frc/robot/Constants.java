@@ -13,7 +13,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.math.VelocityAngleInterpolator.ShootingSettings.distance;
 import static java.lang.Math.PI;
 
@@ -33,7 +32,6 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
 import frc.robot.math.VelocityAngleInterpolator;
 
 public class Constants {
@@ -109,8 +107,6 @@ public class Constants {
   public static class ShooterConstants {
     public static final int DEVICE_ID_TOP = 50;
     public static final int DEVICE_ID_BOTTOM = 51;
-    public static final int DEVICE_ID_AIM = 52;
-    public static final int ACTUATOR_CANCORDER = 3;
 
     public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_TOP = new SlotConfigs()
         .withKP(9.0)
@@ -124,29 +120,9 @@ public class Constants {
         .withKD(0.0)
         .withKS(0.096656);
   
-    public static final SlotConfigs SHOOTER_POSITION_SLOT_CONFIG_TOP = new SlotConfigs()
-        .withKP(35.59)
-        .withKI(0.0)
-        .withKD(1.2791);
-
-    public static final SlotConfigs SHOOTER_POSITION_SLOT_CONFIG_BOTTOM = new SlotConfigs()
-        .withKP(36.957)
-        .withKI(0.0)
-        .withKD(1.4008);
-    
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
-    public static final double AIM_kP = 1.5;
-    public static final double AIM_kI = 0d;
-    public static final double AIM_kD = 0d;
-
-    public static final Measure<Angle> AIM_OFFSET = Rotations.of(0.9403065);
-    public static final float AIM_FORWARD_LIMIT = 0.32f;
-    public static final float AIM_REVERSE_LIMIT = 0.1f;
-    public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.7);
-
     public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(5.0);
-    public static final Measure<Angle> AIM_ERROR_TOLERANCE = Rotations.of(.02);
   }
 
   public static class IntakeConstants {

@@ -8,8 +8,6 @@ import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_TOP;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_ERROR_TOLERANCE;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_POSITION_SLOT_CONFIG_BOTTOM;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_POSITION_SLOT_CONFIG_TOP;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_SENSOR_TO_MECHANISM_RATIO;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_TOP;
@@ -17,7 +15,6 @@ import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
@@ -59,14 +56,12 @@ public class ShooterSubsystem extends SubsystemBase {
     // Configure shooter motors
     var shooterMotorConfig = new TalonFXConfiguration();
     shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM);
-    shooterMotorConfig.Slot1 = Slot1Configs.from(SHOOTER_POSITION_SLOT_CONFIG_BOTTOM);
     shooterMotorConfig.MotorOutput.NeutralMode = Coast;
     shooterMotorConfig.Feedback.SensorToMechanismRatio = SHOOTER_SENSOR_TO_MECHANISM_RATIO;
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     shooterBottomMotor.getConfigurator().apply(shooterMotorConfig);
     shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);
-    shooterMotorConfig.Slot1 = Slot1Configs.from(SHOOTER_POSITION_SLOT_CONFIG_TOP);
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     shooterTopMotor.getConfigurator().apply(shooterMotorConfig);
 
