@@ -19,8 +19,6 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -63,12 +61,12 @@ public class IntakeSubsystem extends SubsystemBase {
       false,
       false);
 
-  public void runintakeRollers(Measure<Voltage> volts) {
-    rollersMotor.setControl(intakeRollersMotorVelocity.withVelocity(volts.in(Volts)));
+  public void runintakeRollers() {
+    rollersMotor.setControl(intakeRollersMotorVelocity.withVelocity(10));
   }
 
-  public void reverseintakeRollers(Measure<Voltage> volts) {
-    rollersMotor.setControl(intakeRollersMotorVelocity.withVelocity(-volts.in(Volts)));
+  public void reverseintakeRollers() {
+    rollersMotor.setControl(intakeRollersMotorVelocity.withVelocity(-10));
   }
 
   public void stop() {
