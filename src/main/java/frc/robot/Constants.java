@@ -85,6 +85,7 @@ public class Constants {
     public static final int DEVICE_ID_SHOOTER_FOLLOWER = 2;
     public static final int DEVICE_ID_SHOOTER_ALTITUDE_CONTROL = 3;
     public static final int DEVICE_ID_SHOOTER_MOTOR_INTAKE = 4;
+    public static final int SHOOTER_VELOCITY_TOLERANCE = 5;
 
     public static final SlotConfigs SHOOTER_SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.59)
