@@ -26,12 +26,12 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> resetPose() {
-    return Optional.of(leftJoystick.povDown());
+    return Optional.of(leftJoystick.button(7));
   }
   
   @Override
   public Optional<Trigger> wheelsToX() {
-    return Optional.of(leftJoystick.button(4));
+    return Optional.of(rightJoystick.button(3));
   }
 
   @Override
@@ -61,22 +61,22 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> intake() {
-    return Optional.of(rightJoystick.button(1));
+    return Optional.of(leftJoystick.trigger());
   }
 
   @Override
   public Optional<Trigger> intakeRetract() {
-    return Optional.of(rightJoystick.button(2));
+    return Optional.of(leftJoystick.button(4));
   }
 
   @Override
   public Optional<Trigger> intakeReverse() {
-    return Optional.empty();
+    return Optional.of(leftJoystick.button(3));
   }
 
   @Override
   public Optional<Trigger> manualShoot() {
-    return Optional.empty();
+    return Optional.of(rightJoystick.trigger());
   }
 
   @Override

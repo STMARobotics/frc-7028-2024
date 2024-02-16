@@ -126,7 +126,7 @@ public class Constants {
 
     public static final Measure<Velocity<Angle>> RUN_SPEED = RotationsPerSecond.of(50);
     public static final Measure<Velocity<Angle>> SHOOT_SPEED = RotationsPerSecond.of(10);
-    public static final Measure<Velocity<Angle>> UNLOAD_SPEED = RotationsPerSecond.of(-10);
+    public static final Measure<Velocity<Angle>> UNLOAD_SPEED = RotationsPerSecond.of(-5);
   }
 
   public static class ShooterConstants {
@@ -168,7 +168,7 @@ public class Constants {
     public static final float AIM_REVERSE_LIMIT = 0.1f;
     public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.7);
 
-    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(5.0);
+    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(8.0);
     public static final Measure<Angle> AIM_ERROR_TOLERANCE = Rotations.of(.02);
   }
 
@@ -192,7 +192,7 @@ public class Constants {
         .withMotionMagicAcceleration(3)
         .withMotionMagicCruiseVelocity(.75);
     
-    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.12);
+    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.1);
     public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.28);
     public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
 

@@ -9,7 +9,7 @@ import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
@@ -109,9 +109,7 @@ public class RobotContainer {
     controlBindings.intakeRetract().ifPresent(trigger -> trigger.onTrue(
         intakeSubsystem.retractIntakeCommand().alongWith(indexerSubsystem.stopCommand())));
 
-    controlBindings.intakeReverse().ifPresent(trigger -> trigger.whileTrue(
-        intakeSubsystem.deployAndReverseIntakeCommand().alongWith(
-          waitUntil(intakeSubsystem::isDeployed).andThen(indexerSubsystem.unloadCommand()))));
+    controlBindings.intakeReverse().ifPresent(trigger -> trigger.whileTrue(indexerSubsystem.unloadCommand()));
     
     // Elevator
     controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualUpCommand()));
@@ -120,7 +118,7 @@ public class RobotContainer {
     // Manual shoot - spin up, then run indexer to shoot
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
       shooterSubsystem.spinShooterCommand(RevolutionsPerSecond.of(40))
-        .alongWith(waitUntil(shooterSubsystem::isReadyToShoot).andThen(indexerSubsystem.shootCommand()))
+        .alongWith(waitSeconds(1.0).andThen(indexerSubsystem.shootCommand()))
     ));
 
     controlBindings.shoot().ifPresent(trigger -> trigger.whileTrue(

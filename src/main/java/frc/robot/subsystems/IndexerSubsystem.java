@@ -178,8 +178,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   private void unload() {
-    leftMotor.set(UNLOAD_SPEED.in(Rotations.per(Minute)));
-    rightMotor.set(UNLOAD_SPEED.in(Rotations.per(Minute)));
+    runIndexer(UNLOAD_SPEED);
   }
 
   private void stopNow() {
