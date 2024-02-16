@@ -16,9 +16,6 @@ public class AmpShooterSubsystem extends SubsystemBase {
   private final VelocityTorqueCurrentFOC ampMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
       false);
 
-  public AmpShooterSubsystem() {
-  }
-
   // device id is a placeholder!!!
   private final TalonFX ampShooterMotor = new TalonFX(DEVICE_ID_TRAP_AMP_SHOOTER);
 

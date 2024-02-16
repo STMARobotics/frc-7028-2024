@@ -7,11 +7,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
-//import static frc.robot.Constants.IntakeConstants.DEPLOY_SLOT_CONFIGS;
-//import static frc.robot.Constants.IntakeConstants.DEVICE_ID_DEPLOY_CANCODER;
-//import static frc.robot.Constants.IntakeConstants.DEVICE_ID_DEPLOY_MOTOR;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_ROLLERS_MOTOR;
-//import static frc.robot.Constants.IntakeConstants.ROLLERS_SLOT_CONFIGS;
 import static frc.robot.Constants.IntakeConstants.MagnetOffsetValue;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -31,16 +27,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final VoltageOut voltageRequest = new VoltageOut(0);
   private final TalonFX rollersMotor = new TalonFX(DEVICE_ID_ROLLERS_MOTOR);
-  //private final CANcoder canCoder = new CANcoder(DEVICE_ID_DEPLOY_CANCODER, CANIVORE_BUS_NAME);
-
-  //private SysIdRoutine rollersMotorSysIdRoutine = new SysIdRoutine(
-  //    new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
-  //    new SysIdRoutine.Mechanism((volts) -> RollersMotor.setControl(voltageRequest.withOutput(volts.in(Volts))), null,
-  //        this));
 
   public IntakeSubsystem() {
     var intakeRollersConfig = new TalonFXConfiguration();
-    //intakeRollersConfig.Slot0 = Slot0Configs.from(ROLLERS_SLOT_CONFIGS);
     intakeRollersConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rollersMotor.getConfigurator().apply(intakeRollersConfig);
 
@@ -48,23 +37,18 @@ public class IntakeSubsystem extends SubsystemBase {
     canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     canCoderConfig.MagnetSensor.MagnetOffset = MagnetOffsetValue;
-    //canCoder.getConfigurator().apply(canCoderConfig);
   }
 
   private final VelocityTorqueCurrentFOC intakeRollersMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false,
       false,
       false);
 
-  private final VelocityTorqueCurrentFOC intakeDeployMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false,
-      false,
-      false);
-
   public void runintakeRollers(Measure<Voltage> volts) {
-    rollersMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
+    rollersMotor.setControl(intakeRollersMotorVelocity.withVelocity(volts.in(Volts)));
   }
 
   public void reverseintakeRollers(Measure<Voltage> volts) {
-    rollersMotor.setControl(voltageRequest.withOutput(-volts.in(Volts)));
+    rollersMotor.setControl(intakeRollersMotorVelocity.withVelocity(-volts.in(Volts)));
   }
 
   public void stop() {
