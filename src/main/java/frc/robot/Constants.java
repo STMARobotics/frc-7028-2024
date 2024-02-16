@@ -156,7 +156,7 @@ public class Constants {
         .withMotionMagicAcceleration(3)
         .withMotionMagicCruiseVelocity(.75);
     
-    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.12);
+    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.1);
     public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.28);
     public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
 
