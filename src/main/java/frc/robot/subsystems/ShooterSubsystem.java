@@ -31,6 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterAltitudeControl = new TalonFX(DEVICE_ID_SHOOTER_ALTITUDE_CONTROL, CANIVORE_BUS_NAME);
   private final TalonFX shooterIntakeMotor = new TalonFX(DEVICE_ID_SHOOTER_MOTOR_INTAKE, CANIVORE_BUS_NAME);
 
+  public final int shooterSpeed = 40;
   public boolean hasRing = false;
   private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
 
@@ -89,8 +90,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void spinShooterWheel() {
-    shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(10));
-    shooterRightMotor.setControl(shooterMotorVelocity.withVelocity(10));
+    shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(shooterSpeed));
+    shooterRightMotor.setControl(shooterMotorVelocity.withVelocity(shooterSpeed));
   }
 
   public void altitudeUp() {
@@ -117,7 +118,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
-    return (checkShooterSpeed(40));
+    return (checkShooterSpeed(shooterSpeed));
   }
 
   public double getShooterLeftVelocity() {
