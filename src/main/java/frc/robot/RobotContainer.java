@@ -88,7 +88,7 @@ public class RobotContainer {
     controlBindings.spinShooterWheel().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
         () -> shooterSubsystem.spinShooterWheel(40), shooterSubsystem::stop, shooterSubsystem)));
     controlBindings.shootDonutCommand().ifPresent(trigger -> trigger.whileTrue(
-        new ShootDonutCommand(shooterSubsystem, indexerSubsystem, driveTrain)));
+        new ShootDonutCommand(shooterSubsystem, indexerSubsystem)));
 
     // intake
     controlBindings.retractIntake().ifPresent(trigger -> trigger.onTrue(

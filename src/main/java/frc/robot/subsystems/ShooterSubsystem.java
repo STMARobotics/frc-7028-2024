@@ -7,7 +7,6 @@ import static edu.wpi.first.math.util.Units.rotationsToRadians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
-import static frc.robot.Constants.ShooterConstants.ACTUATOR_ERROR_TOLERANCE;
 import static frc.robot.Constants.ShooterConstants.AIM_GRAVITY_FF;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_ACTUATOR_MOTOR;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_LEFT;
@@ -60,7 +59,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
   private double aimTargetRotations = 0.0;
   private boolean holdAimPosition = false;
-
 
   private SysIdRoutine shooterMotorSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
@@ -130,7 +128,7 @@ public class ShooterSubsystem extends SubsystemBase {
       var cosineScalar = Math.cos(rotationsToRadians(actuatorEncoder.getPosition()));
       var gravityFF = AIM_GRAVITY_FF.in(Volts) * cosineScalar;
 
-      pidController.setReference(aimTargetRotations, kPosition); //ask andy today
+      pidController.setReference(aimTargetRotations, kPosition); // ask andy today
     }
   }
 
@@ -183,17 +181,13 @@ public class ShooterSubsystem extends SubsystemBase {
     return shooterRightMotor.getVelocity().getValueAsDouble();
   }
 
-  private boolean isAimAtTargetPosition() {
-    return Math.abs(actuatorEncoder.getPosition() - aimTargetRotations) < ACTUATOR_ERROR_TOLERANCE.in(Rotations);
-  }
-
   private boolean checkShooterSpeed(double shooterSpeedGoal) {
     return ((Math.abs(getShooterLeftVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE) &&
         (Math.abs(getShooterRightVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE));
   }
 
   public boolean isShooterReady() {
-    return(checkShooterSpeed(40) && isAimAtTargetPosition());
+    return (checkShooterSpeed(40));
   }
 
   public void shootDutyCycle(double speed) {
