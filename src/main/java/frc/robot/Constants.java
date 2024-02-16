@@ -144,6 +144,12 @@ public class Constants {
     public static final int ANALOG_BOTTOM = 758;
     public static final int ANALOG_TOP = 1796;
 
+    public static final SlotConfigs ELEVATOR_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0)
+        .withKI(0)
+        .withKD(0)
+        .withKS(0);
+
   }
 
   public static final class ClimbConstants {

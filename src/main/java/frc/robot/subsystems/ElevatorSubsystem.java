@@ -5,28 +5,36 @@
 
 package frc.robot.subsystems;
 
+import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ClimbConstants.CHAIN_HEIGHT;
 import static frc.robot.Constants.ElevatorConstants.ELEVATOR_PARK_HEIGHT;
+import static frc.robot.Constants.ElevatorConstants.ELEVATOR_SLOT_CONFIGS;
 import static frc.robot.Constants.ElevatorConstants.MOTOR_BOTTOM;
 import static frc.robot.Constants.ElevatorConstants.MOTOR_ENCODER_POSITION_COEFFICIENT;
 import static frc.robot.Constants.ElevatorConstants.MOTOR_TOP;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
   // Mutiply by sensor position to get meters
 
-  private final TalonFX elevatorLeader;
-  private final TalonFX elevatorFollower;
-  private final AnalogInput analogSensor;
+  private final TalonFX elevatorLeader = new TalonFX(ElevatorConstants.ELEVATOR_LEADER_ID);
+  private final TalonFX elevatorFollower = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID);;
+  private final AnalogInput analogSensor = new AnalogInput(ElevatorConstants.ANALOG_SENSOR_CHANNEL);;
 
   // Limit switches - FALSE means at limit
   private final DigitalInput topLimitSwitch = new DigitalInput(8);
@@ -34,26 +42,33 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private double targetPosition = 0;
 
-  public ElevatorSubsystem() {
-    elevatorLeader = new TalonFX(ElevatorConstants.ELEVATOR_LEADER_ID);
-    elevatorFollower = new TalonFX(ElevatorConstants.ELEVATOR_FOLLOWER_ID);
+  private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
 
-    // Configure potentiometer
-    analogSensor = new AnalogInput(ElevatorConstants.ANALOG_SENSOR_CHANNEL);
+private SysIdRoutine elevatorLeaderSysIdRoutine = new SysIdRoutine(
+  new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+  new SysIdRoutine.Mechanism((volts) -> {
+    elevatorLeader.setControl(voltageRequest.withOutput(volts.in(Volts)));
+  }, null, this));
+
+private SysIdRoutine elevatorFollowerSysIdRoutine = new SysIdRoutine(
+  new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+  new SysIdRoutine.Mechanism((volts) -> {
+    elevatorFollower.setControl(voltageRequest.withOutput(volts.in(Volts)));
+  }, null, this));
+
+  public ElevatorSubsystem() {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     
+    config.Slot0 = Slot0Configs.from(ELEVATOR_SLOT_CONFIGS);
+    config.MotorOutput.NeutralMode = Brake;
+    config.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 1;
+
     elevatorLeader.getConfigurator().apply(config);
     elevatorFollower.getConfigurator().apply(config);
-
+    
     elevatorLeader.setInverted(true);
-    elevatorFollower.setInverted(true);
-
-    // Brake mode helps hold the elevator in place
-    elevatorLeader.setNeutralMode(null);
-    elevatorFollower.setNeutralMode(null);
-
-    elevatorFollower.setControl(new Follower(elevatorLeader.getDeviceID(), false));
+    elevatorFollower.setInverted(false);
   }
 
   @Override
@@ -116,6 +131,26 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private static double metersToMotorPosition(double positionMeters) {
     return (positionMeters / MOTOR_ENCODER_POSITION_COEFFICIENT);
+  }
+
+  public Command sysIdElevatorLeaderQuasiCommand(Direction direction) {
+  return elevatorLeaderSysIdRoutine.quasistatic(direction).withName("SysId Elevator Motors Quasistatic " + direction)
+      .finallyDo(this::stop);
+  }
+  
+  public Command sysIdElevatorFollowerQuasiCommand(Direction direction) {
+    return elevatorFollowerSysIdRoutine.quasistatic(direction).withName("SysId Elevator Motors Quasistatic " + direction)
+        .finallyDo(this::stop);
+  }
+
+  public Command sysIdElevatorLeaderDynamCommand(Direction direction) {
+    return elevatorLeaderSysIdRoutine.dynamic(direction).withName("SysId Elevator Motors Quasistatic " + direction)
+        .finallyDo(this::stop);
+  }
+
+  public Command sysIdElevatorFollowerDynamCommand(Direction direction) {
+    return elevatorFollowerSysIdRoutine.dynamic(direction).withName("SysId Elevator Motors Quasistatic " + direction)
+        .finallyDo(this::stop);
   }
   
 }
