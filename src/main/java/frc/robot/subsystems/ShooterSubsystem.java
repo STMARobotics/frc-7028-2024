@@ -83,15 +83,11 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterBottomMotor.setControl(shooterVelocityControl.withVelocity(targetVelocity));
   }
 
-  public void prepareToShoot(Measure<Velocity<Angle>> shooterVelocity, Measure<Angle> aimAngle) {
+  public void prepareToShoot(Measure<Velocity<Angle>> shooterVelocity) {
     spinShooterWheels(shooterVelocity);
   }
 
   public boolean isReadyToShoot() {
-    return isShooterAtTargetVelocity();
-  }
-
-  public boolean isShooterAtTargetVelocity() {
     var errorToleranceRPS = SHOOTER_ERROR_TOLERANCE.in(RotationsPerSecond);
     BaseStatusSignal.refreshAll(shooterBottomVelocity, shooterTopVelocity);
 

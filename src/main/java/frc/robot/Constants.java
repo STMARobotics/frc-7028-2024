@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -203,6 +204,13 @@ public class Constants {
     public static final Measure<Velocity<Angle>> LOAD_VELOCITY = RotationsPerSecond.of(20);
     public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-20);
     public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(20);
+
+    public static final Measure<Angle> INTAKE_YAW_POSITION = Radians.of(PI);
+    public static final Measure<Angle> INTAKE_PITCH_POSITION = Radians.of(0.0);
+
+    public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(2);
+    public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(2);
+
   }
 
   public static class ElevatorConstants {

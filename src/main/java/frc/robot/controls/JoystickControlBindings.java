@@ -80,17 +80,17 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> shoot() {
+  public Optional<Trigger> autoShoot() {
     return Optional.empty();
   }
 
   @Override
-  public Optional<Trigger> elevatorUp() {
+  public Optional<Trigger> scoreAmp() {
     return Optional.empty();
   }
-  
+
   @Override
-  public Optional<Trigger> elevatorDown() {
+  public Optional<Trigger> loadAmper() {
     return Optional.empty();
   }
 

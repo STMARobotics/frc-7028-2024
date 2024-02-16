@@ -77,7 +77,8 @@ public class ShootCommand extends Command {
     var angleToSpeaker = speakerTranslation.minus(robotTranslation).getAngle().rotateBy(fromRadians(PI));
 
     // Prepare shooter
-    shooter.prepareToShoot(shootingSettings.getVelocity(), shootingSettings.getAngle());
+    shooter.prepareToShoot(shootingSettings.getVelocity());
+    // TODO prepare turret
     
     // Aim drivetrain
     drivetrain.setControl(swerveRequest.withTargetDirection(angleToSpeaker));
