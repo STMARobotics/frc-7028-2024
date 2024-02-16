@@ -14,9 +14,7 @@ import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -87,8 +85,7 @@ public class RobotContainer {
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
 
     // Reset field relative heading
-    controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(() -> 
-        drivetrain.seedFieldRelative(new Pose2d(1.5,  Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0))))));
+    controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
 
     // Manual shoot - spin up, then run indexer to shoot
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
