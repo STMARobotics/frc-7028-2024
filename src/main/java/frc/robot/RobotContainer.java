@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.FieldOrientedDriveCommand;
+import frc.robot.commands.ManualShootCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
@@ -66,8 +67,15 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    
+    // drivetrain
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
+    
+    // shooter
+    controlBindings.ManualShootCommand().ifPresent(trigger -> trigger.whileTrue(
+      new ManualShootCommand(shooterSubsystem)));
+
   }
 
   public Command getAutonomousCommand() {

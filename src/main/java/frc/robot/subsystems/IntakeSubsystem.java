@@ -21,13 +21,33 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class IntakeSubsystem extends SubsystemBase {
 
   private final VoltageOut voltageRequest = new VoltageOut(0);
   private final TalonFX rollersMotor = new TalonFX(DEVICE_ID_ROLLERS_MOTOR);
 
+  private SysIdRoutine intakeMotorSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((volts) -> {
+        rollersMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
+      }, null, this));
+  
+    public Command intakeMotorQuasiCommand(Direction direction) {
+    return intakeMotorSysIdRoutine.quasistatic(direction).withName("SysId Amp Motors Quasistatic " + direction)
+        .finallyDo(this::stop);
+  }
+
+  public Command intakeMotorDynamCommand(Direction direction) {
+    return intakeMotorSysIdRoutine.dynamic(direction).withName("SysId Amp Motors Quasistatic " + direction)
+        .finallyDo(this::stop);
+  }
+  
   public IntakeSubsystem() {
     var intakeRollersConfig = new TalonFXConfiguration();
     intakeRollersConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
