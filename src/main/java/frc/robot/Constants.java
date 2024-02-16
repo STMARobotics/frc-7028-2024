@@ -137,35 +137,37 @@ public class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int PORT_ID_DONUT_SENSOR = 0;
-    public static final int DEVICE_ID_DEPLOY_MOTOR = 40;
-    public static final int DEVICE_ID_DEPLOY_CANCODER = 41;
-    public static final int DEVICE_ID_ROLLERS_MOTOR = 42;
-    public static final Measure<Angle> DEPLOY_CANCODER_OFFSET = Rotations.of(0.417725);
-    public static final double DEPLOY_MOTOR_TO_SENSOR_RATIO = 351.1133117;
+    public static final int DEVICE_ID_DEPLOY = 40;
+    public static final int DEVICE_ID_DEPLOY_ENCODER = 1;
+    public static final int DEVICE_ID_ROLLER = 42;
+
+    public static final Measure<Angle> DEPLOY_ENCODER_OFFSET = Rotations.of(0.812);
+    public static final double DEPLOY_SENSOR_TO_MECHANISM_RATIO = (66.0 / 18.0) * 5.0 * 5.0;
+    public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(45)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.6)
+        .withKV(8.0)
+        .withKA(0.0)
+        .withKG(0.45)
+        .withGravityType(GravityTypeValue.Arm_Cosine);
+    public static final MotionMagicConfigs DEPLOY_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+        .withMotionMagicAcceleration(3)
+        .withMotionMagicCruiseVelocity(.75);
     
-    public static final SlotConfigs ROLLERS_SLOT_CONFIGS = new SlotConfigs()
+    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.12);
+    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.28);
+    public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
+
+    public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
         .withKP(9.0)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(0.243);
-    public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(45)
-        .withKI(0)
-        .withKD(0)
-        .withKS(0.06)
-        .withKV(8)
-        .withKG(0.45)
-        .withGravityType(GravityTypeValue.Arm_Cosine);
-
-    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.1275);
-    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.295);
-    public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
-
-    public static final MotionMagicConfigs DEPLOY_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(3)
-        .withMotionMagicCruiseVelocity(.75);
-  }
+    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
+    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(60.0);
+    public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);  }
 
   public static class ElevatorConstants {
     public static final int ELEVATOR_LEADER_ID = 60;
@@ -197,6 +199,7 @@ public class Constants {
     public static final int PORT_ID_INTAKE_SENSOR = 3;
     public static final int PORT_ID_SHOOTER_SENSOR = 2;
 
+    public static final int PORT_ID_DONUT_SENSOR = 0;
     public static final int DEVICE_ID_INDEXER_LEFT_MOTOR = 1;
     public static final int DEVICE_ID_INDEXER_RIGHT_MOTOR = 2;
 

@@ -11,13 +11,13 @@ import static frc.robot.Constants.IndexerConstants.DEVICE_ID_INDEXER_RIGHT_MOTOR
 import static frc.robot.Constants.IndexerConstants.LEFT_kA;
 import static frc.robot.Constants.IndexerConstants.LEFT_kS;
 import static frc.robot.Constants.IndexerConstants.LEFT_kV;
+import static frc.robot.Constants.IndexerConstants.PORT_ID_DONUT_SENSOR;
 import static frc.robot.Constants.IndexerConstants.RIGHT_kA;
 import static frc.robot.Constants.IndexerConstants.RIGHT_kS;
 import static frc.robot.Constants.IndexerConstants.RIGHT_kV;
 import static frc.robot.Constants.IndexerConstants.kD;
 import static frc.robot.Constants.IndexerConstants.kI;
 import static frc.robot.Constants.IndexerConstants.kP;
-import static frc.robot.Constants.IntakeConstants.PORT_ID_DONUT_SENSOR;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;

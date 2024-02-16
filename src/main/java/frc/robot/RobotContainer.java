@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
@@ -90,8 +91,10 @@ public class RobotContainer {
         new ShootDonutCommand(shooterSubsystem, indexerSubsystem, driveTrain)));
 
     // intake
-    controlBindings.retractIntake().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
-        () -> intakeSubsystem.cancel(), intakeSubsystem::stopRollers, intakeSubsystem)));
+    controlBindings.retractIntake().ifPresent(trigger -> trigger.onTrue(
+        runOnce(intakeSubsystem::stopRollers, intakeSubsystem)
+        .andThen(runOnce(intakeSubsystem::retractIntake, intakeSubsystem))));
+    
     controlBindings.deployIntake().ifPresent(trigger -> trigger.onTrue(
         new DeployIntakeCommand(intakeSubsystem, indexerSubsystem)));
 
