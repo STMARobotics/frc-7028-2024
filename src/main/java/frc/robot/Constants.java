@@ -174,11 +174,11 @@ public class Constants {
 
   public static class IntakeConstants {
     public static final int DEVICE_ID_DEPLOY = 40;
-    public static final int DEVICE_ID_DEPLOY_CANIVORE = 41;
+    public static final int DEVICE_ID_DEPLOY_ENCODER = 1;
     public static final int DEVICE_ID_ROLLER = 42;
 
-    public static final Measure<Angle> DEPLOY_CANCODER_OFFSET = Rotations.of(0.417725);
-    public static final double DEPLOY_ROTOR_TO_SENSOR_RATIO = 351.1133117;
+    public static final Measure<Angle> DEPLOY_ENCODER_OFFSET = Rotations.of(0.812);
+    public static final double DEPLOY_SENSOR_TO_MECHANISM_RATIO = (66.0 / 18.0) * 5.0 * 5.0;
     public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
         .withKP(45)
         .withKI(0.0)
@@ -192,8 +192,8 @@ public class Constants {
         .withMotionMagicAcceleration(3)
         .withMotionMagicCruiseVelocity(.75);
     
-    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.1275);
-    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.295);
+    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.12);
+    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.28);
     public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()

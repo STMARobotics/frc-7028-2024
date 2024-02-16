@@ -6,43 +6,45 @@
 
 package frc.robot.subsystems;
 
-import static com.ctre.phoenix6.signals.FeedbackSensorSourceValue.FusedCANcoder;
 import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
-import static frc.robot.Constants.IntakeConstants.DEPLOY_CANCODER_OFFSET;
+import static frc.robot.Constants.IntakeConstants.DEPLOY_ENCODER_OFFSET;
 import static frc.robot.Constants.IntakeConstants.DEPLOY_MOTION_MAGIC_CONFIGS;
 import static frc.robot.Constants.IntakeConstants.DEPLOY_POSITION_DEPLOYED;
 import static frc.robot.Constants.IntakeConstants.DEPLOY_POSITION_RETRACTED;
-import static frc.robot.Constants.IntakeConstants.DEPLOY_ROTOR_TO_SENSOR_RATIO;
+import static frc.robot.Constants.IntakeConstants.DEPLOY_SENSOR_TO_MECHANISM_RATIO;
 import static frc.robot.Constants.IntakeConstants.DEPLOY_SLOT_CONFIGS;
 import static frc.robot.Constants.IntakeConstants.DEPLOY_TOLERANCE;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_DEPLOY;
-import static frc.robot.Constants.IntakeConstants.DEVICE_ID_DEPLOY_CANIVORE;
+import static frc.robot.Constants.IntakeConstants.DEVICE_ID_DEPLOY_ENCODER;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_ROLLER;
 import static frc.robot.Constants.IntakeConstants.ROLLER_INTAKE_VELOCITY;
 import static frc.robot.Constants.IntakeConstants.ROLLER_REVERSE_VELOCITY;
 import static frc.robot.Constants.IntakeConstants.ROLLER_SENSOR_TO_MECHANISM_RATIO;
 import static frc.robot.Constants.IntakeConstants.ROLLER_SLOT_CONFIGS;
+import static java.lang.Math.IEEEremainder;
 
+import java.util.function.Consumer;
+
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -57,7 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // Deploy hardware
   private final TalonFX deployMotor = new TalonFX(DEVICE_ID_DEPLOY, CANIVORE_BUS_NAME);
-  private final CANcoder deployCanCoder = new CANcoder(DEVICE_ID_DEPLOY_CANIVORE, CANIVORE_BUS_NAME);
+  private final DutyCycleEncoder deployEncoder = new DutyCycleEncoder(DEVICE_ID_DEPLOY_ENCODER);
 
   // Roller hardware
   private final TalonFX rollerMotor = new TalonFX(DEVICE_ID_ROLLER, CANIVORE_BUS_NAME);
@@ -70,6 +72,11 @@ public class IntakeSubsystem extends SubsystemBase {
   // Status signal objects for reading data from hardware
   private final StatusSignal<Double> deployPositionSignal;
 
+  private final MutableMeasure<Angle> telemetryDeployAngle = MutableMeasure.zero(Rotations);
+  private final Consumer<Measure<Angle>> telemetryConsumer;
+
+  private boolean encoderSynced = false;
+
   // SysId routines  
   private final SysIdRoutine deploySysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
@@ -79,20 +86,16 @@ public class IntakeSubsystem extends SubsystemBase {
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> rollerMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
     
-  public IntakeSubsystem() {
-    // Configure the deploy CANCoder
-    var canCoderConfig = new CANcoderConfiguration();
-    canCoderConfig.MagnetSensor.MagnetOffset = DEPLOY_CANCODER_OFFSET.in(Rotations);
-    canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    deployCanCoder.getConfigurator().apply(canCoderConfig);
+  public IntakeSubsystem(Consumer<Measure<Angle>> telemetryConsumer) {
+    this.telemetryConsumer = telemetryConsumer;
+
+
 
     // Configure the deploy motor
     var deployConfig = new TalonFXConfiguration();
     deployConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     deployConfig.MotorOutput.NeutralMode = Brake;
-    deployConfig.Feedback.RotorToSensorRatio = DEPLOY_ROTOR_TO_SENSOR_RATIO;
-    deployConfig.Feedback.FeedbackRemoteSensorID = DEVICE_ID_DEPLOY_CANIVORE;
-    deployConfig.Feedback.FeedbackSensorSource = FusedCANcoder;
+    deployConfig.Feedback.SensorToMechanismRatio = DEPLOY_SENSOR_TO_MECHANISM_RATIO;
     deployConfig.Slot0 = Slot0Configs.from(DEPLOY_SLOT_CONFIGS);
     deployConfig.MotionMagic = DEPLOY_MOTION_MAGIC_CONFIGS;
     deployConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -111,6 +114,19 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
 
     rollerMotor.getConfigurator().apply(rollerConfig);
+  }
+
+  @Override
+  public void periodic() {
+    if (telemetryConsumer != null) {
+      telemetryConsumer.accept(getPosition());
+    }
+    if (!encoderSynced && deployEncoder.isConnected()) {
+      // Configure the deploy encoder
+      deployEncoder.setPositionOffset(DEPLOY_ENCODER_OFFSET.in(Rotations));
+      encoderSynced = deployMotor.setPosition(getPosition().in(Rotations)) == StatusCode.OK
+          &&  Math.abs(getPosition().in(Rotations) - deployPositionSignal.refresh().getValueAsDouble()) < .05;
+    }
   }
 
   /**
@@ -240,6 +256,12 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command sysIdRollerQuasistaticCommand(Direction direction) {
     return rollerSysIdRoutine.quasistatic(direction).withName("SysId intake roller quasi " + direction)
         .finallyDo(this::stopAll);
+  }
+
+  private Measure<Angle> getPosition() {
+    var position = -deployEncoder.get();
+    position = IEEEremainder(position, 1.0);
+    return telemetryDeployAngle.mut_replace(position, Rotations);
   }
 
   private void deployIntake() {
