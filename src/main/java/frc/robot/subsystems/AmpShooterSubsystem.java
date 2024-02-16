@@ -4,47 +4,31 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.robot.Constants.TrapAmpShooterConstants.DEVICE_ID_TRAP_AMP_SHOOTER;
 
-import static edu.wpi.first.units.Units.Volts;
-
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 
 public class AmpShooterSubsystem extends SubsystemBase {
 
-  private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
+  private final VelocityTorqueCurrentFOC ampMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
       false);
 
-  public AmpShooterSubsystem() {}
+  public AmpShooterSubsystem() {
+  }
 
-  //device id is a placeholder!!!
-  private final TalonFX ampShooterMotor = new TalonFX(1);
+  // device id is a placeholder!!!
+  private final TalonFX ampShooterMotor = new TalonFX(DEVICE_ID_TRAP_AMP_SHOOTER);
 
   public void runAmpShooter() {
-    //velocity number is still a placeholder
-    ampShooterMotor.setControl(shooterMotorVelocity.withVelocity(10));
+    // velocity number is still a placeholder
+    ampShooterMotor.setControl(ampMotorVelocity.withVelocity(10));
   }
 
   public void stopAmpShooter() {
-    //velocity number is still a placeholder
+    // velocity number is still a placeholder
     ampShooterMotor.stopMotor();
   }
 }
