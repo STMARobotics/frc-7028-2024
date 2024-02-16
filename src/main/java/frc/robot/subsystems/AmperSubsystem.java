@@ -1,20 +1,15 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-//This is probably really janky, and it is untested on hardware but its fine I think
-
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
-import static frc.robot.Constants.IntakeConstants.DEVICE_ID_ROLLERS;
-import static frc.robot.Constants.IntakeConstants.ROLLER_INTAKE_VELOCITY;
-import static frc.robot.Constants.IntakeConstants.ROLLER_REVERSE_VELOCITY;
-import static frc.robot.Constants.IntakeConstants.ROLLER_SENSOR_TO_MECHANISM_RATIO;
-import static frc.robot.Constants.IntakeConstants.ROLLER_SLOT_CONFIGS;
+import static frc.robot.Constants.AmperConstants.DEVICE_ID_ROLLERS;
+import static frc.robot.Constants.AmperConstants.ROLLER_EJECT_VELOCITY;
+import static frc.robot.Constants.AmperConstants.ROLLER_LOAD_VELOCITY;
+import static frc.robot.Constants.AmperConstants.ROLLER_SCORE_VELOCITY;
+import static frc.robot.Constants.AmperConstants.ROLLER_SENSOR_TO_MECHANISM_RATIO;
+import static frc.robot.Constants.AmperConstants.ROLLER_SLOT_CONFIGS;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -33,11 +28,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
-/**
- * Subsystem for the intake. The intake is controlled by one TalonFX motor controller to run the rollers.
- */
-public class IntakeSubsystem extends SubsystemBase {
-
+public class AmperSubsystem extends SubsystemBase {
+  
   private final TalonFX rollerMotor = new TalonFX(DEVICE_ID_ROLLERS, CANIVORE_BUS_NAME);
 
   // Motor request objects
@@ -50,9 +42,9 @@ public class IntakeSubsystem extends SubsystemBase {
       new SysIdRoutine.Config(Volts.of(5).per(Seconds.of(1)), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((amps) -> rollerMotor.setControl(sysIdControl.withOutput(amps.in(Volts))), null, this));
     
-  public IntakeSubsystem() {
+  public AmperSubsystem() {
     var rollerConfig = new TalonFXConfiguration();
-    rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rollerConfig.Feedback.SensorToMechanismRatio = ROLLER_SENSOR_TO_MECHANISM_RATIO;
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
@@ -61,27 +53,47 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {
-    return rollerSysIdRoutine.dynamic(direction).withName("SysId intake dynam " + direction)
+    return rollerSysIdRoutine.dynamic(direction).withName("SysId amper dynam " + direction)
         .finallyDo(this::stop);
   }
 
   public Command sysIdRollerQuasistaticCommand(Direction direction) {
-    return rollerSysIdRoutine.quasistatic(direction).withName("SysId intake quasi " + direction)
+    return rollerSysIdRoutine.quasistatic(direction).withName("SysId amper quasi " + direction)
         .finallyDo(this::stop);
   }
 
-  public void intake() {
-    runRollers(ROLLER_INTAKE_VELOCITY);
+  /**
+   * Load a note into the amper
+   */
+  public void load() {
+    runRollers(ROLLER_LOAD_VELOCITY);
   }
 
-  public void reverse() {
-    runRollers(ROLLER_REVERSE_VELOCITY);
+  /**
+   * Eject a note out the bottom of the amper
+   */
+  public void eject() {
+    runRollers(ROLLER_EJECT_VELOCITY);
   }
 
+  /**
+   * Score a note out the top of the amper
+   */
+  public void score() {
+    runRollers(ROLLER_SCORE_VELOCITY);
+  }
+
+  /**
+   * Run the amper rollers at a given velocity
+   * @param velocity velocity to run the rollers
+   */
   public void runRollers(Measure<Velocity<Angle>> velocity) {
     rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
   }
 
+  /**
+   * Stop the rollers
+   */
   public void stop() {
     rollerMotor.stopMotor();
   }

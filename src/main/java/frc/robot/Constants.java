@@ -173,7 +173,7 @@ public class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int DEVICE_ID_ROLLER = 42;
+    public static final int DEVICE_ID_ROLLERS = 42;
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
         .withKP(9.0)
@@ -183,6 +183,20 @@ public class Constants {
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(60.0);
     public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
+  }
+
+  public static class AmperConstants {
+    public static final int DEVICE_ID_ROLLERS = 40;
+
+    public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(9.0)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.243);
+    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
+    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(10.0);
+    public static final Measure<Velocity<Angle>> ROLLER_EJECT_VELOCITY = RotationsPerSecond.of(-10.0);
+    public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(5.0);
   }
 
   public static class ElevatorConstants {
