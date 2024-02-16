@@ -29,6 +29,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.telemetry.DriverTelemetry;
 import frc.robot.telemetry.DrivetrainTelemetry;
 
@@ -45,6 +46,7 @@ public class RobotContainer {
   private final AmperSubsystem amperSubsystem = new AmperSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(driverTelemetry::telemeterizeElevator);
+  private final TurretSubsystem turretSubsystem = new TurretSubsystem();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -139,6 +141,27 @@ public class RobotContainer {
     tab.add("Amper Quasi Rev", amperSubsystem.sysIdRollerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Amper Dynam Fwd", amperSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Amper Dynam Rev", amperSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
+
+    // Turret yaw
+    columnIndex += 2;
+    tab.add("Tur Yaw Quasi Fwd", turretSubsystem.sysIdYawQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Tur Yaw Quasi Rev", turretSubsystem.sysIdYawQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Tur Yaw Dynam Fwd", turretSubsystem.sysIdYawDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Tur Yaw Dynam Rev", turretSubsystem.sysIdYawDynamicCommand(kReverse)).withPosition(columnIndex, 3);
+
+    // Turret pitch
+    columnIndex += 2;
+    tab.add("Tur Pitch Quasi Fwd", turretSubsystem.sysIdPitchQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Tur Pitch Quasi Rev", turretSubsystem.sysIdPitchQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Tur Pitch Dynam Fwd", turretSubsystem.sysIdPitchDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Tur Pitch Dynam Rev", turretSubsystem.sysIdPitchDynamicCommand(kReverse)).withPosition(columnIndex, 3);
+
+    // Turret rollers
+    columnIndex += 2;
+    tab.add("Tur Roll Quasi Fwd", turretSubsystem.sysIdRollerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Tur Roll Quasi Rev", turretSubsystem.sysIdRollerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Tur Roll Dynam Fwd", turretSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
   }
 

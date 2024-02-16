@@ -152,6 +152,59 @@ public class Constants {
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(5.0);
   }
 
+  public static class TurretConstants {
+    public static int DEVICE_ID_YAW_MOTOR = 45;
+    public static int DEVICE_ID_YAW_ENCODER = 46;
+    public static int DEVICE_ID_PITCH_MOTOR = 53;
+    public static int DEVICE_ID_PITCH_ENCODER = 54;
+    public static int DEVICE_ID_ROLLER_MOTOR = 41;
+    public static int DEVICE_ID_NOTE_SENSOR = 5;
+
+    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(0.0);
+    public static double YAW_ROTOR_TO_SENSOR_RATIO = 1.0;
+    public static Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.25);
+    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(0.0);
+    public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(45)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.6)
+        .withKV(8.0)
+        .withKA(0.0)
+        .withKG(0.45)
+        .withGravityType(GravityTypeValue.Arm_Cosine);
+    public static final MotionMagicConfigs YAW_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+        .withMotionMagicAcceleration(3)
+        .withMotionMagicCruiseVelocity(.75);
+
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.0);
+    public static double PITCH_ROTOR_TO_SENSOR_RATIO = 1.0;
+    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.5);
+    public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(-0.5);
+    public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(45)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.6)
+        .withKV(8.0)
+        .withKA(0.0)
+        .withKG(0.45)
+        .withGravityType(GravityTypeValue.Arm_Cosine);
+    public static final MotionMagicConfigs PITCH_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+        .withMotionMagicAcceleration(3)
+        .withMotionMagicCruiseVelocity(.75);
+
+    public static final SlotConfigs ROLLER_VELOCITY_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(9.0)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.243);
+    
+    public static final Measure<Velocity<Angle>> LOAD_VELOCITY = RotationsPerSecond.of(20);
+    public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-20);
+    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(20);
+  }
+
   public static class ElevatorConstants {
     public static int DEVICE_ID_MOTOR = 60;
     public static int DEVICE_PORT_TOP_LIMIT = 9;
