@@ -245,4 +245,13 @@ public class Constants {
 
   }
 
+  public static class ClimbConstants {
+
+    public static final int DEVICE_ID_LEFT = 55;
+    public static final int DEVICE_ID_RIGHT = 56;
+
+    public static final double RAMP_RATE = 0.25;
+
+  }
+
 }
