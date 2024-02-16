@@ -106,29 +106,6 @@ public class Constants {
 
   }
 
-  public static class IndexerConstants {
-    public static final int DEVICE_ID_LEFT = 1;
-    public static final int DEVICE_ID_RIGHT = 2;
-
-    public static final int PORT_ID_FULL_SENSOR = 0;
-
-    public static final double kP = 0.00001d;
-    public static final double kI = 0.0d;
-    public static final double kD = 0.0d;
-
-    public static final double LEFT_kS = 0.4387;
-    public static final double LEFT_kV = 0.00115;
-    public static final double LEFT_kA = 0.00013792;
-
-    public static final double RIGHT_kS = 0.4387;
-    public static final double RIGHT_kV = 0.0013;
-    public static final double RIGHT_kA = 0.00013792;
-
-    public static final Measure<Velocity<Angle>> RUN_SPEED = RotationsPerSecond.of(50);
-    public static final Measure<Velocity<Angle>> SHOOT_SPEED = RotationsPerSecond.of(10);
-    public static final Measure<Velocity<Angle>> UNLOAD_SPEED = RotationsPerSecond.of(-10);
-  }
-
   public static class ShooterConstants {
     public static final int DEVICE_ID_TOP = 50;
     public static final int DEVICE_ID_BOTTOM = 51;

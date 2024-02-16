@@ -25,13 +25,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootCommand extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
-  private final IndexerSubsystem indexer;
   private final ShooterSubsystem shooter;
 
   private final Timer shootTimer = new Timer();
@@ -44,12 +42,11 @@ public class ShootCommand extends Command {
     .withVelocityX(0.0)
     .withVelocityY(0.0);
 
-  public ShootCommand(CommandSwerveDrivetrain drivetrain, IndexerSubsystem indexer, ShooterSubsystem shooter) {
+  public ShootCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter) {
     this.drivetrain = drivetrain;
-    this.indexer = indexer;
     this.shooter = shooter;
 
-    addRequirements(drivetrain, indexer, shooter);
+    addRequirements(drivetrain, shooter);
 
     swerveRequest.ForwardReference = ForwardReference.RedAlliance;
     swerveRequest.HeadingController = new PhoenixPIDController(THETA_kP, THETA_kI, THETA_kD);
@@ -87,7 +84,6 @@ public class ShootCommand extends Command {
 
     // When shooter is spun up and drivetrain aimed, shoot and run timer
     if (shooter.isReadyToShoot() && swerveRequest.HeadingController.atSetpoint()) {
-      indexer.shoot();
       shootTimer.start();
     }
   }
@@ -100,7 +96,6 @@ public class ShootCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stop();
-    indexer.stop();
     shootTimer.stop();
   }
 

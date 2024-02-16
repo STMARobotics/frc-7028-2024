@@ -14,24 +14,17 @@ public class DriverTelemetry {
   
   private final GenericEntry elevatorAtTopLimitEntry;
   private final GenericEntry elevatorAtBottomLimitEntry;
-  private final GenericEntry indexerHasNoteEntry;
 
   public DriverTelemetry() {
     elevatorAtTopLimitEntry = driverTab.add("Elevator Top", false)
         .withWidget(BuiltInWidgets.kBooleanBox).withPosition(2, 0).getEntry();
     elevatorAtBottomLimitEntry = driverTab.add("Elevator Bottom", false)
         .withWidget(BuiltInWidgets.kBooleanBox).withPosition(3, 0).getEntry();
-    indexerHasNoteEntry = driverTab.add("Has Note", false)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(2, 1).getEntry();
   }
 
   public void telemeterizeElevator(ElevatorState state) {
     elevatorAtTopLimitEntry.setBoolean(state.isAtTopLimit);
     elevatorAtBottomLimitEntry.setBoolean(state.isAtBottomLimit);
-  }
-
-  public void telemeterizeIndexer(boolean hasNote) {
-    indexerHasNoteEntry.setBoolean(hasNote);
   }
 
 }
