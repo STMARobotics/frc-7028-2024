@@ -186,8 +186,7 @@ public class Constants {
   }
 
   public static class ElevatorConstants {
-    public static int DEVICE_ID_MOTOR_0 = 60;
-    public static int DEVICE_ID_MOTOR_1 = 61;
+    public static int DEVICE_ID_MOTOR = 60;
     public static int DEVICE_PORT_TOP_LIMIT = 9;
     public static int DEVICE_PORT_BOTTOM_LIMIT = 8;
 

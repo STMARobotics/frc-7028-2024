@@ -6,9 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RevolutionsPerSecond;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
@@ -20,19 +17,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.controls.ControlBindings;
@@ -81,7 +71,6 @@ public class RobotContainer {
     configureDefaultCommands();
     configureButtonBindings();
     populateSysIdDashboard();
-    populateSubsystemDashboard();
   }
 
   private void configureDefaultCommands() {
@@ -100,10 +89,6 @@ public class RobotContainer {
     // Reset field relative heading
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(() -> 
         drivetrain.seedFieldRelative(new Pose2d(1.5,  Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0))))));
-
-    // Elevator
-    controlBindings.elevatorUp().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualUpCommand()));
-    controlBindings.elevatorDown().ifPresent(trigger -> trigger.whileTrue(elevatorSubsystem.manualDownCommand()));
 
     // Manual shoot - spin up, then run indexer to shoot
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
@@ -176,113 +161,6 @@ public class RobotContainer {
     tab.add("Elev Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Elev Dynam Fwd", elevatorSubsystem.sysIdDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Elev Dynam Rev", elevatorSubsystem.sysIdDynamicCommand(kReverse)).withPosition(columnIndex, 3);
-
-  }
-
-  public void populateSubsystemDashboard() {
-    var tab = Shuffleboard.getTab("Subsystems");
-
-    // Intake grid
-    var intakeList = tab.getLayout("Run Intake", BuiltInLayouts.kList)
-        .withPosition(0, 0).withSize(2, 3);
-        
-    // Intake velocity
-    var intakeVelocityWidget = intakeList.add("Set Roller Velocity", 0.0);
-    MutableMeasure<Velocity<Angle>> intakeVelocity = MutableMeasure.zero(RotationsPerSecond);
-
-    var intakeVelocityCommand = Commands.run(() -> {
-      var dashboardVelocity = intakeVelocityWidget.getEntry().getDouble(0);
-      intakeVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
-    }).alongWith(Commands.run(() -> intakeSubsystem.runRollers(intakeVelocity))).withName("Intake Rollers");
-
-    intakeList.add(intakeVelocityCommand);
-
-    // Indexer grid
-    var indexerList = tab.getLayout("Run Indexer", BuiltInLayouts.kList)
-        .withPosition(2, 0).withSize(2, 6);
-
-    // Indexer velocity
-    var indexerVelocityWidget = indexerList.add("Set Velocity", 0.0).withPosition(0, 0);
-    MutableMeasure<Velocity<Angle>> indexerVelocity = MutableMeasure.zero(RotationsPerSecond);
-    
-    var indexerVelocityCommand = Commands.run(() -> {
-      var dashboardVelocity = indexerVelocityWidget.getEntry().getDouble(0);
-      indexerVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
-    }).alongWith(indexerSubsystem.runCommand(indexerVelocity)).withName("Indexer");
-
-    indexerList.add(indexerVelocityCommand).withPosition(0, 1);
-
-    // Indexer current velocity
-    indexerList.addDouble("Left Velocity", () -> indexerSubsystem.getLeftVelocity().in(RotationsPerSecond))
-        .withWidget(BuiltInWidgets.kGraph).withPosition(0, 2);
-    indexerList.addDouble("Right Velocity", () -> indexerSubsystem.getRightVelocity().in(RotationsPerSecond))
-        .withWidget(BuiltInWidgets.kGraph).withPosition(0, 3);
-
-    // Shooter grid
-    var shooterList = tab.getLayout("Run Shooter", BuiltInLayouts.kList)
-        .withPosition(4, 0).withSize(2, 3);
-    
-    // Shooter velocity
-    var shooterVelocityWidget = shooterList.add("Set Velocity", 0.0);
-    MutableMeasure<Velocity<Angle>> shooterVelocity = MutableMeasure.zero(RotationsPerSecond);
-    
-    var shooterVelocityCommand = Commands.run(() -> {
-      var dashboardVelocity = shooterVelocityWidget.getEntry().getDouble(0);
-      shooterVelocity.mut_replace(dashboardVelocity, RotationsPerSecond);
-    }).alongWith(shooterSubsystem.spinShooterCommand(shooterVelocity)).withName("Shooter Velocity");
-
-    shooterList.add(shooterVelocityCommand);
-
-    // Shooter wheel rotation / position
-    var shooterPositoinWidget = shooterList.add("Set Rotations", 0.0);
-    MutableMeasure<Angle> shooterRotations = MutableMeasure.zero(Rotations);
-    
-    var shooterPositionCommand = Commands.run(() -> {
-      var dashboardRotations = shooterPositoinWidget.getEntry().getDouble(0);
-      shooterRotations.mut_replace(dashboardRotations, Rotations);
-    }).alongWith(shooterSubsystem.rotateShooterCommand(shooterRotations)).withName("Shooter Rotation");
-
-    shooterList.add(shooterPositionCommand);
-    
-    // Shooter aim grid
-    var shooterAimList = tab.getLayout("Aim Shooter", BuiltInLayouts.kList)
-        .withPosition(6, 0).withSize(2, 3);
-
-    // Aim Shooter
-    var shooterAimWidget = shooterAimList.add("Set Position", 0.0);
-    MutableMeasure<Angle> shooterAimPosition = MutableMeasure.zero(Rotations);
-    
-    var shooterAimCommand = Commands.run(() -> {
-      var dashboardPosition = shooterAimWidget.getEntry().getDouble(0);
-      shooterAimPosition.mut_replace(dashboardPosition, Rotations);
-    }).alongWith(shooterSubsystem.setAimAngleCommand(shooterAimPosition)).withName("Aim Position");
-
-    shooterAimList.add(shooterAimCommand);
-
-    // Aim Voltage
-    var shooterAimVoltageWidget = shooterAimList.add("Set Voltage", 0.0);
-    MutableMeasure<Voltage> shooterAimVoltage = MutableMeasure.zero(Volts);
-    
-    var shooterAimVoltageCommand = Commands.run(() -> {
-      var dashboardVoltage = shooterAimVoltageWidget.getEntry().getDouble(0);
-      shooterAimVoltage.mut_replace(dashboardVoltage, Volts);
-    }).alongWith(shooterSubsystem.setAimVoltageCommand(shooterAimVoltage)).withName("Aim Voltage");
-
-    shooterAimList.add(shooterAimVoltageCommand);
-
-    // Elevator
-    var elevatorList = tab.getLayout("Elevator", BuiltInLayouts.kList)
-        .withPosition(8, 0).withSize(2, 3);
-
-    var elevatorWidget = elevatorList.add("Set Voltage", 0.0);
-    MutableMeasure<Voltage> elevatorVoltage = MutableMeasure.zero(Volts);
-    
-    var elevatorVoltageCommand = Commands.run(() -> {
-      var dashboardVoltage = elevatorWidget.getEntry().getDouble(0);
-      elevatorVoltage.mut_replace(dashboardVoltage, Volts);
-    }).alongWith(elevatorSubsystem.elevatorVoltageCommand(elevatorVoltage)).withName("Elevator Voltage");
-
-    elevatorList.add(elevatorVoltageCommand);
 
   }
 

@@ -10,8 +10,7 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ElevatorConstants.BOTTOM_LIMIT;
-import static frc.robot.Constants.ElevatorConstants.DEVICE_ID_MOTOR_0;
-import static frc.robot.Constants.ElevatorConstants.DEVICE_ID_MOTOR_1;
+import static frc.robot.Constants.ElevatorConstants.DEVICE_ID_MOTOR;
 import static frc.robot.Constants.ElevatorConstants.DEVICE_PORT_BOTTOM_LIMIT;
 import static frc.robot.Constants.ElevatorConstants.DEVICE_PORT_TOP_LIMIT;
 import static frc.robot.Constants.ElevatorConstants.METERS_PER_REVOLUTION;
@@ -23,7 +22,6 @@ import java.util.function.Consumer;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -41,8 +39,7 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 import frc.robot.telemetry.ElevatorState;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  private final TalonFX elevatorLeader = new TalonFX(DEVICE_ID_MOTOR_0, CANIVORE_BUS_NAME);
-  private final TalonFX elevatorFollower = new TalonFX(DEVICE_ID_MOTOR_1, CANIVORE_BUS_NAME);
+  private final TalonFX elevatorMotor = new TalonFX(DEVICE_ID_MOTOR, CANIVORE_BUS_NAME);
 
   // Limit switches - FALSE means at limit
   private final DigitalInput topLimitSwitch = new DigitalInput(DEVICE_PORT_TOP_LIMIT);
@@ -57,10 +54,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   // SysId routines  
   private final SysIdRoutine elevatorRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, Volts.of(5.0), null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism((volts) -> {
-        elevatorLeader.setControl(voltageControl.withOutput(volts.in(Volts)));
-        elevatorFollower.setControl(voltageControl.withOutput(volts.in(Volts)));
-      }, null, this));
+      new SysIdRoutine.Mechanism((volts) -> 
+          elevatorMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
   
   public ElevatorSubsystem(Consumer<ElevatorState> telemetryFunction) {
     this.telemetryFunction = telemetryFunction;
@@ -77,10 +72,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         BOTTOM_LIMIT.in(Meters) / METERS_PER_REVOLUTION.in(Meters.per(Rotations));
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    elevatorLeader.getConfigurator().apply(motorConfig);
-    elevatorFollower.getConfigurator().apply(motorConfig);
-
-    elevatorFollower.setControl(new Follower(elevatorLeader.getDeviceID(), false));
+    elevatorMotor.getConfigurator().apply(motorConfig);
   }
 
   @Override
@@ -108,40 +100,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     return !bottomLimitSwitch.get();
   }
 
-  /**
-   * Returns a new command to move the elevator to a given position
-   * @param position position to move the elevator to
-   * @return new command
-   */
-  public Command moveToPositionCommand(Measure<Distance> position) {
-    return run(() -> this.moveToPosition(position)).finallyDo(this::stop);
-  }
-
-  /**
-   * Returns a new command to manually move the elevator up at a fixed speed. Probably only for use when testing.
-   * @return new command
-   */
-  public Command manualUpCommand() {
-    return run(() -> move(Volts.of(1.0))).finallyDo(this::stop);
-  }
-
-  /**
-   * Returns a new command to manually move the elevator down at a fixed speed. Probably only for use when testing.
-   * @return new command
-   */
-  public Command manualDownCommand() {
-    return run(() -> move(Volts.of(-0.5))).finallyDo(this::stop);
-  }
-
-  /**
-   * Returns a new command to run the elevator with voltage. Probably only for use when testing.
-   * @param voltage voltage to run the elevator
-   * @return new command
-   */
-  public Command elevatorVoltageCommand(Measure<Voltage> voltage) {
-    return run(() -> move(voltage)).finallyDo(this::stop);
-  }
-
   public Command sysIdDynamicCommand(Direction direction) {
     return elevatorRoutine.dynamic(direction).withName("SysId elevator dynamic " + direction)
         .finallyDo(this::stop);
@@ -152,21 +110,21 @@ public class ElevatorSubsystem extends SubsystemBase {
         .finallyDo(this::stop);
   }
 
-  private void moveToPosition(Measure<Distance> position) {
-    elevatorLeader.setControl(motionMagicControl
+  public void moveToPosition(Measure<Distance> position) {
+    elevatorMotor.setControl(motionMagicControl
         .withPosition(position.in(Meters) * METERS_PER_REVOLUTION.in(Meters.per(Rotations)))
         .withLimitForwardMotion(isAtTopLimit())
         .withLimitReverseMotion(isAtBottomLimit()));
   }
 
-  private void move(Measure<Voltage> volts) {
-    elevatorLeader.setControl(voltageControl.withOutput(volts.in(Volts))
+  public void move(Measure<Voltage> volts) {
+    elevatorMotor.setControl(voltageControl.withOutput(volts.in(Volts))
         .withLimitForwardMotion(isAtTopLimit())
         .withLimitReverseMotion(isAtBottomLimit()));
   }
 
-  private void stop() {
-    elevatorLeader.stopMotor();
+  public void stop() {
+    elevatorMotor.stopMotor();
   }
 
 }
