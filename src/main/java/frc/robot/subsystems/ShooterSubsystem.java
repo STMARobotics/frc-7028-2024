@@ -100,7 +100,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void altitudeDown() {
     shooterAltitudeControl.setControl(altitudeControlVelocity.withVelocity(-1));
-    ;
   }
 
   public void shootDutyCycle(double speed) {
