@@ -1,11 +1,14 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
+import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -22,27 +25,32 @@ public class AutoAimShootCommand extends Command {
   private ShooterSubsystem shooter;
   private Boolean hasShot = false;
   private SwerveDriveState currentDrivetrainState = drivetrain.getState();
-  private Pose2d currentDrivetrainPose  = currentDrivetrainState.Pose;
-  private Translation2d deltaDrivetrainPosition;
-  private Rotation2d deltaDrivetrainAngle;
-  private Rotation2d deltaTurretAngle;
+  private Translation2d currentPosition;
+  private Double targetAngle;
+  private Double turretAngle;
+  private Double drivetrainAngle;
+  private SwerveRequest.FieldCentricFacingAngle swerveRequest = new SwerveRequest.FieldCentricFacingAngle()
+    .withDriveRequestType(DriveRequestType.Velocity)
+    .withSteerRequestType(SteerRequestType.MotionMagic)
+    .withVelocityX(0.0)
+    .withVelocityY(0.0);
+
 
   private void update() {
     currentDrivetrainState = drivetrain.getState();
-    currentDrivetrainPose  = currentDrivetrainState.Pose;
-    deltaDrivetrainPosition = currentDrivetrainPose.getTranslation().minus(speakerPosition);
-    deltaDrivetrainAngle = deltaDrivetrainPosition.getAngle();
+    currentPosition = currentDrivetrainState.Pose.getTranslation();
+    drivetrainAngle = currentPosition.getAngle().getDegrees();
+    turretAngle = turret.getCurrentAngle();
   }
 
-  private boolean isFacingSpeaker() {
-    return (abs(deltaDrivetrainAngle.getDegrees()) <= 5) && (abs(deltaTurretAngle.getDegrees()) <= 5);
+  private boolean robotIsFacingSpeaker() {
+    return (abs(targetAngle - drivetrainAngle) <= 5) && abs(targetAngle - turretAngle) <= 5;
   }
 
   public AutoAimShootCommand(CommandSwerveDrivetrain drivetrainSubsystem, TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem) {
     drivetrain = drivetrainSubsystem;
     turret = turretSubsystem;
     shooter = shooterSubsystem;
-
     addRequirements(drivetrain, turret, shooter);
   }
 
@@ -55,18 +63,19 @@ public class AutoAimShootCommand extends Command {
   @Override
   public void execute() {
     update();
-
-    // I will add rest of logic later; this is just the base logic for autoaiming 
-
-    if (isFacingSpeaker()) {
+    if (robotIsFacingSpeaker()) {
       shooter.spinShooterWheel();
       hasShot = true;
+    } else {
+      var targetAngle = currentPosition.minus(speakerPosition).getAngle().rotateBy(fromRadians(PI));
+      turret.toAngle(targetAngle);
+      drivetrain.setControl(swerveRequest.withTargetDirection(targetAngle));
     }
   }
 
   @Override
   public boolean isFinished() {
-    return isFacingSpeaker() && hasShot;
+    return robotIsFacingSpeaker() && hasShot;
   }
 
   @Override
