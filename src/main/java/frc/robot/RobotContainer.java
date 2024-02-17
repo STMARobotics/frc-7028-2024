@@ -23,13 +23,21 @@ import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.AmpShooterSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 
 public class RobotContainer {
 
   private final ControlBindings controlBindings;
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final TurretSubsystem turretSubsystem = new TurretSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final AmpShooterSubsystem ampShooterSubsystem = new AmpShooterSubsystem();
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
@@ -37,6 +45,9 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   private final Telemetry logger = new Telemetry(MAX_VELOCITY.in(MetersPerSecond));
+  private final AutonomousBuilder autonomousBuilder = new AutonomousBuilder(
+      shooterSubsystem, turretSubsystem, intakeSubsystem,
+      ampShooterSubsystem, drivetrain, elevatorSubsystem);
 
   public RobotContainer() {
     // Configure control binding scheme
@@ -67,19 +78,19 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    
+
     // drivetrain
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
-    
+
     // shooter
     controlBindings.ManualShootCommand().ifPresent(trigger -> trigger.whileTrue(
-      new ManualShootCommand(shooterSubsystem)));
+        new ManualShootCommand(shooterSubsystem)));
 
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return autonomousBuilder.getAutonomousCommand();
   }
 
   public void configureSysidDashboard() {
@@ -89,5 +100,46 @@ public class RobotContainer {
     tab.add("Shoot Quasi R", shooterSubsystem.sysIdShooterMotorQuasiCommand(kReverse)).withPosition(0, 2);
     tab.add("Shoot Dynam R", shooterSubsystem.sysIdShooterMotorDynamCommand(kReverse)).withPosition(0, 3);
 
+    tab.add("Alt Quasi F", shooterSubsystem.sysIdAltitudeMotorQuasiCommand(kForward)).withPosition(1, 0);
+    tab.add("Alt Dynam F", shooterSubsystem.sysIdAltitudeMotorDynamCommand(kForward)).withPosition(1, 1);
+    tab.add("Alt Quasi R", shooterSubsystem.sysIdAltitudeMotorQuasiCommand(kReverse)).withPosition(1, 2);
+    tab.add("Alt Dynam R", shooterSubsystem.sysIdAltitudeMotorDynamCommand(kReverse)).withPosition(1, 3);
+
+    tab.add("Shoot Intake Quasi F", shooterSubsystem.sysIdShooterIntakeMotorQuasiCommand(kForward)).withPosition(2, 0);
+    tab.add("Shoot Intake Dynam F", shooterSubsystem.sysIdShooterIntakeMotorDynamCommand(kForward)).withPosition(2, 1);
+    tab.add("Shoot Intake Quasi R", shooterSubsystem.sysIdShooterIntakeMotorQuasiCommand(kReverse)).withPosition(2, 2);
+    tab.add("Shoot Intake Dynam R", shooterSubsystem.sysIdShooterIntakeMotorDynamCommand(kReverse)).withPosition(2, 3);
+
+    tab.add("Rollers Quasi F", intakeSubsystem.intakeMotorQuasiCommand(kForward)).withPosition(3, 0);
+    tab.add("Rollers Dynam F", intakeSubsystem.intakeMotorDynamCommand(kForward)).withPosition(3, 1);
+    tab.add("Rollers Quasi R", intakeSubsystem.intakeMotorQuasiCommand(kReverse)).withPosition(3, 2);
+    tab.add("Rollers Dynam R", intakeSubsystem.intakeMotorDynamCommand(kReverse)).withPosition(3, 3);
+
+    tab.add("Lead Quasi F", elevatorSubsystem.sysIdElevatorLeaderQuasiCommand(kForward)).withPosition(4, 0);
+    tab.add("Lead Dynam F", elevatorSubsystem.sysIdElevatorLeaderDynamCommand(kForward)).withPosition(4, 1);
+    tab.add("Lead Quasi R", elevatorSubsystem.sysIdElevatorLeaderQuasiCommand(kReverse)).withPosition(4, 2);
+    tab.add("Lead Dynam R", elevatorSubsystem.sysIdElevatorLeaderDynamCommand(kReverse)).withPosition(4, 3);
+
+    tab.add("Follow Quasi F", elevatorSubsystem.sysIdElevatorFollowerQuasiCommand(kForward)).withPosition(5, 0);
+    tab.add("Follow Dynam F", elevatorSubsystem.sysIdElevatorFollowerDynamCommand(kForward)).withPosition(5, 1);
+    tab.add("Follow Quasi R", elevatorSubsystem.sysIdElevatorFollowerQuasiCommand(kReverse)).withPosition(5, 2);
+    tab.add("Follow Dynam R", elevatorSubsystem.sysIdElevatorFollowerDynamCommand(kReverse)).withPosition(5, 3);
+
+    tab.add("Amp Quasi F", ampShooterSubsystem.ampMotorQuasiCommand(kForward)).withPosition(6, 0);
+    tab.add("Amp Dynam F", ampShooterSubsystem.ampMotorDynamCommand(kForward)).withPosition(6, 1);
+    tab.add("Amp Quasi R", ampShooterSubsystem.ampMotorQuasiCommand(kReverse)).withPosition(6, 2);
+    tab.add("Amp Dynam R", ampShooterSubsystem.ampMotorDynamCommand(kReverse)).withPosition(6, 3);
+
+    tab.add("Drive Steer Quasi F", drivetrain.sysIdSteerQuasiCommand(kForward)).withPosition(4, 0);
+    tab.add("Drive Steer Dynam F", drivetrain.sysIdSteerDynamCommand(kForward)).withPosition(4, 1);
+    tab.add("Drive Steer Quasi R", drivetrain.sysIdSteerQuasiCommand(kReverse)).withPosition(4, 2);
+    tab.add("Drive Steer Dynam R", drivetrain.sysIdSteerDynamCommand(kReverse)).withPosition(4, 3);
+
+    tab.add("Drive Drive Quasi F", drivetrain.sysIdDriveQuasiCommand(kForward)).withPosition(5, 0);
+    tab.add("Drive Drive Dynam F", drivetrain.sysIdDriveDynamCommand(kForward)).withPosition(5, 1);
+    tab.add("Drive Drive Quasi R", drivetrain.sysIdDriveQuasiCommand(kReverse)).withPosition(5, 2);
+    tab.add("Drive Drive Dynam R", drivetrain.sysIdDriveDynamCommand(kReverse)).withPosition(5, 3);
+
+    tab.add("Drive Slip F", drivetrain.sysIdDriveSlipCommand()).withPosition(7, 0);
   }
 }
