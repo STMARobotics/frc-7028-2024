@@ -125,12 +125,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorLeader.set(meters);
   }
 
-  public void toPositionWithPercent(double percent) {
-    elevatorLeader.setControl(
-      motionMagicControl.withPosition(ELEVATOR_MAX_HEIGHT.in(Meters) * percent)
-      );
-  }
-
   public Command sysIdElevatorQuasiCommand(Direction direction) {
     return elavatorSysidRoutine.quasistatic(direction).withName("SysId Shooter Motors Quasistatic " + direction)
         .finallyDo(this::stop);
