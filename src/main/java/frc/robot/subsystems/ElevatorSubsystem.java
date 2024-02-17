@@ -113,12 +113,12 @@ private SysIdRoutine elevatorMotorSysIdRoutine = new SysIdRoutine(
     return (positionMeters / MOTOR_ENCODER_POSITION_COEFFICIENT);
   }
 
-  public Command sysIdelevatorMotorQuasiCommand(Direction direction) {
+  public Command sysIdElevatorMotorQuasiCommand(Direction direction) {
   return elevatorMotorSysIdRoutine.quasistatic(direction).withName("SysId Elevator Motor Quasistatic " + direction)
       .finallyDo(this::stop);
   }
 
-  public Command sysIdelevatorMotorDynamCommand(Direction direction) {
+  public Command sysIdElevatorMotorDynamCommand(Direction direction) {
     return elevatorMotorSysIdRoutine.dynamic(direction).withName("SysId Elevator Motor Quasistatic " + direction)
         .finallyDo(this::stop);
   }
