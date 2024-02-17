@@ -164,7 +164,14 @@
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoAimShoot"
+              }
+            }
+          ]
         }
       }
     },
@@ -174,7 +181,14 @@
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoAimShoot"
+              }
+            }
+          ]
         }
       }
     },
@@ -184,7 +198,14 @@
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoAimShoot"
+              }
+            }
+          ]
         }
       }
     },
@@ -194,7 +215,14 @@
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoAimShoot"
+              }
+            }
+          ]
         }
       }
     },
@@ -204,7 +232,14 @@
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoAimShoot"
+              }
+            }
+          ]
         }
       }
     }
