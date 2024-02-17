@@ -56,11 +56,10 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM);
     shooterMotorConfig.MotorOutput.NeutralMode = Coast;
     shooterMotorConfig.Feedback.SensorToMechanismRatio = SHOOTER_SENSOR_TO_MECHANISM_RATIO;
-    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     shooterBottomMotor.getConfigurator().apply(shooterMotorConfig);
     shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);
-    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     shooterTopMotor.getConfigurator().apply(shooterMotorConfig);
 
     shooterTopVelocity = shooterTopMotor.getVelocity();

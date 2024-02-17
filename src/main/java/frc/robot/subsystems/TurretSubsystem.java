@@ -141,7 +141,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     // Configure the roller motor
     var rollerTalonConfig = new TalonFXConfiguration();
-    rollerTalonConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    rollerTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rollerTalonConfig.MotorOutput.NeutralMode = Brake;
     rollerTalonConfig.Slot0 = Slot0Configs.from(ROLLER_VELOCITY_SLOT_CONFIGS);
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
