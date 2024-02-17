@@ -10,6 +10,7 @@ import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_LEADER;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_MOTOR_INTAKE;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_INTAKE_SLOT_CONFIGS;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_SLOT_CONFIGS;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_TOLERANCE;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -30,6 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterAltitudeControl = new TalonFX(DEVICE_ID_SHOOTER_ALTITUDE_CONTROL, CANIVORE_BUS_NAME);
   private final TalonFX shooterIntakeMotor = new TalonFX(DEVICE_ID_SHOOTER_MOTOR_INTAKE, CANIVORE_BUS_NAME);
 
+  public final int shooterSpeed = 40;
   public boolean hasRing = false;
   private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
 
@@ -88,8 +90,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void spinShooterWheel() {
-    shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(10));
-    shooterRightMotor.setControl(shooterMotorVelocity.withVelocity(10));
+    shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(shooterSpeed));
+    shooterRightMotor.setControl(shooterMotorVelocity.withVelocity(shooterSpeed));
   }
 
   public void altitudeUp() {
@@ -97,7 +99,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void altitudeDown() {
-    shooterAltitudeControl.setControl(altitudeControlVelocity.withVelocity(-1));;
+    shooterAltitudeControl.setControl(altitudeControlVelocity.withVelocity(-1));
+    ;
   }
 
   public void shootDutyCycle(double speed) {
@@ -106,7 +109,24 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void runIntake() {
-    shooterIntakeMotor.setControl(IntakeControlVelocity.withVelocity(3));
+    shooterIntakeMotor.setControl(IntakeControlVelocity.withVelocity(10));
+  }
+
+  private boolean checkShooterSpeed(double shooterSpeedGoal) {
+    return ((Math.abs(getShooterLeftVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE) &&
+        (Math.abs(getShooterRightVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE));
+  }
+
+  public boolean isShooterReady() {
+    return (checkShooterSpeed(shooterSpeed));
+  }
+
+  public double getShooterLeftVelocity() {
+    return shooterLeftMotor.getVelocity().getValueAsDouble();
+  }
+
+  public double getShooterRightVelocity() {
+    return shooterRightMotor.getVelocity().getValueAsDouble();
   }
 
   public void stop() {

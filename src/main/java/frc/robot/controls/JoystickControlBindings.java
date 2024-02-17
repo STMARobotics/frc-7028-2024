@@ -41,6 +41,10 @@ public class JoystickControlBindings implements ControlBindings {
   public Supplier<Measure<Velocity<Angle>>> omega() {
     return () -> MAX_ANGULAR_VELOCITY.times(-modifyAxis(rightJoystick.getX()) * 0.8);
   }
+  @Override
+  public Optional<Trigger> ManualShootCommand() {
+    return Optional.empty();
+  }
   
   private static double modifyAxis(double value) {
     // Square the axis

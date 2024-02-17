@@ -10,7 +10,10 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static java.lang.Math.PI;
 
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -85,6 +88,7 @@ public class Constants {
     public static final int DEVICE_ID_SHOOTER_FOLLOWER = 2;
     public static final int DEVICE_ID_SHOOTER_ALTITUDE_CONTROL = 3;
     public static final int DEVICE_ID_SHOOTER_MOTOR_INTAKE = 4;
+    public static final int SHOOTER_VELOCITY_TOLERANCE = 5;
 
     public static final SlotConfigs SHOOTER_SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.59)
@@ -104,30 +108,81 @@ public class Constants {
   }
 
   public static class TurretConstants {
-    public static final int DEVICE_ID_TURRET_ROT_CONTROL_LEADER = 5;
-    public static final int DEVICE_ID_TURRET_ROT_CONTROL_FOLLOWER = 6;
-    public static final int TURRET_LOWER_ANGLE_RANGE = 0;
-    public static final int TURRET_UPPER_ANGLE_RANGE = 270;
+    public static final int DEVICE_ID_TURRET = 6;
 
-  }
-
-  public static class IntakeConstants {
-    public static final int DEVICE_ID_INTAKE = 7;
     public static final class Circumfrence {
       public static final Measure<Distance> inner = Inches.of(1);
       public static final Measure<Distance> outer = Inches.of(1);
       public static final Measure<Distance> center = Inches.of(1);
     }
+
+    public static final Double oneRotorRotation = 1d;
+    public static final Double oneRotationForSensor = 1d;
+    public static final Double rotorToSensorRatio = ;
+
+    public static final int TURRET_LOWER_ANGLE_RANGE = 0;
+    public static final int TURRET_UPPER_ANGLE_RANGE = 270;
+
+    public static final TalonFXConfiguration TURRET_MOTOR_CONFIG = new TalonFXConfiguration()
+      .withFeedback(
+        new FeedbackConfigs()
+          .withRotorToSensorRatio(rotorToSensorRatio)
+      );
   }
 
-  public static class ElevatorClimbConstants {
-    public static final int DEVICE_ID_ELEVATOR_HEIGHT_CONTROL_LEADER = 8;
-    public static final int DEVICE_ID_ELEVATOR_HEIGHT_CONTROL_FOLLOWER = 9;
+  public static class IntakeConstants {
+    public static final int DEVICE_ID_INTAKE = 7;
+
+    public static final int DEVICE_ID_ROLLERS_MOTOR = 42;
+
+    public static final double MagnetOffsetValue = 0.4;
+
+    public static final SlotConfigs INTAKE_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0.1)
+        .withKI(0.1)
+        .withKD(0)
+        .withKS(0.59);
 
   }
+
+  public static class ElevatorConstants {
+
+    public static final int ELEVATOR_LEADER_ID = 40;
+    public static final int ELEVATOR_FOLLOWER_ID = 41;
+    public static final int ANALOG_SENSOR_CHANNEL = 0;
+    public static final double ELEVATOR_PARK_HEIGHT = .06;
+
+    // Elevator travel distance, in meters
+    public static final double ELEVATOR_HEIGHT = 1.002;
+    
+    // Motor's encoder limits, in encoder ticks
+    public static final double MOTOR_BOTTOM = 0;
+    public static final double MOTOR_TOP = 56530;
+    
+    // Mutiply by sensor position to get meters
+    public static final double MOTOR_ENCODER_POSITION_COEFFICIENT = ELEVATOR_HEIGHT / (MOTOR_TOP - MOTOR_BOTTOM);
+    
+    public static final int ANALOG_BOTTOM = 758;
+    public static final int ANALOG_TOP = 1796;
+
+    public static final SlotConfigs ELEVATOR_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(0)
+        .withKI(0)
+        .withKD(0)
+        .withKS(0);
+
+  }
+
+  public class ClimbConstants {
+    public static final int DEVICE_ID_FIRST_STAGE_CLIMB = 12;
+    public static final double SOFT_LIMIT_FIRST_STAGE_FWD = 430000;
+    public static final double SOFT_LIMIT_FIRST_STAGE_REV = 0;
+    public static final double CHAIN_HEIGHT = 0.75;
+
+  }
+
 
   public static class TrapAmpShooterConstants {
     public static final int DEVICE_ID_TRAP_AMP_SHOOTER = 10;
-
   }
 }

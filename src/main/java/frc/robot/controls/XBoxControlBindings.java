@@ -31,22 +31,27 @@ public class XBoxControlBindings implements ControlBindings {
   public Supplier<Measure<Velocity<Distance>>> translationX() {
     return () -> MAX_VELOCITY.times(-modifyAxis(driverController.getLeftY()));
   }
-  
+
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
     return () -> MAX_VELOCITY.times(-modifyAxis(driverController.getLeftX()));
   }
-  
+
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
     return () -> MAX_ANGULAR_VELOCITY.times(-modifyAxis(driverController.getRightX() * 0.8));
   }
-  
+
+  @Override
+  public Optional<Trigger> ManualShootCommand() {
+    return Optional.of(driverController.rightTrigger());
+  }
+
   private static double modifyAxis(double value) {
     // Square the axis
     value = Math.copySign(value * value, value);
 
     return value;
   }
-  
+
 }

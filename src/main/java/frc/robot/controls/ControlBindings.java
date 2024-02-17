@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public interface ControlBindings {
   Optional<Trigger> resetPose();
   Optional<Trigger> wheelsToX();
+  Optional<Trigger> ManualShootCommand();
   Supplier<Measure<Velocity<Distance>>> translationX();
   Supplier<Measure<Velocity<Distance>>> translationY();
   Supplier<Measure<Velocity<Angle>>> omega();
