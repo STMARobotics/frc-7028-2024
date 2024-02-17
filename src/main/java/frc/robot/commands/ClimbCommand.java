@@ -3,7 +3,6 @@ package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +16,6 @@ public class ClimbCommand extends Command {
 
   public ClimbCommand(
       ElevatorSubsystem elevatorSubsystem,
-      DoubleSupplier firstStageSupplier,
       DoubleConsumer rumble,
       BooleanSupplier turretIsClear) {
     this.elevatorSubsystem = elevatorSubsystem;

@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.AutoAimShootCommand;
+import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.subsystems.AmpShooterSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -28,7 +30,16 @@ public class AutoBuilder {
     this.elevatorSubsystem = elevatorSubsystem;
   }
 
-  public Command AutoAimShoot() {
+  public Command autoAimShoot() {
     return new AutoAimShootCommand(commandSwerveDrivetrain, turretSubsystem, shooterSubsystem);
   }
+
+  public Command moveElevator() {
+    return new MoveElevatorCommand(elevatorSubsystem);
+  }
+
+  public Command Climb() {
+    return new ClimbCommand(elevatorSubsystem, null, null);
+  }
+  
 }
