@@ -115,15 +115,10 @@ public class RobotContainer {
     tab.add("Rollers Quasi R", intakeSubsystem.intakeMotorQuasiCommand(kReverse)).withPosition(3, 2);
     tab.add("Rollers Dynam R", intakeSubsystem.intakeMotorDynamCommand(kReverse)).withPosition(3, 3);
 
-    tab.add("Lead Quasi F", elevatorSubsystem.sysIdElevatorLeaderQuasiCommand(kForward)).withPosition(4, 0);
-    tab.add("Lead Dynam F", elevatorSubsystem.sysIdElevatorLeaderDynamCommand(kForward)).withPosition(4, 1);
-    tab.add("Lead Quasi R", elevatorSubsystem.sysIdElevatorLeaderQuasiCommand(kReverse)).withPosition(4, 2);
-    tab.add("Lead Dynam R", elevatorSubsystem.sysIdElevatorLeaderDynamCommand(kReverse)).withPosition(4, 3);
-
-    tab.add("Follow Quasi F", elevatorSubsystem.sysIdElevatorFollowerQuasiCommand(kForward)).withPosition(5, 0);
-    tab.add("Follow Dynam F", elevatorSubsystem.sysIdElevatorFollowerDynamCommand(kForward)).withPosition(5, 1);
-    tab.add("Follow Quasi R", elevatorSubsystem.sysIdElevatorFollowerQuasiCommand(kReverse)).withPosition(5, 2);
-    tab.add("Follow Dynam R", elevatorSubsystem.sysIdElevatorFollowerDynamCommand(kReverse)).withPosition(5, 3);
+    tab.add("Lead Quasi F", elevatorSubsystem.sysIdElevatorMotorQuasiCommand(kForward)).withPosition(4, 0);
+    tab.add("Lead Dynam F", elevatorSubsystem.sysIdElevatorMotorDynamCommand(kForward)).withPosition(4, 1);
+    tab.add("Lead Quasi R", elevatorSubsystem.sysIdElevatorMotorQuasiCommand(kReverse)).withPosition(4, 2);
+    tab.add("Lead Dynam R", elevatorSubsystem.sysIdElevatorMotorDynamCommand(kReverse)).withPosition(4, 3);
 
     tab.add("Amp Quasi F", ampShooterSubsystem.ampMotorQuasiCommand(kForward)).withPosition(6, 0);
     tab.add("Amp Dynam F", ampShooterSubsystem.ampMotorDynamCommand(kForward)).withPosition(6, 1);
