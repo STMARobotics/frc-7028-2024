@@ -7,10 +7,15 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import static java.lang.Math.PI;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -19,7 +24,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.units.Voltage;
 
 public class Constants {
 
@@ -96,22 +101,34 @@ public class Constants {
   }
 
   public static class ShooterConstants {
+    public static final Measure<Angle> ACTUATOR_ERROR_TOLERANCE = Rotations.of(5);
+    public static final Measure<Angle> AIM_OFFSET = Rotations.of(0.9403065);
+    public static final float AIM_FORWARD_LIMIT = 0.32f;
+    public static final float AIM_REVERSE_LIMIT = 0.1f;
+    public static final Measure<Voltage> AIM_GRAVITY_FF = Volts.of(0.7);
+    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(1.0);
+    public static final Measure<Angle> AIM_ERROR_TOLERANCE = Rotations.of(.01);
     public static final int DEVICE_ID_SHOOTER_RIGHT = 51;
     public static final int DEVICE_ID_SHOOTER_LEFT = 50;
     public static final int DEVICE_ID_ACTUATOR_MOTOR = 52;
-    public static final int SHOOTER_VELOCITY_TOLERANCE = 0;
+    public static final int SHOOTER_VELOCITY_TOLERANCE = 5;
     public static final int WRIST_POSITION_TOLERANCE = 0;
     public static final int SHOOTER_MOTOR_RATIO = 1;
 
-    public static final SlotConfigs SHOOTER_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(0.59)
-        .withKI(0)
-        .withKD(0.001)
-        .withKS(0);
+    public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_TOP = new SlotConfigs()
+        .withKP(9.0)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.040599);
+
+    public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM = new SlotConfigs()
+        .withKP(15.0)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.096656);
   }
 
   public static class ClimbConstants {
-    public static DeadbandFilter CLIMB_DEADBAND_FILTER = new DeadbandFilter(-.25, .5);
 
     public static final int DEVICE_ID_FIRST_STAGE_CLIMB = 12;
 
@@ -120,28 +137,45 @@ public class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int DEVICE_ID_DEPLOY_MOTOR = 40;
-    public static final int DEVICE_ID_DEPLOY_CANCODER = 41;
-    public static final int DEVICE_ID_ROLLERS_MOTOR = 42;
-    public static final SlotConfigs ROLLERS_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(0.59)
-        .withKI(0)
-        .withKD(0.001)
-        .withKS(0);
+    public static final int DEVICE_ID_DEPLOY = 40;
+    public static final int DEVICE_ID_DEPLOY_ENCODER = 1;
+    public static final int DEVICE_ID_ROLLER = 42;
+
+    public static final Measure<Angle> DEPLOY_ENCODER_OFFSET = Rotations.of(0.812);
+    public static final double DEPLOY_SENSOR_TO_MECHANISM_RATIO = (66.0 / 18.0) * 5.0 * 5.0;
     public static final SlotConfigs DEPLOY_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(0.59)
-        .withKI(0)
-        .withKD(0.001)
-        .withKS(0);
-  }
+        .withKP(45)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.6)
+        .withKV(8.0)
+        .withKA(0.0)
+        .withKG(0.45)
+        .withGravityType(GravityTypeValue.Arm_Cosine);
+    public static final MotionMagicConfigs DEPLOY_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+        .withMotionMagicAcceleration(3)
+        .withMotionMagicCruiseVelocity(.75);
+    
+    public static final Measure<Angle> DEPLOY_POSITION_DEPLOYED = Rotations.of(-0.1);
+    public static final Measure<Angle> DEPLOY_POSITION_RETRACTED = Rotations.of(0.28);
+    public static final Measure<Angle> DEPLOY_TOLERANCE = Rotations.of(.01);
+
+    public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
+        .withKP(9.0)
+        .withKI(0.0)
+        .withKD(0.0)
+        .withKS(0.243);
+    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
+    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(60.0);
+    public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);  }
 
   public static class ElevatorConstants {
     public static final int ELEVATOR_LEADER_ID = 60;
     public static final int ELEVATOR_FOLLOWER_ID = 61;
     public static final int ANALOG_SENSOR_CHANNEL = 0;
     public static final double ELEVATOR_PARK_HEIGHT = .06;
-    public static final Measure<Distance> ELEVATOR_DISTANCE_PER_REVOLUTION = Meters.of(5); // not known yet 
-    public static final Measure<Distance> ELEVATOR_MAX_HEIGHT = Inches.of(31); 
+    public static final Measure<Distance> ELEVATOR_DISTANCE_PER_REVOLUTION = Meters.of(5); // not known yet
+    public static final Measure<Distance> ELEVATOR_MAX_HEIGHT = Inches.of(31);
     public static final SlotConfigs ELEVATOR_SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.59)
         .withKI(0)
@@ -150,9 +184,22 @@ public class Constants {
   }
 
   public static class IndexerConstants {
+    public static final double kP = 0.00001d;
+    public static final double kI = 0.0d;
+    public static final double kD = 0.0d;
+    
+    public static final double LEFT_kS = 0.4387;
+    public static final double LEFT_kV = 0.00115;
+    public static final double LEFT_kA = 0.00013792;
+
+    public static final double RIGHT_kS = 0.4387;
+    public static final double RIGHT_kV = 0.0013;
+    public static final double RIGHT_kA = 0.00013792;
+    
     public static final int PORT_ID_INTAKE_SENSOR = 3;
     public static final int PORT_ID_SHOOTER_SENSOR = 2;
 
+    public static final int PORT_ID_DONUT_SENSOR = 0;
     public static final int DEVICE_ID_INDEXER_LEFT_MOTOR = 1;
     public static final int DEVICE_ID_INDEXER_RIGHT_MOTOR = 2;
 
@@ -164,11 +211,7 @@ public class Constants {
     public static final double BELT_RUN_SPEED = 8000;
     public static final double BELT_SHOOT_SPEED = 8000;
 
-    /** Color of donut */
-    public static final Color COLOR_NOTE = new Color(0.487, 0.393, 0.12);
-
-    /** Color of no donut */
-    public static final Color COLOR_NONE = new Color(0.253, 0.49, 0.255);
-
+    public static final Measure<Velocity<Angle>> RUN_SPEED = RotationsPerSecond.of(50);
+    public static final Measure<Velocity<Angle>> SHOOT_SPEED = RotationsPerSecond.of(10);
   }
 }

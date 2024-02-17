@@ -1,15 +1,19 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.signals.NeutralModeValue.Coast;
+import static com.revrobotics.CANSparkBase.ControlType.kPosition;
 import static com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle;
+import static edu.wpi.first.math.util.Units.rotationsToRadians;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
+import static frc.robot.Constants.ShooterConstants.AIM_GRAVITY_FF;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_ACTUATOR_MOTOR;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_LEFT;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_SHOOTER_RIGHT;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_SLOT_CONFIGS;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_TOP;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_TOLERANCE;
-import static frc.robot.Constants.ShooterConstants.WRIST_POSITION_TOLERANCE;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -26,6 +30,7 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -52,6 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkAbsoluteEncoder actuatorEncoder;
   private final SparkPIDController pidController;
   private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
+  private double aimTargetRotations = 0.0;
+  private boolean holdAimPosition = false;
 
   private SysIdRoutine shooterMotorSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
@@ -61,28 +68,28 @@ public class ShooterSubsystem extends SubsystemBase {
       }, null, this));
 
   private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
-      false);
+      false).withSlot(0);
 
   public ShooterSubsystem() {
     var shooterMotorConfig = new TalonFXConfiguration();
-    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_SLOT_CONFIGS);
+    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);
     shooterMotorConfig.MotorOutput.NeutralMode = Coast;
+    shooterMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 1;
     shooterMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = 1;
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     shooterLeftMotor.getConfigurator().apply(shooterMotorConfig);
+    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM);
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     shooterRightMotor.getConfigurator().apply(shooterMotorConfig);
 
     // Get the through-bore-encoder absolute encoder
     actuatorEncoder = actuatorMotor.getAbsoluteEncoder(kDutyCycle);
-    actuatorEncoder.setInverted(true);
     actuatorEncoder.setAverageDepth(64);
-    pidController = actuatorMotor.getPIDController();
+    pidController = actuatorMotorConfig(actuatorMotor, true);
     pidController.setFeedbackDevice(actuatorEncoder);
-
   }
 
-  private static SparkPIDController indexerMotorConfig(CANSparkMax sparkMax, boolean invert) {
+  private static SparkPIDController actuatorMotorConfig(CANSparkMax sparkMax, boolean invert) {
     SparkPIDController pidController = sparkMax.getPIDController();
     sparkMax.restoreFactoryDefaults();
     sparkMax.enableVoltageCompensation(12);
@@ -113,6 +120,23 @@ public class ShooterSubsystem extends SubsystemBase {
         .finallyDo(this::stop);
   }
 
+  @Override
+  public void periodic() {
+    if (holdAimPosition) {
+      // Need to periodically set the reference because gravity FF will change as the
+      // shooter moves
+      var cosineScalar = Math.cos(rotationsToRadians(actuatorEncoder.getPosition()));
+      var gravityFF = AIM_GRAVITY_FF.in(Volts) * cosineScalar;
+
+      pidController.setReference(aimTargetRotations, kPosition); // ask andy today
+    }
+  }
+
+  public void setAimPosition(Measure<Angle> angle) {
+    holdAimPosition = true;
+    aimTargetRotations = angle.in(Rotations);
+  }
+
   public void activeStop() {
     if (!isActiveStopped) {
       shooterLeftMotor.setControl(shooterMotorVelocity.withVelocity(0));
@@ -131,12 +155,12 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void actuatorUp(Measure<Voltage> volts) {
-    indexerMotorConfig(actuatorMotor, true);
+    actuatorMotorConfig(actuatorMotor, true);
     actuatorMotor.setVoltage(volts.in(Volts));
   }
 
   public void actuatorDown(Measure<Voltage> volts) {
-    indexerMotorConfig(actuatorMotor, false);
+    actuatorMotorConfig(actuatorMotor, false);
     actuatorMotor.setVoltage(volts.in(Volts));
   }
 
@@ -149,16 +173,21 @@ public class ShooterSubsystem extends SubsystemBase {
     return Units.rotationsToDegrees(actuatorEncoder.getVelocity());
   }
 
-  public double getShooterVelocity() {
-    return 2;
+  public double getShooterLeftVelocity() {
+    return shooterLeftMotor.getVelocity().getValueAsDouble();
   }
 
-  public boolean checkWristPosition(double radiansToRotate) {
-    return (Math.abs(getWristPosition() - radiansToRotate) <= WRIST_POSITION_TOLERANCE);
+  public double getShooterRightVelocity() {
+    return shooterRightMotor.getVelocity().getValueAsDouble();
   }
 
-  public boolean checkShooterSpeed(double shooterSpeedGoal) {
-    return (Math.abs(getWristVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE);
+  private boolean checkShooterSpeed(double shooterSpeedGoal) {
+    return ((Math.abs(getShooterLeftVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE) &&
+        (Math.abs(getShooterRightVelocity() - shooterSpeedGoal) <= SHOOTER_VELOCITY_TOLERANCE));
+  }
+
+  public boolean isShooterReady() {
+    return (checkShooterSpeed(40));
   }
 
   public void shootDutyCycle(double speed) {

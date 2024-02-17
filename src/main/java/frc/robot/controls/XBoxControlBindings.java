@@ -33,37 +33,12 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> intakeRollers() {
-    return Optional.of(driverController.leftTrigger());
-  }
-
-  @Override
-  public Optional<Trigger> indexerRun() {
-    return Optional.of(driverController.x());
-  }
-
-  @Override
-  public Optional<Trigger> actuatorDown() {
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<Trigger> actuatorUp() {
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<Trigger> shootDonutCommand() {
+  public Optional<Trigger> retractIntake() {
     return Optional.of(driverController.leftBumper());
   }
 
   @Override
-  public Optional<Trigger> elevatorVelocity() {
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<Trigger> shootDutyCycle() {
+  public Optional<Trigger> spinShooterWheel() {
     return Optional.of(driverController.rightTrigger());
   }
 
@@ -73,13 +48,8 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> spit() {
-    return Optional.of(driverController.a());
-  }
-
-  @Override
-  public Optional<Trigger> retractIntake() {
-    return Optional.of(driverController.b());
+  public Optional<Trigger> shootDonutCommand() {
+    return Optional.of(driverController.rightTrigger());
   }
 
   @Override

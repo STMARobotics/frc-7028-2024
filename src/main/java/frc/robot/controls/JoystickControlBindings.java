@@ -29,17 +29,12 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> shootDutyCycle() {
+  public Optional<Trigger> spinShooterWheel() {
     return Optional.empty();
   }
 
   @Override
-  public Optional<Trigger> indexerRun() {
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<Trigger> elevatorVelocity() {
+  public Optional<Trigger> shootDonutCommand() {
     return Optional.empty();
   }
 
@@ -54,32 +49,7 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> intakeRollers() {
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<Trigger> spit() {
-    return Optional.empty();
-  }
-
-  @Override
   public Optional<Trigger> retractIntake() {
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<Trigger> shootDonutCommand() {
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<Trigger> actuatorDown() {
-    return Optional.empty();
-  }
-
-  @Override
-  public Optional<Trigger> actuatorUp() {
     return Optional.empty();
   }
 
