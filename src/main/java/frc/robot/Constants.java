@@ -13,7 +13,6 @@ import static java.lang.Math.PI;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -118,7 +117,8 @@ public class Constants {
 
     public static final Double oneRotorRotation = 1d;
     public static final Double oneRotationForSensor = 1d;
-    public static final Double rotorToSensorRatio = ;
+    // NOT the final expression
+    public static final Double rotorToSensorRatio = oneRotorRotation / oneRotationForSensor;
 
     public static final int TURRET_LOWER_ANGLE_RANGE = 0;
     public static final int TURRET_UPPER_ANGLE_RANGE = 270;
