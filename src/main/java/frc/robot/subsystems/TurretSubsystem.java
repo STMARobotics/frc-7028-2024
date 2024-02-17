@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.math.util.Units.rotationsToDegrees;
+import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.Constants.TurretConstants.DEVICE_ID_TURRET;
 
 import com.ctre.phoenix6.StatusSignal;
@@ -22,8 +23,8 @@ public class TurretSubsystem extends SubsystemBase {
   
   }
 
-  public double getCurrentAngle() {
-    return rotationsToDegrees(motorRotations.getValueAsDouble());
+  public Rotation2d getCurrentAngle() {
+    return new Rotation2d(Degrees.of(rotationsToDegrees(motorRotations.getValueAsDouble())));
   }
 
   public void toAngle(Rotation2d angle) {

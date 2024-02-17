@@ -16,6 +16,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
@@ -115,6 +116,9 @@ public class Constants {
       public static final Measure<Distance> center = Inches.of(1);
     }
 
+    // To be determined!!
+    public static final Translation2d relativeSpeakerPosition = new Translation2d(0, 0);
+
     public static final Double oneRotorRotation = 1d;
     public static final Double oneRotationForSensor = 1d;
     // NOT the final expression
@@ -123,11 +127,14 @@ public class Constants {
     public static final int TURRET_LOWER_ANGLE_RANGE = 0;
     public static final int TURRET_UPPER_ANGLE_RANGE = 270;
 
+    public static final Double TURRET_ANGLE_THRESHOLD = 5d;
+
     public static final TalonFXConfiguration TURRET_MOTOR_CONFIG = new TalonFXConfiguration()
       .withFeedback(
         new FeedbackConfigs()
           .withRotorToSensorRatio(rotorToSensorRatio)
       );
+
   }
 
   public static class IntakeConstants {
