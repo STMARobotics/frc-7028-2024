@@ -159,7 +159,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 1.9500000000000002,
       "command": {
         "type": "parallel",
@@ -176,7 +176,7 @@
       }
     },
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -193,7 +193,7 @@
       }
     },
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 2.9000000000000004,
       "command": {
         "type": "parallel",
@@ -210,7 +210,7 @@
       }
     },
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 4.95,
       "command": {
         "type": "parallel",
@@ -227,7 +227,7 @@
       }
     },
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 6.9,
       "command": {
         "type": "parallel",
@@ -237,6 +237,40 @@
               "type": "named",
               "data": {
                 "name": "autoAimShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "autoAimShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": null
               }
             }
           ]
