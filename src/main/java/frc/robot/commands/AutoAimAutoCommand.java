@@ -36,8 +36,8 @@ public class AutoAimAutoCommand extends Command {
   private Boolean isTurretReady;
   private Boolean isDrivetrainReady;
 
-
-  public AutoAimAutoCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, CommandSwerveDrivetrain drivetrainSubsystem) {
+  public AutoAimAutoCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
+      CommandSwerveDrivetrain drivetrainSubsystem) {
     this.turretSubsystem = turretSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.drivetrainSubsystem = drivetrainSubsystem;
@@ -47,7 +47,7 @@ public class AutoAimAutoCommand extends Command {
 
   private Boolean update() {
     currentDrivetrainPose = drivetrainSubsystem.getState().Pose;
-    currentSpeakerDistance =  Meters.of(currentDrivetrainPose.getTranslation().getDistance(speakerPosition));
+    currentSpeakerDistance = Meters.of(currentDrivetrainPose.getTranslation().getDistance(speakerPosition));
     drivetrainAngle = currentDrivetrainPose.getRotation();
     turretAngle = turretSubsystem.getCurrentAngle(drivetrainAngle);
     targetAngle = currentDrivetrainPose.getTranslation().minus(speakerPosition).getAngle().rotateBy(fromRadians(PI));
@@ -70,13 +70,15 @@ public class AutoAimAutoCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    // update returns if the turret is ready for shooting: the turret is correctly angled, the drivetrain is correctly angled, the robot is within the maximum distance to the speaker, and the shooter wheel is ready
+    // update returns if the turret is ready for shooting: the turret is correctly
+    // angled, the drivetrain is correctly angled, the robot is within the maximum
+    // distance to the speaker, and the shooter wheel is ready
     return update();
   }
 
-@Override
-public void end(boolean interrupted) {
-  turretSubsystem.stop();
-  shooterSubsystem.stop();
-}
+  @Override
+  public void end(boolean interrupted) {
+    turretSubsystem.stop();
+    shooterSubsystem.stop();
+  }
 }
