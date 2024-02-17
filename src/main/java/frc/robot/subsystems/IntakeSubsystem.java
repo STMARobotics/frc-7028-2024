@@ -35,8 +35,8 @@ public class IntakeSubsystem extends SubsystemBase {
       new SysIdRoutine.Mechanism((volts) -> {
         rollersMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
       }, null, this));
-  
-    public Command intakeMotorQuasiCommand(Direction direction) {
+
+  public Command intakeMotorQuasiCommand(Direction direction) {
     return intakeMotorSysIdRoutine.quasistatic(direction).withName("SysId Amp Motors Quasistatic " + direction)
         .finallyDo(this::stop);
   }
@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeMotorSysIdRoutine.dynamic(direction).withName("SysId Amp Motors Quasistatic " + direction)
         .finallyDo(this::stop);
   }
-  
+
   public IntakeSubsystem() {
     var intakeRollersConfig = new TalonFXConfiguration();
     intakeRollersConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -57,7 +57,12 @@ public class IntakeSubsystem extends SubsystemBase {
     canCoderConfig.MagnetSensor.MagnetOffset = MagnetOffsetValue;
   }
 
-  private final VelocityTorqueCurrentFOC intakeRollersMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false,
+  private final VelocityTorqueCurrentFOC intakeRollersMotorVelocity = new VelocityTorqueCurrentFOC(
+      0,
+      0,
+      0,
+      1,
+      false,
       false,
       false);
 
@@ -70,7 +75,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void stop() {
-    //placeholder motor velocity
+    // placeholder motor velocity
     rollersMotor.stopMotor();
   }
 

@@ -27,8 +27,8 @@ public class AmpShooterSubsystem extends SubsystemBase {
       new SysIdRoutine.Mechanism((volts) -> {
         ampShooterMotor.setControl(voltageRequest.withOutput(volts.in((Volts))));
       }, null, this));
-  
-    public Command ampMotorQuasiCommand(Direction direction) {
+
+  public Command ampMotorQuasiCommand(Direction direction) {
     return ampMotorSysIdRoutine.quasistatic(direction).withName("SysId Amp Motors Quasistatic " + direction)
         .finallyDo(this::stopAmpShooter);
   }
@@ -38,7 +38,13 @@ public class AmpShooterSubsystem extends SubsystemBase {
         .finallyDo(this::stopAmpShooter);
   }
 
-  private final VelocityTorqueCurrentFOC ampMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
+  private final VelocityTorqueCurrentFOC ampMotorVelocity = new VelocityTorqueCurrentFOC(
+      0,
+      0,
+      0,
+      1,
+      false,
+      false,
       false);
 
   public void runAmpShooter() {

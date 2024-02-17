@@ -54,14 +54,35 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterIntakeMotor.setControl(voltageRequest.withOutput(volts.in(Volts)));
       }, null, this));
 
-  private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false,
-      false);
+  private final VelocityTorqueCurrentFOC shooterMotorVelocity = new VelocityTorqueCurrentFOC(
+      0,
+      0,
+      0,
+      1,
+      false,
+      false,
+      false
+      );
 
-  private final VelocityTorqueCurrentFOC altitudeControlVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false,
-      false, false);
+  private final VelocityTorqueCurrentFOC altitudeControlVelocity = new VelocityTorqueCurrentFOC(
+      0,
+      0,
+      0,
+      1,
+      false,
+      false,
+      false
+      );
 
-  private final VelocityTorqueCurrentFOC IntakeControlVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false,
-      false, false);
+  private final VelocityTorqueCurrentFOC IntakeControlVelocity = new VelocityTorqueCurrentFOC(
+      0,
+      0,
+      0,
+      1,
+      false,
+      false,
+      false
+      );
 
   public ShooterSubsystem() {
     var altitudeMotorConfig = new TalonFXConfiguration();
@@ -100,7 +121,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void altitudeDown() {
     shooterAltitudeControl.setControl(altitudeControlVelocity.withVelocity(-1));
-    ;
   }
 
   public void shootDutyCycle(double speed) {
@@ -137,22 +157,26 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command sysIdShooterMotorQuasiCommand(Direction direction) {
-    return shooterMotorSysIdRoutine.quasistatic(direction).withName("SysId Shooter Motors Quasistatic " + direction)
+    return shooterMotorSysIdRoutine.quasistatic(direction)
+        .withName("SysId Shooter Motors Quasistatic " + direction)
         .finallyDo(this::stop);
   }
 
   public Command sysIdShooterMotorDynamCommand(Direction direction) {
-    return shooterMotorSysIdRoutine.dynamic(direction).withName("SysId Shooter Motors Quasistatic " + direction)
+    return shooterMotorSysIdRoutine.dynamic(direction)
+        .withName("SysId Shooter Motors Quasistatic " + direction)
         .finallyDo(this::stop);
   }
 
   public Command sysIdAltitudeMotorQuasiCommand(Direction direction) {
-    return altitudeMotorSysIdRoutine.quasistatic(direction).withName("SysId Altitude Motors Quasistatic " + direction)
+    return altitudeMotorSysIdRoutine.quasistatic(direction)
+        .withName("SysId Altitude Motors Quasistatic " + direction)
         .finallyDo(this::stop);
   }
 
   public Command sysIdAltitudeMotorDynamCommand(Direction direction) {
-    return altitudeMotorSysIdRoutine.dynamic(direction).withName("SysId Altitude Motors Quasistatic " + direction)
+    return altitudeMotorSysIdRoutine.dynamic(direction)
+        .withName("SysId Altitude Motors Quasistatic " + direction)
         .finallyDo(this::stop);
   }
 
