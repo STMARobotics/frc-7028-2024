@@ -24,12 +24,12 @@ public class AutoAimPathPlanner extends Command {
 
   private Boolean preparingShooterWheel;
 
-  public AutoAimPathPlanner(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, CommandSwerveDrivetrain drivetrainSubsystem) {
-    this.turretSubsystem = turretSubsystem;
-    this.shooterSubsystem = shooterSubsystem;
-    this.drivetrainSubsystem = drivetrainSubsystem;
+  public AutoAimPathPlanner(TurretSubsystem turretSubsystem2, ShooterSubsystem shooterSubsystem2, CommandSwerveDrivetrain commandSwerveDrivetrain) {
+    this.turretSubsystem = turretSubsystem2;
+    this.shooterSubsystem = shooterSubsystem2;
+    this.drivetrainSubsystem = commandSwerveDrivetrain;
 
-    addRequirements(turretSubsystem, shooterSubsystem, drivetrainSubsystem);
+    addRequirements(turretSubsystem2, shooterSubsystem2, commandSwerveDrivetrain);
   }
 
   private void update() {
