@@ -68,12 +68,12 @@
         "y": 7.401248696933913
       },
       "prevControl": {
-        "x": 7.756675737632654,
-        "y": 7.551739833764469
+        "x": 7.790112242136038,
+        "y": 7.506646225845947
       },
       "nextControl": {
-        "x": 7.8369555883191655,
-        "y": 7.284140331476099
+        "x": 7.815324958629344,
+        "y": 7.279731777406212
       },
       "isLocked": false,
       "linkedName": null
@@ -100,12 +100,12 @@
         "y": 5.960815801802787
       },
       "prevControl": {
-        "x": 7.983271397618154,
-        "y": 6.196728964557346
+        "x": 7.9891964634143235,
+        "y": 6.183321696172636
       },
       "nextControl": {
-        "x": 7.848666424864946,
-        "y": 5.703177397795595
+        "x": 7.7983065772178835,
+        "y": 5.5788370565505625
       },
       "isLocked": false,
       "linkedName": null
@@ -113,11 +113,11 @@
     {
       "anchor": {
         "x": 6.021775923723031,
-        "y": 6.312140898176232
+        "y": 6.323851734722014
       },
       "prevControl": {
-        "x": 6.021775923723031,
-        "y": 6.124767513443729
+        "x": 5.916378394810998,
+        "y": 6.113056676897948
       },
       "nextControl": null,
       "isLocked": false,
@@ -157,7 +157,58 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.9500000000000002,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 2.9000000000000004,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 4.95,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 6.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3,
