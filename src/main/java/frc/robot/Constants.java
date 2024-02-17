@@ -25,6 +25,9 @@ import edu.wpi.first.units.Velocity;
 
 public class Constants {
 
+  // Change to a different type in the future
+  public static final Boolean team = true;
+
   public static final String CANIVORE_BUS_NAME = "canivore";
 
   public static final class DrivetrainConstants {
@@ -117,7 +120,8 @@ public class Constants {
     }
 
     // To be determined!!
-    public static final Translation2d relativeSpeakerPosition = new Translation2d(0, 0);
+    public static final Translation2d speakerPosition1 = new Translation2d(0, 0);
+    public static final Translation2d speakerPosition2 = new Translation2d(0, 0); 
 
     public static final Double oneRotorRotation = 1d;
     public static final Double oneRotationForSensor = 1d;
@@ -128,6 +132,10 @@ public class Constants {
     public static final int TURRET_UPPER_ANGLE_RANGE = 270;
 
     public static final Double TURRET_ANGLE_THRESHOLD = 5d;
+    public static final Double TURRET_DRIVETRAIN_ANGLE_THRESHOLD = 5d;
+
+    // To be determined!! 
+    public static final Measure<Distance> TURRET_MAXIMUM_READYSHOOT_DISTANCE = Meters.of(1);
 
     public static final TalonFXConfiguration TURRET_MOTOR_CONFIG = new TalonFXConfiguration()
       .withFeedback(
