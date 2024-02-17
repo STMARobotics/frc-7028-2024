@@ -201,7 +201,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 1.9500000000000002,
       "command": {
         "type": "parallel",
@@ -218,7 +218,7 @@
       }
     },
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -235,7 +235,7 @@
       }
     },
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 2.9000000000000004,
       "command": {
         "type": "parallel",
@@ -252,7 +252,7 @@
       }
     },
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 4.95,
       "command": {
         "type": "parallel",
@@ -269,8 +269,8 @@
       }
     },
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 6.95,
+      "name": "Shoot",
+      "waypointRelativePos": 7.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -286,7 +286,7 @@
       }
     },
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
       "waypointRelativePos": 8.9,
       "command": {
         "type": "parallel",
@@ -296,6 +296,40 @@
               "type": "named",
               "data": {
                 "name": "autoAimShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "autoStartIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "End Intake",
+      "waypointRelativePos": 8.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "autoEndIntake"
               }
             }
           ]

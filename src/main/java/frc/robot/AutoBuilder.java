@@ -30,11 +30,11 @@ public class AutoBuilder {
     return new AutoAimPathPlanner(turretSubsystem, shooterSubsystem, commandSwerveDrivetrain);
   }
 
-  public Command autoStartIntakeCommand() {
+  public Command autoStartIntake() {
     return new AutoStartIntakeCommand(intakeSubsystem);
   }
 
-  public Command autoEndIntakeCommand() {
+  public Command autoEndIntake() {
     return new AutoEndIntakeCommand(intakeSubsystem);
   }
 
