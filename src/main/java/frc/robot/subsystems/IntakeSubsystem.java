@@ -64,7 +64,8 @@ public class IntakeSubsystem extends SubsystemBase {
       1,
       false,
       false,
-      false);
+      false
+      );
 
   public void runintakeRollers() {
     rollersMotor.setControl(intakeRollersMotorVelocity.withVelocity(10));

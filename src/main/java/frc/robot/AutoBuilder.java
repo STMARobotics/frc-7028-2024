@@ -1,7 +1,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.AutoAimShootCommand;
+import frc.robot.commands.AutoAimPathPlanner;
+import frc.robot.commands.AutoEndIntakeCommand;
+import frc.robot.commands.AutoStartIntakeCommand;
 import frc.robot.subsystems.AmpShooterSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -25,7 +27,15 @@ public class AutoBuilder {
   }
 
   public Command autoAimShoot() {
-    return new AutoAimShootCommand(commandSwerveDrivetrain, turretSubsystem, shooterSubsystem);
+    return new AutoAimPathPlanner(turretSubsystem, shooterSubsystem, commandSwerveDrivetrain);
   }
-  
+
+  public Command autoStartIntakeCommand() {
+    return new AutoStartIntakeCommand(intakeSubsystem);
+  }
+
+  public Command autoEndIntakeCommand() {
+    return new AutoEndIntakeCommand(intakeSubsystem);
+  }
+
 }

@@ -45,7 +45,8 @@ public class AmpShooterSubsystem extends SubsystemBase {
       1,
       false,
       false,
-      false);
+      false
+      );
 
   public void runAmpShooter() {
     // velocity number is still a placeholder
