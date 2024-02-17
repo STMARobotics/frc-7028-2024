@@ -161,10 +161,10 @@ public class Constants {
     public static int DEVICE_ID_ROLLER_MOTOR = 41;
     public static int DEVICE_ID_NOTE_SENSOR = 5;
 
-    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(0.0);
-    public static double YAW_ROTOR_TO_SENSOR_RATIO = 1.0;
+    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
+    public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
     public static Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.25);
-    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(0.0);
+    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(-0.25);
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(45)
         .withKI(0.0)
@@ -178,8 +178,8 @@ public class Constants {
         .withMotionMagicAcceleration(3)
         .withMotionMagicCruiseVelocity(.75);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.0);
-    public static double PITCH_ROTOR_TO_SENSOR_RATIO = 1.0;
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.025635);
+    public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 5.0 * 5.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.5);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(-0.5);
     public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
@@ -219,7 +219,7 @@ public class Constants {
     public static int DEVICE_PORT_BOTTOM_LIMIT = 8;
 
     public static Measure<Per<Distance, Angle>> METERS_PER_REVOLUTION = 
-        Meters.per(Rotations).of(0.0505); //.505 meters per 10 rotations
+        Meters.per(Rotations).of((inchesToMeters(1.273) * PI) / 3.0 / 3.0);
 
     public static SlotConfigs SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.01)

@@ -18,6 +18,7 @@ import static frc.robot.Constants.TurretConstants.INTAKE_YAW_POSITION;
 import static frc.robot.Constants.TurretConstants.LOAD_VELOCITY;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_REVERSE;
+import static frc.robot.Constants.TurretConstants.PITCH_MAGNETIC_OFFSET;
 import static frc.robot.Constants.TurretConstants.PITCH_MOTION_MAGIC_CONFIGS;
 import static frc.robot.Constants.TurretConstants.PITCH_ROTOR_TO_SENSOR_RATIO;
 import static frc.robot.Constants.TurretConstants.PITCH_SLOT_CONFIGS;
@@ -95,7 +96,7 @@ public class TurretSubsystem extends SubsystemBase {
     // Configure the yaw CANCoder
     var yawCanCoderConfig = new CANcoderConfiguration();
     yawCanCoderConfig.MagnetSensor.MagnetOffset = YAW_MAGNETIC_OFFSET.in(Rotations);
-    yawCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    yawCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     yawEncoder.getConfigurator().apply(yawCanCoderConfig);
 
     // Configure the yaw motor
@@ -117,8 +118,8 @@ public class TurretSubsystem extends SubsystemBase {
 
     // Configure the pitch CANCoder
     var pitchCanCoderConfig = new CANcoderConfiguration();
-    pitchCanCoderConfig.MagnetSensor.MagnetOffset = YAW_MAGNETIC_OFFSET.in(Rotations);
-    pitchCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    pitchCanCoderConfig.MagnetSensor.MagnetOffset = PITCH_MAGNETIC_OFFSET.in(Rotations);
+    pitchCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     pitchEncoder.getConfigurator().apply(pitchCanCoderConfig);
 
     // Configure the pitch motor
