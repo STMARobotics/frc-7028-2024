@@ -106,12 +106,18 @@ public class Constants {
   public static class TurretConstants {
     public static final int DEVICE_ID_TURRET_ROT_CONTROL_LEADER = 5;
     public static final int DEVICE_ID_TURRET_ROT_CONTROL_FOLLOWER = 6;
+    public static final int TURRET_LOWER_ANGLE_RANGE = 0;
+    public static final int TURRET_UPPER_ANGLE_RANGE = 270;
 
   }
 
   public static class IntakeConstants {
     public static final int DEVICE_ID_INTAKE = 7;
-
+    public static final class Circumfrence {
+      public static final Measure<Distance> inner = Inches.of(1);
+      public static final Measure<Distance> outer = Inches.of(1);
+      public static final Measure<Distance> center = Inches.of(1);
+    }
   }
 
   public static class ElevatorClimbConstants {
