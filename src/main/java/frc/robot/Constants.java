@@ -179,7 +179,7 @@ public class Constants {
         .withMotionMagicCruiseVelocity(.75);
 
     public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.025635);
-    public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 5.0 * 5.0;
+    public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 5.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.5);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(-0.5);
     public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
