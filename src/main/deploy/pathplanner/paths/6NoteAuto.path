@@ -168,7 +168,7 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoAimShoot"
+                "name": "autoAimShoot"
               }
             }
           ]
@@ -185,7 +185,7 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoAimShoot"
+                "name": "autoAimShoot"
               }
             }
           ]
@@ -202,7 +202,7 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoAimShoot"
+                "name": "autoAimShoot"
               }
             }
           ]
@@ -219,7 +219,7 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoAimShoot"
+                "name": "autoAimShoot"
               }
             }
           ]
@@ -236,7 +236,7 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoAimShoot"
+                "name": "autoAimShoot"
               }
             }
           ]
