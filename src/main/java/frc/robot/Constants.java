@@ -162,9 +162,7 @@ public class Constants {
 
   public static class ElevatorConstants {
 
-    public static final int ELEVATOR_LEADER_ID = 40;
-    public static final int ELEVATOR_FOLLOWER_ID = 41;
-    public static final int ANALOG_SENSOR_CHANNEL = 0;
+    public static final int ELEVATOR_POSITON_ID = 60;
     public static final double ELEVATOR_PARK_HEIGHT = .06;
 
     // Elevator travel distance, in meters
@@ -177,8 +175,8 @@ public class Constants {
     // Mutiply by sensor position to get meters
     public static final double MOTOR_ENCODER_POSITION_COEFFICIENT = ELEVATOR_HEIGHT / (MOTOR_TOP - MOTOR_BOTTOM);
     
-    public static final int ANALOG_BOTTOM = 758;
-    public static final int ANALOG_TOP = 1796;
+    public static final int TOP_LIMIT_SWITCH_CHANNEL = 9;
+    public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 8;
 
     public static final SlotConfigs ELEVATOR_SLOT_CONFIGS = new SlotConfigs()
         .withKP(0)
@@ -189,10 +187,23 @@ public class Constants {
   }
 
   public class ClimbConstants {
-    public static final int DEVICE_ID_FIRST_STAGE_CLIMB = 12;
-    public static final double SOFT_LIMIT_FIRST_STAGE_FWD = 430000;
-    public static final double SOFT_LIMIT_FIRST_STAGE_REV = 0;
+
+    public static final int LEFT_CLIMB_ARM_ID = 55;
+    public static final int RIGHT_CLIMB_ARM_ID = 56;
     public static final double CHAIN_HEIGHT = 0.75;
+
+    public static final int CLIMB_HEIGHT = 1;
+
+    public static final double MOTOR_TOP = 56530;
+    public static final double MOTOR_BOTTOM = 0;
+
+    public static final double MOTOR_ENCODER_POSITION_COEFFICIENT = CLIMB_HEIGHT / (MOTOR_TOP - MOTOR_BOTTOM);
+
+    public static final SlotConfigs CLIMB_SLOT_CONFIGS = new SlotConfigs()
+      .withKP(0)
+      .withKI(0)
+      .withKD(0)
+      .withKS(0);
 
   }
 
@@ -200,4 +211,5 @@ public class Constants {
   public static class TrapAmpShooterConstants {
     public static final int DEVICE_ID_TRAP_AMP_SHOOTER = 10;
   }
+  
 }
