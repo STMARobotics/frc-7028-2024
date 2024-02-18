@@ -43,8 +43,8 @@ public class Constants {
     public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
     public static final Measure<Distance> WHEELBASE = Inches.of(18.75);
 
-    // Theoretical free speed of L2 Falcon 500 with FOC
-    public static final Measure<Velocity<Distance>> MAX_VELOCITY = FeetPerSecond.of(15.7);
+    // Theoretical free speed of L3 Kraken with FOC (Falcon 500 is faster)
+    public static final Measure<Velocity<Distance>> MAX_VELOCITY = FeetPerSecond.of(16.5);
     // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = (DrivetrainConstants.MAX_VELOCITY
         .in(MetersPerSecond) /
@@ -173,17 +173,15 @@ public class Constants {
         .withKD(0.0)
         .withKS(0.6)
         .withKV(8.0)
-        .withKA(0.0)
-        .withKG(0.45)
-        .withGravityType(GravityTypeValue.Arm_Cosine);
+        .withKA(0.0);
     public static final MotionMagicConfigs YAW_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicAcceleration(3)
         .withMotionMagicCruiseVelocity(.75);
 
     public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.025635);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 5.0;
-    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.5);
-    public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(-0.5);
+    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.25);
+    public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.0);
     public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
         .withKP(45)
         .withKI(0.0)
