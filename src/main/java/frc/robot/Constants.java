@@ -161,10 +161,12 @@ public class Constants {
     public static int DEVICE_ID_ROLLER_MOTOR = 41;
     public static int DEVICE_ID_NOTE_SENSOR = 5;
 
-    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
+    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(0.239258);
     public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
-    public static Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.25);
-    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(-0.25);
+    // The turret resting position is straight backward, or 0.5 rotations. Its full-range is .25 in either direction.
+    // A quarter turn in the postitive direction is -0.25, and a quarter turn in the reverse direction is 0.25.
+    public static Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(-0.25);
+    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(0.25);
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(45)
         .withKI(0.0)
