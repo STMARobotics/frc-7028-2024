@@ -20,6 +20,7 @@ import static java.lang.Math.PI;
 import java.util.List;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 
@@ -50,6 +51,11 @@ public class Constants {
         .in(MetersPerSecond) /
         Math.hypot(TRACKWIDTH.in(Meters) / 2.0, WHEELBASE.in(Meters) / 2.0));
     public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 4);
+
+    public static final MountPoseConfigs PIGEON_MOUNT_POSE_CONFIG = new MountPoseConfigs()
+        .withMountPosePitch(9.096435546875)
+        .withMountPoseRoll(-154.05722045898438)
+        .withMountPoseYaw(6.09066915512085);
   }
 
   public static final class TeleopDriveConstants {
@@ -161,12 +167,10 @@ public class Constants {
     public static int DEVICE_ID_ROLLER_MOTOR = 41;
     public static int DEVICE_ID_NOTE_SENSOR = 5;
 
-    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(0.239258);
+    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
     public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
-    // The turret resting position is straight backward, or 0.5 rotations. Its full-range is .25 in either direction.
-    // A quarter turn in the postitive direction is -0.25, and a quarter turn in the reverse direction is 0.25.
-    public static Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(-0.25);
-    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(0.25);
+    public static Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.45);
+    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(-0.45);
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(45)
         .withKI(0.0)
@@ -178,10 +182,10 @@ public class Constants {
         .withMotionMagicAcceleration(3)
         .withMotionMagicCruiseVelocity(.75);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.025635);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.025635);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 5.0;
-    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.25);
-    public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.0);
+    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
+    public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.004);
     public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
         .withKP(45)
         .withKI(0.0)

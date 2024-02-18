@@ -101,7 +101,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     // Configure the yaw motor
     var yawTalonConfig = new TalonFXConfiguration();
-    yawTalonConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    yawTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     yawTalonConfig.MotorOutput.NeutralMode = Brake;
     yawTalonConfig.Feedback.RotorToSensorRatio = YAW_ROTOR_TO_SENSOR_RATIO;
     yawTalonConfig.Feedback.FeedbackRemoteSensorID = yawEncoder.getDeviceID();
@@ -124,7 +124,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     // Configure the pitch motor
     var pitchTalonConfig = new TalonFXConfiguration();
-    pitchTalonConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    pitchTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     pitchTalonConfig.MotorOutput.NeutralMode = Brake;
     pitchTalonConfig.Feedback.RotorToSensorRatio = PITCH_ROTOR_TO_SENSOR_RATIO;
     pitchTalonConfig.Feedback.FeedbackRemoteSensorID = pitchEncoder.getDeviceID();
@@ -183,7 +183,17 @@ public class TurretSubsystem extends SubsystemBase {
    * @param yaw robot relative yaw
    */
   public void setYawTarget(Measure<Angle> yaw) {
-    yawMotor.setControl(yawControl.withPosition(yaw.in(Rotations)));
+    yawMotor.setControl(yawControl.withPosition(translateYaw(yaw)));
+  }
+
+  /**
+   * Translates a yaw value from robot yaw to turret yaw, or vice versa. This is needed because turret 0 is facing robot
+   * backward.
+   * @param yaw robot centric yaw to convert to turret yaw, or turret yaw to translate to robot yaw
+   * @return translated yaw in rotations
+   */
+  private double translateYaw(Measure<Angle> yaw) {
+    return Math.IEEEremainder(yaw.in(Rotations) + 0.5, 1);
   }
 
   /**
