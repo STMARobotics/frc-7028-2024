@@ -16,6 +16,9 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+/**
+ * Control bindings for driving with joysticks
+ */
 public class JoystickControlBindings implements ControlBindings {
 
   private final CommandJoystick leftJoystick = new CommandJoystick(0);
@@ -37,30 +40,27 @@ public class JoystickControlBindings implements ControlBindings {
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationX() {
     return () -> translationX.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(leftJoystick.getY()), MetersPerSecond);
+      MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getY()), MetersPerSecond);
   }
 
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
    return () -> translationY.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(leftJoystick.getX()), MetersPerSecond);
+      MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getX()), MetersPerSecond);
   }
   
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
     return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -modifyAxis(rightJoystick.getX() * 0.8), RadiansPerSecond);
+        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(rightJoystick.getX() * 0.8), RadiansPerSecond);
   }
   
-  private static double modifyAxis(double value) {
-    // Square the axis
-    value = Math.copySign(value * value, value);
-
-    return value;
+  private static double squareAxis(double value) {
+    return Math.copySign(value * value, value);
   }
 
   @Override
-  public Optional<Trigger> intake() {
+  public Optional<Trigger> intakeToTurret() {
     return Optional.of(rightJoystick.button(1));
   }
 
@@ -75,7 +75,7 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> autoShoot() {
+  public Optional<Trigger> autoScoreSpeaker() {
     return Optional.empty();
   }
 
@@ -85,7 +85,7 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> loadAmper() {
+  public Optional<Trigger> exchangeToAmper() {
     return Optional.empty();
   }
 

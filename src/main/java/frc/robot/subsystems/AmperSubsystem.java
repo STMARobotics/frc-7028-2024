@@ -28,6 +28,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
+/**
+ * Subsystem for the amper mechanism
+ */
 public class AmperSubsystem extends SubsystemBase {
   
   private final TalonFX rollerMotor = new TalonFX(DEVICE_ID_ROLLERS, CANIVORE_BUS_NAME);

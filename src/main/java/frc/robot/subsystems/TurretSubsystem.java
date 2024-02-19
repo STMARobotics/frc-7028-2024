@@ -56,6 +56,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
+/**
+ * Subsystem for the turret. The turret has yaw and pitch control, and it has a set of rollers that hold a note (a.k.a.
+ * indexer)
+ */
 public class TurretSubsystem extends SubsystemBase {
   private final TalonFX yawMotor = new TalonFX(DEVICE_ID_YAW_MOTOR, CANIVORE_BUS_NAME);
   private final CANcoder yawEncoder = new CANcoder(DEVICE_ID_YAW_ENCODER, CANIVORE_BUS_NAME);

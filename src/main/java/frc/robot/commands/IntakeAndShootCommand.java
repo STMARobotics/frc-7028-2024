@@ -1,27 +1,34 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
-public class IntakeCommand extends Command {
+public class IntakeAndShootCommand extends Command {
   
   private final IntakeSubsystem intakeSubsystem;
   private final TurretSubsystem turretSubsystem;
   private final AmperSubsystem amperSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
 
-  public IntakeCommand(IntakeSubsystem intakeSubsystem, TurretSubsystem turretSubsystem, AmperSubsystem amperSubsystem) {
+  public IntakeAndShootCommand(IntakeSubsystem intakeSubsystem, TurretSubsystem turretSubsystem, AmperSubsystem amperSubsystem, ShooterSubsystem shooterSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;
+    this.shooterSubsystem = shooterSubsystem;
 
-    addRequirements(intakeSubsystem, turretSubsystem, amperSubsystem);
+    addRequirements(intakeSubsystem, turretSubsystem, amperSubsystem, shooterSubsystem);
   }
 
   @Override
   public void initialize() {
     turretSubsystem.prepareToExchange();
+    turretSubsystem.setPitchTarget(Rotations.of(.01));
   }
   
   @Override
@@ -30,6 +37,7 @@ public class IntakeCommand extends Command {
       intakeSubsystem.intake();
       amperSubsystem.intake();
       turretSubsystem.load();
+      shooterSubsystem.spinShooterWheels(RotationsPerSecond.of(70));
     }
   }
 
@@ -44,6 +52,7 @@ public class IntakeCommand extends Command {
     intakeSubsystem.stop();
     turretSubsystem.stop();
     amperSubsystem.stop();
+    shooterSubsystem.stop();
   }
 
 }

@@ -16,9 +16,14 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+/**
+ * Control bindings using an XBox controller
+ */
 public class XBoxControlBindings implements ControlBindings {
 
   private final CommandXboxController driverController = new CommandXboxController(0);
+
+  // Mutable measure objects to reduce memory pressure by not creating new instances on each iteration
   private final MutableMeasure<Velocity<Distance>> translationX = MutableMeasure.zero(MetersPerSecond);
   private final MutableMeasure<Velocity<Distance>> translationY = MutableMeasure.zero(MetersPerSecond);
   private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
@@ -36,28 +41,26 @@ public class XBoxControlBindings implements ControlBindings {
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationX() {
     return () -> translationX.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(driverController.getLeftY()), MetersPerSecond);
+        MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftY()), MetersPerSecond);
   }
   
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
     return () -> translationY.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(driverController.getLeftX()), MetersPerSecond);
+        MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftX()), MetersPerSecond);
   }
   
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
     return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -modifyAxis(driverController.getRightX() * 0.8), RadiansPerSecond);
+        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(driverController.getRightX() * 0.8), RadiansPerSecond);
   }
   
-  private static double modifyAxis(double value) {
-    // Square the axis
-    value = Math.copySign(value * value, value);
-
-    return value;
+  private static double squareAxis(double value) {
+    return Math.copySign(value * value, value);
   }
-  public Optional<Trigger> intake() {
+  
+  public Optional<Trigger> intakeToTurret() {
     return Optional.of(driverController.rightBumper());
   }
 
@@ -72,7 +75,7 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> autoShoot() {
+  public Optional<Trigger> autoScoreSpeaker() {
     return Optional.of(driverController.rightTrigger());
   }
 
@@ -82,7 +85,7 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> loadAmper() {
+  public Optional<Trigger> exchangeToAmper() {
     return Optional.of(driverController.povUp());
   }
 

@@ -15,6 +15,9 @@ import edu.wpi.first.units.Dimensionless;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * Subsystem for the climb mechanism
+ */
 public class ClimbSubsystem extends SubsystemBase {
   
   private final TalonFX leftWinchMotor = new TalonFX(DEVICE_ID_LEFT, CANIVORE_BUS_NAME);

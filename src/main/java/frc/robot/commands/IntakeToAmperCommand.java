@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
+/**
+ * Command to intake a note from the floor into the amper
+ */
 public class IntakeToAmperCommand extends Command {
   
   private final IntakeSubsystem intakeSubsystem;

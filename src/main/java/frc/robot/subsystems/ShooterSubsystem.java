@@ -30,6 +30,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
+/**
+ * Subsystem for the shooter mechanism
+ */
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterTopMotor = new TalonFX(DEVICE_ID_TOP, CANIVORE_BUS_NAME);
   private final TalonFX shooterBottomMotor = new TalonFX(DEVICE_ID_BOTTOM, CANIVORE_BUS_NAME);
@@ -82,10 +85,18 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterBottomMotor.setControl(shooterVelocityControl.withVelocity(targetVelocity));
   }
 
+  /**
+   * Spin up the wheels to a given velocity
+   * @param shooterVelocity
+   */
   public void prepareToShoot(Measure<Velocity<Angle>> shooterVelocity) {
     spinShooterWheels(shooterVelocity);
   }
 
+  /**
+   * Checks if the shooter is at the taget velocity
+   * @return true if the shooter is at the target velocity
+   */
   public boolean isReadyToShoot() {
     var errorToleranceRPS = SHOOTER_ERROR_TOLERANCE.in(RotationsPerSecond);
     BaseStatusSignal.refreshAll(shooterBottomVelocity, shooterTopVelocity);
@@ -94,6 +105,9 @@ public class ShooterSubsystem extends SubsystemBase {
         && Math.abs(shooterTopVelocity.getValueAsDouble() - shooterVelocityControl.Velocity) < errorToleranceRPS;
   }
 
+  /**
+   * Stops the shooter
+   */
   public void stop() {
     shooterBottomMotor.stopMotor();
     shooterTopMotor.stopMotor();
