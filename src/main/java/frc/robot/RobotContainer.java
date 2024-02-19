@@ -24,6 +24,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeToAmperCommand;
 import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ManualShootCommand;
+import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
@@ -100,6 +101,9 @@ public class RobotContainer {
     
     controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(
         new IntakeToAmperCommand(intakeSubsystem, amperSubsystem)));
+    
+    controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(
+      new ScoreAmpCommand(elevatorSubsystem, amperSubsystem)));
     
     // Speaker
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(

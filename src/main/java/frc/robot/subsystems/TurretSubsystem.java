@@ -82,7 +82,7 @@ public class TurretSubsystem extends SubsystemBase {
           yawMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
   
   private final SysIdRoutine pitchSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(null, Volts.of(4.0), null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Config(Volts.of(0.5).per(Seconds), Volts.of(2.0), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> 
           pitchMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
 

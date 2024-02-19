@@ -159,7 +159,7 @@ public class Constants {
         .withKV(0.17);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
     public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-50.0);
-    public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-10.0);
+    public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-30.0);
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
   }
 
@@ -173,35 +173,35 @@ public class Constants {
 
     public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
     public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
-    public static Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.45);
-    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(-0.45);
+    public static Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.2);
+    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(-0.2);
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(45)
+        .withKP(80)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.6)
-        .withKV(8.0)
+        .withKS(0.59)
+        .withKV(0.0)
         .withKA(0.0);
     public static final MotionMagicConfigs YAW_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(3)
-        .withMotionMagicCruiseVelocity(.75);
+        .withMotionMagicAcceleration(5.0)
+        .withMotionMagicCruiseVelocity(6.0);
 
     public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.025635);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 5.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.004);
     public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(45)
+        .withKP(100)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.6)
-        .withKV(8.0)
+        .withKS(0.9)
+        .withKV(0.0)
         .withKA(0.0)
-        .withKG(0.45)
+        .withKG(0.1)
         .withGravityType(GravityTypeValue.Arm_Cosine);
     public static final MotionMagicConfigs PITCH_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(3)
-        .withMotionMagicCruiseVelocity(.75);
+        .withMotionMagicAcceleration(2.0)
+        .withMotionMagicCruiseVelocity(1.5);
 
     public static final SlotConfigs ROLLER_VELOCITY_SLOT_CONFIGS = new SlotConfigs()
         .withKP(5.0)
@@ -230,21 +230,27 @@ public class Constants {
         Meters.per(Rotations).of((inchesToMeters(1.27) * PI) / 3.0 / 3.0);
 
     public static SlotConfigs SLOT_CONFIGS = new SlotConfigs()
-        .withKP(0.01)
+        .withKP(1.2)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.0)
+        .withKS(0.43)
         .withKV(0.0)
         .withKA(0.0)
-        .withKG(0.01)
+        .withKG(0.21)
         .withGravityType(GravityTypeValue.Elevator_Static);
     
     public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(0.01)
-        .withMotionMagicCruiseVelocity(0.01);
+        .withMotionMagicAcceleration(250)
+        .withMotionMagicCruiseVelocity(90);
     
     public static final Measure<Distance> TOP_LIMIT = Meters.of(0.42);
     public static final Measure<Distance> BOTTOM_LIMIT = Meters.zero();
+
+    public static final Measure<Distance> SCORE_AMP_HEIGHT = Meters.of(.1);
+    public static final Measure<Distance> SCORE_TRAP_HEIGHT = Meters.of(.4);
+    public static final Measure<Distance> PARK_HEIGHT = Meters.of(.01);
+
+    public static final Measure<Distance> POSITION_TOLERANCE = Meters.of(.01);
   }
 
   public static class ShootingConstants {

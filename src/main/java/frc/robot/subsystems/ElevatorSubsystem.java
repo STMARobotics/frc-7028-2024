@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ElevatorConstants.BOTTOM_LIMIT;
@@ -15,11 +16,13 @@ import static frc.robot.Constants.ElevatorConstants.DEVICE_PORT_BOTTOM_LIMIT;
 import static frc.robot.Constants.ElevatorConstants.DEVICE_PORT_TOP_LIMIT;
 import static frc.robot.Constants.ElevatorConstants.METERS_PER_ROTATION;
 import static frc.robot.Constants.ElevatorConstants.MOTION_MAGIC_CONFIGS;
+import static frc.robot.Constants.ElevatorConstants.POSITION_TOLERANCE;
 import static frc.robot.Constants.ElevatorConstants.SLOT_CONFIGS;
 import static frc.robot.Constants.ElevatorConstants.TOP_LIMIT;
 
 import java.util.function.Consumer;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -29,12 +32,12 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 import frc.robot.telemetry.ElevatorState;
 
@@ -50,10 +53,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private final ElevatorState elevatorState = new ElevatorState();
   private final Consumer<ElevatorState> telemetryFunction;
+  private final StatusSignal<Double> elevatorPositionSignal;
 
   // SysId routines  
   private final SysIdRoutine elevatorRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(null, Volts.of(5.0), null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Config(Volts.per(Second).of(0.5), Volts.of(1.0), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> 
           elevatorMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
   
@@ -73,13 +77,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     elevatorMotor.getConfigurator().apply(motorConfig);
+
+    elevatorPositionSignal = elevatorMotor.getPosition();
   }
 
   @Override
   public void periodic() {
     elevatorState.isAtBottomLimit = isAtBottomLimit();
     elevatorState.isAtTopLimit = isAtTopLimit();
-    elevatorState.elevatorMeters = rotationsToMeters(elevatorMotor.getPosition().getValueAsDouble());
+    elevatorState.elevatorMeters = getPositionMeters();
     if (telemetryFunction != null) {
       telemetryFunction.accept(elevatorState);
     }
@@ -101,6 +107,23 @@ public class ElevatorSubsystem extends SubsystemBase {
     return !bottomLimitSwitch.get();
   }
 
+  public void prepareToAmp() {
+    moveToPosition(ElevatorConstants.SCORE_AMP_HEIGHT);
+  }
+
+  public void park() {
+    moveToPosition(ElevatorConstants.PARK_HEIGHT);
+  }
+
+  public boolean isAtTarget() {
+    return rotationsToMeters(Math.abs(
+        elevatorPositionSignal.refresh().getValueAsDouble() - motionMagicControl.Position)) < POSITION_TOLERANCE.in(Meters);
+  }
+
+  private double getPositionMeters() {
+    return rotationsToMeters(elevatorPositionSignal.refresh().getValueAsDouble());
+  }
+
   public Command sysIdDynamicCommand(Direction direction) {
     return elevatorRoutine.dynamic(direction).withName("SysId elevator dynamic " + direction)
         .finallyDo(this::stop);
@@ -111,9 +134,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         .finallyDo(this::stop);
   }
 
-  public void moveToPosition(Measure<Distance> position) {
+  /**
+   * Moves the elevator to a position
+   * @param height height to move to
+   */
+  public void moveToPosition(Measure<Distance> height) {
     elevatorMotor.setControl(motionMagicControl
-        .withPosition(position.in(Meters) * METERS_PER_ROTATION.in(Meters.per(Rotations)))
+        .withPosition(heightToRotations(height))
         .withLimitForwardMotion(isAtTopLimit())
         .withLimitReverseMotion(isAtBottomLimit()));
   }
@@ -122,10 +149,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     return rotations * METERS_PER_ROTATION.in(Meters.per(Rotations));
   }
 
-  public void move(Measure<Voltage> volts) {
-    elevatorMotor.setControl(voltageControl.withOutput(volts.in(Volts))
-        .withLimitForwardMotion(isAtTopLimit())
-        .withLimitReverseMotion(isAtBottomLimit()));
+  private double heightToRotations(Measure<Distance> height) {
+    return height.in(Meters) / METERS_PER_ROTATION.in(Meters.per(Rotations));
   }
 
   public void stop() {
