@@ -44,7 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // SysId routine - NOTE: the output type is amps, NOT volts (even though it says volts)
   // https://www.chiefdelphi.com/t/sysid-with-ctre-swerve-characterization/452631/8
   private final SysIdRoutine shooterSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(Volts.of(5).per(Seconds.of(1)), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Config(Volts.of(3.0).per(Seconds.of(1)), Volts.of(25), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((amps) -> {
         shooterTopMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
         shooterBottomMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));

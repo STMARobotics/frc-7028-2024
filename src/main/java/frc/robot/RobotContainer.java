@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeToAmperCommand;
 import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.controls.ControlBindings;
@@ -90,12 +91,15 @@ public class RobotContainer {
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
 
     // Intake
-    controlBindings.intake().ifPresent(trigger -> trigger.onTrue(new IntakeCommand(intakeSubsystem, turretSubsystem)));
+    controlBindings.intake().ifPresent(trigger -> trigger.onTrue(new IntakeCommand(intakeSubsystem, turretSubsystem, amperSubsystem)));
     controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(intakeSubsystem.run(intakeSubsystem::stop)));
 
     // Amper
-    controlBindings.loadAmper().ifPresent(trigger -> trigger.whileTrue(
-        new LoadAmperCommand(amperSubsystem, turretSubsystem)));
+    controlBindings.loadAmper().ifPresent(trigger -> trigger.onTrue(
+        new LoadAmperCommand(amperSubsystem, turretSubsystem, intakeSubsystem)));
+    
+    controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(
+        new IntakeToAmperCommand(intakeSubsystem, amperSubsystem)));
     
     // Speaker
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(

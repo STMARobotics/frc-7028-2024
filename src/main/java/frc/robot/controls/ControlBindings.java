@@ -17,9 +17,17 @@ public interface ControlBindings {
   Supplier<Measure<Velocity<Angle>>> omega();
   Optional<Trigger> intake();
   Optional<Trigger> intakeStop();
-  Optional<Trigger> intakeReverse();
   Optional<Trigger> manualShoot();
   Optional<Trigger> autoShoot();
+  /**
+   * Exchange from turret to amper
+   * @return
+   */
   Optional<Trigger> loadAmper();
+
+  /**
+   * Intkake off the floor, straight to amper
+   */
+  Optional<Trigger> intakeToAmper();
   Optional<Trigger> scoreAmp();
 }

@@ -13,7 +13,7 @@ import static frc.robot.Constants.ElevatorConstants.BOTTOM_LIMIT;
 import static frc.robot.Constants.ElevatorConstants.DEVICE_ID_MOTOR;
 import static frc.robot.Constants.ElevatorConstants.DEVICE_PORT_BOTTOM_LIMIT;
 import static frc.robot.Constants.ElevatorConstants.DEVICE_PORT_TOP_LIMIT;
-import static frc.robot.Constants.ElevatorConstants.METERS_PER_REVOLUTION;
+import static frc.robot.Constants.ElevatorConstants.METERS_PER_ROTATION;
 import static frc.robot.Constants.ElevatorConstants.MOTION_MAGIC_CONFIGS;
 import static frc.robot.Constants.ElevatorConstants.SLOT_CONFIGS;
 import static frc.robot.Constants.ElevatorConstants.TOP_LIMIT;
@@ -66,10 +66,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     motorConfig.MotorOutput.NeutralMode = Brake;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-        TOP_LIMIT.in(Meters) / METERS_PER_REVOLUTION.in(Meters.per(Rotations));
+        TOP_LIMIT.in(Meters) / METERS_PER_ROTATION.in(Meters.per(Rotations));
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
-        BOTTOM_LIMIT.in(Meters) / METERS_PER_REVOLUTION.in(Meters.per(Rotations));
+        BOTTOM_LIMIT.in(Meters) / METERS_PER_ROTATION.in(Meters.per(Rotations));
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     elevatorMotor.getConfigurator().apply(motorConfig);
@@ -79,6 +79,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void periodic() {
     elevatorState.isAtBottomLimit = isAtBottomLimit();
     elevatorState.isAtTopLimit = isAtTopLimit();
+    elevatorState.elevatorMeters = rotationsToMeters(elevatorMotor.getPosition().getValueAsDouble());
     if (telemetryFunction != null) {
       telemetryFunction.accept(elevatorState);
     }
@@ -112,9 +113,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void moveToPosition(Measure<Distance> position) {
     elevatorMotor.setControl(motionMagicControl
-        .withPosition(position.in(Meters) * METERS_PER_REVOLUTION.in(Meters.per(Rotations)))
+        .withPosition(position.in(Meters) * METERS_PER_ROTATION.in(Meters.per(Rotations)))
         .withLimitForwardMotion(isAtTopLimit())
         .withLimitReverseMotion(isAtBottomLimit()));
+  }
+
+  private double rotationsToMeters(double rotations) {
+    return rotations * METERS_PER_ROTATION.in(Meters.per(Rotations));
   }
 
   public void move(Measure<Voltage> volts) {

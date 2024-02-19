@@ -234,7 +234,7 @@ public class TurretSubsystem extends SubsystemBase {
    * @param velocity velocity for rollers
    */
   public void runRollers(Measure<Velocity<Angle>> velocity) {
-    rollerControl.withVelocity(velocity.in(RotationsPerSecond));
+    rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
   }
 
   /**

@@ -3,34 +3,23 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
 
-public class IntakeCommand extends Command {
+public class IntakeToAmperCommand extends Command {
   
   private final IntakeSubsystem intakeSubsystem;
-  private final TurretSubsystem turretSubsystem;
   private final AmperSubsystem amperSubsystem;
 
-  public IntakeCommand(IntakeSubsystem intakeSubsystem, TurretSubsystem turretSubsystem, AmperSubsystem amperSubsystem) {
+  public IntakeToAmperCommand(IntakeSubsystem intakeSubsystem, AmperSubsystem amperSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
-    this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;
 
-    addRequirements(intakeSubsystem, turretSubsystem, amperSubsystem);
+    addRequirements(intakeSubsystem, amperSubsystem);
   }
 
   @Override
-  public void initialize() {
-    turretSubsystem.prepareToExchange();
-  }
-  
-  @Override
   public void execute() {
-    if (turretSubsystem.isAtYawAndPitchTarget()) {
-      intakeSubsystem.intake();
-      amperSubsystem.intake();
-      turretSubsystem.load();
-    }
+    intakeSubsystem.intake();
+    amperSubsystem.load();
   }
 
   @Override
@@ -42,7 +31,6 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.stop();
-    turretSubsystem.stop();
     amperSubsystem.stop();
   }
 

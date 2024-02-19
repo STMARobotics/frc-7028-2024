@@ -67,11 +67,6 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> intakeReverse() {
-    return Optional.of(driverController.x());
-  }
-
-  @Override
   public Optional<Trigger> manualShoot() {
     return Optional.of(driverController.a());
   }
@@ -89,6 +84,11 @@ public class XBoxControlBindings implements ControlBindings {
   @Override
   public Optional<Trigger> loadAmper() {
     return Optional.of(driverController.povUp());
+  }
+
+  @Override
+  public Optional<Trigger> intakeToAmper() {
+    return Optional.of(driverController.povDown());
   }
 
 }

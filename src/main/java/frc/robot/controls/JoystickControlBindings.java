@@ -70,11 +70,6 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> intakeReverse() {
-    return Optional.empty();
-  }
-
-  @Override
   public Optional<Trigger> manualShoot() {
     return Optional.empty();
   }
@@ -91,6 +86,11 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> loadAmper() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> intakeToAmper() {
     return Optional.empty();
   }
 

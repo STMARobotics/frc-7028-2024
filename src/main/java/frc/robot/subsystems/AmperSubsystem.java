@@ -5,7 +5,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.AmperConstants.DEVICE_ID_ROLLERS;
-import static frc.robot.Constants.AmperConstants.ROLLER_EJECT_VELOCITY;
+import static frc.robot.Constants.AmperConstants.ROLLER_INTAKE_VELOCITY;
 import static frc.robot.Constants.AmperConstants.ROLLER_LOAD_VELOCITY;
 import static frc.robot.Constants.AmperConstants.ROLLER_SCORE_VELOCITY;
 import static frc.robot.Constants.AmperConstants.ROLLER_SENSOR_TO_MECHANISM_RATIO;
@@ -63,17 +63,17 @@ public class AmperSubsystem extends SubsystemBase {
   }
 
   /**
+   * Intake a note into the robot, essentially just passing it under the amper.
+   */
+  public void intake() {
+    runRollers(ROLLER_INTAKE_VELOCITY);
+  }
+
+  /**
    * Load a note into the amper
    */
   public void load() {
     runRollers(ROLLER_LOAD_VELOCITY);
-  }
-
-  /**
-   * Eject a note out the bottom of the amper
-   */
-  public void eject() {
-    runRollers(ROLLER_EJECT_VELOCITY);
   }
 
   /**

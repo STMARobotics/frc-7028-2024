@@ -116,16 +116,18 @@ public class Constants {
     public static final int DEVICE_ID_BOTTOM = 51;
 
     public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_TOP = new SlotConfigs()
-        .withKP(9.0)
+        .withKP(12.0)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.040599);
+        .withKS(6.5)
+        .withKV(0.1);
 
     public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM = new SlotConfigs()
-        .withKP(15.0)
+        .withKP(10.0)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.096656);
+        .withKS(6.5)
+        .withKV(0.101);
   
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
@@ -136,27 +138,29 @@ public class Constants {
     public static final int DEVICE_ID_ROLLERS = 42;
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(9.0)
+        .withKP(8.5)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.243);
+        .withKS(16)
+        .withKV(.08);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
-    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(60.0);
-    public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
+    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
+    public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-20.0);
   }
 
   public static class AmperConstants {
     public static final int DEVICE_ID_ROLLERS = 40;
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(9.0)
+        .withKP(4.0)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.243);
+        .withKS(22)
+        .withKV(0.17);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
-    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(10.0);
-    public static final Measure<Velocity<Angle>> ROLLER_EJECT_VELOCITY = RotationsPerSecond.of(-10.0);
-    public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(5.0);
+    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-50.0);
+    public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-10.0);
+    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
   }
 
   public static class TurretConstants {
@@ -200,14 +204,14 @@ public class Constants {
         .withMotionMagicCruiseVelocity(.75);
 
     public static final SlotConfigs ROLLER_VELOCITY_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(9.0)
+        .withKP(5.0)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.243);
+        .withKS(12);
     
-    public static final Measure<Velocity<Angle>> LOAD_VELOCITY = RotationsPerSecond.of(20);
-    public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-20);
-    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(20);
+    public static final Measure<Velocity<Angle>> LOAD_VELOCITY = RotationsPerSecond.of(25);
+    public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-10);
+    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(30);
 
     public static final Measure<Angle> INTAKE_YAW_POSITION = Radians.of(PI);
     public static final Measure<Angle> INTAKE_PITCH_POSITION = Radians.of(0.0);
@@ -222,8 +226,8 @@ public class Constants {
     public static int DEVICE_PORT_TOP_LIMIT = 9;
     public static int DEVICE_PORT_BOTTOM_LIMIT = 8;
 
-    public static Measure<Per<Distance, Angle>> METERS_PER_REVOLUTION = 
-        Meters.per(Rotations).of((inchesToMeters(1.273) * PI) / 3.0 / 3.0);
+    public static Measure<Per<Distance, Angle>> METERS_PER_ROTATION = 
+        Meters.per(Rotations).of((inchesToMeters(1.27) * PI) / 3.0 / 3.0);
 
     public static SlotConfigs SLOT_CONFIGS = new SlotConfigs()
         .withKP(0.01)
@@ -239,7 +243,7 @@ public class Constants {
         .withMotionMagicAcceleration(0.01)
         .withMotionMagicCruiseVelocity(0.01);
     
-    public static final Measure<Distance> TOP_LIMIT = Meters.of(0.45);
+    public static final Measure<Distance> TOP_LIMIT = Meters.of(0.42);
     public static final Measure<Distance> BOTTOM_LIMIT = Meters.zero();
   }
 
