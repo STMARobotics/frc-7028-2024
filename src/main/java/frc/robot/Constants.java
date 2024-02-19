@@ -14,7 +14,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.math.VelocityAngleInterpolator.ShootingSettings.distance;
 import static java.lang.Math.PI;
 
 import java.util.List;
@@ -34,7 +33,8 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
-import frc.robot.math.VelocityAngleInterpolator;
+import frc.robot.math.VelocityPitchInterpolator;
+import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;;
 
 public class Constants {
 
@@ -261,8 +261,8 @@ public class Constants {
     public static final Measure<Time> SHOOT_TIME = Seconds.of(2.0);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(3.0);
 
-    public static final VelocityAngleInterpolator SHOOTER_INTERPOLATOR = new VelocityAngleInterpolator(List.of(
-      distance(Meters.of(1)).velocity(RotationsPerSecond.of(40)).angle(Rotations.of(0.35)).height(Meters.zero())
+    public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
+      new ShootingSettings().distance(Meters.of(1)).velocity(RotationsPerSecond.of(40)).pitch(Rotations.of(0.1))
     ));
 
   }
