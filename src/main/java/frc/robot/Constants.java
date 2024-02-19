@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
@@ -150,6 +151,7 @@ public class Constants {
 
   public static class AmperConstants {
     public static final int DEVICE_ID_ROLLERS = 40;
+    public static final int DEVICE_ID_NOTE_SENSOR = 1;
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
         .withKP(4.0)
@@ -161,6 +163,9 @@ public class Constants {
     public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-50.0);
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-30.0);
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
+  
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeters.of(1.0);
+
   }
 
   public static class TurretConstants {
@@ -169,7 +174,7 @@ public class Constants {
     public static int DEVICE_ID_PITCH_MOTOR = 53;
     public static int DEVICE_ID_PITCH_ENCODER = 54;
     public static int DEVICE_ID_ROLLER_MOTOR = 41;
-    public static int DEVICE_ID_NOTE_SENSOR = 5;
+    public static int DEVICE_ID_NOTE_SENSOR = 3;
 
     public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
     public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
@@ -218,6 +223,8 @@ public class Constants {
 
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(2);
     public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(2);
+
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeters.of(1.0);
 
   }
 

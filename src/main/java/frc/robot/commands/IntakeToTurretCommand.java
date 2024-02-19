@@ -38,8 +38,7 @@ public class IntakeToTurretCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    // TODO stop when we have a sensor to see detect gamepiece
-    return super.isFinished();
+    return turretSubsystem.hasNote();
   }
 
   @Override
