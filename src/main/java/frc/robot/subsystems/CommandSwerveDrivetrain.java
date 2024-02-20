@@ -106,8 +106,25 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     SmartDashboard.putString("Command", getCurrentCommand() == null ? "" :getCurrentCommand().getName());
   }
 
+  /**
+   * Gets the current robot-oriented chassis speeds
+   * @return robot oriented chassis speeds
+   */
   public ChassisSpeeds getCurrentRobotChassisSpeeds() {
-    return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    return getState().speeds;
+  }
+
+  /**
+   * Gets the current field-oriented chassis speeds
+   * @return field oriented chassis speeds
+   */
+  public ChassisSpeeds getCurrentFieldChassisSpeeds() {
+    var state = getState();
+    var robotAngle = state.Pose.getRotation();
+    var chassisSpeeds = state.speeds;
+    var fieldSpeeds = 
+        new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond).rotateBy(robotAngle);
+    return new ChassisSpeeds(fieldSpeeds.getX(), fieldSpeeds.getY(), chassisSpeeds.omegaRadiansPerSecond);
   }
 
   public Command sysIdDriveQuasiCommand(Direction direction) {

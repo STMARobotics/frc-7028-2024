@@ -86,7 +86,6 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(new FieldOrientedDriveCommand(
         drivetrain,
-        () -> drivetrain.getState().Pose.getRotation(),
         controlBindings.translationX(),
         controlBindings.translationY(),
         controlBindings.omega()));
