@@ -83,7 +83,7 @@ public class ShootCommand extends Command {
     shooter.prepareToShoot(shootingSettings.getVelocity());
 
     // Prepare turret
-    turretSubsystem.setPitchTarget(shootingSettings.getPitch());
+    turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
     
     // Aim drivetrain
     drivetrain.setControl(swerveRequest.withTargetDirection(angleToSpeaker));

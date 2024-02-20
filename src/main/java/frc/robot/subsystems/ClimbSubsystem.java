@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
-import static edu.wpi.first.units.Units.Percent;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ClimbConstants.DEVICE_ID_LEFT;
 import static frc.robot.Constants.ClimbConstants.DEVICE_ID_RIGHT;
@@ -11,8 +10,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.units.Dimensionless;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -37,25 +34,25 @@ public class ClimbSubsystem extends SubsystemBase {
 
   /**
    * Runs the left climb winch
-   * @param output percent output, positive rolls the line IN
+   * @param output percent output [-1, 1]
    */
-  public void runLeftWinch(Measure<Dimensionless> output) {
-    leftWinchMotor.setControl(leftControl.withOutput(output.in(Percent)));
+  public void runLeftWinch(double output) {
+    leftWinchMotor.setControl(leftControl.withOutput(output));
   }
 
   /**
    * Runs the right climb winch
-   * @param output percent output, positive rolls the line IN
+   * @param output percent output [-1, 1]
    */
-  public void runRightWinch(Measure<Dimensionless> output) {
-    rightWinchMotor.setControl(rightControl.withOutput(output.in(Percent)));
+  public void runRightWinch(double output) {
+    rightWinchMotor.setControl(rightControl.withOutput(output));
   }
 
   /**
    * Runs both climb winches
-   * @param output percent output, positive rolls the line IN
+   * @param output percent output [-1, 1]
    */
-  public void runWinches(Measure<Dimensionless> output) {
+  public void runWinches(double output) {
     runLeftWinch(output);
     runRightWinch(output);
   }

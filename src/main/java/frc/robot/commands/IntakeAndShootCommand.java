@@ -28,7 +28,7 @@ public class IntakeAndShootCommand extends Command {
   @Override
   public void initialize() {
     turretSubsystem.prepareToExchange();
-    turretSubsystem.setPitchTarget(Rotations.of(.01));
+    turretSubsystem.moveToPitchPosition(Rotations.of(.01));
   }
   
   @Override
