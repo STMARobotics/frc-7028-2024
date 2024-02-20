@@ -25,7 +25,7 @@ public class ManualShootCommand extends Command {
 
   @Override
   public void initialize() {
-    shooterSubsystem.prepareToShoot(RotationsPerSecond.of(40));
+    shooterSubsystem.prepareToShoot(RotationsPerSecond.of(70));
     shootTimer.reset();
   }
 

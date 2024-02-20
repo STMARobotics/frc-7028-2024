@@ -111,6 +111,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     moveToPosition(ElevatorConstants.SCORE_AMP_HEIGHT);
   }
 
+  public void prepareToTrap() {
+    moveToPosition(ElevatorConstants.SCORE_TRAP_HEIGHT);
+  }
+
   public void park() {
     moveToPosition(ElevatorConstants.PARK_HEIGHT);
   }

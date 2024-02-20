@@ -26,11 +26,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 
 public class ShootCommand extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
   private final ShooterSubsystem shooter;
+  private final TurretSubsystem turretSubsystem;
 
   private final Timer shootTimer = new Timer();
 
@@ -42,11 +44,12 @@ public class ShootCommand extends Command {
     .withVelocityX(0.0)
     .withVelocityY(0.0);
 
-  public ShootCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter) {
+  public ShootCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter, TurretSubsystem turretSubsystem) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
+    this.turretSubsystem = turretSubsystem;
 
-    addRequirements(drivetrain, shooter);
+    addRequirements(drivetrain, shooter, turretSubsystem);
 
     swerveRequest.ForwardReference = ForwardReference.RedAlliance;
     swerveRequest.HeadingController = new PhoenixPIDController(THETA_kP, THETA_kI, THETA_kD);
@@ -78,13 +81,16 @@ public class ShootCommand extends Command {
 
     // Prepare shooter
     shooter.prepareToShoot(shootingSettings.getVelocity());
-    // TODO prepare turret
+
+    // Prepare turret
+    turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
     
     // Aim drivetrain
     drivetrain.setControl(swerveRequest.withTargetDirection(angleToSpeaker));
 
-    // When shooter is spun up and drivetrain aimed, shoot and run timer
+    // When shooter is spun up and drivetrain aimed, shoot and start timer
     if (shooter.isReadyToShoot() && swerveRequest.HeadingController.atSetpoint()) {
+      turretSubsystem.shoot();
       shootTimer.start();
     }
   }
@@ -98,6 +104,7 @@ public class ShootCommand extends Command {
   public void end(boolean interrupted) {
     shooter.stop();
     shootTimer.stop();
+    turretSubsystem.stop();
   }
 
 }

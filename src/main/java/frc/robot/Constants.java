@@ -15,7 +15,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.math.VelocityAngleInterpolator.ShootingSettings.distance;
 import static java.lang.Math.PI;
 
 import java.util.List;
@@ -35,7 +34,8 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
-import frc.robot.math.VelocityAngleInterpolator;
+import frc.robot.math.VelocityPitchInterpolator;
+import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;;
 
 public class Constants {
 
@@ -117,7 +117,7 @@ public class Constants {
     public static final int DEVICE_ID_BOTTOM = 51;
 
     public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_TOP = new SlotConfigs()
-        .withKP(12.0)
+        .withKP(10.0)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(6.5)
@@ -178,8 +178,9 @@ public class Constants {
 
     public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
     public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
-    public static Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.2);
-    public static Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(-0.2);
+    // NOTE: Yaw limits are set using turret encoder angles, so they're 180-degrees off from robot
+    public static Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179);
+    public static Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179);
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(80)
         .withKI(0.0)
@@ -217,6 +218,9 @@ public class Constants {
     public static final Measure<Velocity<Angle>> LOAD_VELOCITY = RotationsPerSecond.of(25);
     public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-10);
     public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(30);
+
+    public static final Measure<Angle> TRAP_PITCH_POSITION = Rotations.of(.11);
+    public static final Measure<Angle> TRAP_YAW_POSITION = Degrees.of(2);
 
     public static final Measure<Angle> INTAKE_YAW_POSITION = Radians.of(PI);
     public static final Measure<Angle> INTAKE_PITCH_POSITION = Radians.of(0.0);
@@ -268,8 +272,8 @@ public class Constants {
     public static final Measure<Time> SHOOT_TIME = Seconds.of(2.0);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(3.0);
 
-    public static final VelocityAngleInterpolator SHOOTER_INTERPOLATOR = new VelocityAngleInterpolator(List.of(
-      distance(Meters.of(1)).velocity(RotationsPerSecond.of(40)).angle(Rotations.of(0.35)).height(Meters.zero())
+    public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
+      new ShootingSettings().distance(Meters.of(1)).velocity(RotationsPerSecond.of(40)).pitch(Rotations.of(0.1))
     ));
 
   }

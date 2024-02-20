@@ -28,6 +28,8 @@ import static frc.robot.Constants.TurretConstants.PITCH_SLOT_CONFIGS;
 import static frc.robot.Constants.TurretConstants.PITCH_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.ROLLER_VELOCITY_SLOT_CONFIGS;
 import static frc.robot.Constants.TurretConstants.SHOOT_VELOCITY;
+import static frc.robot.Constants.TurretConstants.TRAP_PITCH_POSITION;
+import static frc.robot.Constants.TurretConstants.TRAP_YAW_POSITION;
 import static frc.robot.Constants.TurretConstants.YAW_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.YAW_MAGNETIC_OFFSET;
@@ -200,22 +202,12 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   /**
-   * Sets the turret yaw (rotation around the Z axis) position target. Zero is robot foward, using the WPILib unit
+   * Sets the turret yaw (rotation around the Z axis) position target. Zero is robot forward, using the WPILib unit
    * circle.
    * @param yaw robot relative yaw
    */
-  public void setYawTarget(Measure<Angle> yaw) {
+  public void moveToYawPosition(Measure<Angle> yaw) {
     yawMotor.setControl(yawControl.withPosition(translateYaw(yaw)));
-  }
-
-  /**
-   * Translates a yaw value from robot yaw to turret yaw, or vice versa. This is needed because turret 0 is facing robot
-   * backward.
-   * @param yaw robot centric yaw to convert to turret yaw, or turret yaw to translate to robot yaw
-   * @return translated yaw in rotations
-   */
-  private double translateYaw(Measure<Angle> yaw) {
-    return Math.IEEEremainder(yaw.in(Rotations) + 0.5, 1);
   }
 
   /**
@@ -223,7 +215,7 @@ public class TurretSubsystem extends SubsystemBase {
    * (since the turret is facing backward).
    * @param pitch pitch
    */
-  public void setPitchTarget(Measure<Angle> pitch) {
+  public void moveToPitchPosition(Measure<Angle> pitch) {
     pitchMotor.setControl(pitchControl.withPosition(pitch.in(Rotations)));
   }
 
@@ -233,8 +225,8 @@ public class TurretSubsystem extends SubsystemBase {
    */
   public void load() {
     runRollers(LOAD_VELOCITY);
-    setYawTarget(INTAKE_YAW_POSITION);
-    setPitchTarget(INTAKE_PITCH_POSITION);
+    moveToYawPosition(INTAKE_YAW_POSITION);
+    moveToPitchPosition(INTAKE_PITCH_POSITION);
   }
 
   /**
@@ -294,8 +286,28 @@ public class TurretSubsystem extends SubsystemBase {
    * when the turret is ready
    */
   public void prepareToExchange() {
-    setYawTarget(INTAKE_YAW_POSITION);
-    setPitchTarget(INTAKE_PITCH_POSITION);
+    moveToYawPosition(INTAKE_YAW_POSITION);
+    moveToPitchPosition(INTAKE_PITCH_POSITION);
+  }
+
+  /**
+   * Safely moves the turret into the trap position. Call this repeatedly until {@link #isInTrapPosition()} is true.
+   */
+  public void prepareToTrap() {
+    moveToPitchPosition(TRAP_PITCH_POSITION);
+    if (isAtPitchTarget()) {
+      moveToYawPosition(TRAP_YAW_POSITION);
+    }
+  }
+
+  /**
+   * Checks if the turret is in the trap position
+   * @return true if the turret is in trap position
+   */
+  public boolean isInTrapPosition() {
+    BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
+    return isInTolerance(TRAP_YAW_POSITION.in(Rotations), yawPositionSignal, YAW_TOLERANCE.in(Rotations))
+        && isInTolerance(TRAP_PITCH_POSITION.in(Rotations), pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
   }
 
   /**
@@ -304,8 +316,47 @@ public class TurretSubsystem extends SubsystemBase {
    */
   public boolean isAtYawAndPitchTarget() {
     BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
-    return Math.abs(yawControl.Position - yawPositionSignal.getValueAsDouble()) < YAW_TOLERANCE.in(Rotations)
-        && Math.abs(pitchControl.Position - pitchPositionSignal.getValueAsDouble()) < PITCH_TOLERANCE.in(Rotations);
+    return isInTolerance(yawControl.Position, yawPositionSignal, YAW_TOLERANCE.in(Rotations))
+        && isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
+  }
+
+  /**
+   * Indicates if the yaw is at its target position
+   * @return true if the yaw is at the target position
+   */
+  public boolean isAtYawTarget() {
+    yawPositionSignal.refresh();
+    return isInTolerance(yawControl.Position, yawPositionSignal, YAW_TOLERANCE.in(Rotations));
+  }
+
+  /**
+   * Indicates if the pitch is at its target position
+   * @return true if the pitch is at the target position
+   */
+  public boolean isAtPitchTarget() {
+    pitchPositionSignal.refresh();
+    return isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
+  }
+
+  /**
+   * Checks if a signal is within tolerance of a target
+   * @param target target
+   * @param valueSignal status signal for current value. You may want to refresh first, this method does not refresh
+   * @param tolerance tolerance
+   * @return true if value is within tolerance of the target
+   */
+  private static boolean isInTolerance(double target, StatusSignal<Double> valueSignal, double tolerance) {
+    return Math.abs(target - valueSignal.getValueAsDouble()) < tolerance;
+  }
+  
+  /**
+   * Translates a yaw value from robot yaw to turret yaw, or vice versa. This is needed because turret 0 is facing robot
+   * backward.
+   * @param yaw robot centric yaw to convert to turret yaw, or turret yaw to translate to robot yaw
+   * @return translated yaw in rotations
+   */
+  private static double translateYaw(Measure<Angle> yaw) {
+    return Math.IEEEremainder(yaw.in(Rotations) + 0.5, 1);
   }
 
 }
