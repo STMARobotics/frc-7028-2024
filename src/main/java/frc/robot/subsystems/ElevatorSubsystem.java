@@ -30,17 +30,17 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-  // Mutiply by sensor position to get meters
+// Mutiply by sensor position to get meters
 
-  private final TalonFX elevatorMotor = new TalonFX(ElevatorConstants.ELEVATOR_POSITON_ID);
+private final TalonFX elevatorMotor = new TalonFX(ElevatorConstants.ELEVATOR_POSITON_ID);
 
-  // Limit switches - FALSE means at limit
-  private final DigitalInput topLimitSwitch = new DigitalInput(TOP_LIMIT_SWITCH_CHANNEL);
-  private final DigitalInput bottomLimitSwitch = new DigitalInput(BOTTOM_LIMIT_SWITCH_CHANNEL);
+// Limit switches - FALSE means at limit
+private final DigitalInput topLimitSwitch = new DigitalInput(TOP_LIMIT_SWITCH_CHANNEL);
+private final DigitalInput bottomLimitSwitch = new DigitalInput(BOTTOM_LIMIT_SWITCH_CHANNEL);
 
-  private double targetPosition = 0;
+private double targetPosition = 0;
 
-  private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
+private VoltageOut voltageRequest = new VoltageOut(0).withEnableFOC(true);
 
 private SysIdRoutine elevatorMotorSysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),

@@ -42,6 +42,21 @@ public class ClimbCommand extends Command {
         rumble.accept(1d);
       }
     }
+    
+    if (requestedSpeed == 0) {
+      climbSubsystem.stopClimb();
+      rumble.accept(0d);
+    } else {
+      if (turretIsClear.getAsBoolean()) {
+        // turret is clear so move (the subsystem also enforces this)
+        climbSubsystem.climbDown();
+        rumble.accept(0d);
+      } else {
+        // turret is not clear, so do not move and rumble the controller
+        climbSubsystem.stopClimb();
+        rumble.accept(1d);
+      }
+    }
   }
 
   @Override
