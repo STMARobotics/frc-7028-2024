@@ -52,10 +52,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.LaserCan.RangingMode;
+import au.grapplerobotics.LaserCan.TimingBudget;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -157,6 +161,14 @@ public class TurretSubsystem extends SubsystemBase {
     rollerTalonConfig.MotorOutput.NeutralMode = Brake;
     rollerTalonConfig.Slot0 = Slot0Configs.from(ROLLER_VELOCITY_SLOT_CONFIGS);
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
+
+    // Configure the note sensor
+    try {
+      noteSensor.setRangingMode(RangingMode.SHORT);
+      noteSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_20MS);
+    } catch (ConfigurationFailedException e) {
+      DriverStation.reportError("Failed to confgure turret LaserCAN: " + e.getMessage(), false);
+    }
   }
 
   public Command sysIdYawDynamicCommand(Direction direction) {
