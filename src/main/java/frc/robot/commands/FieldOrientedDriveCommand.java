@@ -15,18 +15,14 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.util.ChassisSpeedsRateLimiter;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /**
@@ -37,40 +33,35 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
  */
 public class FieldOrientedDriveCommand extends Command {
   private final CommandSwerveDrivetrain drivetrainSubsystem;
-  private final Supplier<Rotation2d> robotAngleSupplier;
   private final Supplier<Measure<Velocity<Distance>>> translationXSupplier;
   private final Supplier<Measure<Velocity<Distance>>> translationYSupplier;
   private final Supplier<Measure<Velocity<Angle>>> rotationSupplier;
-
-  private final SlewRateLimiter translateXRateLimiter =
-      new SlewRateLimiter(TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond));
-  private final SlewRateLimiter translateYRateLimiter =
-      new SlewRateLimiter(TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond));
-  private final SlewRateLimiter rotationRateLimiter =
-      new SlewRateLimiter(ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
+  
+  private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
+      TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MAX_VELOCITY.times(DEADBAND).in(MetersPerSecond))
       .withRotationalDeadband(MAX_ANGULAR_VELOCITY.times(DEADBAND).in(RadiansPerSecond))
-      .withDriveRequestType(Robot.isSimulation() ? DriveRequestType.OpenLoopVoltage : DriveRequestType.Velocity)
+      .withDriveRequestType(DriveRequestType.Velocity)
       .withSteerRequestType(SteerRequestType.MotionMagic);
+
+  // Desired chassis speeds. Defined here to prevent reallocation.
+  private ChassisSpeeds desiredChassisSpeeds = new ChassisSpeeds();
 
   /**
    * Constructor
    * @param drivetrainSubsystem drivetrain
-   * @param robotAngleSupplier supplier for the current angle of the robot
    * @param translationXSupplier supplier for translation X component, in meters per second
    * @param translationYSupplier supplier for translation Y component, in meters per second
    * @param rotationSupplier supplier for rotation component, in radians per second
    */
   public FieldOrientedDriveCommand(
       CommandSwerveDrivetrain drivetrainSubsystem,
-      Supplier<Rotation2d> robotAngleSupplier,
       Supplier<Measure<Velocity<Distance>>> translationXSupplier,
       Supplier<Measure<Velocity<Distance>>> translationYSupplier,
       Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
     this.drivetrainSubsystem = drivetrainSubsystem;
-    this.robotAngleSupplier = robotAngleSupplier;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
     this.rotationSupplier = rotationSupplier;
@@ -80,29 +71,20 @@ public class FieldOrientedDriveCommand extends Command {
 
   @Override
   public void initialize() {
-    var robotAngle = robotAngleSupplier.get();
-
-    // Calculate field relative speeds
-    var chassisSpeeds = drivetrainSubsystem.getCurrentRobotChassisSpeeds();
-    var fieldSpeeds = 
-        new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond).rotateBy(robotAngle);
-    var robotSpeeds = new ChassisSpeeds(fieldSpeeds.getX(), fieldSpeeds.getY(), chassisSpeeds.omegaRadiansPerSecond);
-    
     // Reset the slew rate limiters, in case the robot is already moving
-    translateXRateLimiter.reset(robotSpeeds.vxMetersPerSecond);
-    translateYRateLimiter.reset(robotSpeeds.vyMetersPerSecond);
-    rotationRateLimiter.reset(robotSpeeds.omegaRadiansPerSecond);
+    rateLimiter.reset(drivetrainSubsystem.getCurrentFieldChassisSpeeds());
   }
 
   @Override
   public void execute() {
-    // The origin is always blue, so when on RED alliance X and Y need to be inverted based on the driver's orientation
-    var invert = 
-        DriverStation.getAlliance().map(alliance -> alliance == DriverStation.Alliance.Blue).orElse(false) ? 1: -1;
+    desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
+    desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
+    desiredChassisSpeeds.omegaRadiansPerSecond = rotationSupplier.get().in(RadiansPerSecond);
+    var limitedCassisSpeeds = rateLimiter.calculate(desiredChassisSpeeds);
     drivetrainSubsystem.setControl(drive
-        .withVelocityX(translateXRateLimiter.calculate(invert * translationXSupplier.get().in(MetersPerSecond)))
-        .withVelocityY(translateYRateLimiter.calculate(invert * translationYSupplier.get().in(MetersPerSecond)))
-        .withRotationalRate(rotationRateLimiter.calculate(rotationSupplier.get().in(RadiansPerSecond))));
+        .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
+        .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
+        .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
   }
 
   @Override

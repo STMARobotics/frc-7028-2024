@@ -1,5 +1,7 @@
 package frc.robot.controls;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static frc.robot.Constants.DrivetrainConstants.MAX_ANGULAR_VELOCITY;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
@@ -9,14 +11,21 @@ import java.util.function.Supplier;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+/**
+ * Control bindings for driving with joysticks
+ */
 public class JoystickControlBindings implements ControlBindings {
 
   private final CommandJoystick leftJoystick = new CommandJoystick(0);
   private final CommandJoystick rightJoystick = new CommandJoystick(1);
+  private final MutableMeasure<Velocity<Distance>> translationX = MutableMeasure.zero(MetersPerSecond);
+  private final MutableMeasure<Velocity<Distance>> translationY = MutableMeasure.zero(MetersPerSecond);
+  private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
 
   @Override
   public Optional<Trigger> resetPose() {
@@ -30,23 +39,59 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationX() {
-    return () -> MAX_VELOCITY.times(-modifyAxis(leftJoystick.getY()));
+    return () -> translationX.mut_replace(
+      MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getY()), MetersPerSecond);
   }
+
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
-    return () -> MAX_VELOCITY.times(-modifyAxis(leftJoystick.getX()));
+   return () -> translationY.mut_replace(
+      MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getX()), MetersPerSecond);
   }
   
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
-    return () -> MAX_ANGULAR_VELOCITY.times(-modifyAxis(rightJoystick.getX()) * 0.8);
+    return () -> omega.mut_replace(
+        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(rightJoystick.getX() * 0.8), RadiansPerSecond);
   }
   
-  private static double modifyAxis(double value) {
-    // Square the axis
-    value = Math.copySign(value * value, value);
+  private static double squareAxis(double value) {
+    return Math.copySign(value * value, value);
+  }
 
-    return value;
+  @Override
+  public Optional<Trigger> intakeToTurret() {
+    return Optional.of(rightJoystick.button(1));
   }
-  
+
+  @Override
+  public Optional<Trigger> intakeStop() {
+    return Optional.of(rightJoystick.button(2));
+  }
+
+  @Override
+  public Optional<Trigger> manualShoot() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> autoScoreSpeaker() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> scoreAmp() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> exchangeToAmper() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> intakeToAmper() {
+    return Optional.empty();
+  }
+
 }
