@@ -25,6 +25,9 @@ import edu.wpi.first.units.Velocity;
 
 public class Constants {
 
+  // Change to a different type in the future
+  public static final Boolean team = true;
+
   public static final String CANIVORE_BUS_NAME = "canivore";
 
   public static final class DrivetrainConstants {
@@ -117,7 +120,8 @@ public class Constants {
     }
 
     // To be determined!!
-    public static final Translation2d relativeSpeakerPosition = new Translation2d(0, 0);
+    public static final Translation2d speakerPosition1 = new Translation2d(0, 0);
+    public static final Translation2d speakerPosition2 = new Translation2d(0, 0);
 
     public static final Double oneRotorRotation = 1d;
     public static final Double oneRotationForSensor = 1d;
@@ -128,12 +132,15 @@ public class Constants {
     public static final int TURRET_UPPER_ANGLE_RANGE = 270;
 
     public static final Double TURRET_ANGLE_THRESHOLD = 5d;
+    public static final Double TURRET_DRIVETRAIN_ANGLE_THRESHOLD = 5d;
+
+    // To be determined!!
+    public static final Measure<Distance> TURRET_MAXIMUM_READYSHOOT_DISTANCE = Meters.of(1);
 
     public static final TalonFXConfiguration TURRET_MOTOR_CONFIG = new TalonFXConfiguration()
-      .withFeedback(
-        new FeedbackConfigs()
-          .withRotorToSensorRatio(rotorToSensorRatio)
-      );
+        .withFeedback(
+            new FeedbackConfigs()
+                .withRotorToSensorRatio(rotorToSensorRatio));
 
   }
 
@@ -159,14 +166,14 @@ public class Constants {
 
     // Elevator travel distance, in meters
     public static final double ELEVATOR_HEIGHT = 1.002;
-    
+
     // Motor's encoder limits, in encoder ticks
     public static final double MOTOR_BOTTOM = 0;
     public static final double MOTOR_TOP = 56530;
-    
+
     // Mutiply by sensor position to get meters
     public static final double MOTOR_ENCODER_POSITION_COEFFICIENT = ELEVATOR_HEIGHT / (MOTOR_TOP - MOTOR_BOTTOM);
-    
+
     public static final int TOP_LIMIT_SWITCH_CHANNEL = 9;
     public static final int BOTTOM_LIMIT_SWITCH_CHANNEL = 8;
 
@@ -192,16 +199,15 @@ public class Constants {
     public static final double MOTOR_ENCODER_POSITION_COEFFICIENT = CLIMB_HEIGHT / (MOTOR_TOP - MOTOR_BOTTOM);
 
     public static final SlotConfigs CLIMB_SLOT_CONFIGS = new SlotConfigs()
-      .withKP(0)
-      .withKI(0)
-      .withKD(0)
-      .withKS(0);
+        .withKP(0)
+        .withKI(0)
+        .withKD(0)
+        .withKS(0);
 
   }
-
 
   public static class TrapAmpShooterConstants {
     public static final int DEVICE_ID_TRAP_AMP_SHOOTER = 10;
   }
-  
+
 }

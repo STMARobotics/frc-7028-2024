@@ -23,8 +23,8 @@ public class TurretSubsystem extends SubsystemBase {
   
   }
 
-  public Rotation2d getCurrentAngle() {
-    return new Rotation2d(Degrees.of(rotationsToDegrees(motorRotations.getValueAsDouble())));
+  public Rotation2d getCurrentAngle(Rotation2d drivetrainAngle) {
+    return new Rotation2d(Degrees.of(rotationsToDegrees(motorRotations.getValueAsDouble()))).rotateBy(drivetrainAngle);
   }
 
   public void toAngle(Rotation2d angle) {
