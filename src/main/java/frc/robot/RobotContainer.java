@@ -12,6 +12,7 @@ import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -63,8 +64,8 @@ public class RobotContainer {
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
-  private final AutonomousBuilder autoBuilder = new AutonomousBuilder(intakeSubsystem, elevatorSubsystem,
-      shooterSubsystem);
+  private final AutonomousBuilder autoBuilder = new AutonomousBuilder(intakeSubsystem,
+      shooterSubsystem, turretSubsystem, drivetrain);
 
   public RobotContainer() {
     // Configure control binding scheme
@@ -74,16 +75,9 @@ public class RobotContainer {
       controlBindings = new JoystickControlBindings();
     }
 
-    /*
-     * These are all temporary names, feel free to change 
-     * anything EXCEPT for the string arg for registerCommand, 
-     * they are configured with those names in Pathplanner. They can
-     * be changed, just talk to Finn first.
-     * 
-     * NamedCommands.registerCommand("aimAndShoot", autoBuilder.aimAndShoot());
-     * NamedCommands.registerCommand("shootDonut", autoBuilder.shootDonut());
-     * NamedCommands.registerCommand("startIntake", autoBuilder.startIntake());
-     */
+    NamedCommands.registerCommand("aimAndShoot", autoBuilder.aimAndShoot());
+    NamedCommands.registerCommand("shootDonut", autoBuilder.shootDonut());
+    NamedCommands.registerCommand("startIntake", autoBuilder.startIntake());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);

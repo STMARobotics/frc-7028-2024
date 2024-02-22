@@ -18,12 +18,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Path"
