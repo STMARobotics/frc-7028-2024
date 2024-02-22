@@ -8,7 +8,7 @@ import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
-import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
+import static frc.robot.Constants.ShootingConstants.SHOOTER_PITCH_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
@@ -74,7 +74,7 @@ public class ShootCommand extends Command {
     var distanceToSpeaker = robotTranslation.getDistance(speakerTranslation);
 
     // Lookup shooter settings for this distance
-    var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
+    var shootingSettings = SHOOTER_PITCH_INTERPOLATOR.calculate(distanceToSpeaker);
 
     // Angle to turn the robot. The shooter is on the back, so it's the angle to the speaker plus PI radians.
     var angleToSpeaker = speakerTranslation.minus(robotTranslation).getAngle().rotateBy(fromRadians(PI));
