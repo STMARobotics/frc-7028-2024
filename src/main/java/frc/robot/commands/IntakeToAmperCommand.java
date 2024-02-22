@@ -27,8 +27,7 @@ public class IntakeToAmperCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    // TODO stop when we have a sensor to see detect gamepiece
-    return super.isFinished();
+    return amperSubsystem.hasNote();
   }
 
   @Override

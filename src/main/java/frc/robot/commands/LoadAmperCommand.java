@@ -34,8 +34,7 @@ public class LoadAmperCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    // TODO stop when we have a sensor to know a note is in the amper
-    return super.isFinished();
+    return amperSubsystem.hasNote();
   }
 
   @Override

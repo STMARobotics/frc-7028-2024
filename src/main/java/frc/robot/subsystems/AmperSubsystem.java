@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
+import static frc.robot.Constants.AmperConstants.DEVICE_ID_NOTE_SENSOR;
 import static frc.robot.Constants.AmperConstants.DEVICE_ID_ROLLERS;
+import static frc.robot.Constants.AmperConstants.NOTE_SENSOR_DISTANCE_THRESHOLD;
 import static frc.robot.Constants.AmperConstants.ROLLER_INTAKE_VELOCITY;
 import static frc.robot.Constants.AmperConstants.ROLLER_LOAD_VELOCITY;
 import static frc.robot.Constants.AmperConstants.ROLLER_SCORE_VELOCITY;
@@ -19,9 +22,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import au.grapplerobotics.ConfigurationFailedException;
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.LaserCan.RangingMode;
+import au.grapplerobotics.LaserCan.TimingBudget;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -34,6 +42,8 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 public class AmperSubsystem extends SubsystemBase {
   
   private final TalonFX rollerMotor = new TalonFX(DEVICE_ID_ROLLERS, CANIVORE_BUS_NAME);
+
+  private final LaserCan noteSensor = new LaserCan(DEVICE_ID_NOTE_SENSOR);
 
   // Motor request objects
   private final VelocityTorqueCurrentFOC rollerControl = new VelocityTorqueCurrentFOC(0.0);
@@ -53,6 +63,14 @@ public class AmperSubsystem extends SubsystemBase {
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
 
     rollerMotor.getConfigurator().apply(rollerConfig);
+
+    // Configure the note sensor
+    try {
+      noteSensor.setRangingMode(RangingMode.SHORT);
+      noteSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_20MS);
+    } catch (ConfigurationFailedException e) {
+      DriverStation.reportError("Failed to confgure amper LaserCAN: " + e.getMessage(), false);
+    }
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {
@@ -63,6 +81,18 @@ public class AmperSubsystem extends SubsystemBase {
   public Command sysIdRollerQuasistaticCommand(Direction direction) {
     return rollerSysIdRoutine.quasistatic(direction).withName("SysId amper quasi " + direction)
         .finallyDo(this::stop);
+  }
+
+  /**
+   * Checks in the amper has a note loaded
+   * @return true if the amper has a note, otherwise false
+   */
+  public boolean hasNote() {
+    var measure = noteSensor.getMeasurement();
+    if (measure == null || measure.status != LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+      return false;
+    }
+    return measure.distance_mm < NOTE_SENSOR_DISTANCE_THRESHOLD.in(Millimeters);
   }
 
   /**

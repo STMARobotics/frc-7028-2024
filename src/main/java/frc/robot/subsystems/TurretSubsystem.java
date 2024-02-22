@@ -2,11 +2,13 @@ package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.signals.FeedbackSensorSourceValue.FusedCANcoder;
 import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
+import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
+import static frc.robot.Constants.TurretConstants.DEVICE_ID_NOTE_SENSOR;
 import static frc.robot.Constants.TurretConstants.DEVICE_ID_PITCH_ENCODER;
 import static frc.robot.Constants.TurretConstants.DEVICE_ID_PITCH_MOTOR;
 import static frc.robot.Constants.TurretConstants.DEVICE_ID_ROLLER_MOTOR;
@@ -16,6 +18,7 @@ import static frc.robot.Constants.TurretConstants.EJECT_VELOCITY;
 import static frc.robot.Constants.TurretConstants.INTAKE_PITCH_POSITION;
 import static frc.robot.Constants.TurretConstants.INTAKE_YAW_POSITION;
 import static frc.robot.Constants.TurretConstants.LOAD_VELOCITY;
+import static frc.robot.Constants.TurretConstants.NOTE_SENSOR_DISTANCE_THRESHOLD;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.PITCH_MAGNETIC_OFFSET;
@@ -49,9 +52,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import au.grapplerobotics.ConfigurationFailedException;
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.LaserCan.RangingMode;
+import au.grapplerobotics.LaserCan.TimingBudget;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -70,6 +78,8 @@ public class TurretSubsystem extends SubsystemBase {
   private final CANcoder pitchEncoder = new CANcoder(DEVICE_ID_PITCH_ENCODER, CANIVORE_BUS_NAME);
 
   private final TalonFX rollerMotor = new TalonFX(DEVICE_ID_ROLLER_MOTOR, CANIVORE_BUS_NAME);
+
+  private final LaserCan noteSensor = new LaserCan(DEVICE_ID_NOTE_SENSOR);
 
   private final MotionMagicVoltage yawControl = new MotionMagicVoltage(0.0).withEnableFOC(true);
   private final MotionMagicVoltage pitchControl = new MotionMagicVoltage(0.0).withEnableFOC(true);
@@ -151,6 +161,14 @@ public class TurretSubsystem extends SubsystemBase {
     rollerTalonConfig.MotorOutput.NeutralMode = Brake;
     rollerTalonConfig.Slot0 = Slot0Configs.from(ROLLER_VELOCITY_SLOT_CONFIGS);
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
+
+    // Configure the note sensor
+    try {
+      noteSensor.setRangingMode(RangingMode.SHORT);
+      noteSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_20MS);
+    } catch (ConfigurationFailedException e) {
+      DriverStation.reportError("Failed to confgure turret LaserCAN: " + e.getMessage(), false);
+    }
   }
 
   public Command sysIdYawDynamicCommand(Direction direction) {
@@ -181,6 +199,18 @@ public class TurretSubsystem extends SubsystemBase {
   public Command sysIdRollerQuasistaticCommand(Direction direction) {
     return rollerSysIdRoutine.quasistatic(direction).withName("SysId turret rollers quasi " + direction)
         .finallyDo(this::stopRollers);
+  }
+
+  /**
+   * Checks in the turret has a note loaded
+   * @return true if the turret has a note, otherwise false
+   */
+  public boolean hasNote() {
+    var measure = noteSensor.getMeasurement();
+    if (measure == null || measure.status != LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+      return false;
+    }
+    return measure.distance_mm < NOTE_SENSOR_DISTANCE_THRESHOLD.in(Millimeters);
   }
 
   /**

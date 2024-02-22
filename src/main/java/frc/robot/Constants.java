@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Millimeter;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
@@ -99,11 +100,14 @@ public class Constants {
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-25), -PI)),
+            new Rotation3d(0, degreesToRadians(-25), -PI / 2)),
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
+
             new Rotation3d(0, degreesToRadians(-25), PI))
     };
+            new Rotation3d(0, degreesToRadians(-25), PI / 2))
+      };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
     public static final Measure<Distance> FIELD_WIDTH = Meters.of(8.0137);
@@ -156,6 +160,7 @@ public class Constants {
 
   public static class AmperConstants {
     public static final int DEVICE_ID_ROLLERS = 40;
+    public static final int DEVICE_ID_NOTE_SENSOR = 1;
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
         .withKP(4.0)
@@ -167,6 +172,9 @@ public class Constants {
     public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-50.0);
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-30.0);
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
+  
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200);
+
   }
 
   public static class TurretConstants {
@@ -175,7 +183,7 @@ public class Constants {
     public static int DEVICE_ID_PITCH_MOTOR = 53;
     public static int DEVICE_ID_PITCH_ENCODER = 54;
     public static int DEVICE_ID_ROLLER_MOTOR = 41;
-    public static int DEVICE_ID_NOTE_SENSOR = 5;
+    public static int DEVICE_ID_NOTE_SENSOR = 3;
 
     public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
     public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
@@ -229,6 +237,8 @@ public class Constants {
 
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(2);
     public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(2);
+
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200.0);
 
   }
 
