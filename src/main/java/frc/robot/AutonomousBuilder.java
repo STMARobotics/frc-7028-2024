@@ -18,16 +18,17 @@ public class AutonomousBuilder {
   }
 
   /*
+   * These are all temporary names, feel free to change
+   * anything, just be aware you will also have to change them
+   * in RobotContainer.java.
+   * 
    * public Command aimAndShoot() {
    * return new >>>INSERT COMMAND HERE<<<
    * }
    * 
-   * 
    * public Command startIntake() {
    * return new >>>INSERT COMMAND HERE<<<
    * }
-   * 
-   * 
    * 
    * public Command shootDonut() {
    * return new >>>INSERT COMMAND HERE<<<

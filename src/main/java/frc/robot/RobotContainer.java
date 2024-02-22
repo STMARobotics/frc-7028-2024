@@ -63,7 +63,9 @@ public class RobotContainer {
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
-  
+  private final AutonomousBuilder autoBuilder = new AutonomousBuilder(intakeSubsystem, elevatorSubsystem,
+      shooterSubsystem);
+
   public RobotContainer() {
     // Configure control binding scheme
     if (DriverStation.getJoystickIsXbox(0) || Robot.isSimulation()) {
@@ -71,6 +73,17 @@ public class RobotContainer {
     } else {
       controlBindings = new JoystickControlBindings();
     }
+
+    /*
+     * These are all temporary names, feel free to change 
+     * anything EXCEPT for the string arg for registerCommand, 
+     * they are configured with those names in Pathplanner. They can
+     * be changed, just talk to Finn first.
+     * 
+     * NamedCommands.registerCommand("aimAndShoot", autoBuilder.aimAndShoot());
+     * NamedCommands.registerCommand("shootDonut", autoBuilder.shootDonut());
+     * NamedCommands.registerCommand("startIntake", autoBuilder.startIntake());
+     */
 
     autoChooser = AutoBuilder.buildAutoChooser();
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
@@ -99,42 +112,42 @@ public class RobotContainer {
     controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
 
     // Intake
-    controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem)));
+    controlBindings.intakeToTurret().ifPresent(
+        trigger -> trigger.onTrue(new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem)));
     controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(intakeSubsystem.run(intakeSubsystem::stop)));
 
     // Amper
     controlBindings.exchangeToAmper().ifPresent(trigger -> trigger.onTrue(
         new LoadAmperCommand(amperSubsystem, turretSubsystem, intakeSubsystem)));
-    
+
     controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(
         new IntakeToAmperCommand(intakeSubsystem, amperSubsystem)));
-    
+
     controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(
-      new ScoreAmpCommand(elevatorSubsystem, amperSubsystem)));
-    
+        new ScoreAmpCommand(elevatorSubsystem, amperSubsystem)));
+
     // Speaker
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
-      new ManualShootCommand(turretSubsystem, shooterSubsystem)));
+        new ManualShootCommand(turretSubsystem, shooterSubsystem)));
 
     controlBindings.autoScoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
-      new IntakeAndShootCommand(intakeSubsystem, turretSubsystem, amperSubsystem, shooterSubsystem)));
-    
-
+        new IntakeAndShootCommand(intakeSubsystem, turretSubsystem, amperSubsystem, shooterSubsystem)));
 
     // TODO operator
     climbSubsystem.setDefaultCommand(climbSubsystem.run(() -> {
-        climbSubsystem.runLeftWinch(MathUtil.applyDeadband(-operatorController.getLeftY(), DEADBAND));
-        climbSubsystem.runRightWinch(MathUtil.applyDeadband(-operatorController.getRightY(), DEADBAND));
+      climbSubsystem.runLeftWinch(MathUtil.applyDeadband(-operatorController.getLeftY(), DEADBAND));
+      climbSubsystem.runRightWinch(MathUtil.applyDeadband(-operatorController.getRightY(), DEADBAND));
     }));
 
-    operatorController.rightTrigger().whileTrue(new ScoreTrapCommand(elevatorSubsystem, amperSubsystem, turretSubsystem));
+    operatorController.rightTrigger()
+        .whileTrue(new ScoreTrapCommand(elevatorSubsystem, amperSubsystem, turretSubsystem));
 
   }
 
   public void populateSysIdDashboard() {
     var tab = Shuffleboard.getTab("Drive SysId");
     int columnIndex = 0;
-    
+
     // Column 0 Drive
     tab.add("Drive Quasi Fwd", drivetrain.sysIdDriveQuasiCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Drive Quasi Rev", drivetrain.sysIdDriveQuasiCommand(kReverse)).withPosition(columnIndex, 1);
