@@ -111,7 +111,7 @@ public class Constants {
     public static final int DEVICE_ID_SHOOTER_RIGHT = 51;
     public static final int DEVICE_ID_SHOOTER_LEFT = 50;
     public static final int DEVICE_ID_ACTUATOR_MOTOR = 52;
-    public static final int SHOOTER_VELOCITY_TOLERANCE = 5;
+    public static final int SHOOTER_VELOCITY_TOLERANCE = 3;
     public static final int WRIST_POSITION_TOLERANCE = 0;
     public static final int SHOOTER_MOTOR_RATIO = 1;
 
@@ -212,6 +212,6 @@ public class Constants {
     public static final double BELT_SHOOT_SPEED = 8000;
 
     public static final Measure<Velocity<Angle>> RUN_SPEED = RotationsPerSecond.of(50);
-    public static final Measure<Velocity<Angle>> SHOOT_SPEED = RotationsPerSecond.of(10);
+    public static final Measure<Velocity<Angle>> SHOOT_SPEED = RotationsPerSecond.of(50);
   }
 }

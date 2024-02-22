@@ -143,7 +143,7 @@ public class IndexerSubsystem extends SubsystemBase {
     runIndexer(IndexerConstants.SHOOT_SPEED);
   }
 
-  private void runIndexer(Measure<Velocity<Angle>> velocity) {
+  public void runIndexer(Measure<Velocity<Angle>> velocity) {
     var rpm = velocity.in(Rotations.per(Minute));
     leftPidController.setReference(rpm, kVelocity, 0, leftMotorFeedforward.calculate(rpm));
     rightPidController.setReference(rpm, kVelocity, 0, rightMotorFeedForward.calculate(rpm));

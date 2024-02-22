@@ -16,6 +16,7 @@ public interface ControlBindings {
   Optional<Trigger> retractIntake();
   Optional<Trigger> deployIntake();
   Optional<Trigger> shootDonutCommand();
+  Optional<Trigger> runIndexer();
   Supplier<Measure<Velocity<Distance>>> translationX();
   Supplier<Measure<Velocity<Distance>>> translationY();
   Supplier<Measure<Velocity<Angle>>> omega();

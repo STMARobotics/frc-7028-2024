@@ -187,7 +187,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
-    return (checkShooterSpeed(40));
+    return (checkShooterSpeed(45));
   }
 
   public void shootDutyCycle(double speed) {

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
-      "y": 2
+      "x": 2.813837166135872,
+      "y": 1.1939000801078534
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -15,6 +15,12 @@
           "type": "path",
           "data": {
             "pathName": "SimplePath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootDonut"
           }
         }
       ]

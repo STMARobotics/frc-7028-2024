@@ -168,6 +168,10 @@ public class IntakeSubsystem extends SubsystemBase {
     setIntakePosition(DEPLOY_POSITION_RETRACTED);
   }
 
+  public void runRollers() {
+    rollerMotor.setControl(rollerControl.withVelocity(30));
+  }
+
   private void setIntakePosition(Measure<Angle> position) {
     deployMotor.setControl(deployControl.withPosition(position.in(Rotations)));
   }

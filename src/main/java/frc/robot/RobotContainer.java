@@ -12,6 +12,7 @@ import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.DeployIntakeCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ShootDonutCommand;
@@ -44,7 +46,7 @@ public class RobotContainer {
   private final IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
-
+  private final AutonomousBuilder autoBuilder = new AutonomousBuilder(intakeSubsystem, indexerSubsystem, elevatorSubsystem, shooterSubsystem);
   private final Telemetry logger = new Telemetry(MAX_VELOCITY.in(MetersPerSecond));
 
   public RobotContainer() {
@@ -55,6 +57,11 @@ public class RobotContainer {
     } else {
       controlBindings = new JoystickControlBindings();
     }
+    
+    // Register Named Commands
+    NamedCommands.registerCommand("shootDonut", autoBuilder.shootDonut());
+    NamedCommands.registerCommand("deployIntake", autoBuilder.deployIntake());
+    NamedCommands.registerCommand("endShoot", autoBuilder.endShooter());
 
     autoChooser = AutoBuilder.buildAutoChooser();
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
@@ -93,10 +100,14 @@ public class RobotContainer {
     // intake
     controlBindings.retractIntake().ifPresent(trigger -> trigger.onTrue(
         runOnce(intakeSubsystem::stopRollers, intakeSubsystem)
-        .andThen(runOnce(intakeSubsystem::retractIntake, intakeSubsystem))));
-    
+            .andThen(runOnce(intakeSubsystem::retractIntake, intakeSubsystem))));
+
     controlBindings.deployIntake().ifPresent(trigger -> trigger.onTrue(
         new DeployIntakeCommand(intakeSubsystem, indexerSubsystem)));
+
+    // indexer
+      controlBindings.runIndexer().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+        () -> indexerSubsystem.runIndexer(IndexerConstants.SHOOT_SPEED), indexerSubsystem::stop, indexerSubsystem)));
 
   }
 

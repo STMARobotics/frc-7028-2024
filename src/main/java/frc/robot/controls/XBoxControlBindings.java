@@ -38,6 +38,11 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> runIndexer() {
+    return Optional.of(driverController.x());
+  }
+
+  @Override
   public Optional<Trigger> spinShooterWheel() {
     return Optional.of(driverController.rightTrigger());
   }

@@ -4,20 +4,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-/**
- * Command to run shoot donut
- */
-public class ShootDonutCommand extends Command {
+public class EndShooterCommand extends Command {
 
   private final ShooterSubsystem shooterSubsystem;
   private final IndexerSubsystem indexerSubsystem;
 
-  public ShootDonutCommand(ShooterSubsystem shooterSubsystem, IndexerSubsystem indexerSubsystem) {
+  public EndShooterCommand(ShooterSubsystem shooterSubsystem, IndexerSubsystem indexerSubsystem) {
 
     this.shooterSubsystem = shooterSubsystem;
     this.indexerSubsystem = indexerSubsystem;
 
-    addRequirements(indexerSubsystem, shooterSubsystem);
+    addRequirements(shooterSubsystem, indexerSubsystem);
   }
 
   @Override
@@ -27,20 +24,17 @@ public class ShootDonutCommand extends Command {
 
   @Override
   public void execute() {
-    shooterSubsystem.spinShooterWheel(45);
-    if (shooterSubsystem.isShooterReady())
-      indexerSubsystem.shoot();
+    shooterSubsystem.stop();
+    indexerSubsystem.stop();
   }
 
   @Override
   public boolean isFinished() {
-    return !indexerSubsystem.hasDonut();
+    return true;
   }
 
   @Override
   public void end(boolean interrupted) {
-    indexerSubsystem.stop();
-    shooterSubsystem.stop();
 
   }
 }

@@ -39,6 +39,11 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> runIndexer() {
+    return Optional.empty();
+  }
+
+  @Override
   public Supplier<Measure<Velocity<Distance>>> translationX() {
     return () -> MAX_VELOCITY.times(-modifyAxis(leftJoystick.getY()));
   }
