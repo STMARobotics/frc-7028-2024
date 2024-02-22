@@ -8,7 +8,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Millimeters;
+import static edu.wpi.first.units.Units.Millimeter;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
@@ -164,7 +164,7 @@ public class Constants {
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-30.0);
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
   
-    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeters.of(1.0);
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200);
 
   }
 
@@ -228,7 +228,7 @@ public class Constants {
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(2);
     public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(2);
 
-    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeters.of(1.0);
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200.0);
 
   }
 
