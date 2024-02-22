@@ -15,6 +15,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -71,6 +72,16 @@ public class RobotContainer {
     } else {
       controlBindings = new JoystickControlBindings();
     }
+
+    // Forward PhotonVision ports for when teathered with USB
+    // https://docs.photonvision.org/en/latest/docs/installation/networking.html#port-forwarding
+    PortForwarder.add(5800, "10.70.28.11", 5800);
+    PortForwarder.add(1181, "10.70.28.11", 1181);
+    PortForwarder.add(1182, "10.70.28.11", 1182);
+    PortForwarder.add(1183, "10.70.28.11", 1183);
+    PortForwarder.add(1184, "10.70.28.11", 1184);
+    PortForwarder.add(1185, "10.70.28.11", 1185);
+    PortForwarder.add(1186, "10.70.28.11", 1186);
 
     autoChooser = AutoBuilder.buildAutoChooser();
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
