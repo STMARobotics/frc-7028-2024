@@ -95,10 +95,10 @@ public class Constants {
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-25), -PI)),
+            new Rotation3d(0, degreesToRadians(-25), -PI / 2)),
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-25), PI))
+            new Rotation3d(0, degreesToRadians(-25), PI / 2))
       };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
