@@ -75,8 +75,13 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> autoScoreSpeaker() {
+  public Optional<Trigger> scoreSpeaker() {
     return Optional.of(driverController.rightTrigger());
+  }
+
+  @Override
+  public Optional<Trigger> tuneSpeakerShooting() {
+    return Optional.of(driverController.start());
   }
 
   @Override

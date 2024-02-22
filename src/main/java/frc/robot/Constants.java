@@ -269,7 +269,7 @@ public class Constants {
     public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(652.73), inchesToMeters(218.42));
     public static final Translation2d SPEAKER_BLUE = new Translation2d(0.0, inchesToMeters(218.42));
 
-    public static final Measure<Time> SHOOT_TIME = Seconds.of(2.0);
+    public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(3.0);
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
