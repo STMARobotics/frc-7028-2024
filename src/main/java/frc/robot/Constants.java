@@ -161,7 +161,7 @@ public class Constants {
         .withKV(0.17);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
     public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-50.0);
-    public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-15.0);
+    public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-40.0);
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
   
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200);
@@ -257,7 +257,7 @@ public class Constants {
     public static final Measure<Distance> TOP_LIMIT = Meters.of(0.42);
     public static final Measure<Distance> BOTTOM_LIMIT = Meters.zero();
 
-    public static final Measure<Distance> SCORE_AMP_HEIGHT = Meters.of(0.105);
+    public static final Measure<Distance> SCORE_AMP_HEIGHT = Meters.of(0.15);
     public static final Measure<Distance> SCORE_TRAP_HEIGHT = Meters.of(0.4);
     public static final Measure<Distance> PARK_HEIGHT = Meters.of(0.0);
 
