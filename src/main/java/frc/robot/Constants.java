@@ -132,7 +132,7 @@ public class Constants {
   
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
-    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(5.0);
+    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(2.0);
   }
 
   public static class IntakeConstants {
@@ -197,10 +197,10 @@ public class Constants {
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.004);
     public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(100)
+        .withKP(120)
         .withKI(0.0)
         .withKD(0.0)
-        .withKS(0.9)
+        .withKS(0.4)
         .withKV(0.0)
         .withKA(0.0)
         .withKG(0.1)
@@ -226,7 +226,7 @@ public class Constants {
     public static final Measure<Angle> INTAKE_PITCH_POSITION = Radians.of(0.0);
 
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(2);
-    public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(2);
+    public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(1);
 
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200.0);
 
@@ -273,7 +273,12 @@ public class Constants {
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(3.0);
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
-      new ShootingSettings().distance(Meters.of(1)).velocity(RotationsPerSecond.of(40)).pitch(Rotations.of(0.1))
+      new ShootingSettings().distance(Meters.of(1.413)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(39)),
+      new ShootingSettings().distance(Meters.of(2.413)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(28)),
+      new ShootingSettings().distance(Meters.of(3.413)).velocity(RotationsPerSecond.of(60)).pitch(Degrees.of(14)),
+      new ShootingSettings().distance(Meters.of(4.413)).velocity(RotationsPerSecond.of(70)).pitch(Degrees.of(7)),
+      new ShootingSettings().distance(Meters.of(5.413)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(2.5)),
+      new ShootingSettings().distance(Meters.of(6.413)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(2.5))
     ));
 
   }
