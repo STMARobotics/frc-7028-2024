@@ -3,8 +3,8 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.AutoAimShootCommand;
-import frc.robot.commands.AutoStartIntakeCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -38,7 +38,7 @@ public class AutonomousBuilder {
   }
 
   public Command startIntake() {
-    return new AutoStartIntakeCommand(intakeSubsystem);
+    return Commands.startEnd(() -> intakeSubsystem.intake(), null, intakeSubsystem);
   }
 
   public Command shootDonut() {
