@@ -51,7 +51,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       new SysIdRoutine.Mechanism((volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
 
   private final SysIdRoutine steerSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Config(null, Volts.of(3), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(steerCharacterization.withVolts(volts)), null, this));
 
   private final SysIdRoutine rotationSysIdRoutine  = new SysIdRoutine(
