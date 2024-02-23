@@ -124,7 +124,7 @@ public class RobotContainer {
       new ManualShootCommand(turretSubsystem, shooterSubsystem)));
 
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
-      new ScoreSpeakerCommand(drivetrain, shooterSubsystem, turretSubsystem)));
+      new ScoreSpeakerCommand(drivetrain, shooterSubsystem, turretSubsystem, driverTelemetry::telemeterizeShooting)));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem)));

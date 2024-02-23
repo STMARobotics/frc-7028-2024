@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -181,6 +182,10 @@ public class Constants {
     // NOTE: Yaw limits are set using turret encoder angles, so they're 180-degrees off from robot
     public static Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179);
     public static Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179);
+
+    public static Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(.25);
+    public static Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-.25);
+
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(80)
         .withKI(0.0)
@@ -271,6 +276,8 @@ public class Constants {
 
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(3.0);
+    public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
+    public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.413)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(39)),

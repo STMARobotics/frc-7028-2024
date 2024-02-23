@@ -35,6 +35,8 @@ import static frc.robot.Constants.TurretConstants.YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.YAW_MAGNETIC_OFFSET;
 import static frc.robot.Constants.TurretConstants.YAW_MOTION_MAGIC_CONFIGS;
 import static frc.robot.Constants.TurretConstants.YAW_ROTOR_TO_SENSOR_RATIO;
+import static frc.robot.Constants.TurretConstants.YAW_SHOOT_LIMIT_FORWARD;
+import static frc.robot.Constants.TurretConstants.YAW_SHOOT_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.YAW_SLOT_CONFIGS;
 import static frc.robot.Constants.TurretConstants.YAW_TOLERANCE;
 
@@ -349,6 +351,17 @@ public class TurretSubsystem extends SubsystemBase {
   public boolean isAtPitchTarget() {
     pitchPositionSignal.refresh();
     return isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
+  }
+
+  /**
+   * Checks if the specified yaw angle is within the range from where the turret can shoot a note
+   * @param angle angle to check
+   * @return true if in range, false if out of range
+   */
+  public static boolean isYawInShootingRange(Measure<Angle> angle) {
+    var angleRotations = translateYaw(angle);
+    return angleRotations < YAW_SHOOT_LIMIT_FORWARD.in(Rotations) 
+        && angleRotations > YAW_SHOOT_LIMIT_REVERSE.in(Rotations);
   }
 
   /**
