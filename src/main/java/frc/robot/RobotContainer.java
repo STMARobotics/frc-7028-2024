@@ -21,12 +21,13 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.FieldOrientedDriveCommand;
-import frc.robot.commands.IntakeAndShootCommand;
 import frc.robot.commands.IntakeToAmperCommand;
 import frc.robot.commands.IntakeToTurretCommand;
 import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.ScoreAmpCommand;
+import frc.robot.commands.ScoreSpeakerCommand;
+import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
@@ -122,9 +123,11 @@ public class RobotContainer {
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
       new ManualShootCommand(turretSubsystem, shooterSubsystem)));
 
-    controlBindings.autoScoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
-      new IntakeAndShootCommand(intakeSubsystem, turretSubsystem, amperSubsystem, shooterSubsystem)));
+    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
+      new ScoreSpeakerCommand(drivetrain, shooterSubsystem, turretSubsystem)));
     
+    controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
+      new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem)));
   }
 
   public void populateSysIdDashboard() {

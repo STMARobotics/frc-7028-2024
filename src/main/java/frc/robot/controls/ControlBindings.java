@@ -72,7 +72,13 @@ public interface ControlBindings {
    * Automatically shoot a note into the speaker
    * @return trigger
    */
-  Optional<Trigger> autoScoreSpeaker();
+  Optional<Trigger> scoreSpeaker();
+
+  /**
+   * Tune speaker shooting
+   * @return trigger
+   */
+  Optional<Trigger> tuneSpeakerShooting();
 
   /**
    * Exchange a note from turret to amper
