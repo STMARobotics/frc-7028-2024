@@ -300,6 +300,7 @@ public class TurretSubsystem extends SubsystemBase {
   public void prepareToExchange() {
     moveToYawPosition(INTAKE_YAW_POSITION);
     moveToPitchPosition(INTAKE_PITCH_POSITION);
+    stopRollers();
   }
 
   /**

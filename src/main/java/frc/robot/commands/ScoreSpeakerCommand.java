@@ -104,7 +104,7 @@ public class ScoreSpeakerCommand extends Command {
   public void end(boolean interrupted) {
     shooter.stop();
     shootTimer.stop();
-    turretSubsystem.stop();
+    turretSubsystem.prepareToExchange();
   }
 
 }
