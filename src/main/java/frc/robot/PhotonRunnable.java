@@ -27,7 +27,6 @@ import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.RawSubscriber;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
-import frc.robot.Constants.VisionConstants;
 
 /**
  * Runnable that gets AprilTag data from PhotonVision.
@@ -47,7 +46,7 @@ public class PhotonRunnable implements Runnable {
   private final Supplier<Pose2d> poseSupplier;
 
   @SuppressWarnings("unchecked")
-  private final StructArrayPublisher<AprilTag>[] aprilTagPublisher = new StructArrayPublisher[2];
+  private final StructArrayPublisher<AprilTag>[] aprilTagPublishers = new StructArrayPublisher[2];
    
 
   private final Packet packet = new Packet(1);
@@ -59,7 +58,7 @@ public class PhotonRunnable implements Runnable {
     
     // NT publishers to send data to AdvantageScope
     for (int i = 0; i < cameraNames.length; i++) {
-      aprilTagPublisher[0] = NetworkTableInstance.getDefault()
+      aprilTagPublishers[i] = NetworkTableInstance.getDefault()
           .getStructArrayTopic("AprilTags-" + cameraNames[i], new AprilTagStruct()).publish();
     }
 
@@ -84,6 +83,7 @@ public class PhotonRunnable implements Runnable {
 
   @Override
   public void run() {
+    var emptyAprilTagArray = new AprilTag[0];
     while (!Thread.interrupted()) {
       // Block the thread until new data comes in from PhotonVision
       int[] signaledHandles = null;
@@ -96,6 +96,8 @@ public class PhotonRunnable implements Runnable {
       var currentRobotPose = poseSupplier.get();
       for (int i = 0; i < signaledHandles.length; i++) {
         int cameraIndex = getCameraIndex(signaledHandles[i]);
+        var aprilTagPublisher = aprilTagPublishers[cameraIndex];
+        var photonPoseEstimator = photonPoseEstimators[cameraIndex];
 
         // Get AprilTag data
         var photonResults = getLatestResult(cameraIndex);
@@ -103,11 +105,11 @@ public class PhotonRunnable implements Runnable {
             || photonResults.targets.get(0).getPoseAmbiguity() < APRILTAG_AMBIGUITY_THRESHOLD)) {
           
           // Send the AprilTag(s) to NT for AdvantageScope
-          aprilTagPublisher[cameraIndex].accept(photonResults.targets.stream().map(target ->
-              getTargetPose(target, currentRobotPose, VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS[cameraIndex])
+          aprilTagPublisher.accept(photonResults.targets.stream().map(target ->
+              getTargetPose(target, currentRobotPose, photonPoseEstimator.getRobotToCameraTransform())
           ).toArray(AprilTag[]::new));
           
-          photonPoseEstimators[cameraIndex].update(photonResults).ifPresent(estimatedRobotPose -> {
+          photonPoseEstimator.update(photonResults).ifPresent(estimatedRobotPose -> {
             var estimatedPose = estimatedRobotPose.estimatedPose;
             // Make sure the measurement is on the field
             if (estimatedPose.getX() > 0.0 && estimatedPose.getX() <= FIELD_LENGTH.in(Meters)
@@ -115,10 +117,14 @@ public class PhotonRunnable implements Runnable {
                   poseConsumer.accept(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
             }
           });
+        } else {
+          // No tags, send empty array to NT
+          aprilTagPublisher.accept(emptyAprilTagArray);
         }
       }
     }
     Arrays.stream(rawBytesSubscribers).forEach(RawSubscriber::close);
+    Arrays.stream(aprilTagPublishers).forEach(StructArrayPublisher::close);
   }
 
   /**
