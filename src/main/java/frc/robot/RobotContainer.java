@@ -12,7 +12,6 @@ import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -65,8 +64,6 @@ public class RobotContainer {
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
-  private final AutonomousBuilder autoBuilder = new AutonomousBuilder(intakeSubsystem,
-      shooterSubsystem, turretSubsystem, drivetrain);
 
   public RobotContainer() {
     // Configure control binding scheme
@@ -76,10 +73,6 @@ public class RobotContainer {
       controlBindings = new JoystickControlBindings();
     }
 
-    NamedCommands.registerCommand("aimAndShoot", autoBuilder.aimAndShoot());
-    NamedCommands.registerCommand("shootDonut", autoBuilder.shootDonut());
-    NamedCommands.registerCommand("startIntake", autoBuilder.startIntake());
-    
     // Forward PhotonVision ports for when teathered with USB
     // https://docs.photonvision.org/en/latest/docs/installation/networking.html#port-forwarding
     PortForwarder.add(5800, "10.70.28.11", 5800);

@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.AutoAimShootCommand;
 import frc.robot.commands.AutoStartIntakeCommand;
@@ -24,6 +26,11 @@ public class AutonomousBuilder {
     this.shooterSubsystem = shooterSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.driveTrain = driveTrain;
+    
+  NamedCommands.registerCommand("aimAndShoot", aimAndShoot());
+  NamedCommands.registerCommand("shootDonut", shootDonut());
+  NamedCommands.registerCommand("startIntake", startIntake());
+  
   }
 
   public Command aimAndShoot() {
@@ -37,5 +44,5 @@ public class AutonomousBuilder {
   public Command shootDonut() {
     return new ManualShootCommand(turretSubsystem, shooterSubsystem);
   }
-
+  
 }
