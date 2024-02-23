@@ -82,6 +82,7 @@ public class XBoxControlBindings implements ControlBindings {
   @Override
   public Optional<Trigger> scoreAmp() {
     return Optional.of(driverController.leftTrigger());
+    
   }
 
   @Override
