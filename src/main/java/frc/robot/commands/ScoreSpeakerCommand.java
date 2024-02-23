@@ -28,7 +28,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
-public class ShootCommand extends Command {
+public class ScoreSpeakerCommand extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
   private final ShooterSubsystem shooter;
@@ -44,7 +44,7 @@ public class ShootCommand extends Command {
     .withVelocityX(0.0)
     .withVelocityY(0.0);
 
-  public ShootCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter, TurretSubsystem turretSubsystem) {
+  public ScoreSpeakerCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter, TurretSubsystem turretSubsystem) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;

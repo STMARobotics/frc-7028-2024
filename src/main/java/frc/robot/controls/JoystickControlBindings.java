@@ -75,7 +75,12 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> autoScoreSpeaker() {
+  public Optional<Trigger> scoreSpeaker() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> tuneSpeakerShooting() {
     return Optional.empty();
   }
 
