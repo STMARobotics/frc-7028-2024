@@ -35,7 +35,9 @@ import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
 import frc.robot.math.VelocityPitchInterpolator;
-import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;;
+import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;
+import frc.robot.math.VelocityPitchYawInterpolator;
+import frc.robot.math.VelocityPitchYawInterpolator.ShootingSettingsYaw;
 
 public class Constants {
 
@@ -281,8 +283,9 @@ public class Constants {
       new ShootingSettings().distance(Meters.of(6.413)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(2.5))
     ));
 
-    public static final VelocityPitchInterpolator SHOOTER_PITCH_YAW_VELOCITY_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
-      new ShootingSettings().distance(Meters.of(0)).velocity(RotationsPerSecond.of(0)).pitch(Degrees.of(0))
+    public static final VelocityPitchYawInterpolator SHOOTER_PITCH_YAW_VELOCITY_INTERPOLATOR = 
+    new VelocityPitchYawInterpolator(List.of(
+      new ShootingSettingsYaw().distance(Meters.of(0)).velocity(RotationsPerSecond.of(0)).pitch(Degrees.of(0)).yaw(Degrees.of(0))
     ));
 
   }

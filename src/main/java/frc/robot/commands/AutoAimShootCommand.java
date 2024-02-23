@@ -7,7 +7,7 @@ import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
-import static frc.robot.Constants.ShootingConstants.SHOOTER_PITCH_YAW_INTERPOLATOR;
+import static frc.robot.Constants.ShootingConstants.SHOOTER_PITCH_YAW_VELOCITY_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
@@ -73,7 +73,7 @@ public class AutoAimShootCommand extends Command {
     var distanceToSpeaker = robotTranslation.getDistance(speakerTranslation);
 
     // Lookup shooter settings for this distance
-    var shootingSettings = SHOOTER_PITCH_YAW_INTERPOLATOR.calculate(distanceToSpeaker);
+    var shootingSettings = SHOOTER_PITCH_YAW_VELOCITY_INTERPOLATOR.calculate(distanceToSpeaker);
 
     // Prepare shooter
     shooter.prepareToShoot(shootingSettings.getVelocity());
