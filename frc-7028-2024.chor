@@ -1,0 +1,42 @@
+{
+    "version": "v0.2.1",
+    "robotConfiguration": {
+        "mass": 64,
+        "rotationalInertia": 7.882,
+        "motorMaxTorque": 1.345,
+        "motorMaxVelocity": 4640,
+        "gearing": 6.122448979591836,
+        "wheelbase": 0.69215,
+        "trackWidth": 0.5207,
+        "bumperLength": 1.001713,
+        "bumperWidth": 0.862013,
+        "wheelRadius": 0.0515366
+    },
+    "paths": {
+        "New Path": {
+            "waypoints": [],
+            "trajectory": [],
+            "constraints": [
+                {
+                    "scope": [
+                        "first"
+                    ],
+                    "type": "StopPoint",
+                    "uuid": "e54d0ad8-d49c-49ac-a5ed-d078d7715120"
+                },
+                {
+                    "scope": [
+                        "last"
+                    ],
+                    "type": "StopPoint",
+                    "uuid": "42c4e89e-95fb-4c34-907b-4c27a3277101"
+                }
+            ],
+            "usesControlIntervalGuessing": true,
+            "defaultControlIntervalCount": 40,
+            "usesDefaultFieldObstacles": true,
+            "circleObstacles": []
+        }
+    },
+    "splitTrajectoriesAtStopPoints": false
+}
