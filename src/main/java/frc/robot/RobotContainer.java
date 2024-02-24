@@ -114,7 +114,7 @@ public class RobotContainer {
 
     // Amper
     controlBindings.exchangeToAmper().ifPresent(trigger -> trigger.onTrue(
-        new LoadAmperCommand(amperSubsystem, turretSubsystem, intakeSubsystem)));
+        new LoadAmperCommand(amperSubsystem, turretSubsystem, intakeSubsystem, elevatorSubsystem)));
     
     controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(
         new IntakeToAmperCommand(intakeSubsystem, amperSubsystem)));

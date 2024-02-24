@@ -1,5 +1,8 @@
 package frc.robot.telemetry;
 
+import java.util.Map;
+
+import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -27,12 +30,19 @@ public class DriverTelemetry {
   private final GenericEntry turretAngleDegreesEntry;
 
   public DriverTelemetry() {
+
+    // Driver camera
+    driverTab.add(new HttpCamera("photonvision_Port_1184_Output_MJPEG_Server", "http://10.70.28.11:1184"))
+        .withWidget(BuiltInWidgets.kCameraStream)
+        .withProperties(Map.of("showCrosshair", true, "showControls", false))
+        .withSize(4, 5).withPosition(2, 0);
+
     elevatorAtTopLimitEntry = driverTab.add("Elevator Top", false)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(2, 0).getEntry();
+        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0).getEntry();
     elevatorAtBottomLimitEntry = driverTab.add("Elevator Bottom", false)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(3, 0).getEntry();
+        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 1).getEntry();
     elevatorMetersEntry = driverTab.add("Elevator Meters", 0.0)
-        .withWidget(BuiltInWidgets.kTextView).withPosition(4, 0).getEntry();
+        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 2).getEntry();
     
 
     var shootingList = driverTab.getLayout("Shooting", BuiltInLayouts.kList).withSize(2, 6).withPosition(8, 0);

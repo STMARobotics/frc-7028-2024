@@ -197,7 +197,7 @@ public class Constants {
         .withMotionMagicAcceleration(5.0)
         .withMotionMagicCruiseVelocity(6.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.025635);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.024658);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.004);
@@ -265,6 +265,7 @@ public class Constants {
     public static final Measure<Distance> SCORE_AMP_HEIGHT = Meters.of(0.25);
     public static final Measure<Distance> SCORE_TRAP_HEIGHT = Meters.of(0.42);
     public static final Measure<Distance> PARK_HEIGHT = Meters.of(0.0);
+    public static final Measure<Distance> ELEVATOR_TRANSFER_TO_AMP_HEIGHT = Inches.of(0.5);
 
     public static final Measure<Distance> POSITION_TOLERANCE = Meters.of(.01);
   }
