@@ -8,4 +8,5 @@ public class ShootingState {
   public boolean isInTurretRange;
   public double targetDistance;
   public double targetAngleDegrees;
+  public double turretAngleDegrees;
 }

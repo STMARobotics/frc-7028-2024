@@ -28,11 +28,6 @@ public class JoystickControlBindings implements ControlBindings {
   private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
 
   @Override
-  public Optional<Trigger> resetPose() {
-    return Optional.of(leftJoystick.povDown());
-  }
-  
-  @Override
   public Optional<Trigger> wheelsToX() {
     return Optional.of(leftJoystick.button(4));
   }

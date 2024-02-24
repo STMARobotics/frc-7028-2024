@@ -58,6 +58,7 @@ import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.LaserCan.RangingMode;
 import au.grapplerobotics.LaserCan.TimingBudget;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -225,6 +226,16 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   /**
+   * Set the turret yaw - but clamps to positions where it can shoot a note.
+   * @param yaw robot relative yaw
+   */
+  public void moveToYawShootingPosition(Measure<Angle> yaw) {
+    var clampedYawRotations = 
+        MathUtil.clamp(translateYaw(yaw), YAW_SHOOT_LIMIT_REVERSE.in(Rotations), YAW_LIMIT_FORWARD.in(Rotations));
+    yawMotor.setControl(yawControl.withPosition(clampedYawRotations));
+  }
+
+  /**
    * Sets the turret pitch (rotation around the Y axis) position target. Zero is horizontal, upward is positive
    * (since the turret is facing backward).
    * @param pitch pitch
@@ -321,7 +332,7 @@ public class TurretSubsystem extends SubsystemBase {
    */
   public boolean isInTrapPosition() {
     BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
-    return isInTolerance(TRAP_YAW_POSITION.in(Rotations), yawPositionSignal, YAW_TOLERANCE.in(Rotations))
+    return isInTolerance(translateYaw(TRAP_YAW_POSITION), yawPositionSignal, YAW_TOLERANCE.in(Rotations))
         && isInTolerance(TRAP_PITCH_POSITION.in(Rotations), pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
   }
 

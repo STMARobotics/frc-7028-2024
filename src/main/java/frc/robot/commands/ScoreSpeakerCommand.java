@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Radians;
@@ -124,7 +125,7 @@ public class ScoreSpeakerCommand extends Command {
     
     // Move the turret
     turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-    turretSubsystem.moveToYawPosition(turretYawTarget);
+    turretSubsystem.moveToYawShootingPosition(turretYawTarget);
 
     // Calculate ready state and send to telemetry
     shootingState.isShooterReady = shooter.isReadyToShoot();
@@ -134,6 +135,7 @@ public class ScoreSpeakerCommand extends Command {
     shootingState.isYawReady = turretSubsystem.isAtYawTarget();
     shootingState.targetAngleDegrees = angleToSpeaker.getDegrees();
     shootingState.targetDistance = distanceToSpeaker;
+    shootingState.turretAngleDegrees = turretYawTarget.in(Degrees);
     telemetryConsumer.accept(shootingState);
 
     // Aim drivetrain
@@ -142,12 +144,11 @@ public class ScoreSpeakerCommand extends Command {
       // Turret can reach, stop robot
       chassisSpeeds.vxMetersPerSecond = 0.0;
       chassisSpeeds.vyMetersPerSecond = 0.0;
-      chassisSpeeds.omegaRadiansPerSecond = 0.0;
       var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
       drivetrain.setControl(swerveRequestRotation
           .withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
           .withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
-          .withRotationalRate(limitedChassisSpeeds.omegaRadiansPerSecond));
+          .withRotationalRate(0.0));
     } else {
       // Turret cannot reach, turn robot
       chassisSpeeds.vxMetersPerSecond = 0.0;

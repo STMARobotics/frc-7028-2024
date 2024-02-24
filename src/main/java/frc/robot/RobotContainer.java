@@ -11,6 +11,7 @@ import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
@@ -79,6 +80,11 @@ public class RobotContainer {
     PortForwarder.add(1185, "10.70.28.11", 1185);
     PortForwarder.add(1186, "10.70.28.11", 1186);
 
+    NamedCommands.registerCommand("scoreSpeaker", 
+        new ScoreSpeakerCommand(drivetrain, shooterSubsystem, turretSubsystem, driverTelemetry::telemeterizeShooting));
+    NamedCommands.registerCommand("intake", 
+        new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem));
+
     autoChooser = AutoBuilder.buildAutoChooser();
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
 
@@ -87,7 +93,7 @@ public class RobotContainer {
 
     configureDefaultCommands();
     configureButtonBindings();
-    populateSysIdDashboard();
+    // populateSysIdDashboard();
   }
 
   private void configureDefaultCommands() {
@@ -101,9 +107,6 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Driving
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
-
-    // Reset field relative heading
-    controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
 
     // Intake
     controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem)));

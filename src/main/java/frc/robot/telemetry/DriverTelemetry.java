@@ -24,6 +24,7 @@ public class DriverTelemetry {
   private final GenericEntry isInTurretRangeEntry;
   private final GenericEntry targetDistanceEntry;
   private final GenericEntry targetAngleDegreesEntry;
+  private final GenericEntry turretAngleDegreesEntry;
 
   public DriverTelemetry() {
     elevatorAtTopLimitEntry = driverTab.add("Elevator Top", false)
@@ -34,14 +35,15 @@ public class DriverTelemetry {
         .withWidget(BuiltInWidgets.kTextView).withPosition(4, 0).getEntry();
     
 
-    var shootingList = driverTab.getLayout("Shooting", BuiltInLayouts.kList).withPosition(5, 0);
+    var shootingList = driverTab.getLayout("Shooting", BuiltInLayouts.kList).withSize(2, 6).withPosition(8, 0);
     isShooterReadyEntry = shootingList.add("shooter", false).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 0).getEntry();
     isDrivetrainStoppedEntry = shootingList.add("stopped", false).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 1).getEntry();
     isYawReadyEntry = shootingList.add("yaw", false).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 2).getEntry();
     isPitchReadyEntry = shootingList.add("pitch", false).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 3).getEntry();
     isInTurretRangeEntry = shootingList.add("turret range", false).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 4).getEntry();
-    targetDistanceEntry = shootingList.add("distance", 0.0).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 5).getEntry();
-    targetAngleDegreesEntry = shootingList.add("angle", 0.0).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 6).getEntry();
+    targetDistanceEntry = shootingList.add("distance", 0.0).withWidget(BuiltInWidgets.kTextView).withPosition(0, 5).getEntry();
+    targetAngleDegreesEntry = shootingList.add("angle", 0.0).withWidget(BuiltInWidgets.kTextView).withPosition(0, 6).getEntry();
+    turretAngleDegreesEntry = shootingList.add("turret angle", 0.0).withWidget(BuiltInWidgets.kTextView).withPosition(0, 6).getEntry();
   }
 
   public void telemeterizeElevator(ElevatorState state) {
@@ -58,6 +60,7 @@ public class DriverTelemetry {
     isInTurretRangeEntry.setBoolean(state.isInTurretRange);
     targetDistanceEntry.setDouble(state.targetDistance);
     targetAngleDegreesEntry.setDouble(state.targetAngleDegrees);
+    turretAngleDegreesEntry.setDouble(state.turretAngleDegrees);
   }
 
 }

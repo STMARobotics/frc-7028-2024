@@ -15,12 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public interface ControlBindings {
 
   /**
-   * Takes the current orientation of the robot and makes it X forward for field-relative maneuvers
-   * @return trigger
-   */
-  Optional<Trigger> resetPose();
-
-  /**
    * Puts the wheels into an X configuration
    * @return trigger
    */
