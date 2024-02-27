@@ -1,41 +1,30 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
-import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
-import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
-import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
-import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
 import static java.lang.Math.PI;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.ForwardReference;
-import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class AutoAimShootCommand extends Command {
 
-  private final CommandSwerveDrivetrain drivetrain;
   private final ShooterSubsystem shooter;
   private final TurretSubsystem turretSubsystem;
+  private final Pose2d poseSupplier;
 
   private final Timer shootTimer = new Timer();
 
@@ -43,28 +32,18 @@ public class AutoAimShootCommand extends Command {
 
   private final MutableMeasure<Angle> angleToRotate = MutableMeasure.zero(Rotations);
 
-  private final SwerveRequest.FieldCentricFacingAngle swerveRequest = new SwerveRequest.FieldCentricFacingAngle()
-    .withDriveRequestType(DriveRequestType.Velocity)
-    .withSteerRequestType(SteerRequestType.MotionMagic)
-    .withVelocityX(0.0)
-    .withVelocityY(0.0);
-
-  public AutoAimShootCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter, TurretSubsystem turretSubsystem) {
-    this.drivetrain = drivetrain;
+  public AutoAimShootCommand(ShooterSubsystem shooter,
+  TurretSubsystem turretSubsystem, Pose2d poseSupplier) {
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
+    this.poseSupplier = poseSupplier;
 
     addRequirements(shooter, turretSubsystem);
 
-    swerveRequest.ForwardReference = ForwardReference.RedAlliance;
-    swerveRequest.HeadingController = new PhoenixPIDController(THETA_kP, THETA_kI, THETA_kD);
-    swerveRequest.HeadingController.enableContinuousInput(-PI, PI);
-    swerveRequest.HeadingController.setTolerance(AIM_TOLERANCE.in(Radians));
   }
 
   @Override
   public void initialize() {
-    swerveRequest.HeadingController.reset();
     shootTimer.reset();
     var alliance = DriverStation.getAlliance();
     speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE : SPEAKER_RED;
@@ -72,9 +51,9 @@ public class AutoAimShootCommand extends Command {
 
   @Override
   public void execute() {
-    var robotPose = drivetrain.getState().Pose;
+    var robotPose = poseSupplier;
     var robotTranslation = robotPose.getTranslation();
-    
+
     // Angle to turn the robot. The shooter is on the back, so it's the angle to the speaker plus PI radians.
     var angleToSpeaker = speakerTranslation.minus(robotTranslation).getAngle().rotateBy(fromRadians(PI));
     angleToRotate.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
