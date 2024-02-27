@@ -21,6 +21,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class DrivetrainTelemetry {
+  // Limit telemetry updates to prevent flooding network and Shuffleboard
+  private static final double PUBLISH_FREQUENCY = 0.04;
+
   private final int logEntry;
   private final int odomEntry;
 
@@ -44,6 +47,8 @@ public class DrivetrainTelemetry {
       driveStats.getDoubleArrayTopic("Module States").publish();
   private final DoubleArrayPublisher moduleTargetsPublisher =
       driveStats.getDoubleArrayTopic("Module Targets").publish();
+  
+  private final Timer frequencyTimer = new Timer();
 
   /* Keep a reference of the last pose to calculate the speeds */
   private Pose2d lastPose = new Pose2d();
@@ -80,40 +85,43 @@ public class DrivetrainTelemetry {
     
     logEntry = DataLogManager.getLog().start("odometry", "double[]");
     odomEntry = DataLogManager.getLog().start("odom period", "double");
+    frequencyTimer.start();
   }
 
   /* Accept the swerve drive state and telemeterize it to smartdashboard */
   public void telemeterize(SwerveDriveState state) {
-    /* Telemeterize the pose */
-    Pose2d pose = state.Pose;
-    field2d.setRobotPose(pose);
+    if (frequencyTimer.advanceIfElapsed(PUBLISH_FREQUENCY)) {
+      /* Telemeterize the pose */
+      Pose2d pose = state.Pose;
+      field2d.setRobotPose(pose);
 
-    readablePoseEntry.setString(String.format("(%.3f, %.3f) %.2f rad", 
-        pose.getX(), pose.getY(), pose.getRotation().getRadians()));
+      readablePoseEntry.setString(String.format("(%.3f, %.3f) %.2f rad", 
+          pose.getX(), pose.getY(), pose.getRotation().getRadians()));
 
-    /* Telemeterize the robot's general speeds */
-    double currentTime = Utils.getCurrentTimeSeconds();
-    double diffTime = currentTime - lastTime;
-    lastTime = currentTime;
-    Translation2d distanceDiff = pose.minus(lastPose).getTranslation();
-    lastPose = pose;
+      /* Telemeterize the robot's general speeds */
+      double currentTime = Utils.getCurrentTimeSeconds();
+      double diffTime = currentTime - lastTime;
+      lastTime = currentTime;
+      Translation2d distanceDiff = pose.minus(lastPose).getTranslation();
+      lastPose = pose;
 
-    Translation2d velocities = distanceDiff.div(diffTime);
+      Translation2d velocities = distanceDiff.div(diffTime);
 
-    drivetrainSpeedEntry.setDouble(velocities.getNorm());
-    drivetrainVelocityXEntry.setDouble(velocities.getX());
-    drivetrainVelocityYEntry.setDouble(velocities.getY());
+      drivetrainSpeedEntry.setDouble(velocities.getNorm());
+      drivetrainVelocityXEntry.setDouble(velocities.getX());
+      drivetrainVelocityYEntry.setDouble(velocities.getY());
 
-    periodEntry.setDouble(1.0 / state.OdometryPeriod);
+      periodEntry.setDouble(1.0 / state.OdometryPeriod);
 
-    DataLogManager.getLog().appendDoubleArray(logEntry,
-        new double[] { pose.getX(), pose.getY(), pose.getRotation().getDegrees() },
-        (long) (Timer.getFPGATimestamp() * 1000000));
-    DataLogManager.getLog().appendDouble(odomEntry, state.OdometryPeriod, (long) (Timer.getFPGATimestamp() * 1000000));
+      DataLogManager.getLog().appendDoubleArray(logEntry,
+          new double[] { pose.getX(), pose.getY(), pose.getRotation().getDegrees() },
+          (long) (Timer.getFPGATimestamp() * 1000000));
+      DataLogManager.getLog().appendDouble(odomEntry, state.OdometryPeriod, (long) (Timer.getFPGATimestamp() * 1000000));
 
-    // Publish module states and targets
-    publishModuleStates(state.ModuleStates, moduleStatePublisher);
-    publishModuleStates(state.ModuleTargets, moduleTargetsPublisher);
+      // Publish module states and targets
+      publishModuleStates(state.ModuleStates, moduleStatePublisher);
+      publishModuleStates(state.ModuleTargets, moduleTargetsPublisher);
+    }
   }
 
   /**

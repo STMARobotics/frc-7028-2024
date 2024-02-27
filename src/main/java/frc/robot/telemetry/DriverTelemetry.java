@@ -1,8 +1,5 @@
 package frc.robot.telemetry;
 
-import java.util.Map;
-
-import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -16,10 +13,6 @@ public class DriverTelemetry {
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   
-  private final GenericEntry elevatorAtTopLimitEntry;
-  private final GenericEntry elevatorAtBottomLimitEntry;
-  private final GenericEntry elevatorMetersEntry;
-
   private final GenericEntry isShooterReadyEntry;
   private final GenericEntry isDrivetrainStoppedEntry;
   private final GenericEntry isYawReadyEntry;
@@ -31,20 +24,6 @@ public class DriverTelemetry {
 
   public DriverTelemetry() {
 
-    // Driver camera
-    driverTab.add(new HttpCamera("photonvision_Port_1184_Output_MJPEG_Server", "http://10.70.28.11:1184"))
-        .withWidget(BuiltInWidgets.kCameraStream)
-        .withProperties(Map.of("showCrosshair", true, "showControls", false))
-        .withSize(4, 5).withPosition(2, 0);
-
-    elevatorAtTopLimitEntry = driverTab.add("Elevator Top", false)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0).getEntry();
-    elevatorAtBottomLimitEntry = driverTab.add("Elevator Bottom", false)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 1).getEntry();
-    elevatorMetersEntry = driverTab.add("Elevator Meters", 0.0)
-        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 2).getEntry();
-    
-
     var shootingList = driverTab.getLayout("Shooting", BuiltInLayouts.kList).withSize(2, 6).withPosition(8, 0);
     isShooterReadyEntry = shootingList.add("shooter", false).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 0).getEntry();
     isDrivetrainStoppedEntry = shootingList.add("stopped", false).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 1).getEntry();
@@ -54,12 +33,6 @@ public class DriverTelemetry {
     targetDistanceEntry = shootingList.add("distance", 0.0).withWidget(BuiltInWidgets.kTextView).withPosition(0, 5).getEntry();
     targetAngleDegreesEntry = shootingList.add("angle", 0.0).withWidget(BuiltInWidgets.kTextView).withPosition(0, 6).getEntry();
     turretAngleDegreesEntry = shootingList.add("turret angle", 0.0).withWidget(BuiltInWidgets.kTextView).withPosition(0, 6).getEntry();
-  }
-
-  public void telemeterizeElevator(ElevatorState state) {
-    elevatorAtTopLimitEntry.setBoolean(state.isAtTopLimit);
-    elevatorAtBottomLimitEntry.setBoolean(state.isAtBottomLimit);
-    elevatorMetersEntry.setDouble(state.elevatorMeters);
   }
 
   public void telemeterizeShooting(ShootingState state) {

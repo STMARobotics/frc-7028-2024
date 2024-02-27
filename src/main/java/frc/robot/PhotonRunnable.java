@@ -22,6 +22,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.RawSubscriber;
@@ -56,6 +57,16 @@ public class PhotonRunnable implements Runnable {
     this.poseConsumer = poseConsumer;
     this.poseSupplier = poseSupplier;
     
+    // Forward PhotonVision ports for when teathered with USB
+    // https://docs.photonvision.org/en/latest/docs/installation/networking.html#port-forwarding
+    PortForwarder.add(5800, "10.70.28.11", 5800);
+    PortForwarder.add(1181, "10.70.28.11", 1181);
+    PortForwarder.add(1182, "10.70.28.11", 1182);
+    PortForwarder.add(1183, "10.70.28.11", 1183);
+    PortForwarder.add(1184, "10.70.28.11", 1184);
+    PortForwarder.add(1185, "10.70.28.11", 1185);
+    PortForwarder.add(1186, "10.70.28.11", 1186);
+
     // NT publishers to send data to AdvantageScope
     for (int i = 0; i < cameraNames.length; i++) {
       aprilTagPublishers[i] = NetworkTableInstance.getDefault()
