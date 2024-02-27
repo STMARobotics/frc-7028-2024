@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.telemetry.ShootingState;
 
 /**
@@ -52,7 +53,6 @@ public class ScoreSpeakerCommand extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private final ShooterSubsystem shooter;
   private final TurretSubsystem turretSubsystem;
-
   private final Consumer<ShootingState> telemetryConsumer;
 
   private final Timer shootTimer = new Timer();
@@ -68,7 +68,6 @@ public class ScoreSpeakerCommand extends Command {
   private Translation2d speakerTranslation;
 
   private final SwerveRequest.FieldCentricFacingAngle swerveRequestFacing = new SwerveRequest.FieldCentricFacingAngle()
-
     .withDriveRequestType(DriveRequestType.Velocity)
     .withSteerRequestType(SteerRequestType.MotionMagic)
     .withVelocityX(0.0)
@@ -169,6 +168,17 @@ public class ScoreSpeakerCommand extends Command {
       turretSubsystem.shoot();
       shootTimer.start();
     }
+  }
+
+  /**
+   * Checks if the robot is moving slow enough to allow shooting.
+   * @return true if the robot is moving slow enough to shoot, otherwise false
+   */
+  private boolean isRobotStopped() {
+    var currentSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
+    return new Translation2d(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond).getNorm()
+        < ROBOT_SPEED_TOLERANCE.in(MetersPerSecond)
+        && Math.abs(currentSpeeds.omegaRadiansPerSecond) < ROBOT_ROTATION_TOLERANCE.in(RadiansPerSecond);
   }
 
   @Override
