@@ -14,6 +14,7 @@ import static frc.robot.Constants.ElevatorConstants.BOTTOM_LIMIT;
 import static frc.robot.Constants.ElevatorConstants.DEVICE_ID_MOTOR;
 import static frc.robot.Constants.ElevatorConstants.DEVICE_PORT_BOTTOM_LIMIT;
 import static frc.robot.Constants.ElevatorConstants.DEVICE_PORT_TOP_LIMIT;
+import static frc.robot.Constants.ElevatorConstants.ELEVATOR_TRANSFER_TO_AMP_HEIGHT;
 import static frc.robot.Constants.ElevatorConstants.METERS_PER_ROTATION;
 import static frc.robot.Constants.ElevatorConstants.MOTION_MAGIC_CONFIGS;
 import static frc.robot.Constants.ElevatorConstants.POSITION_TOLERANCE;
@@ -107,23 +108,47 @@ public class ElevatorSubsystem extends SubsystemBase {
     return !bottomLimitSwitch.get();
   }
 
+  /**
+   * Moves the elevator to position to score in the amp
+   */
   public void prepareToAmp() {
     moveToPosition(ElevatorConstants.SCORE_AMP_HEIGHT);
   }
 
+  /**
+   * Moves the elevator to the position to score in the trap
+   */
   public void prepareToTrap() {
     moveToPosition(ElevatorConstants.SCORE_TRAP_HEIGHT);
   }
 
+  /**
+   * Moves the elevator to position to exchange from turret to amper
+   */
+  public void prepareToExchangeToAmper() {
+    moveToPosition(ELEVATOR_TRANSFER_TO_AMP_HEIGHT);
+  }
+
+  /**
+   * Moves the elevator to the park height
+   */
   public void park() {
     moveToPosition(ElevatorConstants.PARK_HEIGHT);
   }
 
+  /**
+   * Checks if the elevator is at the target position
+   * @return true if the elevator is at the target, otherwise false
+   */
   public boolean isAtTarget() {
     return rotationsToMeters(Math.abs(
         elevatorPositionSignal.refresh().getValueAsDouble() - motionMagicControl.Position)) < POSITION_TOLERANCE.in(Meters);
   }
 
+  /**
+   * Gets the height of the elevator
+   * @return height of the elevator in meters
+   */
   private double getPositionMeters() {
     return rotationsToMeters(elevatorPositionSignal.refresh().getValueAsDouble());
   }

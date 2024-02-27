@@ -29,11 +29,6 @@ public class XBoxControlBindings implements ControlBindings {
   private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
 
   @Override
-  public Optional<Trigger> resetPose() {
-    return Optional.of(driverController.back());
-  }
-
-  @Override
   public Optional<Trigger> wheelsToX() {
     return Optional.of(driverController.povRight());
   }
@@ -84,10 +79,10 @@ public class XBoxControlBindings implements ControlBindings {
     return Optional.of(driverController.start());
   }
 
-
   @Override
   public Optional<Trigger> scoreAmp() {
     return Optional.of(driverController.leftTrigger());
+    
   }
 
   @Override

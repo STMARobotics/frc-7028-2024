@@ -8,12 +8,11 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
-import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -22,7 +21,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.IntakeToAmperCommand;
 import frc.robot.commands.IntakeToTurretCommand;
@@ -30,7 +28,6 @@ import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.ScoreSpeakerCommand;
-import frc.robot.commands.ScoreTrapCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
@@ -49,7 +46,6 @@ import frc.robot.telemetry.DrivetrainTelemetry;
 public class RobotContainer {
 
   private final ControlBindings controlBindings;
-  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   private final DriverTelemetry driverTelemetry = new DriverTelemetry();
   private final DrivetrainTelemetry drivetrainTelemetry = new DrivetrainTelemetry(MAX_VELOCITY.in(MetersPerSecond));
@@ -84,6 +80,11 @@ public class RobotContainer {
     PortForwarder.add(1185, "10.70.28.11", 1185);
     PortForwarder.add(1186, "10.70.28.11", 1186);
 
+    NamedCommands.registerCommand("scoreSpeaker", 
+        new ScoreSpeakerCommand(drivetrain, shooterSubsystem, turretSubsystem, driverTelemetry::telemeterizeShooting));
+    NamedCommands.registerCommand("intake", 
+        new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem));
+
     autoChooser = AutoBuilder.buildAutoChooser();
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
 
@@ -92,7 +93,7 @@ public class RobotContainer {
 
     configureDefaultCommands();
     configureButtonBindings();
-    populateSysIdDashboard();
+    // populateSysIdDashboard();
   }
 
   private void configureDefaultCommands() {
@@ -107,9 +108,6 @@ public class RobotContainer {
     // Driving
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
 
-    // Reset field relative heading
-    controlBindings.resetPose().ifPresent(trigger -> trigger.onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative)));
-
     // Intake
     controlBindings.intakeToTurret().ifPresent(
         trigger -> trigger.onTrue(new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem)));
@@ -117,33 +115,26 @@ public class RobotContainer {
 
     // Amper
     controlBindings.exchangeToAmper().ifPresent(trigger -> trigger.onTrue(
-        new LoadAmperCommand(amperSubsystem, turretSubsystem, intakeSubsystem)));
 
+        new LoadAmperCommand(amperSubsystem, turretSubsystem, intakeSubsystem, elevatorSubsystem)));
+    
     controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(
         new IntakeToAmperCommand(intakeSubsystem, amperSubsystem)));
 
     controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(
-        new ScoreAmpCommand(elevatorSubsystem, amperSubsystem)));
 
+      new ScoreAmpCommand(elevatorSubsystem, amperSubsystem, turretSubsystem)));
+  
     // Speaker
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
         new ManualShootCommand(turretSubsystem, shooterSubsystem)));
 
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
-        new ScoreSpeakerCommand(drivetrain, shooterSubsystem, turretSubsystem)));
 
+      new ScoreSpeakerCommand(drivetrain, shooterSubsystem, turretSubsystem, driverTelemetry::telemeterizeShooting)));
+    
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
-        new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem)));
-
-    // TODO operator
-    climbSubsystem.setDefaultCommand(climbSubsystem.run(() -> {
-      climbSubsystem.runLeftWinch(MathUtil.applyDeadband(-operatorController.getLeftY(), DEADBAND));
-      climbSubsystem.runRightWinch(MathUtil.applyDeadband(-operatorController.getRightY(), DEADBAND));
-    }));
-
-    operatorController.rightTrigger()
-        .whileTrue(new ScoreTrapCommand(elevatorSubsystem, amperSubsystem, turretSubsystem));
-
+      new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem)));
   }
 
   public void populateSysIdDashboard() {

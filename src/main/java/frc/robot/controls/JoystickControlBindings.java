@@ -28,11 +28,6 @@ public class JoystickControlBindings implements ControlBindings {
   private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
 
   @Override
-  public Optional<Trigger> resetPose() {
-    return Optional.of(leftJoystick.povDown());
-  }
-  
-  @Override
   public Optional<Trigger> wheelsToX() {
     return Optional.of(leftJoystick.button(4));
   }
@@ -61,22 +56,22 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> intakeToTurret() {
-    return Optional.of(rightJoystick.button(1));
+    return Optional.of(leftJoystick.trigger());
   }
 
   @Override
   public Optional<Trigger> intakeStop() {
-    return Optional.of(rightJoystick.button(2));
+    return Optional.of(leftJoystick.povUp());
   }
 
   @Override
   public Optional<Trigger> manualShoot() {
-    return Optional.empty();
+    return Optional.of(rightJoystick.povDown());
   }
 
   @Override
   public Optional<Trigger> scoreSpeaker() {
-    return Optional.empty();
+    return Optional.of(rightJoystick.trigger());
   }
 
   @Override
@@ -86,17 +81,17 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> scoreAmp() {
-    return Optional.empty();
+    return Optional.of(rightJoystick.povUp());
   }
 
   @Override
   public Optional<Trigger> exchangeToAmper() {
-    return Optional.empty();
+    return Optional.of(rightJoystick.povLeft());
   }
 
   @Override
   public Optional<Trigger> intakeToAmper() {
-    return Optional.empty();
+    return Optional.of(leftJoystick.povRight());
   }
 
 }
