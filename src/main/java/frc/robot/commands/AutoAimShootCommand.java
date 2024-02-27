@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
@@ -7,7 +9,7 @@ import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
-import static frc.robot.Constants.ShootingConstants.SHOOTER_PITCH_YAW_VELOCITY_INTERPOLATOR;
+import static frc.robot.Constants.ShootingConstants.SHOOTER_PITCH_VELOCITY_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
@@ -20,6 +22,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.ForwardReference;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,19 +72,23 @@ public class AutoAimShootCommand extends Command {
   public void execute() {
     var robotPose = drivetrain.getState().Pose;
     var robotTranslation = robotPose.getTranslation();
+    
+    // Angle to turn the robot. The shooter is on the back, so it's the angle to the speaker plus PI radians.
+    var angleToSpeaker = speakerTranslation.minus(robotTranslation).getAngle().rotateBy(fromRadians(PI)).getDegrees();
+    Measure<Angle> angleToRotate = Degrees.of(angleToSpeaker);
 
     // Distance between the robot and the speaker
     var distanceToSpeaker = robotTranslation.getDistance(speakerTranslation);
 
     // Lookup shooter settings for this distance
-    var shootingSettings = SHOOTER_PITCH_YAW_VELOCITY_INTERPOLATOR.calculate(distanceToSpeaker);
+    var shootingSettings = SHOOTER_PITCH_VELOCITY_INTERPOLATOR.calculate(distanceToSpeaker);
 
     // Prepare shooter
     shooter.prepareToShoot(shootingSettings.getVelocity());
 
     // Prepare turret
     turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-    turretSubsystem.moveToYawPosition(shootingSettings.getYaw());
+    turretSubsystem.moveToYawPosition(angleToRotate);
 
     // When shooter is spun up and turret aimed, shoot and start timer
     if (shooter.isReadyToShoot() && turretSubsystem.isAtYawAndPitchTarget()) {
