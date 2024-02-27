@@ -30,6 +30,8 @@ import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.TuneSpeakerCommand;
+import frc.robot.commands.led.DefaultLEDCommand;
+import frc.robot.commands.led.LEDBootAnimationCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
@@ -39,6 +41,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.telemetry.DriverTelemetry;
@@ -59,6 +62,7 @@ public class RobotContainer {
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+  private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -83,9 +87,13 @@ public class RobotContainer {
     configureDefaultCommands();
     configureButtonBindings();
     configureDashboard();
+
+    new LEDBootAnimationCommand(ledSubsystem).schedule();
   }
 
   private void configureDefaultCommands() {
+    ledSubsystem.setDefaultCommand(
+        new DefaultLEDCommand(ledSubsystem, turretSubsystem::hasNote, amperSubsystem::hasNote));
     drivetrain.setDefaultCommand(new FieldOrientedDriveCommand(
         drivetrain,
         controlBindings.translationX(),
