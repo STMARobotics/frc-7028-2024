@@ -44,14 +44,11 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.telemetry.DriverTelemetry;
-import frc.robot.telemetry.DrivetrainTelemetry;
 
 public class RobotContainer {
 
   private final ControlBindings controlBindings;
 
-  private final DriverTelemetry driverTelemetry = new DriverTelemetry();
   private final DrivetrainTelemetry drivetrainTelemetry = new DrivetrainTelemetry(MAX_VELOCITY.in(MetersPerSecond));
 
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
@@ -68,7 +65,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
-      turretSubsystem, intakeSubsystem, driverTelemetry::telemeterizeShooting);
+      turretSubsystem, intakeSubsystem, ledSubsystem);
   
   public RobotContainer() {
     // Configure control binding scheme

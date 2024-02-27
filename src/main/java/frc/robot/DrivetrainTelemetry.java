@@ -1,4 +1,4 @@
-package frc.robot.telemetry;
+package frc.robot;
 
 import java.util.Map;
 

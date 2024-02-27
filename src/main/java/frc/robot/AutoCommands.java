@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.util.function.Consumer;
-
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,9 +8,9 @@ import frc.robot.commands.ScoreSpeakerCommand;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.telemetry.ShootingState;
 
 /**
  * Non-static command factory for creating commands. See 
@@ -25,17 +23,17 @@ public class AutoCommands {
   private final ShooterSubsystem shooterSubsystem;
   private final TurretSubsystem turretSubsystem;
   private final IntakeSubsystem intakeSubsystem;
-  private final Consumer<ShootingState> shootingTelemetryConsumer;
+  private final LEDSubsystem ledSubsystem;
 
   public AutoCommands(AmperSubsystem amperSubsystem, CommandSwerveDrivetrain drivetrainSubsystem,
       ShooterSubsystem shooterSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem,
-      Consumer<ShootingState> shootingTelemetryConsumer) {
+      LEDSubsystem ledSubsystem) {
     this.amperSubsystem = amperSubsystem;
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.intakeSubsystem = intakeSubsystem;
-    this.shootingTelemetryConsumer = shootingTelemetryConsumer;
+    this.ledSubsystem = ledSubsystem;
   }
 
   /**
@@ -51,7 +49,7 @@ public class AutoCommands {
    * @return new command
    */
   public Command scoreSpeaker() {
-    return new ScoreSpeakerCommand(drivetrainSubsystem, shooterSubsystem, turretSubsystem, shootingTelemetryConsumer);
+    return new ScoreSpeakerCommand(drivetrainSubsystem, shooterSubsystem, turretSubsystem, ledSubsystem);
   }
 
   /**
