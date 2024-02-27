@@ -1,8 +1,8 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
@@ -23,7 +23,7 @@ import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +40,8 @@ public class AutoAimShootCommand extends Command {
   private final Timer shootTimer = new Timer();
 
   private Translation2d speakerTranslation;
+
+  private final MutableMeasure<Angle> angleToRotate = MutableMeasure.zero(Rotations);
 
   private final SwerveRequest.FieldCentricFacingAngle swerveRequest = new SwerveRequest.FieldCentricFacingAngle()
     .withDriveRequestType(DriveRequestType.Velocity)
@@ -74,8 +76,8 @@ public class AutoAimShootCommand extends Command {
     var robotTranslation = robotPose.getTranslation();
     
     // Angle to turn the robot. The shooter is on the back, so it's the angle to the speaker plus PI radians.
-    var angleToSpeaker = speakerTranslation.minus(robotTranslation).getAngle().rotateBy(fromRadians(PI)).getDegrees();
-    Measure<Angle> angleToRotate = Degrees.of(angleToSpeaker);
+    var angleToSpeaker = speakerTranslation.minus(robotTranslation).getAngle().rotateBy(fromRadians(PI));
+    angleToRotate.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
 
     // Distance between the robot and the speaker
     var distanceToSpeaker = robotTranslation.getDistance(speakerTranslation);
