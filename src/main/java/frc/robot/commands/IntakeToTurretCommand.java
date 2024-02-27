@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -44,7 +46,9 @@ public class IntakeToTurretCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.stop();
-    turretSubsystem.stop();
+    turretSubsystem.stopPitch();
+    turretSubsystem.stopYaw();
+    turretSubsystem.runRollers(RotationsPerSecond.zero());
     amperSubsystem.stop();
   }
 

@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -63,7 +64,7 @@ public class Constants {
 
   public static final class TeleopDriveConstants {
 
-    public static final double DEADBAND = 0.1;
+    public static final double DEADBAND = 0.05;
 
     public static final Measure<Velocity<Velocity<Distance>>> TRANSLATION_RATE_LIMIT = MetersPerSecondPerSecond.of(20.0);
     public static final Measure<Velocity<Velocity<Angle>>> ROTATION_RATE_LIMIT =
@@ -97,10 +98,10 @@ public class Constants {
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-25), -PI / 2)),
+            new Rotation3d(0, degreesToRadians(-24), -PI / 2)),
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-25), PI / 2))
+            new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), PI / 2))
       };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
@@ -181,20 +182,24 @@ public class Constants {
     public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
     public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
     // NOTE: Yaw limits are set using turret encoder angles, so they're 180-degrees off from robot
-    public static Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179);
-    public static Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179);
+    public static Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179.9);
+    public static Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179.9);
+
+    public static Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(.25);
+    public static Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-.25);
+
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(80)
+        .withKP(90)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(0.59)
-        .withKV(0.0)
+        .withKV(0.5)
         .withKA(0.0);
     public static final MotionMagicConfigs YAW_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicAcceleration(5.0)
         .withMotionMagicCruiseVelocity(6.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.025635);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.024658);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.004);
@@ -221,16 +226,17 @@ public class Constants {
     public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-10);
     public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(30);
 
-    public static final Measure<Angle> TRAP_PITCH_POSITION = Rotations.of(.11);
-    public static final Measure<Angle> TRAP_YAW_POSITION = Degrees.of(2);
+    public static final Measure<Angle> TRAP_PITCH_POSITION = Rotations.of(.114);
+    public static final Measure<Angle> TRAP_YAW_POSITION = Degrees.of(0.25);
 
     public static final Measure<Angle> INTAKE_YAW_POSITION = Radians.of(PI);
     public static final Measure<Angle> INTAKE_PITCH_POSITION = Radians.of(0.0);
 
-    public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(2);
+    public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(1.0);
+
     public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(1);
 
-    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200.0);
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150.0);
 
   }
 
@@ -256,12 +262,13 @@ public class Constants {
         .withMotionMagicAcceleration(250)
         .withMotionMagicCruiseVelocity(90);
     
-    public static final Measure<Distance> TOP_LIMIT = Meters.of(0.42);
+    public static final Measure<Distance> TOP_LIMIT = Meters.of(0.425);
     public static final Measure<Distance> BOTTOM_LIMIT = Meters.zero();
 
-    public static final Measure<Distance> SCORE_AMP_HEIGHT = Meters.of(0.15);
-    public static final Measure<Distance> SCORE_TRAP_HEIGHT = Meters.of(0.4);
+    public static final Measure<Distance> SCORE_AMP_HEIGHT = Meters.of(0.25);
+    public static final Measure<Distance> SCORE_TRAP_HEIGHT = Meters.of(0.42);
     public static final Measure<Distance> PARK_HEIGHT = Meters.of(0.0);
+    public static final Measure<Distance> ELEVATOR_TRANSFER_TO_AMP_HEIGHT = Inches.of(0.5);
 
     public static final Measure<Distance> POSITION_TOLERANCE = Meters.of(.01);
   }
@@ -273,19 +280,16 @@ public class Constants {
 
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(3.0);
+    public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
+    public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
-    public static final VelocityPitchInterpolator SHOOTER_PITCH_VELOCITY_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
+    public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.413)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(39)),
       new ShootingSettings().distance(Meters.of(2.413)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(28)),
       new ShootingSettings().distance(Meters.of(3.413)).velocity(RotationsPerSecond.of(60)).pitch(Degrees.of(14)),
-      new ShootingSettings().distance(Meters.of(4.413)).velocity(RotationsPerSecond.of(70)).pitch(Degrees.of(7)),
-      new ShootingSettings().distance(Meters.of(5.413)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(2.5)),
+      new ShootingSettings().distance(Meters.of(4.413)).velocity(RotationsPerSecond.of(70)).pitch(Degrees.of(8)),
+      new ShootingSettings().distance(Meters.of(5.413)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(5)),
       new ShootingSettings().distance(Meters.of(6.413)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(2.5))
-    ));
-
-    public static final VelocityPitchYawInterpolator SHOOTER_PITCH_YAW_VELOCITY_INTERPOLATOR = 
-    new VelocityPitchYawInterpolator(List.of(
-      new ShootingSettingsYaw().distance(Meters.of(0)).velocity(RotationsPerSecond.of(0)).pitch(Degrees.of(0)).yaw(Degrees.of(0))
     ));
 
   }

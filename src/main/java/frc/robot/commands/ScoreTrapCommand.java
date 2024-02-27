@@ -31,11 +31,6 @@ public class ScoreTrapCommand extends Command {
     if (turretSubsystem.isInTrapPosition()) {
       // Move the elevator only after the turret is in position, otherwise they collide
       elevatorSubsystem.prepareToTrap();
-
-      if (elevatorSubsystem.isAtTarget()) {
-        // Once turret and elevator are in position, run the amper to score
-        amperSubsystem.score();
-      }  
     }
   }
 

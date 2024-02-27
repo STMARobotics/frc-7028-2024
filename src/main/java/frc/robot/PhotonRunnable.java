@@ -8,19 +8,24 @@ import static org.photonvision.PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON
 
 import java.util.Arrays;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.common.dataflow.structures.Packet;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.RawSubscriber;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
 
 /**
@@ -38,10 +43,25 @@ public class PhotonRunnable implements Runnable {
   // Consumer of pose estimates
   private final BiConsumer<Pose2d, Double> poseConsumer;
 
+  private final Supplier<Pose2d> poseSupplier;
+
+  @SuppressWarnings("unchecked")
+  private final StructArrayPublisher<AprilTag>[] aprilTagPublishers = new StructArrayPublisher[2];
+   
+
   private final Packet packet = new Packet(1);
 
-  public PhotonRunnable(String[] cameraNames, Transform3d[] robotToCameras, BiConsumer<Pose2d, Double> poseConsumer) {
+  public PhotonRunnable(String[] cameraNames, Transform3d[] robotToCameras, BiConsumer<Pose2d, Double> poseConsumer,
+        Supplier<Pose2d> poseSupplier) {
     this.poseConsumer = poseConsumer;
+    this.poseSupplier = poseSupplier;
+    
+    // NT publishers to send data to AdvantageScope
+    for (int i = 0; i < cameraNames.length; i++) {
+      aprilTagPublishers[i] = NetworkTableInstance.getDefault()
+          .getStructArrayTopic("AprilTags-" + cameraNames[i], new AprilTagStruct()).publish();
+    }
+
     rawBytesSubscribers = new RawSubscriber[cameraNames.length];
     photonPoseEstimators = new PhotonPoseEstimator[cameraNames.length];
     waitHandles = new int[cameraNames.length];
@@ -63,6 +83,7 @@ public class PhotonRunnable implements Runnable {
 
   @Override
   public void run() {
+    var emptyAprilTagArray = new AprilTag[0];
     while (!Thread.interrupted()) {
       // Block the thread until new data comes in from PhotonVision
       int[] signaledHandles = null;
@@ -72,14 +93,23 @@ public class PhotonRunnable implements Runnable {
         Thread.currentThread().interrupt();
       }
 
+      var currentRobotPose = poseSupplier.get();
       for (int i = 0; i < signaledHandles.length; i++) {
         int cameraIndex = getCameraIndex(signaledHandles[i]);
+        var aprilTagPublisher = aprilTagPublishers[cameraIndex];
+        var photonPoseEstimator = photonPoseEstimators[cameraIndex];
 
         // Get AprilTag data
         var photonResults = getLatestResult(cameraIndex);
         if (photonResults.hasTargets() && (photonResults.targets.size() > 1
             || photonResults.targets.get(0).getPoseAmbiguity() < APRILTAG_AMBIGUITY_THRESHOLD)) {
-          photonPoseEstimators[cameraIndex].update(photonResults).ifPresent(estimatedRobotPose -> {
+          
+          // Send the AprilTag(s) to NT for AdvantageScope
+          aprilTagPublisher.accept(photonResults.targets.stream().map(target ->
+              getTargetPose(target, currentRobotPose, photonPoseEstimator.getRobotToCameraTransform())
+          ).toArray(AprilTag[]::new));
+          
+          photonPoseEstimator.update(photonResults).ifPresent(estimatedRobotPose -> {
             var estimatedPose = estimatedRobotPose.estimatedPose;
             // Make sure the measurement is on the field
             if (estimatedPose.getX() > 0.0 && estimatedPose.getX() <= FIELD_LENGTH.in(Meters)
@@ -87,10 +117,28 @@ public class PhotonRunnable implements Runnable {
                   poseConsumer.accept(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
             }
           });
+        } else {
+          // No tags, send empty array to NT
+          aprilTagPublisher.accept(emptyAprilTagArray);
         }
       }
     }
     Arrays.stream(rawBytesSubscribers).forEach(RawSubscriber::close);
+    Arrays.stream(aprilTagPublishers).forEach(StructArrayPublisher::close);
+  }
+
+  /**
+   * Transform a target from PhotonVision to a pose on the field
+   * @param target target data from PhotonVision
+   * @param robotPose current pose of the robot
+   * @param robotToCamera transform from robot to the camera that saw the target
+   * @return an AprilTag with an ID and pose
+   */
+  private static AprilTag getTargetPose(PhotonTrackedTarget target, Pose2d robotPose, Transform3d robotToCamera) {
+    var targetPose = new Pose3d(robotPose)
+        .transformBy(robotToCamera)
+        .transformBy(target.getBestCameraToTarget());
+    return new AprilTag(target.getFiducialId(), targetPose);
   }
 
   /**

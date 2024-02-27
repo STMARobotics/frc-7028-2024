@@ -78,5 +78,4 @@ public class TuneSpeakerCommand extends Command {
     shooterSubsystem.stop();
     shootTimer.stop();
   }
-
 }

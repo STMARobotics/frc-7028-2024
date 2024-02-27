@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
@@ -25,14 +26,17 @@ public class ManualShootCommand extends Command {
 
   @Override
   public void initialize() {
-    shooterSubsystem.prepareToShoot(RotationsPerSecond.of(70));
+    shooterSubsystem.prepareToShoot(RotationsPerSecond.of(35));
+    turretSubsystem.moveToPitchPosition(Degrees.of(39));
+    turretSubsystem.moveToYawPosition(Degrees.of(180));
     shootTimer.reset();
   }
 
   @Override
   public void execute() {
-    if(shooterSubsystem.isReadyToShoot()) {
+    if(shooterSubsystem.isReadyToShoot() && turretSubsystem.isAtYawAndPitchTarget()) {
       turretSubsystem.shoot();
+      shootTimer.start();
     }
   }
 
@@ -43,7 +47,7 @@ public class ManualShootCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    turretSubsystem.stop();
+    turretSubsystem.prepareToExchange();
     shooterSubsystem.stop();
     shootTimer.stop();
   }
