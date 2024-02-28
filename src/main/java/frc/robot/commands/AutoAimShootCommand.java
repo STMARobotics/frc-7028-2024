@@ -17,6 +17,7 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.math.MobileShootCalculator;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
@@ -25,6 +26,7 @@ public class AutoAimShootCommand extends Command {
   private final ShooterSubsystem shooter;
   private final TurretSubsystem turretSubsystem;
   private final Pose2d poseSupplier;
+  private final MobileShootCalculator mobileShootCalculator;
 
   private final Timer shootTimer = new Timer();
 
@@ -33,10 +35,12 @@ public class AutoAimShootCommand extends Command {
   private final MutableMeasure<Angle> angleToRotate = MutableMeasure.zero(Rotations);
 
   public AutoAimShootCommand(ShooterSubsystem shooter,
-  TurretSubsystem turretSubsystem, Pose2d poseSupplier) {
+  TurretSubsystem turretSubsystem, Pose2d poseSupplier, 
+  MobileShootCalculator mobileShootCalculator) {
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.poseSupplier = poseSupplier;
+    this.mobileShootCalculator = mobileShootCalculator;
 
     addRequirements(shooter, turretSubsystem);
 
@@ -69,7 +73,7 @@ public class AutoAimShootCommand extends Command {
 
     // Prepare turret
     turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-    turretSubsystem.moveToYawPosition(angleToRotate);
+    turretSubsystem.moveToYawShootingPosition(angleToRotate);
 
     // When shooter is spun up and turret aimed, shoot and start timer
     if (shooter.isReadyToShoot() && turretSubsystem.isAtYawAndPitchTarget()) {
