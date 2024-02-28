@@ -24,7 +24,7 @@ public class LEDSubsystem extends SubsystemBase {
   private final Notifier ledNotifier;
   private final LEDStripMethods ledStripMethods = new LEDStripMethods();
 
-  private final AddressableLED leds = new AddressableLED(0);
+  private final AddressableLED leds = new AddressableLED(9);
   private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(LED_COUNT);
 
   public LEDSubsystem() {

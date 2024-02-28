@@ -16,7 +16,7 @@ import frc.robot.subsystems.LEDSubsystem;
  */
 public class DefaultLEDCommand extends Command {
 
-  private static final Color NOTE_COLOR = Color.kOrange;
+  private static final Color NOTE_COLOR = Color.fromHSV(3, 255, 255);
 
   private static final int MODE_DS_DISCONNECT = 0;
   private static final int MODE_NOTE_IN_TURRET = 1;
@@ -51,7 +51,7 @@ public class DefaultLEDCommand extends Command {
         strips.setAll(NOTE_COLOR);
         break;
       case MODE_NOTE_IN_AMPER:
-        new LEDMarqueeCommand(ledSubsystem, 20, 255, 0, 15, .07)
+        new LEDMarqueeCommand(ledSubsystem, 3, 255, 0, 15, .07)
             .until(() -> getMode() != MODE_NOTE_IN_AMPER).schedule();
         break;
       case MODE_ROBOT_DISABLED:
