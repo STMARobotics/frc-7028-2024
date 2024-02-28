@@ -177,7 +177,7 @@ public class Constants {
     public static int DEVICE_ID_ROLLER_MOTOR = 41;
     public static int DEVICE_ID_NOTE_SENSOR = 3;
 
-    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
+    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.428223); 
     public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
     // NOTE: Yaw limits are set using turret encoder angles, so they're 180-degrees off from robot
     public static Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179.9);
@@ -197,7 +197,7 @@ public class Constants {
         .withMotionMagicAcceleration(5.0)
         .withMotionMagicCruiseVelocity(6.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.024658);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.143066);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.004);
