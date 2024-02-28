@@ -35,6 +35,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.math.VelocityPitchInterpolator;
 import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;;
 
@@ -268,6 +269,14 @@ public class Constants {
     public static final Measure<Distance> ELEVATOR_TRANSFER_TO_AMP_HEIGHT = Inches.of(0.5);
 
     public static final Measure<Distance> POSITION_TOLERANCE = Meters.of(.01);
+  }
+
+  public static class LEDConstants {
+    
+    public static final int DEVICE_ID_LEDS = 9;
+
+    public static final Color NOTE_COLOR = Color.fromHSV(3, 255, 255);
+
   }
 
   public static class ShootingConstants {

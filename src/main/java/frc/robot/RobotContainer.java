@@ -24,11 +24,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.FieldOrientedDriveCommand;
-import frc.robot.commands.IntakeToAmperCommand;
-import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ManualShootCommand;
-import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
@@ -65,7 +63,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
-      turretSubsystem, intakeSubsystem, ledSubsystem);
+      turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem);
   
   public RobotContainer() {
     // Configure control binding scheme
@@ -124,17 +122,19 @@ public class RobotContainer {
 
     // Intake
     controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
-    controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(intakeSubsystem.run(intakeSubsystem::stop)));
+    
+    controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(Commands.runOnce(() -> {
+      intakeSubsystem.stop();
+      amperSubsystem.stop();
+      turretSubsystem.stop();
+    }, intakeSubsystem, amperSubsystem, turretSubsystem)));
 
     // Amper
-    controlBindings.exchangeToAmper().ifPresent(trigger -> trigger.onTrue(
-        new LoadAmperCommand(amperSubsystem, turretSubsystem, intakeSubsystem, elevatorSubsystem)));
+    controlBindings.exchangeToAmper().ifPresent(trigger -> trigger.onTrue(autoCommands.transferToAmper()));
     
-    controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(
-        new IntakeToAmperCommand(intakeSubsystem, amperSubsystem)));
+    controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToAmper()));
     
-    controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(
-      new ScoreAmpCommand(elevatorSubsystem, amperSubsystem, turretSubsystem)));
+    controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));
     
     // Speaker
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(

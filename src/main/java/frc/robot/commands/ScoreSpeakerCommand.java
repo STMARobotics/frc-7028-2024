@@ -9,10 +9,10 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
-import static edu.wpi.first.wpilibj.util.Color.kOrange;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
+import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.ROBOT_ROTATION_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.ROBOT_SPEED_TOLERANCE;
@@ -133,7 +133,7 @@ public class ScoreSpeakerCommand extends Command {
     
     // Update LEDs with ready state
     ledSubsystem.setUpdater((l) -> 
-        l.setLEDSegments(kOrange, isShooterReady, isInTurretRange, isPitchReady, isYawReady));
+        l.setLEDSegments(NOTE_COLOR, isShooterReady, isInTurretRange, isPitchReady, isYawReady));
 
     // Aim drivetrain
     // NOTE: Slew rate limit needs to be applied so the robot slows properly (see 2022 robot doing "stoppies")

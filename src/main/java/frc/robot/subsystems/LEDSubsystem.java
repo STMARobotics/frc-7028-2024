@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.LEDConstants.DEVICE_ID_LEDS;
+
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -24,7 +26,7 @@ public class LEDSubsystem extends SubsystemBase {
   private final Notifier ledNotifier;
   private final LEDStripMethods ledStripMethods = new LEDStripMethods();
 
-  private final AddressableLED leds = new AddressableLED(9);
+  private final AddressableLED leds = new AddressableLED(DEVICE_ID_LEDS);
   private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(LED_COUNT);
 
   public LEDSubsystem() {

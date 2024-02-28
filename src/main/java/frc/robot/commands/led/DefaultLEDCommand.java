@@ -1,6 +1,7 @@
 package frc.robot.commands.led;
 
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
 import java.util.function.BooleanSupplier;
 
@@ -15,8 +16,6 @@ import frc.robot.subsystems.LEDSubsystem;
  * Default LED command to make the LEDs dance or indicate when a note is being held.
  */
 public class DefaultLEDCommand extends Command {
-
-  private static final Color NOTE_COLOR = Color.fromHSV(3, 255, 255);
 
   private static final int MODE_DS_DISCONNECT = 0;
   private static final int MODE_NOTE_IN_TURRET = 1;
