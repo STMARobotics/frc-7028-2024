@@ -27,7 +27,7 @@ public class AutonomousBuilder {
     this.shooterSubsystem = shooterSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.driveTrain = driveTrain;
-    
+
   NamedCommands.registerCommand("aimAndShoot", aimAndShoot());
   NamedCommands.registerCommand("shootDonut", shootDonut());
   NamedCommands.registerCommand("startIntake", startIntake());
