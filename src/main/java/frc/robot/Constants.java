@@ -35,6 +35,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.math.VelocityPitchInterpolator;
 import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;
 
@@ -43,8 +44,8 @@ public class Constants {
   public static final String CANIVORE_BUS_NAME = "canivore";
   
   public static final class DrivetrainConstants {
-    public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
-    public static final Measure<Distance> WHEELBASE = Inches.of(18.75);
+    public static final Measure<Distance> TRACKWIDTH = Inches.of(20.5);
+    public static final Measure<Distance> WHEELBASE = Inches.of(21.125);
 
     // Theoretical free speed of L3 Kraken with FOC (Falcon 500 is faster)
     public static final Measure<Velocity<Distance>> MAX_VELOCITY = FeetPerSecond.of(16.5);
@@ -117,6 +118,9 @@ public class Constants {
     public static final int DEVICE_ID_TOP = 50;
     public static final int DEVICE_ID_BOTTOM = 51;
 
+    public static final double SHOOTER_STATOR_CURRENT_LIMIT = 220;
+    public static final double SHOOTER_SUPPLY_CURRENT_LIMIT = 80;
+
     public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_TOP = new SlotConfigs()
         .withKP(10.0)
         .withKI(0.0)
@@ -133,7 +137,7 @@ public class Constants {
   
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
-    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(2.0);
+    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(1.5);
   }
 
   public static class IntakeConstants {
@@ -161,7 +165,7 @@ public class Constants {
         .withKS(22)
         .withKV(0.17);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
-    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-50.0);
+    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-75.0);
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-40.0);
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
   
@@ -170,48 +174,54 @@ public class Constants {
   }
 
   public static class TurretConstants {
-    public static int DEVICE_ID_YAW_MOTOR = 45;
-    public static int DEVICE_ID_YAW_ENCODER = 46;
-    public static int DEVICE_ID_PITCH_MOTOR = 53;
-    public static int DEVICE_ID_PITCH_ENCODER = 54;
-    public static int DEVICE_ID_ROLLER_MOTOR = 41;
-    public static int DEVICE_ID_NOTE_SENSOR = 3;
+    public static final int DEVICE_ID_YAW_MOTOR = 45;
+    public static final int DEVICE_ID_YAW_ENCODER = 46;
+    public static final int DEVICE_ID_PITCH_MOTOR = 53;
+    public static final int DEVICE_ID_PITCH_ENCODER = 54;
+    public static final int DEVICE_ID_ROLLER_MOTOR = 41;
+    public static final int DEVICE_ID_NOTE_SENSOR = 3;
 
-    public static Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.260742);
-    public static double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
+    public static final double YAW_STATOR_CURRENT_LIMIT = 80;
+    public static final double YAW_SUPPLY_CURRENT_LIMIT = 40;
+
+    public static final double PITCH_STATOR_CURRENT_LIMIT = 40;
+    public static final double PITCH_SUPPLY_CURRENT_LIMIT = 30;
+
+    public static final Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.428223); 
+    public static final double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
     // NOTE: Yaw limits are set using turret encoder angles, so they're 180-degrees off from robot
-    public static Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179.9);
-    public static Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179.9);
+    public static final Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179.9);
+    public static final Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179.9);
 
-    public static Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(.25);
-    public static Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-.25);
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(.25);
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-.25);
 
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(90)
+        .withKP(110)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(0.59)
         .withKV(0.5)
         .withKA(0.0);
     public static final MotionMagicConfigs YAW_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(5.0)
-        .withMotionMagicCruiseVelocity(6.0);
+        .withMotionMagicAcceleration(10.0)
+        .withMotionMagicCruiseVelocity(2.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.024658);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.143066);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
-    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
-    public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.004);
+    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.117);
+    public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
     public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(120)
+        .withKP(130)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(0.4)
-        .withKV(0.0)
+        .withKV(0.1)
         .withKA(0.0)
-        .withKG(0.1)
+        .withKG(0.14)
         .withGravityType(GravityTypeValue.Arm_Cosine);
     public static final MotionMagicConfigs PITCH_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(2.0)
+        .withMotionMagicAcceleration(1.0)
         .withMotionMagicCruiseVelocity(1.5);
 
     public static final SlotConfigs ROLLER_VELOCITY_SLOT_CONFIGS = new SlotConfigs()
@@ -220,15 +230,15 @@ public class Constants {
         .withKD(0.0)
         .withKS(12);
     
-    public static final Measure<Velocity<Angle>> LOAD_VELOCITY = RotationsPerSecond.of(25);
+    public static final Measure<Velocity<Angle>> LOAD_VELOCITY = RotationsPerSecond.of(15);
     public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-10);
-    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(30);
+    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(75);
 
     public static final Measure<Angle> TRAP_PITCH_POSITION = Rotations.of(.114);
     public static final Measure<Angle> TRAP_YAW_POSITION = Degrees.of(0.25);
 
     public static final Measure<Angle> INTAKE_YAW_POSITION = Radians.of(PI);
-    public static final Measure<Angle> INTAKE_PITCH_POSITION = Radians.of(0.0);
+    public static final Measure<Angle> INTAKE_PITCH_POSITION = Radians.of(0.003);
 
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(1.0);
 
@@ -271,18 +281,27 @@ public class Constants {
     public static final Measure<Distance> POSITION_TOLERANCE = Meters.of(.01);
   }
 
+  public static class LEDConstants {
+    
+    public static final int DEVICE_ID_LEDS = 9;
+
+    public static final Color NOTE_COLOR = Color.fromHSV(3, 255, 255);
+
+  }
+
   public static class ShootingConstants {
 
     public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(652.73), inchesToMeters(218.42));
     public static final Translation2d SPEAKER_BLUE = new Translation2d(0.0, inchesToMeters(218.42));
 
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
-    public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(3.0);
+    public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);
     public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
-      new ShootingSettings().distance(Meters.of(1.413)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(39)),
+      new ShootingSettings().distance(Meters.of(1.269)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(38)),
+      new ShootingSettings().distance(Meters.of(1.815)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(31)),
       new ShootingSettings().distance(Meters.of(2.413)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(28)),
       new ShootingSettings().distance(Meters.of(3.413)).velocity(RotationsPerSecond.of(60)).pitch(Degrees.of(14)),
       new ShootingSettings().distance(Meters.of(4.413)).velocity(RotationsPerSecond.of(70)).pitch(Degrees.of(8)),

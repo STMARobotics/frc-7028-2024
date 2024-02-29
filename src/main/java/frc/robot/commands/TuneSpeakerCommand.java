@@ -2,12 +2,9 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -27,7 +24,7 @@ public class TuneSpeakerCommand extends Command {
   private final DoubleEntry velocitySubscriber;
   private final DoubleEntry yawSubscriber;
 
-  private final Timer shootTimer = new Timer();
+  private boolean shooting = false;
 
   public TuneSpeakerCommand(
       TurretSubsystem turretSubsystem,
@@ -52,7 +49,7 @@ public class TuneSpeakerCommand extends Command {
 
   @Override
   public void initialize() {
-    shootTimer.reset();
+    shooting = false;
   }
 
   @Override
@@ -60,15 +57,15 @@ public class TuneSpeakerCommand extends Command {
     turretSubsystem.moveToPitchPosition(Degrees.of(pitchSubscriber.get(0.0)));
     turretSubsystem.moveToYawPosition(Degrees.of(yawSubscriber.get(180.0)));
     shooterSubsystem.prepareToShoot(RotationsPerSecond.of(velocitySubscriber.get(10)));
-    if (turretSubsystem.isAtYawAndPitchTarget() && shooterSubsystem.isReadyToShoot()) {
+    if (shooting || (turretSubsystem.isAtYawAndPitchTarget() && shooterSubsystem.isReadyToShoot())) {
       turretSubsystem.shoot();
-      shootTimer.start();
+      shooting = true;
     }
   }
 
   @Override
   public boolean isFinished() {
-    return shootTimer.hasElapsed(SHOOT_TIME.in(Seconds));
+    return false;
   }
 
   @Override
@@ -76,6 +73,5 @@ public class TuneSpeakerCommand extends Command {
     turretSubsystem.stop();
     amperSubsystem.stop();
     shooterSubsystem.stop();
-    shootTimer.stop();
   }
 }

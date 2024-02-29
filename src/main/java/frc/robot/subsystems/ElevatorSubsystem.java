@@ -21,8 +21,6 @@ import static frc.robot.Constants.ElevatorConstants.POSITION_TOLERANCE;
 import static frc.robot.Constants.ElevatorConstants.SLOT_CONFIGS;
 import static frc.robot.Constants.ElevatorConstants.TOP_LIMIT;
 
-import java.util.function.Consumer;
-
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -33,6 +31,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,7 +39,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
-import frc.robot.telemetry.ElevatorState;
 
 public class ElevatorSubsystem extends SubsystemBase {
   private final TalonFX elevatorMotor = new TalonFX(DEVICE_ID_MOTOR, CANIVORE_BUS_NAME);
@@ -52,9 +50,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final VoltageOut voltageControl = new VoltageOut(0).withEnableFOC(true);
   private final MotionMagicVoltage motionMagicControl = new MotionMagicVoltage(0).withEnableFOC(true);
 
-  private final ElevatorState elevatorState = new ElevatorState();
-  private final Consumer<ElevatorState> telemetryFunction;
   private final StatusSignal<Double> elevatorPositionSignal;
+
+  private final MutableMeasure<Distance> elevatorPosition = MutableMeasure.zero(Meters);
 
   // SysId routines  
   private final SysIdRoutine elevatorRoutine = new SysIdRoutine(
@@ -62,9 +60,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       new SysIdRoutine.Mechanism((volts) -> 
           elevatorMotor.setControl(voltageControl.withOutput(volts.in(Volts))), null, this));
   
-  public ElevatorSubsystem(Consumer<ElevatorState> telemetryFunction) {
-    this.telemetryFunction = telemetryFunction;
-
+  public ElevatorSubsystem() {
     var motorConfig = new TalonFXConfiguration();
     motorConfig.Slot0 = Slot0Configs.from(SLOT_CONFIGS);
     motorConfig.MotionMagic = MOTION_MAGIC_CONFIGS;
@@ -80,16 +76,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor.getConfigurator().apply(motorConfig);
 
     elevatorPositionSignal = elevatorMotor.getPosition();
-  }
-
-  @Override
-  public void periodic() {
-    elevatorState.isAtBottomLimit = isAtBottomLimit();
-    elevatorState.isAtTopLimit = isAtTopLimit();
-    elevatorState.elevatorMeters = getPositionMeters();
-    if (telemetryFunction != null) {
-      telemetryFunction.accept(elevatorState);
-    }
   }
 
   /**
@@ -141,16 +127,16 @@ public class ElevatorSubsystem extends SubsystemBase {
    * @return true if the elevator is at the target, otherwise false
    */
   public boolean isAtTarget() {
-    return rotationsToMeters(Math.abs(
-        elevatorPositionSignal.refresh().getValueAsDouble() - motionMagicControl.Position)) < POSITION_TOLERANCE.in(Meters);
+    return rotationsToMeters(Math.abs(elevatorPositionSignal.refresh().getValueAsDouble()
+        - motionMagicControl.Position)) < POSITION_TOLERANCE.in(Meters);
   }
 
   /**
    * Gets the height of the elevator
-   * @return height of the elevator in meters
+   * @return height of the elevator
    */
-  private double getPositionMeters() {
-    return rotationsToMeters(elevatorPositionSignal.refresh().getValueAsDouble());
+  public Measure<Distance> getPosition() {
+    return elevatorPosition.mut_replace(rotationsToMeters(elevatorPositionSignal.refresh().getValueAsDouble()), Meters);
   }
 
   public Command sysIdDynamicCommand(Direction direction) {

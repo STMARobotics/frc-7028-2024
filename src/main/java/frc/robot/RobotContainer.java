@@ -4,31 +4,32 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.FieldOrientedDriveCommand;
-import frc.robot.commands.IntakeToAmperCommand;
-import frc.robot.commands.IntakeToTurretCommand;
-import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ManualShootCommand;
-import frc.robot.commands.ScoreAmpCommand;
-import frc.robot.commands.ScoreSpeakerCommand;
 import frc.robot.commands.TuneSpeakerCommand;
+import frc.robot.commands.led.DefaultLEDCommand;
+import frc.robot.commands.led.LEDBootAnimationCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
@@ -38,16 +39,14 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.telemetry.DriverTelemetry;
-import frc.robot.telemetry.DrivetrainTelemetry;
 
 public class RobotContainer {
 
   private final ControlBindings controlBindings;
 
-  private final DriverTelemetry driverTelemetry = new DriverTelemetry();
   private final DrivetrainTelemetry drivetrainTelemetry = new DrivetrainTelemetry(MAX_VELOCITY.in(MetersPerSecond));
 
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
@@ -55,13 +54,17 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final AmperSubsystem amperSubsystem = new AmperSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(driverTelemetry::telemeterizeElevator);
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+  private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
 
+  private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
+      turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem);
+  
   public RobotContainer() {
     // Configure control binding scheme
     if (DriverStation.getJoystickIsXbox(0) || Robot.isSimulation()) {
@@ -70,33 +73,22 @@ public class RobotContainer {
       controlBindings = new JoystickControlBindings();
     }
 
-    // Forward PhotonVision ports for when teathered with USB
-    // https://docs.photonvision.org/en/latest/docs/installation/networking.html#port-forwarding
-    PortForwarder.add(5800, "10.70.28.11", 5800);
-    PortForwarder.add(1181, "10.70.28.11", 1181);
-    PortForwarder.add(1182, "10.70.28.11", 1182);
-    PortForwarder.add(1183, "10.70.28.11", 1183);
-    PortForwarder.add(1184, "10.70.28.11", 1184);
-    PortForwarder.add(1185, "10.70.28.11", 1185);
-    PortForwarder.add(1186, "10.70.28.11", 1186);
-
-    NamedCommands.registerCommand("scoreSpeaker", 
-        new ScoreSpeakerCommand(drivetrain, shooterSubsystem, turretSubsystem, driverTelemetry::telemeterizeShooting));
-    NamedCommands.registerCommand("intake", 
-        new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem));
-
+    autoCommands.registerPPNamedCommands();
     autoChooser = AutoBuilder.buildAutoChooser();
-    driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
 
     drivetrain.getDaqThread().setThreadPriority(99);
     drivetrain.registerTelemetry(drivetrainTelemetry::telemeterize);
 
     configureDefaultCommands();
     configureButtonBindings();
-    // populateSysIdDashboard();
+    configureDashboard();
+
+    new LEDBootAnimationCommand(ledSubsystem).schedule();
   }
 
   private void configureDefaultCommands() {
+    ledSubsystem.setDefaultCommand(
+        new DefaultLEDCommand(ledSubsystem, turretSubsystem::hasNote, amperSubsystem::hasNote));
     drivetrain.setDefaultCommand(new FieldOrientedDriveCommand(
         drivetrain,
         controlBindings.translationX(),
@@ -104,34 +96,53 @@ public class RobotContainer {
         controlBindings.omega()));
   }
 
+  private void configureDashboard() {
+    // Auto selector
+    driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
+
+        // Driver camera
+    driverTab.add(new HttpCamera("photonvision_Port_1184_Output_MJPEG_Server", "http://10.70.28.11:1184"))
+        .withWidget(BuiltInWidgets.kCameraStream)
+        .withProperties(Map.of("showCrosshair", true, "showControls", false))
+        .withSize(4, 5).withPosition(2, 0);
+
+    // Elevator
+    driverTab.addBoolean("Elevator Top", elevatorSubsystem::isAtTopLimit)
+        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0);
+    driverTab.addBoolean("Elevator Bottom", elevatorSubsystem::isAtBottomLimit)
+        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 1);
+    driverTab.addNumber("Elevator Meters", () -> elevatorSubsystem.getPosition().in(Meters))
+        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 2);
+
+  }
+
   private void configureButtonBindings() {
     // Driving
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
 
     // Intake
-    controlBindings.intakeToTurret().ifPresent(
-        trigger -> trigger.onTrue(new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem)));
-    controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(intakeSubsystem.run(intakeSubsystem::stop)));
+
+    controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
+    
+    controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(Commands.runOnce(() -> {
+      intakeSubsystem.stop();
+      amperSubsystem.stop();
+      turretSubsystem.stop();
+    }, intakeSubsystem, amperSubsystem, turretSubsystem)));
 
     // Amper
-    controlBindings.exchangeToAmper().ifPresent(trigger -> trigger.onTrue(
-
-        new LoadAmperCommand(amperSubsystem, turretSubsystem, intakeSubsystem, elevatorSubsystem)));
+    controlBindings.exchangeToAmper().ifPresent(trigger -> trigger.onTrue(autoCommands.transferToAmper()));
     
-    controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(
-        new IntakeToAmperCommand(intakeSubsystem, amperSubsystem)));
+    controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToAmper()));
+    
+    controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));
+    
 
-    controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(
-
-      new ScoreAmpCommand(elevatorSubsystem, amperSubsystem, turretSubsystem)));
-  
     // Speaker
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
         new ManualShootCommand(turretSubsystem, shooterSubsystem)));
 
-    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
-
-      new ScoreSpeakerCommand(drivetrain, shooterSubsystem, turretSubsystem, driverTelemetry::telemeterizeShooting)));
+    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreSpeaker()));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem)));

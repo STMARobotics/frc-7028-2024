@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -45,7 +47,9 @@ public class LoadAmperCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     amperSubsystem.stop();
-    turretSubsystem.stop();
+    turretSubsystem.stopYaw();
+    turretSubsystem.stopPitch();
+    turretSubsystem.runRollers(RotationsPerSecond.zero());
     intakeSubsystem.stop();
     elevatorSubsystem.stop();
   }

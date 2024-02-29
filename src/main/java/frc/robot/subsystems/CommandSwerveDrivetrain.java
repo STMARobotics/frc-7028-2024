@@ -77,6 +77,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   private void configurePathPlanner() {
+    double driveBaseRadius = 0;
+    for (var moduleLocation : m_moduleLocations) {
+        driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+    }
+
     AutoBuilder.configureHolonomic(
         () -> this.getState().Pose, // Supplier of current robot pose
         this::seedFieldRelative, // Consumer for seeding pose against auto
@@ -87,8 +92,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 AutoDriveConstants.TRANSLATION_kD),
             new PIDConstants(AutoDriveConstants.THETA_kP, AutoDriveConstants.THETA_kI, AutoDriveConstants.THETA_kD),
             DrivetrainConstants.MAX_VELOCITY.in(Units.MetersPerSecond),
-            new Translation2d(DrivetrainConstants.WHEELBASE.in(Units.Meters) / 2.0,
-                DrivetrainConstants.TRACKWIDTH.in(Units.Meters) / 2.0).getNorm(),
+            driveBaseRadius,
             new ReplanningConfig(),
             0.004),
         () -> DriverStation.getAlliance().map(alliance -> alliance == DriverStation.Alliance.Red).orElse(false),
