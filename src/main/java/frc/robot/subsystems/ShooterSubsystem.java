@@ -9,6 +9,8 @@ import static frc.robot.Constants.ShooterConstants.DEVICE_ID_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_TOP;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_ERROR_TOLERANCE;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_SENSOR_TO_MECHANISM_RATIO;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_STATOR_CURRENT_LIMIT;
+import static frc.robot.Constants.ShooterConstants.SHOOTER_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_TOP;
 
@@ -60,6 +62,10 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotorConfig.MotorOutput.NeutralMode = Coast;
     shooterMotorConfig.Feedback.SensorToMechanismRatio = SHOOTER_SENSOR_TO_MECHANISM_RATIO;
     shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    shooterMotorConfig.CurrentLimits.StatorCurrentLimit = SHOOTER_STATOR_CURRENT_LIMIT;
+    shooterMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooterMotorConfig.CurrentLimits.SupplyCurrentLimit = SHOOTER_SUPPLY_CURRENT_LIMIT;
+    shooterMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     shooterBottomMotor.getConfigurator().apply(shooterMotorConfig);
     shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);
