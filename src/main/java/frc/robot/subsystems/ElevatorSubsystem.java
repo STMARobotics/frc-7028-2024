@@ -74,6 +74,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     elevatorMotor.getConfigurator().apply(motorConfig);
+    CTREUtil.optimizeSignals(elevatorMotor);
 
     elevatorPositionSignal = elevatorMotor.getPosition();
   }

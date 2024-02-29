@@ -58,6 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
 
     rollerMotor.getConfigurator().apply(rollerConfig);
+    CTREUtil.optimizeSignals(rollerMotor);
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {

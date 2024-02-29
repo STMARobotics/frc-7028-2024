@@ -63,7 +63,8 @@ public class AmperSubsystem extends SubsystemBase {
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
 
     rollerMotor.getConfigurator().apply(rollerConfig);
-
+    CTREUtil.optimizeSignals(rollerMotor);
+    
     // Configure the note sensor
     try {
       noteSensor.setRangingMode(RangingMode.SHORT);

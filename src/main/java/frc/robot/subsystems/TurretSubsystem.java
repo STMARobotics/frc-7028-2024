@@ -177,6 +177,8 @@ public class TurretSubsystem extends SubsystemBase {
     rollerTalonConfig.Slot0 = Slot0Configs.from(ROLLER_VELOCITY_SLOT_CONFIGS);
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
 
+    CTREUtil.optimizeSignals(rollerMotor, pitchMotor, yawMotor);
+
     // Configure the note sensor
     try {
       noteSensor.setRangingMode(RangingMode.SHORT);

@@ -71,6 +71,8 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);
     shooterTopMotor.getConfigurator().apply(shooterMotorConfig);
 
+    CTREUtil.optimizeSignals(shooterBottomMotor, shooterTopMotor);
+    
     shooterTopVelocity = shooterTopMotor.getVelocity();
     shooterBottomVelocity = shooterBottomMotor.getVelocity();
   }
