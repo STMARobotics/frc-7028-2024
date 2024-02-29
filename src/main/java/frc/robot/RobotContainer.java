@@ -121,6 +121,7 @@ public class RobotContainer {
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
 
     // Intake
+
     controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
     
     controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(Commands.runOnce(() -> {
@@ -136,9 +137,10 @@ public class RobotContainer {
     
     controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));
     
+
     // Speaker
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
-      new ManualShootCommand(turretSubsystem, shooterSubsystem)));
+        new ManualShootCommand(turretSubsystem, shooterSubsystem)));
 
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreSpeaker()));
     
@@ -149,7 +151,7 @@ public class RobotContainer {
   public void populateSysIdDashboard() {
     var tab = Shuffleboard.getTab("Drive SysId");
     int columnIndex = 0;
-    
+
     // Column 0 Drive
     tab.add("Drive Quasi Fwd", drivetrain.sysIdDriveQuasiCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Drive Quasi Rev", drivetrain.sysIdDriveQuasiCommand(kReverse)).withPosition(columnIndex, 1);

@@ -15,7 +15,7 @@ import frc.robot.subsystems.TurretSubsystem;
  * NetworkTables to get shooter pitch, velocity, and yaw.
  */
 public class TuneSpeakerCommand extends Command {
-  
+
   private final TurretSubsystem turretSubsystem;
   private final AmperSubsystem amperSubsystem;
   private final ShooterSubsystem shooterSubsystem;
@@ -30,7 +30,7 @@ public class TuneSpeakerCommand extends Command {
       TurretSubsystem turretSubsystem,
       AmperSubsystem amperSubsystem,
       ShooterSubsystem shooterSubsystem) {
-    
+
     this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -51,7 +51,7 @@ public class TuneSpeakerCommand extends Command {
   public void initialize() {
     shooting = false;
   }
-  
+
   @Override
   public void execute() {
     turretSubsystem.moveToPitchPosition(Degrees.of(pitchSubscriber.get(0.0)));

@@ -37,7 +37,7 @@ import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.math.VelocityPitchInterpolator;
-import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;;
+import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;
 
 public class Constants {
 
@@ -241,6 +241,7 @@ public class Constants {
     public static final Measure<Angle> INTAKE_PITCH_POSITION = Radians.of(0.003);
 
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(1.0);
+
     public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(1);
 
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150.0);
