@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -14,12 +16,14 @@ public class ManualShootCommand extends Command {
   
   private final TurretSubsystem turretSubsystem;
   private final ShooterSubsystem shooterSubsystem;
+  private final BooleanSupplier turretIsSafe;
 
   private final Timer shootTimer = new Timer();
 
-  public ManualShootCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem) {
+  public ManualShootCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, BooleanSupplier turretIsSafe) {
     this.turretSubsystem = turretSubsystem;
     this.shooterSubsystem = shooterSubsystem;
+    this.turretIsSafe = turretIsSafe;
   
     addRequirements(turretSubsystem, shooterSubsystem);
   }
@@ -28,7 +32,7 @@ public class ManualShootCommand extends Command {
   public void initialize() {
     shooterSubsystem.prepareToShoot(RotationsPerSecond.of(35));
     turretSubsystem.moveToPitchPosition(Degrees.of(39));
-    turretSubsystem.moveToYawPosition(Degrees.of(180));
+    turretSubsystem.moveToYawShootingPosition(Degrees.of(180), turretIsSafe);
     shootTimer.reset();
   }
 

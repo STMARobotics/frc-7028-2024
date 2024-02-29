@@ -17,9 +17,13 @@ import static frc.robot.Constants.ElevatorConstants.DEVICE_PORT_TOP_LIMIT;
 import static frc.robot.Constants.ElevatorConstants.ELEVATOR_TRANSFER_TO_AMP_HEIGHT;
 import static frc.robot.Constants.ElevatorConstants.METERS_PER_ROTATION;
 import static frc.robot.Constants.ElevatorConstants.MOTION_MAGIC_CONFIGS;
+import static frc.robot.Constants.ElevatorConstants.PARK_HEIGHT;
+import static frc.robot.Constants.ElevatorConstants.PARK_TOLERANCE;
 import static frc.robot.Constants.ElevatorConstants.POSITION_TOLERANCE;
 import static frc.robot.Constants.ElevatorConstants.SLOT_CONFIGS;
 import static frc.robot.Constants.ElevatorConstants.TOP_LIMIT;
+
+import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -97,30 +101,47 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /**
    * Moves the elevator to position to score in the amp
+   * @param isSafe a BooleanSupplier to indicate if it is safe to move the elevator. This is required to make the
+   *      caller think about the fact that the elevator and turret interfere with eachother
    */
-  public void prepareToAmp() {
-    moveToPosition(ElevatorConstants.SCORE_AMP_HEIGHT);
+  public void prepareToAmp(BooleanSupplier isSafe) {
+    moveToPosition(ElevatorConstants.SCORE_AMP_HEIGHT, isSafe);
   }
 
   /**
    * Moves the elevator to the position to score in the trap
+   * @param isSafe a BooleanSupplier to indicate if it is safe to move the elevator. This is required to make the
+   *      caller think about the fact that the elevator and turret interfere with eachother
    */
-  public void prepareToTrap() {
-    moveToPosition(ElevatorConstants.SCORE_TRAP_HEIGHT);
+  public void prepareToTrap(BooleanSupplier isSafe) {
+    moveToPosition(ElevatorConstants.SCORE_TRAP_HEIGHT, isSafe);
   }
 
   /**
    * Moves the elevator to position to exchange from turret to amper
+   * @param isSafe a BooleanSupplier to indicate if it is safe to move the elevator. This is required to make the
+   *      caller think about the fact that the elevator and turret interfere with eachother
    */
-  public void prepareToExchangeToAmper() {
-    moveToPosition(ELEVATOR_TRANSFER_TO_AMP_HEIGHT);
+  public void prepareToExchangeToAmper(BooleanSupplier isSafe) {
+    moveToPosition(ELEVATOR_TRANSFER_TO_AMP_HEIGHT, isSafe);
   }
 
   /**
    * Moves the elevator to the park height
+   * @param isSafe a BooleanSupplier to indicate if it is safe to move the elevator. This is required to make the
+   *      caller think about the fact that the elevator and turret interfere with eachother
    */
-  public void park() {
-    moveToPosition(ElevatorConstants.PARK_HEIGHT);
+  public void park(BooleanSupplier isSafe) {
+    moveToPosition(PARK_HEIGHT, isSafe);
+  }
+
+  /**
+   * Returns true if the elevator is below park position, within a tolerance.
+   * @return true if elevator is parked
+   */
+  public boolean isParked() {
+    return rotationsToMeters(elevatorPositionSignal.refresh().getValueAsDouble())
+        < (PARK_HEIGHT.in(Meters) + PARK_TOLERANCE.in(Meters));
   }
 
   /**
@@ -153,12 +174,16 @@ public class ElevatorSubsystem extends SubsystemBase {
   /**
    * Moves the elevator to a position
    * @param height height to move to
+   * @param isSafe a BooleanSupplier to indicate if it is safe to move the elevator. This is required to make the
+   *      caller think about the fact that the elevator and turret interfere with eachother
    */
-  public void moveToPosition(Measure<Distance> height) {
-    elevatorMotor.setControl(motionMagicControl
-        .withPosition(heightToRotations(height))
-        .withLimitForwardMotion(isAtTopLimit())
-        .withLimitReverseMotion(isAtBottomLimit()));
+  private void moveToPosition(Measure<Distance> height, BooleanSupplier isSafe) {
+    if (isSafe.getAsBoolean()) {
+      elevatorMotor.setControl(motionMagicControl
+          .withPosition(heightToRotations(height))
+          .withLimitForwardMotion(isAtTopLimit())
+          .withLimitReverseMotion(isAtBottomLimit()));
+    }
   }
 
   private double rotationsToMeters(double rotations) {

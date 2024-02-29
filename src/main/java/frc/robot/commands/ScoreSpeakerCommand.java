@@ -24,6 +24,8 @@ import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
 import static java.lang.Math.PI;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -53,6 +55,7 @@ public class ScoreSpeakerCommand extends Command {
   private final ShooterSubsystem shooter;
   private final TurretSubsystem turretSubsystem;
   private final LEDSubsystem ledSubsystem;
+  private final BooleanSupplier turretIsSafe;
 
   private final Timer shootTimer = new Timer();
 
@@ -76,11 +79,12 @@ public class ScoreSpeakerCommand extends Command {
     .withSteerRequestType(SteerRequestType.MotionMagic);
 
   public ScoreSpeakerCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
-      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem) {
+      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem, BooleanSupplier turretIsSafe) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;
+    this.turretIsSafe = turretIsSafe;
 
     addRequirements(drivetrain, shooter, turretSubsystem);
 
@@ -123,7 +127,7 @@ public class ScoreSpeakerCommand extends Command {
     
     // Move the turret
     turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-    turretSubsystem.moveToYawShootingPosition(turretYawTarget);
+    turretSubsystem.moveToYawShootingPosition(turretYawTarget, turretIsSafe);
 
     // Calculate ready state and send to telemetry
     var isShooterReady = shooter.isReadyToShoot();

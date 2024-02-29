@@ -274,7 +274,8 @@ public class Constants {
 
     public static final Measure<Distance> SCORE_AMP_HEIGHT = Meters.of(0.25);
     public static final Measure<Distance> SCORE_TRAP_HEIGHT = Meters.of(0.42);
-    public static final Measure<Distance> PARK_HEIGHT = Meters.of(0.0);
+    public static final Measure<Distance> PARK_HEIGHT = Meters.of(0.06);
+    public static final Measure<Distance> PARK_TOLERANCE = Meters.of(0.1);
     public static final Measure<Distance> ELEVATOR_TRANSFER_TO_AMP_HEIGHT = Inches.of(0.5);
 
     public static final Measure<Distance> POSITION_TOLERANCE = Meters.of(.01);

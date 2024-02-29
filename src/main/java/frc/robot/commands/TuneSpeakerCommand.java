@@ -3,6 +3,8 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,6 +21,7 @@ public class TuneSpeakerCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final AmperSubsystem amperSubsystem;
   private final ShooterSubsystem shooterSubsystem;
+  private final BooleanSupplier turretIsSafe;
 
   private final DoubleEntry pitchSubscriber;
   private final DoubleEntry velocitySubscriber;
@@ -29,11 +32,13 @@ public class TuneSpeakerCommand extends Command {
   public TuneSpeakerCommand(
       TurretSubsystem turretSubsystem,
       AmperSubsystem amperSubsystem,
-      ShooterSubsystem shooterSubsystem) {
+      ShooterSubsystem shooterSubsystem, 
+      BooleanSupplier turretIsSafe) {
     
     this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;
     this.shooterSubsystem = shooterSubsystem;
+    this.turretIsSafe = turretIsSafe;
 
     var nt = NetworkTableInstance.getDefault();
     var table = nt.getTable("Tune Shoot");
@@ -55,7 +60,7 @@ public class TuneSpeakerCommand extends Command {
   @Override
   public void execute() {
     turretSubsystem.moveToPitchPosition(Degrees.of(pitchSubscriber.get(0.0)));
-    turretSubsystem.moveToYawPosition(Degrees.of(yawSubscriber.get(180.0)));
+    turretSubsystem.moveToYawShootingPosition(Degrees.of(yawSubscriber.get(180.0)), turretIsSafe);
     shooterSubsystem.prepareToShoot(RotationsPerSecond.of(velocitySubscriber.get(10)));
     if (shooting || (turretSubsystem.isAtYawAndPitchTarget() && shooterSubsystem.isReadyToShoot())) {
       turretSubsystem.shoot();

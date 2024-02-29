@@ -27,11 +27,11 @@ public class LoadAmperCommand extends Command {
   @Override
   public void initialize() {
     turretSubsystem.prepareToExchange();
-    elevatorSubsystem.prepareToExchangeToAmper();
   }
 
   @Override
   public void execute() {
+    elevatorSubsystem.prepareToExchangeToAmper(turretSubsystem::isClearOfElevator);
     if (turretSubsystem.isAtYawAndPitchTarget()) {
       amperSubsystem.load();
       turretSubsystem.eject();

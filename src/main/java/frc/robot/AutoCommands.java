@@ -61,7 +61,8 @@ public class AutoCommands {
    * @return new command
    */
   public Command scoreSpeaker() {
-    return new ScoreSpeakerCommand(drivetrainSubsystem, shooterSubsystem, turretSubsystem, ledSubsystem);
+    return new ScoreSpeakerCommand(
+        drivetrainSubsystem, shooterSubsystem, turretSubsystem, ledSubsystem, elevatorSubsystem::isParked);
   }
 
   /**

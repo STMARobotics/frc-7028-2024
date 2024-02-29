@@ -25,13 +25,12 @@ public class ScoreAmpCommand extends Command {
   @Override
   public void initialize() {
     turretSubsystem.prepareToExchange();
-
   }
 
   @Override
   public void execute() {
     if (turretSubsystem.isAtYawAndPitchTarget()) {
-      elevatorSubsystem.prepareToAmp();
+      elevatorSubsystem.prepareToAmp(turretSubsystem::isClearOfElevator);
       if (elevatorSubsystem.isAtTarget()) {
         amperSubsystem.score();
       }
@@ -41,7 +40,7 @@ public class ScoreAmpCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     amperSubsystem.stop();
-    elevatorSubsystem.park();
+    elevatorSubsystem.park(turretSubsystem::isClearOfElevator);
     turretSubsystem.stop();
   }
 }
