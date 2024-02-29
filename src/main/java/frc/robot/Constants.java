@@ -44,8 +44,8 @@ public class Constants {
   public static final String CANIVORE_BUS_NAME = "canivore";
   
   public static final class DrivetrainConstants {
-    public static final Measure<Distance> TRACKWIDTH = Inches.of(18.75);
-    public static final Measure<Distance> WHEELBASE = Inches.of(18.75);
+    public static final Measure<Distance> TRACKWIDTH = Inches.of(20.5);
+    public static final Measure<Distance> WHEELBASE = Inches.of(21.125);
 
     // Theoretical free speed of L3 Kraken with FOC (Falcon 500 is faster)
     public static final Measure<Velocity<Distance>> MAX_VELOCITY = FeetPerSecond.of(16.5);
