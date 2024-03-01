@@ -245,7 +245,7 @@ public class TurretSubsystem extends SubsystemBase {
   public void moveToYawShootingPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
     if (isSafe.getAsBoolean()) {
       var clampedYawRotations =   
-          MathUtil.clamp(translateYaw(yaw), YAW_SHOOT_LIMIT_REVERSE.in(Rotations), YAW_LIMIT_FORWARD.in(Rotations));
+          MathUtil.clamp(translateYaw(yaw), YAW_SHOOT_LIMIT_REVERSE.in(Rotations), YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
       yawMotor.setControl(yawControl.withPosition(clampedYawRotations));
     }
   }
