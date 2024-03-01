@@ -18,16 +18,15 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.util.ChassisSpeedsRateLimiter;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.limelight.LimelightCalcs;
-import frc.robot.limelight.LimelightDetectorTarget;
-import frc.robot.limelight.LimelightResults;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightTarget_Retro;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -46,10 +45,11 @@ public class IntakeToTurretCommand extends Command {
   private final Supplier<Measure<Velocity<Distance>>> translationXSupplier;
   private final Supplier<Measure<Velocity<Distance>>> translationYSupplier;
   private final Supplier<Measure<Velocity<Angle>>> rotationSupplier;
-  private final LimelightResults limelightResults;
-  private final LimelightCalcs limelightCalcs; 
-  private final LimelightDetectorTarget limelightDetectorTarget;
   private boolean hasSeenNote = false;
+
+  private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
+
+  private final LimelightTarget_Retro LimelightTarget_Retro = new LimelightTarget_Retro();
 
   private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
@@ -72,9 +72,7 @@ public class IntakeToTurretCommand extends Command {
   Supplier<Measure<Velocity<Distance>>> translationXSupplier,
   Supplier<Measure<Velocity<Distance>>> translationYSupplier,
   Supplier<Measure<Velocity<Angle>>> rotationSupplier,
-  LimelightResults limelightResults,
-  LimelightCalcs limelightCalcs,
-  LimelightDetectorTarget limelightDetectorTarget) {
+  LimelightHelpers limelightHelpers) {
     this.intakeSubsystem = intakeSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;
@@ -82,17 +80,12 @@ public class IntakeToTurretCommand extends Command {
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
     this.rotationSupplier = rotationSupplier;
-    this.limelightResults = limelightResults;
-    this.limelightCalcs = limelightCalcs;
-    this.limelightDetectorTarget = limelightDetectorTarget;
-
     addRequirements(intakeSubsystem, turretSubsystem, amperSubsystem, drivetrainSubsystem);
   }
 
-  public Rotation2d getTargetRotation() {
-     return limelightCalcs.getRobotRelativeTargetInfo(
-        limelightDetectorTarget.targetXDegrees, limelightDetectorTarget.targetYDegrees).angle;
-        
+  public Supplier<Measure<Velocity<Angle>>> getTargetRotation() {
+    double rotationAngle = LimelightTarget_Retro.getTargetPose_CameraSpace2D().getRotation().getRadians();
+        return () -> omega.mut_replace(rotationAngle, RadiansPerSecond);
   }
 
   @Override
@@ -113,11 +106,11 @@ public class IntakeToTurretCommand extends Command {
         .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
         .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
         .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
-    if (limelightResults.valid || hasSeenNote) {
+    if (LimelightHelpers.getTV("limelight") || hasSeenNote) {
       hasSeenNote = true;
       desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
       desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
-      desiredChassisSpeeds.omegaRadiansPerSecond = getTargetRotation().getRadians();
+      desiredChassisSpeeds.omegaRadiansPerSecond = getTargetRotation().get().in(RadiansPerSecond);
       var limitedCassisSpeeds2 = rateLimiter.calculate(desiredChassisSpeeds);
       drivetrainSubsystem.setControl(drive
         .withVelocityX(limitedCassisSpeeds2.vxMetersPerSecond)
