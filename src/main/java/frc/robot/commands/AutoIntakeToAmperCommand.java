@@ -32,6 +32,9 @@ public class AutoIntakeToAmperCommand extends Command {
   private final AmperSubsystem amperSubsystem;
   private final CommandSwerveDrivetrain drivetrainSubsystem;
   private boolean hasSeenNote = false;
+  private double speed;
+  private double rotation;
+
 
   private final PIDController xPidController = new PIDController(0, 0, 0);
   private final PIDController yPidController = new PIDController(0, 0, 0);
@@ -81,10 +84,12 @@ private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimite
 
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight") || hasSeenNote) {
+    if (LimelightHelpers.getTV("limelight")) {
       var speed = -yPidController.calculate(LimelightHelpers.getTX("limelight"));
       var rotation = -xPidController.calculate(LimelightHelpers.getTY("limelight"));
       hasSeenNote = true;
+      driveToTarget(speed, rotation);
+    } else if (hasSeenNote) {
       driveToTarget(speed, rotation);
     }
     intakeSubsystem.intake();

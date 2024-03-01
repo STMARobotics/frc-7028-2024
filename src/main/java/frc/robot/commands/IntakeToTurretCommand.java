@@ -43,10 +43,11 @@ public class IntakeToTurretCommand extends Command {
   private final Supplier<Measure<Velocity<Distance>>> translationXSupplier;
   private final Supplier<Measure<Velocity<Distance>>> translationYSupplier;
   private final Supplier<Measure<Velocity<Angle>>> rotationSupplier;
-  private boolean hasSeenNote = false;
+  private boolean hasSeenNote;
+  private double rotation;
 
-  private final PIDController xPidController = new PIDController(0, 0, 0);
-  private final PIDController yPidController = new PIDController(0, 0, 0);
+  private final PIDController rotationPidController = new PIDController(0, 0, 0);
+
 
   private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
@@ -98,12 +99,18 @@ public class IntakeToTurretCommand extends Command {
     // Reset the slew rate limiters, in case the robot is already moving
     rateLimiter.reset(drivetrainSubsystem.getCurrentFieldChassisSpeeds());
 
-    xPidController.reset();
-    yPidController.reset();
+    rotationPidController.reset();
   }
   
   @Override
   public void execute() {
+    if (LimelightHelpers.getTV("limelight")) {
+      rotation = -rotationPidController.calculate(LimelightHelpers.getTY("limelight"));
+      hasSeenNote = true;
+      rotateToTarget(rotation);
+    } else if (hasSeenNote) {
+      rotateToTarget(rotation);
+    } else {
     desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
     desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
     desiredChassisSpeeds.omegaRadiansPerSecond = rotationSupplier.get().in(RadiansPerSecond);
@@ -112,10 +119,6 @@ public class IntakeToTurretCommand extends Command {
         .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
         .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
         .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
-    if (LimelightHelpers.getTV("limelight") || hasSeenNote) {
-      var rotation = -xPidController.calculate(LimelightHelpers.getTY("limelight"));
-      hasSeenNote = true;
-      rotateToTarget(rotation);
     }
     if (turretSubsystem.isAtYawAndPitchTarget()) {
       intakeSubsystem.intake();

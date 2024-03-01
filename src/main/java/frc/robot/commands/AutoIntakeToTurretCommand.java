@@ -34,7 +34,10 @@ public class AutoIntakeToTurretCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final AmperSubsystem amperSubsystem;
   private final CommandSwerveDrivetrain drivetrainSubsystem;
-  private boolean hasSeenNote = false;
+  private boolean hasSeenNote;
+  private double speed;
+  private double rotation;
+
 
   private final PIDController xPidController = new PIDController(0, 0, 0);
   private final PIDController yPidController = new PIDController(0, 0, 0);
@@ -87,10 +90,12 @@ public class AutoIntakeToTurretCommand extends Command {
   
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight") || hasSeenNote) {
+    if (LimelightHelpers.getTV("limelight")) {
       var speed = -yPidController.calculate(LimelightHelpers.getTX("limelight"));
       var rotation = -xPidController.calculate(LimelightHelpers.getTY("limelight"));
       hasSeenNote = true;
+      driveToTarget(speed, rotation);
+    } else if (hasSeenNote) {
       driveToTarget(speed, rotation);
     }
     if (turretSubsystem.isAtYawAndPitchTarget()) {
