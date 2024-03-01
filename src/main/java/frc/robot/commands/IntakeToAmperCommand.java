@@ -29,7 +29,6 @@ import frc.robot.LimelightHelpers.LimelightTarget_Retro;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 
 /**
  * Command to intake a note from the floor into the amper
@@ -65,7 +64,6 @@ private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimite
   IntakeSubsystem intakeSubsystem,  
   AmperSubsystem amperSubsystem,
   CommandSwerveDrivetrain drivetrainSubsystem,
-  LimelightSubsystem limelightSubsystem, 
   Supplier<Measure<Velocity<Distance>>> translationXSupplier,
   Supplier<Measure<Velocity<Distance>>> translationYSupplier,
   Supplier<Measure<Velocity<Angle>>> rotationSupplier,

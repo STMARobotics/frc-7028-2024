@@ -35,6 +35,7 @@ public class AutoCommands {
   private final IntakeSubsystem intakeSubsystem;
   private final LEDSubsystem ledSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
+  private final LimelightHelpers limelightHelpers;
 
   public AutoCommands(
     AmperSubsystem amperSubsystem, 
@@ -43,7 +44,8 @@ public class AutoCommands {
     TurretSubsystem turretSubsystem, 
     IntakeSubsystem intakeSubsystem,
     LEDSubsystem ledSubsystem, 
-    ElevatorSubsystem elevatorSubsystem) {
+    ElevatorSubsystem elevatorSubsystem,
+    LimelightHelpers limelightHelpers) {
     this.amperSubsystem = amperSubsystem;
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -51,6 +53,7 @@ public class AutoCommands {
     this.intakeSubsystem = intakeSubsystem;
     this.ledSubsystem = ledSubsystem;
     this.elevatorSubsystem = elevatorSubsystem;
+    this.limelightHelpers = limelightHelpers;
   }
 
   /**
@@ -74,7 +77,7 @@ public class AutoCommands {
    * @return new command
    */
   public Command intakeToTurret() {
-    return new AutoIntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem)
+    return new AutoIntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem, drivetrainSubsystem, limelightHelpers)
         .deadlineWith(new LEDAlternateCommand(ledSubsystem, NOTE_COLOR, Color.kBlue, Seconds.one()));
   }
 
@@ -83,7 +86,7 @@ public class AutoCommands {
    * @return new command
    */
   public Command intakeToAmper() {
-    return new AutoIntakeToAmperCommand(intakeSubsystem, amperSubsystem)
+    return new AutoIntakeToAmperCommand(intakeSubsystem, amperSubsystem, drivetrainSubsystem, limelightHelpers)
         .deadlineWith(new LEDAlternateCommand(ledSubsystem, NOTE_COLOR, Color.kGreen, Seconds.one()));
   }
 

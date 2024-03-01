@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.FieldOrientedDriveCommand;
+import frc.robot.commands.IntakeToAmperCommand;
+import frc.robot.commands.IntakeToTurretCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
@@ -58,12 +60,13 @@ public class RobotContainer {
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+  private final LimelightHelpers limelightHelpers = new LimelightHelpers();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
 
   private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
-      turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem);
+      turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem, limelightHelpers);
   
   public RobotContainer() {
     // Configure control binding scheme
@@ -121,8 +124,14 @@ public class RobotContainer {
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
 
     // Intake
-    controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
-    
+    controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(
+      new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem, drivetrain, 
+      controlBindings.translationX(), 
+      controlBindings.translationY(), 
+      controlBindings.omega(),
+      limelightHelpers)
+      ));
+
     controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(Commands.runOnce(() -> {
       intakeSubsystem.stop();
       amperSubsystem.stop();
@@ -132,7 +141,13 @@ public class RobotContainer {
     // Amper
     controlBindings.exchangeToAmper().ifPresent(trigger -> trigger.onTrue(autoCommands.transferToAmper()));
     
-    controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToAmper()));
+    controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(
+      new IntakeToAmperCommand(intakeSubsystem, amperSubsystem, drivetrain, 
+      controlBindings.translationX(), 
+      controlBindings.translationY(), 
+      controlBindings.omega(),
+      limelightHelpers)
+    ));
     
     controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));
     
