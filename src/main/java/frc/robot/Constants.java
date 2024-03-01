@@ -193,8 +193,9 @@ public class Constants {
     public static final Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179.9);
     public static final Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179.9);
 
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(.25);
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-.25);
+    // Range turret can shoot from without needing to turn the drivetrain
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(0.25);
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-0.25);
 
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(110)
