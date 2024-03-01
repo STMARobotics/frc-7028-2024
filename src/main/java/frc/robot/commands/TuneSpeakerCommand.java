@@ -2,11 +2,15 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
+
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
@@ -19,6 +23,8 @@ public class TuneSpeakerCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final AmperSubsystem amperSubsystem;
   private final ShooterSubsystem shooterSubsystem;
+  private final LEDSubsystem ledSubsystem;
+  private final BooleanSupplier turretIsSafe;
 
   private final DoubleEntry pitchSubscriber;
   private final DoubleEntry velocitySubscriber;
@@ -29,11 +35,15 @@ public class TuneSpeakerCommand extends Command {
   public TuneSpeakerCommand(
       TurretSubsystem turretSubsystem,
       AmperSubsystem amperSubsystem,
-      ShooterSubsystem shooterSubsystem) {
+      ShooterSubsystem shooterSubsystem,
+      LEDSubsystem ledSubsystem, 
+      BooleanSupplier turretIsSafe) {
     
     this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;
     this.shooterSubsystem = shooterSubsystem;
+    this.ledSubsystem = ledSubsystem;
+    this.turretIsSafe = turretIsSafe;
 
     var nt = NetworkTableInstance.getDefault();
     var table = nt.getTable("Tune Shoot");
@@ -44,7 +54,7 @@ public class TuneSpeakerCommand extends Command {
     yawSubscriber = table.getDoubleTopic("Yaw (Degrees)").getEntry(180.0);
     yawSubscriber.set(180.0);
 
-    addRequirements(turretSubsystem, amperSubsystem, shooterSubsystem);
+    addRequirements(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem);
   }
 
   @Override
@@ -55,9 +65,12 @@ public class TuneSpeakerCommand extends Command {
   @Override
   public void execute() {
     turretSubsystem.moveToPitchPosition(Degrees.of(pitchSubscriber.get(0.0)));
-    turretSubsystem.moveToYawPosition(Degrees.of(yawSubscriber.get(180.0)));
+    turretSubsystem.moveToYawPosition(Degrees.of(yawSubscriber.get(180.0)), turretIsSafe);
     shooterSubsystem.prepareToShoot(RotationsPerSecond.of(velocitySubscriber.get(10)));
-    if (shooting || (turretSubsystem.isAtYawAndPitchTarget() && shooterSubsystem.isReadyToShoot())) {
+    var turretReady = turretSubsystem.isAtYawAndPitchTarget();
+    var shooterReady = shooterSubsystem.isReadyToShoot();
+    ledSubsystem.setUpdater(l -> l.setLEDSegments(NOTE_COLOR, turretReady, shooterReady));
+    if (shooting || (turretReady && shooterReady)) {
       turretSubsystem.shoot();
       shooting = true;
     }

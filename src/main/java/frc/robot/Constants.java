@@ -102,7 +102,7 @@ public class Constants {
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-24), -PI / 2)),
+            new Rotation3d(0, degreesToRadians(-24), degreesToRadians(-88))),
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
             new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), PI / 2))
@@ -198,8 +198,9 @@ public class Constants {
     public static final Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179.9);
     public static final Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179.9);
 
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(.25);
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-.25);
+    // Range turret can shoot from without needing to turn the drivetrain
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(0.25);
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-0.25);
 
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(110)
@@ -212,7 +213,7 @@ public class Constants {
         .withMotionMagicAcceleration(10.0)
         .withMotionMagicCruiseVelocity(2.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.143066);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.357910);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.117);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
@@ -223,7 +224,7 @@ public class Constants {
         .withKS(0.4)
         .withKV(0.1)
         .withKA(0.0)
-        .withKG(0.14)
+        .withKG(0.5)
         .withGravityType(GravityTypeValue.Arm_Cosine);
     public static final MotionMagicConfigs PITCH_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicAcceleration(1.0)
@@ -237,7 +238,7 @@ public class Constants {
     
     public static final Measure<Velocity<Angle>> LOAD_VELOCITY = RotationsPerSecond.of(15);
     public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-10);
-    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(75);
+    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(40);
 
     public static final Measure<Angle> TRAP_PITCH_POSITION = Rotations.of(.114);
     public static final Measure<Angle> TRAP_YAW_POSITION = Degrees.of(0.25);
@@ -254,8 +255,8 @@ public class Constants {
 
   public static class ElevatorConstants {
     public static int DEVICE_ID_MOTOR = 60;
-    public static int DEVICE_PORT_TOP_LIMIT = 9;
-    public static int DEVICE_PORT_BOTTOM_LIMIT = 8;
+    public static int DEVICE_PORT_TOP_LIMIT = 7;
+    public static int DEVICE_PORT_BOTTOM_LIMIT = 9;
 
     public static Measure<Per<Distance, Angle>> METERS_PER_ROTATION = 
         Meters.per(Rotations).of((inchesToMeters(1.27) * PI) / 3.0 / 3.0);
@@ -280,6 +281,7 @@ public class Constants {
     public static final Measure<Distance> SCORE_AMP_HEIGHT = Meters.of(0.25);
     public static final Measure<Distance> SCORE_TRAP_HEIGHT = Meters.of(0.42);
     public static final Measure<Distance> PARK_HEIGHT = Meters.of(0.0);
+    public static final Measure<Distance> PARK_TOLERANCE = Meters.of(0.01);
     public static final Measure<Distance> ELEVATOR_TRANSFER_TO_AMP_HEIGHT = Inches.of(0.5);
 
     public static final Measure<Distance> POSITION_TOLERANCE = Meters.of(.01);
@@ -295,8 +297,9 @@ public class Constants {
 
   public static class ShootingConstants {
 
-    public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(652.73), inchesToMeters(218.42));
-    public static final Translation2d SPEAKER_BLUE = new Translation2d(0.0, inchesToMeters(218.42));
+    public static final double TARGET_OFFSET = inchesToMeters(4);
+    public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(652.73) - TARGET_OFFSET, inchesToMeters(218.42));
+    public static final Translation2d SPEAKER_BLUE = new Translation2d(TARGET_OFFSET, inchesToMeters(218.42));
 
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);
@@ -304,13 +307,18 @@ public class Constants {
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
-      new ShootingSettings().distance(Meters.of(1.269)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(38)),
-      new ShootingSettings().distance(Meters.of(1.815)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(31)),
-      new ShootingSettings().distance(Meters.of(2.413)).velocity(RotationsPerSecond.of(35)).pitch(Degrees.of(28)),
-      new ShootingSettings().distance(Meters.of(3.413)).velocity(RotationsPerSecond.of(60)).pitch(Degrees.of(14)),
-      new ShootingSettings().distance(Meters.of(4.413)).velocity(RotationsPerSecond.of(70)).pitch(Degrees.of(8)),
-      new ShootingSettings().distance(Meters.of(5.413)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(5)),
-      new ShootingSettings().distance(Meters.of(6.413)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(2.5))
+      new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35)),
+      new ShootingSettings().distance(Meters.of(1.56).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(33)),
+      new ShootingSettings().distance(Meters.of(1.922).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(26)),
+      new ShootingSettings().distance(Meters.of(2.216).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(22)),
+      new ShootingSettings().distance(Meters.of(2.673).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(17)),
+      new ShootingSettings().distance(Meters.of(3.442).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(65)).pitch(Degrees.of(9.5)),
+      new ShootingSettings().distance(Meters.of(4.005).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(5)),
+      new ShootingSettings().distance(Meters.of(4.445).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(3)),
+      new ShootingSettings().distance(Meters.of(4.905).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(1.25)),
+      new ShootingSettings().distance(Meters.of(5.357).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(72)).pitch(Degrees.of(0)),
+      new ShootingSettings().distance(Meters.of(5.728).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(67.25)).pitch(Degrees.of(0)),
+      new ShootingSettings().distance(Meters.of(6.194).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(64.5)).pitch(Degrees.of(0.0))
     ));
 
   }

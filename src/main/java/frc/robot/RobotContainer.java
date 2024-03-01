@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.DefaultElevatorCommand;
+import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.IntakeToAmperCommand;
 import frc.robot.commands.IntakeToTurretCommand;
@@ -89,13 +91,19 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    ledSubsystem.setDefaultCommand(
-        new DefaultLEDCommand(ledSubsystem, turretSubsystem::hasNote, amperSubsystem::hasNote));
     drivetrain.setDefaultCommand(new FieldOrientedDriveCommand(
         drivetrain,
         controlBindings.translationX(),
         controlBindings.translationY(),
         controlBindings.omega()));
+    
+    ledSubsystem.setDefaultCommand(
+        new DefaultLEDCommand(ledSubsystem, turretSubsystem::hasNote, amperSubsystem::hasNote));
+    
+    elevatorSubsystem.setDefaultCommand(
+        new DefaultElevatorCommand(elevatorSubsystem, turretSubsystem::isClearOfElevator));
+    
+    turretSubsystem.setDefaultCommand(new DefaultTurretCommand(turretSubsystem));
   }
 
   private void configureDashboard() {
@@ -150,12 +158,13 @@ public class RobotContainer {
     
     // Speaker
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
-      new ManualShootCommand(turretSubsystem, shooterSubsystem)));
+      new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
 
-    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreSpeaker()));
+    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
+      Commands.either(autoCommands.scoreSpeaker(), new LEDBootAnimationCommand(ledSubsystem), turretSubsystem::hasNote)));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
-      new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem)));
+      new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
   }
 
   public void populateSysIdDashboard() {

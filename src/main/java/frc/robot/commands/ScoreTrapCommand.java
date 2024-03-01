@@ -26,11 +26,11 @@ public class ScoreTrapCommand extends Command {
   @Override
   public void execute() {
     // Move the turret into position
-    turretSubsystem.prepareToTrap();
+    turretSubsystem.prepareToTrap(elevatorSubsystem::isParked);
 
     if (turretSubsystem.isInTrapPosition()) {
       // Move the elevator only after the turret is in position, otherwise they collide
-      elevatorSubsystem.prepareToTrap();
+      elevatorSubsystem.prepareToTrap(turretSubsystem::isClearOfElevator);
     }
   }
 

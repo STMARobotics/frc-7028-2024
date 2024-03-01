@@ -56,8 +56,13 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rollerConfig.Feedback.SensorToMechanismRatio = ROLLER_SENSOR_TO_MECHANISM_RATIO;
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
+    rollerConfig.CurrentLimits.StatorCurrentLimit = 60;
+    rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    rollerConfig.CurrentLimits.SupplyCurrentLimit = 30;
+    rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     rollerMotor.getConfigurator().apply(rollerConfig);
+    CTREUtil.optimizeSignals(rollerMotor);
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {
