@@ -7,8 +7,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.AutoIntakeToAmperCommand;
 import frc.robot.commands.AutoIntakeToTurretCommand;
-import frc.robot.commands.IntakeToAmperCommand;
 import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.ScoreSpeakerCommand;
@@ -83,7 +83,7 @@ public class AutoCommands {
    * @return new command
    */
   public Command intakeToAmper() {
-    return new IntakeToAmperCommand(intakeSubsystem, amperSubsystem)
+    return new AutoIntakeToAmperCommand(intakeSubsystem, amperSubsystem)
         .deadlineWith(new LEDAlternateCommand(ledSubsystem, NOTE_COLOR, Color.kGreen, Seconds.one()));
   }
 

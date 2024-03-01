@@ -42,7 +42,6 @@ public class IntakeToTurretCommand extends Command {
   private final IntakeSubsystem intakeSubsystem;
   private final TurretSubsystem turretSubsystem;
   private final AmperSubsystem amperSubsystem;
-  private final LimelightSubsystem limelightSubsystem;
   private final CommandSwerveDrivetrain drivetrainSubsystem;
   private final Supplier<Measure<Velocity<Distance>>> translationXSupplier;
   private final Supplier<Measure<Velocity<Distance>>> translationYSupplier;
@@ -78,7 +77,6 @@ public class IntakeToTurretCommand extends Command {
     this.intakeSubsystem = intakeSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;
-    this.limelightSubsystem = limelightSubsystem;
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
@@ -87,7 +85,7 @@ public class IntakeToTurretCommand extends Command {
     this.limelightCalcs = limelightCalcs;
     this.limelightDetectorTarget = limelightDetectorTarget;
 
-    addRequirements(intakeSubsystem, turretSubsystem, amperSubsystem, limelightSubsystem, drivetrainSubsystem);
+    addRequirements(intakeSubsystem, turretSubsystem, amperSubsystem, drivetrainSubsystem);
   }
 
   public Rotation2d getTargetRotation() {
