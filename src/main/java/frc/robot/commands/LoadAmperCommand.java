@@ -32,7 +32,7 @@ public class LoadAmperCommand extends Command {
   @Override
   public void execute() {
     elevatorSubsystem.prepareToExchangeToAmper(turretSubsystem::isClearOfElevator);
-    if (turretSubsystem.isAtYawAndPitchTarget()) {
+    if (turretSubsystem.isAtYawAndPitchTarget() && elevatorSubsystem.isAtTarget()) {
       amperSubsystem.load();
       turretSubsystem.eject();
       intakeSubsystem.intake();
