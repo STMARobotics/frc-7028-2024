@@ -29,6 +29,7 @@ import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
+import frc.robot.commands.ScoreSpeakerMovingCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
@@ -148,7 +149,8 @@ public class RobotContainer {
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
       new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
 
-    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreSpeaker()));
+    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
+      new ScoreSpeakerMovingCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));

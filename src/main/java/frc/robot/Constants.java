@@ -300,6 +300,8 @@ public class Constants {
     public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
+    public static final double SHOOTER_COEFFICIENT = 1.0;
+
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35)),
       new ShootingSettings().distance(Meters.of(1.56).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(33)),
