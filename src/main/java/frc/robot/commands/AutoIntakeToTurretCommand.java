@@ -91,8 +91,8 @@ public class AutoIntakeToTurretCommand extends Command {
   @Override
   public void execute() {
     if (LimelightHelpers.getTV("limelight")) {
-      var speed = -yPidController.calculate(LimelightHelpers.getTX("limelight"));
-      var rotation = -xPidController.calculate(LimelightHelpers.getTY("limelight"));
+      speed = -yPidController.calculate(LimelightHelpers.getTX("limelight"));
+      rotation = -xPidController.calculate(LimelightHelpers.getTY("limelight"));
       hasSeenNote = true;
       driveToTarget(speed, rotation);
     } else if (hasSeenNote) {
