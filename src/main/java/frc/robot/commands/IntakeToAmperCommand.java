@@ -17,15 +17,14 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.util.ChassisSpeedsRateLimiter;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.LimelightTarget_Retro;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -43,10 +42,8 @@ public class IntakeToAmperCommand extends Command {
   private final Supplier<Measure<Velocity<Angle>>> rotationSupplier;
   private boolean hasSeenNote = false;
 
-  private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
-
-  private final LimelightTarget_Retro LimelightTarget_Retro = new LimelightTarget_Retro();
-
+  private final PIDController xPidController = new PIDController(0, 0, 0);
+  
 private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
 
@@ -61,25 +58,33 @@ private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimite
 
 
   public IntakeToAmperCommand(
-  IntakeSubsystem intakeSubsystem,  
-  AmperSubsystem amperSubsystem,
-  CommandSwerveDrivetrain drivetrainSubsystem,
-  Supplier<Measure<Velocity<Distance>>> translationXSupplier,
-  Supplier<Measure<Velocity<Distance>>> translationYSupplier,
-  Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
+      IntakeSubsystem intakeSubsystem,  
+      AmperSubsystem amperSubsystem,
+      CommandSwerveDrivetrain drivetrainSubsystem,
+      Supplier<Measure<Velocity<Distance>>> translationXSupplier,
+      Supplier<Measure<Velocity<Distance>>> translationYSupplier,
+      Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
     this.intakeSubsystem = intakeSubsystem;
     this.amperSubsystem = amperSubsystem;
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
     this.rotationSupplier = rotationSupplier;
+    
     addRequirements(intakeSubsystem, amperSubsystem, drivetrainSubsystem);
   }
 
-  public Supplier<Measure<Velocity<Angle>>> getTargetRotation() {
-    double rotationAngle = LimelightTarget_Retro.getTargetPose_CameraSpace2D().getRotation().getRadians();
-        return () -> omega.mut_replace(rotationAngle, RadiansPerSecond);
-}
+  public void rotateToTarget(double rotation) {
+    var zRotation = rotation;
+    desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
+    desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
+    desiredChassisSpeeds.omegaRadiansPerSecond = zRotation;
+    var limitedCassisSpeeds = rateLimiter.calculate(desiredChassisSpeeds);
+    drivetrainSubsystem.setControl(drive
+        .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
+        .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
+        .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
+    }
 
   @Override 
   public void initialize() {
@@ -98,19 +103,13 @@ private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimite
         .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
         .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
     if (LimelightHelpers.getTV("limelight") || hasSeenNote) {
-      desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
-      desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
-      desiredChassisSpeeds.omegaRadiansPerSecond = getTargetRotation().get().in(RadiansPerSecond);
-      var limitedCassisSpeeds2 = rateLimiter.calculate(desiredChassisSpeeds);
-      drivetrainSubsystem.setControl(drive
-        .withVelocityX(limitedCassisSpeeds2.vxMetersPerSecond)
-        .withVelocityY(limitedCassisSpeeds2.vyMetersPerSecond)
-        .withRotationalRate(limitedCassisSpeeds2.omegaRadiansPerSecond));
+      var rotation = -xPidController.calculate(LimelightHelpers.getTY("limelight"));
+      hasSeenNote = true;
+      rotateToTarget(rotation);
     }
     intakeSubsystem.intake();
     amperSubsystem.load();
   }
-
   @Override
   public boolean isFinished() {
     return amperSubsystem.hasNote();
@@ -121,5 +120,4 @@ private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimite
     intakeSubsystem.stop();
     amperSubsystem.stop();
   }
-
 }

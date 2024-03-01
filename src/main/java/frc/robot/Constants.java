@@ -59,6 +59,11 @@ public class Constants {
         .withMountPosePitch(9.096435546875)
         .withMountPoseRoll(-154.05722045898438)
         .withMountPoseYaw(6.09066915512085);
+
+    public static final SlotConfigs SLOT_CONFIGS = new SlotConfigs()
+    .withKP(0)
+    .withKI(0)
+    .withKD(0);
   }
 
   public static final class TeleopDriveConstants {
