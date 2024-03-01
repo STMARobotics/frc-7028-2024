@@ -123,11 +123,11 @@ public class ScoreSpeakerMovingCommand extends Command {
     var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
 
     // Calculate time to hit speaker
-    var timeUntilScored = SHOOTER_COEFFICIENT * distanceToSpeaker * SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker).getVelocity().in(RotationsPerSecond);
+    var timeUntilScored = SHOOTER_COEFFICIENT * distanceToSpeaker * shootingSettings.getVelocity().in(RotationsPerSecond);
 
     // Calculate the predicted offset of the speaker compared to current pose (in meters)
-    var speakerPredictedOffset = new Translation2d((drivetrain.getState().speeds.vxMetersPerSecond * timeUntilScored), 
-    (drivetrain.getState().speeds.vyMetersPerSecond * timeUntilScored));
+    var speakerPredictedOffset = new Translation2d((drivetrain.getCurrentFieldChassisSpeeds().vxMetersPerSecond * timeUntilScored), 
+    (drivetrain.getCurrentFieldChassisSpeeds().vyMetersPerSecond * timeUntilScored));
 
     // Calculate the angle to the speaker
     var angleToSpeaker = speakerTranslation.minus(robotTranslation).minus(speakerPredictedOffset).getAngle();
