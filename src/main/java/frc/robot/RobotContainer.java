@@ -151,7 +151,7 @@ public class RobotContainer {
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreSpeaker()));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
-      new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
+      new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
   }
 
   public void populateSysIdDashboard() {

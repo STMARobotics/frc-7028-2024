@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
+import static edu.wpi.first.wpilibj.util.Color.kGreen;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
@@ -78,6 +79,8 @@ public class ScoreSpeakerCommand extends Command {
     .withDriveRequestType(DriveRequestType.Velocity)
     .withSteerRequestType(SteerRequestType.MotionMagic);
 
+  private boolean isShooting = false;
+
   public ScoreSpeakerCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
       TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem, BooleanSupplier turretIsSafe) {
     this.drivetrain = drivetrain;
@@ -103,6 +106,7 @@ public class ScoreSpeakerCommand extends Command {
     rateLimiter.reset(drivetrain.getCurrentFieldChassisSpeeds());
     var alliance = DriverStation.getAlliance();
     speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE : SPEAKER_RED;
+    isShooting = false;
   }
 
   @Override
@@ -136,8 +140,12 @@ public class ScoreSpeakerCommand extends Command {
     var isYawReady = turretSubsystem.isAtYawTarget();
     
     // Update LEDs with ready state
-    ledSubsystem.setUpdater((l) -> 
-        l.setLEDSegments(NOTE_COLOR, isShooterReady, isInTurretRange, isPitchReady, isYawReady));
+    if (isShooting) {
+      ledSubsystem.setUpdater(l -> l.setAll(kGreen));
+    } else {
+      ledSubsystem.setUpdater(l -> 
+          l.setLEDSegments(NOTE_COLOR, isShooterReady, isInTurretRange, isPitchReady, isYawReady));
+    }
 
     // Aim drivetrain
     // NOTE: Slew rate limit needs to be applied so the robot slows properly (see 2022 robot doing "stoppies")
@@ -168,6 +176,7 @@ public class ScoreSpeakerCommand extends Command {
       turretSubsystem.shoot();
       shootTimer.start();
       ledSubsystem.setUpdater(l -> l.setAll(Color.kGreen));
+      isShooting = true;
     }
   }
 

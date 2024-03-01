@@ -76,6 +76,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     motorConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
         BOTTOM_LIMIT.in(Meters) / METERS_PER_ROTATION.in(Meters.per(Rotations));
     motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    motorConfig.CurrentLimits.StatorCurrentLimit = 50;
+    motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfig.CurrentLimits.SupplyCurrentLimit = 30;
+    motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     elevatorMotor.getConfigurator().apply(motorConfig);
     CTREUtil.optimizeSignals(elevatorMotor);

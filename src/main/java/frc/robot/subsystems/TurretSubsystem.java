@@ -177,6 +177,10 @@ public class TurretSubsystem extends SubsystemBase {
     rollerTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rollerTalonConfig.MotorOutput.NeutralMode = Brake;
     rollerTalonConfig.Slot0 = Slot0Configs.from(ROLLER_VELOCITY_SLOT_CONFIGS);
+    rollerTalonConfig.CurrentLimits.StatorCurrentLimit = 60;
+    rollerTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    rollerTalonConfig.CurrentLimits.SupplyCurrentLimit = 40;
+    rollerTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
 
     CTREUtil.optimizeSignals(rollerMotor, pitchMotor, yawMotor);
@@ -384,7 +388,7 @@ public class TurretSubsystem extends SubsystemBase {
   public boolean isClearOfElevator() {
     // Checking for intake position depends on isInTrapPosition() refreshing yawPositionSignal
     return isInTrapPosition()
-      || isInTolerance(INTAKE_YAW_POSITION.in(Rotations), yawPositionSignal, YAW_TOLERANCE.in(Rotations));
+      || isInTolerance(translateYaw(INTAKE_YAW_POSITION), yawPositionSignal, YAW_TOLERANCE.in(Rotations));
   }
 
   /**
