@@ -7,8 +7,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.AutoIntakeToTurretCommand;
 import frc.robot.commands.IntakeToAmperCommand;
-import frc.robot.commands.IntakeToTurretCommand;
 import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.ScoreSpeakerCommand;
@@ -36,9 +36,14 @@ public class AutoCommands {
   private final LEDSubsystem ledSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
 
-  public AutoCommands(AmperSubsystem amperSubsystem, CommandSwerveDrivetrain drivetrainSubsystem,
-      ShooterSubsystem shooterSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem,
-      LEDSubsystem ledSubsystem, ElevatorSubsystem elevatorSubsystem) {
+  public AutoCommands(
+    AmperSubsystem amperSubsystem, 
+    CommandSwerveDrivetrain drivetrainSubsystem,
+    ShooterSubsystem shooterSubsystem, 
+    TurretSubsystem turretSubsystem, 
+    IntakeSubsystem intakeSubsystem,
+    LEDSubsystem ledSubsystem, 
+    ElevatorSubsystem elevatorSubsystem) {
     this.amperSubsystem = amperSubsystem;
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -69,7 +74,7 @@ public class AutoCommands {
    * @return new command
    */
   public Command intakeToTurret() {
-    return new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem)
+    return new AutoIntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem)
         .deadlineWith(new LEDAlternateCommand(ledSubsystem, NOTE_COLOR, Color.kBlue, Seconds.one()));
   }
 

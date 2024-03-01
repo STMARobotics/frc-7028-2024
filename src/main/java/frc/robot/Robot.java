@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +22,10 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     SignalLogger.start(); // CTRE logger
+
+    for (int port = 5800; port <= 5807; port++) {
+    PortForwarder.add(port, "limelight.local", port);
+    }
   }
 
   @Override
