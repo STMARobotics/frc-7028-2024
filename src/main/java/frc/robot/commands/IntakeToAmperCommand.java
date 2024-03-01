@@ -95,8 +95,9 @@ private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimite
 
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight")) {
-      rotation = -rotationPidController.calculate(LimelightHelpers.getTY("limelight"));
+    var results = LimelightHelpers.getLatestResults("limelight");
+    if (results.targetingResults.valid && results.targetingResults.targets_Detector.length>0) {
+      rotation = -rotationPidController.calculate(results.targetingResults.targets_Detector[0].ty);
       hasSeenNote = true;
       rotateToTarget(rotation);
     } else if (hasSeenNote) {
