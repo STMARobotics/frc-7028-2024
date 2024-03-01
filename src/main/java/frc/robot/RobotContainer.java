@@ -148,7 +148,8 @@ public class RobotContainer {
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
       new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
 
-    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreSpeaker()));
+    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
+      Commands.either(autoCommands.scoreSpeaker(), new LEDBootAnimationCommand(ledSubsystem), turretSubsystem::hasNote)));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
