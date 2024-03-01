@@ -97,7 +97,7 @@ public class Constants {
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-24), -PI / 2)),
+            new Rotation3d(0, degreesToRadians(-24), degreesToRadians(-88))),
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
             new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), PI / 2))
@@ -208,7 +208,7 @@ public class Constants {
         .withMotionMagicAcceleration(10.0)
         .withMotionMagicCruiseVelocity(2.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.143066);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.357910);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.117);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
@@ -250,8 +250,8 @@ public class Constants {
 
   public static class ElevatorConstants {
     public static int DEVICE_ID_MOTOR = 60;
-    public static int DEVICE_PORT_TOP_LIMIT = 9;
-    public static int DEVICE_PORT_BOTTOM_LIMIT = 8;
+    public static int DEVICE_PORT_TOP_LIMIT = 7;
+    public static int DEVICE_PORT_BOTTOM_LIMIT = 9;
 
     public static Measure<Per<Distance, Angle>> METERS_PER_ROTATION = 
         Meters.per(Rotations).of((inchesToMeters(1.27) * PI) / 3.0 / 3.0);
