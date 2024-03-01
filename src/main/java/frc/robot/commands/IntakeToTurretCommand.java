@@ -49,6 +49,7 @@ public class IntakeToTurretCommand extends Command {
   private final LimelightResults limelightResults;
   private final LimelightCalcs limelightCalcs; 
   private final LimelightDetectorTarget limelightDetectorTarget;
+  private boolean hasSeenNote = false;
 
   private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
@@ -112,7 +113,8 @@ public class IntakeToTurretCommand extends Command {
         .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
         .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
         .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
-    if (limelightResults.valid == true) {
+    if (limelightResults.valid || hasSeenNote) {
+      hasSeenNote = true;
       desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
       desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
       desiredChassisSpeeds.omegaRadiansPerSecond = getTargetRotation().getRadians();
