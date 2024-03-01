@@ -60,13 +60,12 @@ public class RobotContainer {
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
-  private final LimelightHelpers limelightHelpers = new LimelightHelpers();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
 
   private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
-      turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem, limelightHelpers);
+      turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem);
   
   public RobotContainer() {
     // Configure control binding scheme
@@ -128,8 +127,7 @@ public class RobotContainer {
       new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem, drivetrain, 
       controlBindings.translationX(), 
       controlBindings.translationY(), 
-      controlBindings.omega(),
-      limelightHelpers)
+      controlBindings.omega())
       ));
 
     controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(Commands.runOnce(() -> {
@@ -145,8 +143,7 @@ public class RobotContainer {
       new IntakeToAmperCommand(intakeSubsystem, amperSubsystem, drivetrain, 
       controlBindings.translationX(), 
       controlBindings.translationY(), 
-      controlBindings.omega(),
-      limelightHelpers)
+      controlBindings.omega())
     ));
     
     controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));

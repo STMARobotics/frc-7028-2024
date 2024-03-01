@@ -63,8 +63,7 @@ private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimite
   public AutoIntakeToAmperCommand(
   IntakeSubsystem intakeSubsystem,  
   AmperSubsystem amperSubsystem,
-  CommandSwerveDrivetrain drivetrainSubsystem,
-  LimelightHelpers limelightHelpers) {
+  CommandSwerveDrivetrain drivetrainSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.amperSubsystem = amperSubsystem;
     this.drivetrainSubsystem = drivetrainSubsystem;

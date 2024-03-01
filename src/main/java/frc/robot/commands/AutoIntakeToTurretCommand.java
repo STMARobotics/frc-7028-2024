@@ -66,8 +66,7 @@ public class AutoIntakeToTurretCommand extends Command {
     IntakeSubsystem intakeSubsystem, 
     TurretSubsystem turretSubsystem, 
     AmperSubsystem amperSubsystem,
-    CommandSwerveDrivetrain drivetrainSubsystem, 
-    LimelightHelpers limelightHelpers) {
+    CommandSwerveDrivetrain drivetrainSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;

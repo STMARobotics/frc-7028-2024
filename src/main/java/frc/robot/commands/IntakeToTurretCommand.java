@@ -70,8 +70,7 @@ public class IntakeToTurretCommand extends Command {
 
     Supplier<Measure<Velocity<Distance>>> translationXSupplier,
     Supplier<Measure<Velocity<Distance>>> translationYSupplier,
-    Supplier<Measure<Velocity<Angle>>> rotationSupplier,
-    LimelightHelpers limelightHelpers) {
+    Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
     this.intakeSubsystem = intakeSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;

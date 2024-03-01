@@ -35,17 +35,15 @@ public class AutoCommands {
   private final IntakeSubsystem intakeSubsystem;
   private final LEDSubsystem ledSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
-  private final LimelightHelpers limelightHelpers;
 
   public AutoCommands(
-    AmperSubsystem amperSubsystem, 
-    CommandSwerveDrivetrain drivetrainSubsystem,
-    ShooterSubsystem shooterSubsystem, 
-    TurretSubsystem turretSubsystem, 
-    IntakeSubsystem intakeSubsystem,
-    LEDSubsystem ledSubsystem, 
-    ElevatorSubsystem elevatorSubsystem,
-    LimelightHelpers limelightHelpers) {
+      AmperSubsystem amperSubsystem, 
+      CommandSwerveDrivetrain drivetrainSubsystem,
+      ShooterSubsystem shooterSubsystem, 
+      TurretSubsystem turretSubsystem, 
+      IntakeSubsystem intakeSubsystem,
+      LEDSubsystem ledSubsystem, 
+      ElevatorSubsystem elevatorSubsystem) {
     this.amperSubsystem = amperSubsystem;
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -53,7 +51,6 @@ public class AutoCommands {
     this.intakeSubsystem = intakeSubsystem;
     this.ledSubsystem = ledSubsystem;
     this.elevatorSubsystem = elevatorSubsystem;
-    this.limelightHelpers = limelightHelpers;
   }
 
   /**
@@ -77,7 +74,7 @@ public class AutoCommands {
    * @return new command
    */
   public Command intakeToTurret() {
-    return new AutoIntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem, drivetrainSubsystem, limelightHelpers)
+    return new AutoIntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem, drivetrainSubsystem)
         .deadlineWith(new LEDAlternateCommand(ledSubsystem, NOTE_COLOR, Color.kBlue, Seconds.one()));
   }
 
@@ -86,7 +83,7 @@ public class AutoCommands {
    * @return new command
    */
   public Command intakeToAmper() {
-    return new AutoIntakeToAmperCommand(intakeSubsystem, amperSubsystem, drivetrainSubsystem, limelightHelpers)
+    return new AutoIntakeToAmperCommand(intakeSubsystem, amperSubsystem, drivetrainSubsystem)
         .deadlineWith(new LEDAlternateCommand(ledSubsystem, NOTE_COLOR, Color.kGreen, Seconds.one()));
   }
 

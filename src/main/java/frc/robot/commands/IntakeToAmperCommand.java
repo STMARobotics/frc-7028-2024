@@ -66,8 +66,7 @@ private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimite
   CommandSwerveDrivetrain drivetrainSubsystem,
   Supplier<Measure<Velocity<Distance>>> translationXSupplier,
   Supplier<Measure<Velocity<Distance>>> translationYSupplier,
-  Supplier<Measure<Velocity<Angle>>> rotationSupplier,
-  LimelightHelpers limelightHelpers) {
+  Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
     this.intakeSubsystem = intakeSubsystem;
     this.amperSubsystem = amperSubsystem;
     this.drivetrainSubsystem = drivetrainSubsystem;
