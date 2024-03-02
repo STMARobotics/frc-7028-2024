@@ -163,7 +163,7 @@ public class RobotContainer {
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
     
     controlBindings.eject().ifPresent(trigger -> trigger.whileTrue(
-      new EjectIntakeCommand(intakeSubsystem, amperSubsystem, turretSubsystem, shooterSubsystem)));
+      new EjectIntakeCommand(intakeSubsystem, amperSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
     
     controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(
       new BabyBirdCommand(turretSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
@@ -173,7 +173,7 @@ public class RobotContainer {
       turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
     })));
 
-    controlBindings.setupShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
+    controlBindings.setupShooter().ifPresent(trigger -> trigger.onTrue(turretSubsystem.run(() -> {
       turretSubsystem.moveToPitchPosition(Rotations.of(0.0586));
       turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
     })));

@@ -8,52 +8,52 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.060091172813925,
-        "y": 4.041170363042481
+        "x": 4.688292359040859,
+        "y": 3.9595559892874177
       },
       "isLocked": false,
       "linkedName": "Score while leave B-end"
     },
     {
       "anchor": {
-        "x": 3.273643213953095,
-        "y": 2.8260230204670944
+        "x": 2.7386156526699024,
+        "y": 2.6990673279592174
       },
       "prevControl": {
-        "x": 4.470654029027357,
-        "y": 3.2068900979907227
+        "x": 3.063362934278819,
+        "y": 2.7222635623598537
       },
       "nextControl": {
-        "x": 2.724864407990776,
-        "y": 2.651411582206357
+        "x": 2.4847042676541498,
+        "y": 2.6809308004580927
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.4665677401530246,
-        "y": 3.3882553730019747
+        "x": 2.5209773226564,
+        "y": 3.4608014830064753
       },
       "prevControl": {
-        "x": 2.4886123521008514,
-        "y": 3.0722826017497895
+        "x": 2.543021934604227,
+        "y": 3.14482871175429
       },
       "nextControl": {
-        "x": 2.439362948901337,
-        "y": 3.7781907142761657
+        "x": 2.4937725314047126,
+        "y": 3.8507368242806663
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.4665677401530246,
-        "y": 6.770717751961819
+        "x": 2.865571345177778,
+        "y": 6.5530794219483175
       },
       "prevControl": {
-        "x": 2.421226421400212,
-        "y": 4.898121287470644
+        "x": 2.974390510184529,
+        "y": 4.993338056851552
       },
       "nextControl": null,
       "isLocked": false,
@@ -65,15 +65,30 @@
       "waypointRelativePos": 0.3,
       "rotationDegrees": 29.279298494895297,
       "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.0999999999999996,
+      "rotationDegrees": 48.828088090247704,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.75,
+      "rotationDegrees": 0.3044240940405406,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.6000000000000001,
+      "rotationDegrees": -15.44068233906548,
+      "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.6,
+      "minWaypointRelativePos": 0.8,
       "maxWaypointRelativePos": 3.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.7,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -99,8 +114,8 @@
       }
     },
     {
-      "name": "Shoot Note 4",
-      "waypointRelativePos": 0.65,
+      "name": "Shoot Note 4 and 3 more",
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "sequential",
         "data": {
@@ -110,18 +125,7 @@
               "data": {
                 "name": "scoreSpeakerWhileMoving"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Shoot 3 notes",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
+            },
             {
               "type": "named",
               "data": {
@@ -171,7 +175,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 34.41836447905621,
+    "rotation": 87.6626941408762,
     "rotateFast": false
   },
   "reversed": false,

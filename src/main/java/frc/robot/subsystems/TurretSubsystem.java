@@ -66,6 +66,7 @@ import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.LaserCan.RangingMode;
 import au.grapplerobotics.LaserCan.TimingBudget;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -417,6 +418,13 @@ public class TurretSubsystem extends SubsystemBase {
   public void moveToYawPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
     if (isSafe.getAsBoolean()) {
       moveToYawPosition(yaw);
+    }
+  }
+
+  public void moveToShootingYawPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
+    var targetYaw = MathUtil.clamp(translateYaw(yaw), YAW_SHOOT_LIMIT_REVERSE.in(Rotations), YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
+    if (isSafe.getAsBoolean()) {
+      yawMotor.setControl(yawControl.withPosition(targetYaw));
     }
   }
 

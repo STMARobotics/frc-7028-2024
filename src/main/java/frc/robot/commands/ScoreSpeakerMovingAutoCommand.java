@@ -122,7 +122,7 @@ public class ScoreSpeakerMovingAutoCommand extends Command {
     }
 
     // Set the turret position
-    turretSubsystem.moveToYawPosition(turretYawTarget, turretIsSafe);
+    turretSubsystem.moveToShootingYawPosition(turretYawTarget, turretIsSafe);
     turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
     shooter.prepareToShoot(shootingSettings.getVelocity());
 
