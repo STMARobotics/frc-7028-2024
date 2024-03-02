@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultTurretCommand;
+import frc.robot.commands.DrivetrainTestCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.ScoreSpeakerMovingCommand;
@@ -65,6 +66,7 @@ public class RobotContainer {
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
   private final LEDProgressBarCommand ledProgressBarCommand = new LEDProgressBarCommand(ledSubsystem);
+  private final DrivetrainTestCommand drivetrainTestCommand = new DrivetrainTestCommand(drivetrain);
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -240,6 +242,9 @@ public class RobotContainer {
     tab.add("Tur Roll Dynam Fwd", turretSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
+    // Drivetrain test
+    columnIndex +=2;
+    tab.add("Drivetrain test", new DrivetrainTestCommand(drivetrain)).withPosition(columnIndex, 0);
   }
 
   public void setAlliance(Alliance alliance) {
