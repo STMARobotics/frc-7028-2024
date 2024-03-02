@@ -97,10 +97,10 @@ public class Constants {
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-24), degreesToRadians(-88))),
+            new Rotation3d(0, degreesToRadians(-24), degreesToRadians(-86))),
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
-            new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), PI / 2))
+            new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), degreesToRadians(94)))
       };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
@@ -138,6 +138,7 @@ public class Constants {
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
     public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(1.5);
+    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-10);
   }
 
   public static class IntakeConstants {
@@ -300,6 +301,8 @@ public class Constants {
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);
     public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
+
+    public static final double SHOOTER_COEFFICIENT = 0.0005;
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35)),

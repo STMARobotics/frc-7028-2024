@@ -95,4 +95,14 @@ public class XBoxControlBindings implements ControlBindings {
     return Optional.of(driverController.povDown());
   }
 
+  @Override
+  public Optional<Trigger> eject() {
+    return Optional.of(driverController.y());
+  }
+
+  @Override
+  public Optional<Trigger> babyBird() {
+    return Optional.of(driverController.b());
+  }
+
 }

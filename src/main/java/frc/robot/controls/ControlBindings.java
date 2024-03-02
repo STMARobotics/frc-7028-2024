@@ -85,4 +85,16 @@ public interface ControlBindings {
    * @return trigger
    */
   Optional<Trigger> scoreAmp();
+
+  /**
+   * Run everything in reverse to eject
+   * @return trigger
+   */
+  Optional<Trigger> eject();
+
+  /**
+   * Baby bird pickup from human player
+   * @return trigger
+   */
+  Optional<Trigger> babyBird();
 }
