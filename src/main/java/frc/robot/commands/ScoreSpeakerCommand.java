@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
@@ -19,7 +18,6 @@ import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.ROBOT_ROTATION_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.ROBOT_SPEED_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
-import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
 import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
@@ -44,7 +42,6 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
@@ -58,7 +55,7 @@ public class ScoreSpeakerCommand extends Command {
 
   // Forward and reverse targets for the drivetrain when the turret is out of range
   // They're a few degrees (DRIVETRAIN_MARGIN) inside the turret shooting limits to avoid getting stuck on the edge
-  private static final Measure<Angle> DRIVETRAIN_MARGIN = Degrees.of(10);
+  private static final Measure<Angle> DRIVETRAIN_MARGIN = Degrees.of(5);
   private static final Rotation2d YAW_LIMIT_FORWARD = new Rotation2d(YAW_SHOOT_LIMIT_FORWARD.minus(DRIVETRAIN_MARGIN));
   private static final Rotation2d YAW_LIMIT_REVERSE = new Rotation2d(YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
 
@@ -67,8 +64,6 @@ public class ScoreSpeakerCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final LEDSubsystem ledSubsystem;
   private final BooleanSupplier turretIsSafe;
-
-  private final Timer shootTimer = new Timer();
 
   private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
@@ -112,7 +107,6 @@ public class ScoreSpeakerCommand extends Command {
   @Override
   public void initialize() {
     swerveRequestFacing.HeadingController.reset();
-    shootTimer.reset();
     rateLimiter.reset(drivetrain.getCurrentFieldChassisSpeeds());
     var alliance = DriverStation.getAlliance();
     speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE : SPEAKER_RED;
@@ -136,21 +130,19 @@ public class ScoreSpeakerCommand extends Command {
     // Calculate required turret angle, accounting for the robot heading
     turretYawTarget.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
     
-    // Prepare shooter
-    shooter.prepareToShoot(shootingSettings.getVelocity());
-    
-    // Set the turret pitch
-    turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-
     // Calculate ready state
     var isShooterReady = shooter.isReadyToShoot();
     var isInTurretRange = TurretSubsystem.isYawInShootingRange(turretYawTarget);
-    var isPitchReady = turretSubsystem.isAtPitchTarget();
-    var isYawReady = turretSubsystem.isAtYawTarget();
+
 
     // Aim drivetrain
     // NOTE: Slew rate limit needs to be applied so the robot slows properly (see 2022 robot doing "stoppies")
     if (isInTurretRange) {
+        // Prepare shooter
+      shooter.prepareToShoot(shootingSettings.getVelocity());
+    
+      // Set the turret position
+      turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
       turretSubsystem.moveToYawPosition(turretYawTarget, turretIsSafe);
 
       // Turret can reach, stop robot
@@ -161,6 +153,7 @@ public class ScoreSpeakerCommand extends Command {
           .withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
           .withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
           .withRotationalRate(0.0));
+
     } else {
       // Turret cannot reach, turn robot
       chassisSpeeds.vxMetersPerSecond = 0.0;
@@ -176,9 +169,14 @@ public class ScoreSpeakerCommand extends Command {
         robotTargetDirection = robotTargetDirection.minus(YAW_LIMIT_REVERSE);
       }
 
-      // If the drivetrain is getting close, start turning the turret
-      if (Math.abs(robotPose.getRotation().minus(robotTargetDirection).getDegrees()) < 45) {
+      // If the drivetrain is getting close, start getting ready to shoot
+      if (Math.abs(robotPose.getRotation().minus(robotTargetDirection).getDegrees()) < 25) {
+        // Prepare the shooter
+        shooter.prepareToShoot(shootingSettings.getVelocity());
+        
+        // Set the turret position
         turretSubsystem.moveToYawPosition(turretYawTarget, turretIsSafe);
+        turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
       }
 
       drivetrain.setControl(swerveRequestFacing
@@ -187,10 +185,11 @@ public class ScoreSpeakerCommand extends Command {
           .withTargetDirection(robotTargetDirection));
     }
 
+    var isPitchReady = turretSubsystem.isAtPitchTarget();
+    var isYawReady = turretSubsystem.isAtYawTarget();
     if (isShooterReady && isRobotStopped() && isPitchReady && isYawReady) {
       // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot and start timer
       turretSubsystem.shoot();
-      shootTimer.start();
       isShooting = true;
     }
 
@@ -216,13 +215,12 @@ public class ScoreSpeakerCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return shootTimer.hasElapsed(SHOOT_TIME.in(Seconds));
+    return !turretSubsystem.hasNote();
   }
 
   @Override
   public void end(boolean interrupted) {
     shooter.stop();
-    shootTimer.stop();
     turretSubsystem.prepareToExchange();
     drivetrain.setControl(new SwerveRequest.Idle());
     ledSubsystem.setUpdater(null);
