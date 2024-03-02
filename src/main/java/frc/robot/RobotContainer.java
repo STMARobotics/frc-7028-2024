@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.commands.BabyBirdCommand;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultTurretCommand;
@@ -171,6 +172,11 @@ public class RobotContainer {
     
     controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(
       new BabyBirdCommand(turretSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
+
+    controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
+      turretSubsystem.moveToPitchPosition(TurretConstants.PITCH_LIMIT_FORWARD);
+      turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
+    })));
   }
 
   public void populateSysIdDashboard() {

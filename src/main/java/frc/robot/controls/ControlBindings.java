@@ -97,4 +97,10 @@ public interface ControlBindings {
    * @return trigger
    */
   Optional<Trigger> babyBird();
+
+  /**
+   * Lifts the shooter pitch
+   * @return trigger
+   */
+  Optional<Trigger> liftShooter();
 }
