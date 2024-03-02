@@ -61,7 +61,7 @@ public class RobotContainer {
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
-  private final TestMode testMode = new TestMode();
+  private final LEDProgressBarCommand ledProgressBarCommand = new LEDProgressBarCommand(ledSubsystem);
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -156,8 +156,8 @@ public class RobotContainer {
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
   
     // Testing
-    controlBindings.increaseProgress().ifPresent(trigger -> trigger.whileTrue(Commands.runOnce(
-      testMode::increaseCounter, turretSubsystem)));
+    controlBindings.increaseProgress().ifPresent(trigger -> trigger.whileTrue(Commands.startEnd(
+      ledProgressBarCommand::increaseCounter, null, ledSubsystem)));
   }
 
   public void populateSysIdDashboard() {
@@ -247,7 +247,7 @@ public class RobotContainer {
   }
 
   public Command UpdateLEDProgressBarCommand() {
-    return new LEDProgressBarCommand(ledSubsystem, testMode);
+    return new LEDProgressBarCommand(ledSubsystem);
   }
 
 }

@@ -2,7 +2,6 @@ package frc.robot.commands.led;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.TestMode;
 import frc.robot.subsystems.LEDStrips;
 import frc.robot.subsystems.LEDSubsystem;
 
@@ -10,15 +9,20 @@ import frc.robot.subsystems.LEDSubsystem;
 public class LEDProgressBarCommand extends Command {
   
   private final LEDSubsystem ledSubsystem;
-  private final TestMode testMode;
   private boolean done;
   private int index;
 
-  public LEDProgressBarCommand(LEDSubsystem ledSubsystem, TestMode testMode) {
+  public LEDProgressBarCommand(LEDSubsystem ledSubsystem) {
     this.ledSubsystem = ledSubsystem;
-    this.testMode = testMode;
 
     addRequirements(ledSubsystem);
+  }
+
+
+  public double progressCounter;
+
+  public void increaseCounter() {
+    progressCounter+=2;
   }
 
   @Override
@@ -29,7 +33,7 @@ public class LEDProgressBarCommand extends Command {
 
   private void animate(LEDStrips ledStrips) {
       for(int strip = 0; strip < ledStrips.getStripCount(); strip++) {
-        for(int index = 0; index < testMode.progressCounter; index++) {
+        for(index = 0; index < progressCounter; index++) {
             ledStrips.setLED(strip, index, Color.kBlue);
         }
       }
