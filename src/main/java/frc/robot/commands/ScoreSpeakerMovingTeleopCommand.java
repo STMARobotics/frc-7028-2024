@@ -54,7 +54,7 @@ import frc.robot.subsystems.TurretSubsystem;
 /**
  * This command automatically scores in the speaker.
  */
-public class ScoreSpeakerMovingCommand extends Command {
+public class ScoreSpeakerMovingTeleopCommand extends Command {
 
   // Forward and reverse targets for the drivetrain when the turret is out of range
   // They're a few degrees (DRIVETRAIN_MARGIN) inside the turret shooting limits to avoid getting stuck on the edge
@@ -92,7 +92,7 @@ public class ScoreSpeakerMovingCommand extends Command {
 
   private boolean isShooting = false;
 
-  public ScoreSpeakerMovingCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
+  public ScoreSpeakerMovingTeleopCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
       TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem, BooleanSupplier turretIsSafe,
       Supplier<Measure<Velocity<Distance>>> xSupplier, Supplier<Measure<Velocity<Distance>>> ySupplier) {
     this.drivetrain = drivetrain;

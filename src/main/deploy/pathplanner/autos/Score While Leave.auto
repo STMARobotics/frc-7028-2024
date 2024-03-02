@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2,
-      "y": 4.18
+      "x": 1.351171298833826,
+      "y": 6.97
     },
     "rotation": 0
   },
@@ -14,25 +14,25 @@
         {
           "type": "named",
           "data": {
-            "name": "scoreSpeaker"
+            "name": "scoreSpeakerWhileMoving"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score and leave"
+            "pathName": "A"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "intake"
+            "pathName": "B"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "scoreSpeaker"
+            "pathName": "C"
           }
         }
       ]

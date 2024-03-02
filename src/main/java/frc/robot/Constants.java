@@ -209,7 +209,7 @@ public class Constants {
         .withMotionMagicAcceleration(10.0)
         .withMotionMagicCruiseVelocity(2.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.357910);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.358887);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.117);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
@@ -223,7 +223,7 @@ public class Constants {
         .withKG(0.5)
         .withGravityType(GravityTypeValue.Arm_Cosine);
     public static final MotionMagicConfigs PITCH_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(1.0)
+        .withMotionMagicAcceleration(5.0)
         .withMotionMagicCruiseVelocity(1.5);
 
     public static final SlotConfigs ROLLER_VELOCITY_SLOT_CONFIGS = new SlotConfigs()
@@ -244,6 +244,10 @@ public class Constants {
 
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(1.0);
     public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(1);
+
+    public static final Measure<Angle> YAW_EXCHANGE_TOLERANCE = Degrees.of(3.0);
+    public static final Measure<Angle> PITCH_EXCHANGE_TOLERANCE = Degrees.of(3.0);
+
 
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150.0);
 

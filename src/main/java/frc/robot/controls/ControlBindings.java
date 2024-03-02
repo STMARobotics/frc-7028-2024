@@ -103,4 +103,9 @@ public interface ControlBindings {
    * @return trigger
    */
   Optional<Trigger> liftShooter();
+
+  default Optional<Trigger> setupShooter()  {
+    return Optional.empty();
+  }
+
 }

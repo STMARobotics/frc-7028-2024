@@ -19,6 +19,7 @@ import static frc.robot.Constants.TurretConstants.INTAKE_PITCH_POSITION;
 import static frc.robot.Constants.TurretConstants.INTAKE_YAW_POSITION;
 import static frc.robot.Constants.TurretConstants.LOAD_VELOCITY;
 import static frc.robot.Constants.TurretConstants.NOTE_SENSOR_DISTANCE_THRESHOLD;
+import static frc.robot.Constants.TurretConstants.PITCH_EXCHANGE_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.PITCH_MAGNETIC_OFFSET;
@@ -32,6 +33,7 @@ import static frc.robot.Constants.TurretConstants.ROLLER_VELOCITY_SLOT_CONFIGS;
 import static frc.robot.Constants.TurretConstants.SHOOT_VELOCITY;
 import static frc.robot.Constants.TurretConstants.TRAP_PITCH_POSITION;
 import static frc.robot.Constants.TurretConstants.TRAP_YAW_POSITION;
+import static frc.robot.Constants.TurretConstants.YAW_EXCHANGE_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.YAW_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.YAW_MAGNETIC_OFFSET;
@@ -348,6 +350,12 @@ public class TurretSubsystem extends SubsystemBase {
     BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
     return isInTolerance(yawControl.Position, yawPositionSignal, YAW_TOLERANCE.in(Rotations))
         && isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
+  }
+
+  public boolean isInExchangePosition() {
+    BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
+    return isInTolerance(yawControl.Position, yawPositionSignal, YAW_EXCHANGE_TOLERANCE.in(Rotations))
+        && isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_EXCHANGE_TOLERANCE.in(Rotations));
   }
 
   /**

@@ -28,6 +28,7 @@ import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.RawSubscriber;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.RobotState;
 
 /**
  * Runnable that gets AprilTag data from PhotonVision.
@@ -102,6 +103,11 @@ public class PhotonRunnable implements Runnable {
         signaledHandles = WPIUtilJNI.waitForObjects(waitHandles);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
+      }
+
+      if(RobotState.isAutonomous()) {
+        // Short circuit when in auto
+        continue;
       }
 
       var currentRobotPose = poseSupplier.get();

@@ -32,7 +32,7 @@ public class EjectIntakeCommand extends Command {
 
   @Override
   public void execute() {
-    if (turretSubsystem.isAtYawAndPitchTarget()) {
+    if (turretSubsystem.isInExchangePosition()) {
       amperSubsystem.load();
       intakeSubsystem.reverse();
       turretSubsystem.eject();

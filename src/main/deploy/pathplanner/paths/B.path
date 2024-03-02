@@ -1,0 +1,104 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.134232584254644,
+        "y": 7.450837533254014
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.431889986586991,
+        "y": 7.731953709521454
+      },
+      "isLocked": false,
+      "linkedName": "Score while leave A-end"
+    },
+    {
+      "anchor": {
+        "x": 8.134232584254644,
+        "y": 5.7732087393999345
+      },
+      "prevControl": {
+        "x": 5.368412140333054,
+        "y": 6.172212344424689
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Score while leave B-end"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot Note 2",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake Note 2",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake Note 3",
+      "waypointRelativePos": 0.9,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 1.0416266760099966,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Score while leave",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

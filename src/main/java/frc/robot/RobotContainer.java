@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
@@ -33,7 +34,7 @@ import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectIntakeCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
-import frc.robot.commands.ScoreSpeakerMovingCommand;
+import frc.robot.commands.ScoreSpeakerMovingTeleopCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
@@ -153,7 +154,7 @@ public class RobotContainer {
       new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
 
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(Commands.either(
-      new ScoreSpeakerMovingCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
+      new ScoreSpeakerMovingTeleopCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
             elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY()),
       new LEDBlinkCommand(ledSubsystem, Color.kPurple, 0.05),
       turretSubsystem::hasNote)));
@@ -169,6 +170,11 @@ public class RobotContainer {
 
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
       turretSubsystem.moveToPitchPosition(TurretConstants.PITCH_LIMIT_FORWARD);
+      turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
+    })));
+
+    controlBindings.setupShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
+      turretSubsystem.moveToPitchPosition(Rotations.of(0.0586));
       turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
     })));
   }

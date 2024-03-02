@@ -1,0 +1,184 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.134232584254644,
+        "y": 5.7732087393999345
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.060091172813925,
+        "y": 4.041170363042481
+      },
+      "isLocked": false,
+      "linkedName": "Score while leave B-end"
+    },
+    {
+      "anchor": {
+        "x": 3.273643213953095,
+        "y": 2.8260230204670944
+      },
+      "prevControl": {
+        "x": 4.470654029027357,
+        "y": 3.2068900979907227
+      },
+      "nextControl": {
+        "x": 2.724864407990776,
+        "y": 2.651411582206357
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4665677401530246,
+        "y": 3.3882553730019747
+      },
+      "prevControl": {
+        "x": 2.4886123521008514,
+        "y": 3.0722826017497895
+      },
+      "nextControl": {
+        "x": 2.439362948901337,
+        "y": 3.7781907142761657
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4665677401530246,
+        "y": 6.770717751961819
+      },
+      "prevControl": {
+        "x": 2.421226421400212,
+        "y": 4.898121287470644
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3,
+      "rotationDegrees": 29.279298494895297,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.6,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Intake Note 4",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Shoot Note 4",
+      "waypointRelativePos": 0.65,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Shoot 3 notes",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 34.41836447905621,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Score while leave",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
