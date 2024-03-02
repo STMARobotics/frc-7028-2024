@@ -24,6 +24,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.AmperSubsystem;
@@ -35,7 +36,7 @@ import frc.robot.subsystems.TurretSubsystem;
  * Command to intake a note from the floor to the turret
  */
 public class IntakeToTurretCommand extends Command {
-  
+
   private final IntakeSubsystem intakeSubsystem;
   private final TurretSubsystem turretSubsystem;
   private final AmperSubsystem amperSubsystem;
@@ -46,7 +47,7 @@ public class IntakeToTurretCommand extends Command {
   private boolean hasSeenNote;
   private double rotation;
 
-  private final PIDController rotationPidController = new PIDController(0, 0, 0);
+  private final PIDController rotationPidController = new PIDController(.1, 0, 0);
 
   private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
@@ -61,13 +62,14 @@ public class IntakeToTurretCommand extends Command {
   private ChassisSpeeds desiredChassisSpeeds = new ChassisSpeeds();
 
   public IntakeToTurretCommand(
-      IntakeSubsystem intakeSubsystem, 
-      TurretSubsystem turretSubsystem, 
+      IntakeSubsystem intakeSubsystem,
+      TurretSubsystem turretSubsystem,
       AmperSubsystem amperSubsystem,
       CommandSwerveDrivetrain drivetrainSubsystem,
       Supplier<Measure<Velocity<Distance>>> translationXSupplier,
       Supplier<Measure<Velocity<Distance>>> translationYSupplier,
       Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
+    
     this.intakeSubsystem = intakeSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.amperSubsystem = amperSubsystem;
@@ -75,21 +77,9 @@ public class IntakeToTurretCommand extends Command {
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
     this.rotationSupplier = rotationSupplier;
-    
+
     addRequirements(intakeSubsystem, turretSubsystem, amperSubsystem, drivetrainSubsystem);
   }
-
-  public void rotateToTarget(double rotation) {
-    var zRotation = rotation;
-    desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
-    desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
-    desiredChassisSpeeds.omegaRadiansPerSecond = zRotation;
-    var limitedCassisSpeeds = rateLimiter.calculate(desiredChassisSpeeds);
-    drivetrainSubsystem.setControl(drive
-        .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
-        .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
-        .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
-    }
 
   @Override
   public void initialize() {
@@ -97,29 +87,35 @@ public class IntakeToTurretCommand extends Command {
     
     // Reset the slew rate limiters, in case the robot is already moving
     rateLimiter.reset(drivetrainSubsystem.getCurrentFieldChassisSpeeds());
-
+    
+    hasSeenNote = false;
     rotationPidController.reset();
   }
-  
+
   @Override
   public void execute() {
     var results = LimelightHelpers.getLatestResults("limelight");
-    if (results.targetingResults.valid && results.targetingResults.targets_Detector.length>0) {
-      rotation = -rotationPidController.calculate(results.targetingResults.targets_Detector[0].ty);
+    if (results.targetingResults.valid && results.targetingResults.targets_Detector.length > 0) {
+      rotation = rotationPidController.calculate(results.targetingResults.targets_Detector[0].tx);
       hasSeenNote = true;
-      rotateToTarget(rotation);
+      desiredChassisSpeeds.omegaRadiansPerSecond = rotation;
     } else if (hasSeenNote) {
-      rotateToTarget(rotation);
+      desiredChassisSpeeds.omegaRadiansPerSecond = rotation;
     } else {
-      desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
-      desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
       desiredChassisSpeeds.omegaRadiansPerSecond = rotationSupplier.get().in(RadiansPerSecond);
-      var limitedCassisSpeeds = rateLimiter.calculate(desiredChassisSpeeds);
-      drivetrainSubsystem.setControl(drive
-          .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
-          .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
-          .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
     }
+
+    desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
+    desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
+    var limitedCassisSpeeds = rateLimiter.calculate(desiredChassisSpeeds);
+
+    SmartDashboard.putNumber("Rotation", rotation);
+
+    drivetrainSubsystem.setControl(drive
+        .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
+        .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
+        .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
+
     if (turretSubsystem.isAtYawAndPitchTarget()) {
       intakeSubsystem.intake();
       amperSubsystem.intake();
