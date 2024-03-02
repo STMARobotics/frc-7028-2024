@@ -94,5 +94,8 @@ public class XBoxControlBindings implements ControlBindings {
   public Optional<Trigger> intakeToAmper() {
     return Optional.of(driverController.povDown());
   }
-
+  @Override
+  public Optional<Trigger> increaseProgress() {
+    return Optional.of(driverController.povLeft());
+  }
 }

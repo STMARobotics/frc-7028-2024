@@ -94,4 +94,8 @@ public class JoystickControlBindings implements ControlBindings {
     return Optional.of(leftJoystick.povRight());
   }
 
+  @Override
+  public Optional<Trigger> increaseProgress() {
+    return Optional.empty();
+  }
 }

@@ -85,4 +85,6 @@ public interface ControlBindings {
    * @return trigger
    */
   Optional<Trigger> scoreAmp();
+
+  Optional<Trigger> increaseProgress();
 }

@@ -32,6 +32,7 @@ import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
+import frc.robot.commands.led.LEDProgressBarCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
@@ -60,6 +61,7 @@ public class RobotContainer {
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+  private final TestMode testMode = new TestMode();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -152,6 +154,10 @@ public class RobotContainer {
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
+  
+    // Testing
+    controlBindings.increaseProgress().ifPresent(trigger -> trigger.whileTrue(Commands.runOnce(
+      testMode::increaseCounter, turretSubsystem)));
   }
 
   public void populateSysIdDashboard() {
@@ -238,6 +244,10 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+
+  public Command UpdateLEDProgressBarCommand() {
+    return new LEDProgressBarCommand(ledSubsystem, testMode);
   }
 
 }
