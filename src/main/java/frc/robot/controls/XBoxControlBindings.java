@@ -105,4 +105,9 @@ public class XBoxControlBindings implements ControlBindings {
     return Optional.of(driverController.b());
   }
 
+  @Override
+  public Optional<Trigger> liftShooter() {
+    return Optional.empty();
+  }
+
 }

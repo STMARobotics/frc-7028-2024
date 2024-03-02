@@ -104,4 +104,9 @@ public class JoystickControlBindings implements ControlBindings {
     return Optional.empty();
   }
 
+  @Override
+  public Optional<Trigger> liftShooter() {
+    return Optional.of(rightJoystick.button(2));
+  }
+
 }
