@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
+import frc.robot.commands.IntakeToTurretCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
@@ -129,8 +130,13 @@ public class RobotContainer {
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
 
     // Intake
-    controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
-    
+    controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(
+      new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem, drivetrain, 
+      controlBindings.translationX(), 
+      controlBindings.translationY(), 
+      controlBindings.omega())
+      ));
+      
     controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(Commands.runOnce(() -> {
       intakeSubsystem.stop();
       amperSubsystem.stop();

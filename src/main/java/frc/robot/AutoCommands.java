@@ -8,7 +8,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.IntakeToAmperCommand;
-import frc.robot.commands.IntakeToTurretCommand;
 import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.ScoreSpeakerCommand;
@@ -53,7 +52,6 @@ public class AutoCommands {
    */
   public void registerPPNamedCommands() {
     NamedCommands.registerCommand("scoreSpeaker", scoreSpeaker());
-    NamedCommands.registerCommand("intake", intakeToTurret());
   }
 
   /**
@@ -63,15 +61,6 @@ public class AutoCommands {
   public Command scoreSpeaker() {
     return new ScoreSpeakerCommand(
         drivetrainSubsystem, shooterSubsystem, turretSubsystem, ledSubsystem, elevatorSubsystem::isParked);
-  }
-
-  /**
-   * Command to intake a note into the turret
-   * @return new command
-   */
-  public Command intakeToTurret() {
-    return new IntakeToTurretCommand(intakeSubsystem, turretSubsystem, amperSubsystem)
-        .deadlineWith(new LEDAlternateCommand(ledSubsystem, NOTE_COLOR, Color.kBlue, Seconds.one()));
   }
 
   /**
