@@ -100,7 +100,7 @@ public class Constants {
             new Rotation3d(0, degreesToRadians(-24), degreesToRadians(-86))),
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
-            new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), PI / 2))
+            new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), degreesToRadians(94)))
       };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
@@ -138,6 +138,7 @@ public class Constants {
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
     public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(1.5);
+    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-10);
   }
 
   public static class IntakeConstants {

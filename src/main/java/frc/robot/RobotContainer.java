@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.BabyBirdCommand;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectIntakeCommand;
@@ -160,7 +161,10 @@ public class RobotContainer {
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
     
     controlBindings.eject().ifPresent(trigger -> trigger.whileTrue(
-      new EjectIntakeCommand(intakeSubsystem, amperSubsystem, turretSubsystem)));
+      new EjectIntakeCommand(intakeSubsystem, amperSubsystem, turretSubsystem, shooterSubsystem)));
+    
+    controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(
+      new BabyBirdCommand(turretSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
   }
 
   public void populateSysIdDashboard() {

@@ -91,4 +91,10 @@ public interface ControlBindings {
    * @return trigger
    */
   Optional<Trigger> eject();
+
+  /**
+   * Baby bird pickup from human player
+   * @return trigger
+   */
+  Optional<Trigger> babyBird();
 }

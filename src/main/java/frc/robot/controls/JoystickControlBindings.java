@@ -99,4 +99,9 @@ public class JoystickControlBindings implements ControlBindings {
     return Optional.empty();
   }
 
+  @Override
+  public Optional<Trigger> babyBird() {
+    return Optional.empty();
+  }
+
 }

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 /**
@@ -12,14 +13,16 @@ public class EjectIntakeCommand extends Command {
   private IntakeSubsystem intakeSubsystem;
   private AmperSubsystem amperSubsystem;
   private TurretSubsystem turretSubsystem;
+  private ShooterSubsystem shooterSubsystem;
 
   public EjectIntakeCommand(IntakeSubsystem intakeSubsystem, AmperSubsystem amperSubsystem,
-      TurretSubsystem turretSubsystem) {
+      TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.amperSubsystem = amperSubsystem;
     this.turretSubsystem = turretSubsystem;
+    this.shooterSubsystem = shooterSubsystem;
 
-    addRequirements(intakeSubsystem, amperSubsystem, turretSubsystem);
+    addRequirements(intakeSubsystem, amperSubsystem, turretSubsystem, shooterSubsystem);
   }
 
   @Override
@@ -33,6 +36,7 @@ public class EjectIntakeCommand extends Command {
       amperSubsystem.load();
       intakeSubsystem.reverse();
       turretSubsystem.eject();
+      shooterSubsystem.reverse();
     }
   }
 
@@ -41,6 +45,7 @@ public class EjectIntakeCommand extends Command {
     amperSubsystem.stop();
     intakeSubsystem.stop();
     turretSubsystem.stop();
+    shooterSubsystem.stop();
   }
   
 }
