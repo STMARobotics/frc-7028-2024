@@ -125,11 +125,17 @@ public class ScoreSpeakerMovingCommand extends Command {
     var speakerPredictedOffset = new Translation2d((drivetrain.getCurrentFieldChassisSpeeds().vxMetersPerSecond * timeUntilScored), 
     (drivetrain.getCurrentFieldChassisSpeeds().vyMetersPerSecond * timeUntilScored));
 
+    var predictedSpeakerTranslation = speakerTranslation.minus(robotTranslation).minus(speakerPredictedOffset);
+
+    var predictedDist = predictedSpeakerTranslation.getDistance(robotTranslation);
+
     // Calculate the angle to the speaker
-    var angleToSpeaker = speakerTranslation.minus(robotTranslation).minus(speakerPredictedOffset).getAngle();
+    var angleToSpeaker = predictedSpeakerTranslation.getAngle();
     
     // Calculate required turret angle, accounting for the robot heading
     turretYawTarget.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
+
+    shootingSettings = SHOOTER_INTERPOLATOR.calculate(predictedDist);
     
     // Prepare shooter
     shooter.prepareToShoot(shootingSettings.getVelocity());
