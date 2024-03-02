@@ -42,6 +42,11 @@ public class LEDProgressBarCommand extends Command {
     }
 
   @Override
+  public void execute() {
+    increaseCounter();
+  }
+    
+  @Override
   public boolean isFinished() {
     return done;
   }
