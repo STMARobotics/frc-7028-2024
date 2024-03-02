@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -16,8 +14,6 @@ import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
-import static frc.robot.Constants.ShootingConstants.ROBOT_ROTATION_TOLERANCE;
-import static frc.robot.Constants.ShootingConstants.ROBOT_SPEED_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_COEFFICIENT;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
@@ -156,48 +152,13 @@ public class ScoreSpeakerMovingCommand extends Command {
           l.setLEDSegments(NOTE_COLOR, isShooterReady, isInTurretRange, isPitchReady, isYawReady));
     }
 
-    // Aim drivetrain
-    // NOTE: Slew rate limit needs to be applied so the robot slows properly (see 2022 robot doing "stoppies")
-    if (isInTurretRange) {
-      // Turret can reach, stop robot
-      chassisSpeeds.vxMetersPerSecond = 0.0;
-      chassisSpeeds.vyMetersPerSecond = 0.0;
-      var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
-      drivetrain.setControl(swerveRequestRotation
-          .withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
-          .withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
-          .withRotationalRate(0.0));
-    } else {
-      // Turret cannot reach, turn robot
-      chassisSpeeds.vxMetersPerSecond = 0.0;
-      chassisSpeeds.vyMetersPerSecond = 0.0;
-      var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
-
-      // Turn toward the *back of the robot* toward the target because that's where the turret is
-      drivetrain.setControl(swerveRequestFacing
-          .withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
-          .withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
-          .withTargetDirection(angleToSpeaker.rotateBy(fromRadians(PI))));
-    }
-
-    if (isShooterReady && isRobotStopped() && isPitchReady && isYawReady) {
+    if (isShooterReady && isPitchReady && isYawReady) {
       // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot and start timer
       turretSubsystem.shoot();
       shootTimer.start();
       ledSubsystem.setUpdater(l -> l.setAll(Color.kGreen));
       isShooting = true;
     }
-  }
-
-  /**
-   * Checks if the robot is moving slow enough to allow shooting.
-   * @return true if the robot is moving slow enough to shoot, otherwise false
-   */
-  private boolean isRobotStopped() {
-    var currentSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
-    return new Translation2d(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond).getNorm()
-        < ROBOT_SPEED_TOLERANCE.in(MetersPerSecond)
-        && Math.abs(currentSpeeds.omegaRadiansPerSecond) < ROBOT_ROTATION_TOLERANCE.in(RadiansPerSecond);
   }
 
   @Override
