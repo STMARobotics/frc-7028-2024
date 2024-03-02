@@ -35,9 +35,8 @@ public class AutoIntakeToAmperCommand extends Command {
   private double speed;
   private double rotation;
 
-
-  private final PIDController xPidController = new PIDController(0, 0, 0);
-  private final PIDController yPidController = new PIDController(0, 0, 0);
+  private final PIDController rotationPidController = new PIDController(0, 0, 0);
+  private final PIDController speedPidController = new PIDController(0, 0, 0);
 
 private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
@@ -84,9 +83,10 @@ private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimite
 
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight")) {
-      var speed = -yPidController.calculate(LimelightHelpers.getTX("limelight"));
-      var rotation = -xPidController.calculate(LimelightHelpers.getTY("limelight"));
+    var results = LimelightHelpers.getLatestResults("limelight");
+    if (results.targetingResults.valid && results.targetingResults.targets_Detector.length>0) {
+      rotation = -rotationPidController.calculate(results.targetingResults.targets_Detector[0].ty);
+      speed = -speedPidController.calculate(results.targetingResults.targets_Detector[0].ty);
       hasSeenNote = true;
       driveToTarget(speed, rotation);
     } else if (hasSeenNote) {

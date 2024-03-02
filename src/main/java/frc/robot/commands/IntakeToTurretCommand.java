@@ -48,7 +48,6 @@ public class IntakeToTurretCommand extends Command {
 
   private final PIDController rotationPidController = new PIDController(0, 0, 0);
 
-
   private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
 
@@ -104,21 +103,22 @@ public class IntakeToTurretCommand extends Command {
   
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight")) {
-      rotation = -rotationPidController.calculate(LimelightHelpers.getTY("limelight"));
+    var results = LimelightHelpers.getLatestResults("limelight");
+    if (results.targetingResults.valid && results.targetingResults.targets_Detector.length>0) {
+      rotation = -rotationPidController.calculate(results.targetingResults.targets_Detector[0].ty);
       hasSeenNote = true;
       rotateToTarget(rotation);
     } else if (hasSeenNote) {
       rotateToTarget(rotation);
     } else {
-    desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
-    desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
-    desiredChassisSpeeds.omegaRadiansPerSecond = rotationSupplier.get().in(RadiansPerSecond);
-    var limitedCassisSpeeds = rateLimiter.calculate(desiredChassisSpeeds);
-    drivetrainSubsystem.setControl(drive
-        .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
-        .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
-        .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
+      desiredChassisSpeeds.vxMetersPerSecond = translationXSupplier.get().in(MetersPerSecond);
+      desiredChassisSpeeds.vyMetersPerSecond = translationYSupplier.get().in(MetersPerSecond);
+      desiredChassisSpeeds.omegaRadiansPerSecond = rotationSupplier.get().in(RadiansPerSecond);
+      var limitedCassisSpeeds = rateLimiter.calculate(desiredChassisSpeeds);
+      drivetrainSubsystem.setControl(drive
+          .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
+          .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
+          .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
     }
     if (turretSubsystem.isAtYawAndPitchTarget()) {
       intakeSubsystem.intake();
