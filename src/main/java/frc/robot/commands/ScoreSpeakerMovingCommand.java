@@ -136,7 +136,7 @@ public class ScoreSpeakerMovingCommand extends Command {
     
     // Move the turret
     turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-    turretSubsystem.moveToYawShootingPosition(turretYawTarget, turretIsSafe);
+    turretSubsystem.moveToYawPosition(turretYawTarget, turretIsSafe);
 
     // Calculate ready state and send to telemetry
     var isShooterReady = shooter.isReadyToShoot();
