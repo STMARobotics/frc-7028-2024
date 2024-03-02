@@ -98,4 +98,19 @@ public class JoystickControlBindings implements ControlBindings {
   public Optional<Trigger> increaseProgress() {
     return Optional.empty();
   }
+
+  public Optional<Trigger> eject() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> babyBird() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> liftShooter() {
+    return Optional.of(rightJoystick.button(2));
+  }
+
 }

@@ -23,14 +23,17 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
+import frc.robot.commands.ScoreSpeakerMovingCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
+import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
 import frc.robot.commands.led.LEDProgressBarCommand;
 import frc.robot.controls.ControlBindings;
@@ -117,8 +120,6 @@ public class RobotContainer {
         .withSize(4, 5).withPosition(2, 0);
 
     // Elevator
-    driverTab.addBoolean("Elevator Top", elevatorSubsystem::isAtTopLimit)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0);
     driverTab.addBoolean("Elevator Bottom", elevatorSubsystem::isAtBottomLimit)
         .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 1);
     driverTab.addNumber("Elevator Meters", () -> elevatorSubsystem.getPosition().in(Meters))
@@ -150,7 +151,11 @@ public class RobotContainer {
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
       new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
 
-    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreSpeaker()));
+    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(Commands.either(
+      new ScoreSpeakerMovingCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
+            elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY()),
+      new LEDBlinkCommand(ledSubsystem, Color.kPurple, 0.05),
+      turretSubsystem::hasNote)));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));

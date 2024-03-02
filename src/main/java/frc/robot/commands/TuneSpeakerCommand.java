@@ -65,7 +65,7 @@ public class TuneSpeakerCommand extends Command {
   @Override
   public void execute() {
     turretSubsystem.moveToPitchPosition(Degrees.of(pitchSubscriber.get(0.0)));
-    turretSubsystem.moveToYawShootingPosition(Degrees.of(yawSubscriber.get(180.0)), turretIsSafe);
+    turretSubsystem.moveToYawPosition(Degrees.of(yawSubscriber.get(180.0)), turretIsSafe);
     shooterSubsystem.prepareToShoot(RotationsPerSecond.of(velocitySubscriber.get(10)));
     var turretReady = turretSubsystem.isAtYawAndPitchTarget();
     var shooterReady = shooterSubsystem.isReadyToShoot();
