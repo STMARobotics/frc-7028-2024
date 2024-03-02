@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultTurretCommand;
+import frc.robot.commands.EjectIntakeCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.ScoreSpeakerMovingCommand;
@@ -118,8 +119,6 @@ public class RobotContainer {
         .withSize(4, 5).withPosition(2, 0);
 
     // Elevator
-    driverTab.addBoolean("Elevator Top", elevatorSubsystem::isAtTopLimit)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0);
     driverTab.addBoolean("Elevator Bottom", elevatorSubsystem::isAtBottomLimit)
         .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 1);
     driverTab.addNumber("Elevator Meters", () -> elevatorSubsystem.getPosition().in(Meters))
@@ -152,13 +151,16 @@ public class RobotContainer {
       new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
 
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(Commands.either(
-        new ScoreSpeakerMovingCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
-            elevatorSubsystem::isParked),
-      new LEDBlinkCommand(ledSubsystem, Color.kRed, 0.1),
+      new ScoreSpeakerMovingCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
+            elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY()),
+      new LEDBlinkCommand(ledSubsystem, Color.kPurple, 0.05),
       turretSubsystem::hasNote)));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
+    
+    controlBindings.eject().ifPresent(trigger -> trigger.whileTrue(
+      new EjectIntakeCommand(intakeSubsystem, amperSubsystem, turretSubsystem)));
   }
 
   public void populateSysIdDashboard() {

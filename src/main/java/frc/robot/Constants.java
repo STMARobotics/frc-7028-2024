@@ -97,7 +97,7 @@ public class Constants {
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-24), degreesToRadians(-88))),
+            new Rotation3d(0, degreesToRadians(-24), degreesToRadians(-86))),
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
             new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), PI / 2))
