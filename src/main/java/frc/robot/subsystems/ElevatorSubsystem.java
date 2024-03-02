@@ -58,6 +58,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private final MutableMeasure<Distance> elevatorPosition = MutableMeasure.zero(Meters);
 
+  private boolean bottomTripped = false;
+
   // SysId routines  
   private final SysIdRoutine elevatorRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.per(Second).of(0.5), Volts.of(1.0), null, SysIdRoutineSignalLogger.logState()),
@@ -83,8 +85,20 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     elevatorMotor.getConfigurator().apply(motorConfig);
     CTREUtil.optimizeSignals(elevatorMotor);
+    elevatorMotor.setPosition(0); // Position starts at rotor absolute position, not necessarily 0
 
     elevatorPositionSignal = elevatorMotor.getPosition();
+  }
+  @Override
+  public void periodic() {
+    if (isAtBottomLimit()) {
+      if (!bottomTripped) {
+        bottomTripped = true;
+        elevatorMotor.setPosition(0);
+      }
+    } else {
+      bottomTripped = false;
+    }
   }
 
   /**

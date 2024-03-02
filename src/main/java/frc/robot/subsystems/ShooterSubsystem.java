@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_TOP;
+import static frc.robot.Constants.ShooterConstants.REVERSE_VELOCITY;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_ERROR_TOLERANCE;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_SENSOR_TO_MECHANISM_RATIO;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_STATOR_CURRENT_LIMIT;
@@ -99,6 +100,10 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void prepareToShoot(Measure<Velocity<Angle>> shooterVelocity) {
     spinShooterWheels(shooterVelocity);
+  }
+
+  public void reverse() {
+    spinShooterWheels(REVERSE_VELOCITY);
   }
 
   /**

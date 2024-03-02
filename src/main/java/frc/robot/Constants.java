@@ -97,10 +97,10 @@ public class Constants {
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-24), -PI / 2)),
+            new Rotation3d(0, degreesToRadians(-24), degreesToRadians(-86))),
         new Transform3d(
             new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
-            new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), PI / 2))
+            new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-20), degreesToRadians(94)))
       };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
@@ -138,6 +138,7 @@ public class Constants {
     public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
   
     public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(1.5);
+    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-10);
   }
 
   public static class IntakeConstants {
@@ -193,8 +194,9 @@ public class Constants {
     public static final Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179.9);
     public static final Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179.9);
 
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(.25);
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-.25);
+    // Range turret can shoot from without needing to turn the drivetrain
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(0.25);
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-0.25);
 
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(110)
@@ -207,7 +209,7 @@ public class Constants {
         .withMotionMagicAcceleration(10.0)
         .withMotionMagicCruiseVelocity(2.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.143066);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.357910);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.117);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
@@ -249,8 +251,8 @@ public class Constants {
 
   public static class ElevatorConstants {
     public static int DEVICE_ID_MOTOR = 60;
-    public static int DEVICE_PORT_TOP_LIMIT = 9;
-    public static int DEVICE_PORT_BOTTOM_LIMIT = 8;
+    public static int DEVICE_PORT_TOP_LIMIT = 7;
+    public static int DEVICE_PORT_BOTTOM_LIMIT = 9;
 
     public static Measure<Per<Distance, Angle>> METERS_PER_ROTATION = 
         Meters.per(Rotations).of((inchesToMeters(1.27) * PI) / 3.0 / 3.0);
@@ -299,6 +301,8 @@ public class Constants {
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);
     public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
+
+    public static final double SHOOTER_COEFFICIENT = 0.0005;
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35)),

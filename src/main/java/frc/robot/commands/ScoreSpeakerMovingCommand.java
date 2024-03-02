@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
@@ -15,8 +16,7 @@ import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
-import static frc.robot.Constants.ShootingConstants.ROBOT_ROTATION_TOLERANCE;
-import static frc.robot.Constants.ShootingConstants.ROBOT_SPEED_TOLERANCE;
+import static frc.robot.Constants.ShootingConstants.SHOOTER_COEFFICIENT;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
@@ -27,6 +27,7 @@ import static frc.robot.Constants.TurretConstants.YAW_SHOOT_LIMIT_REVERSE;
 import static java.lang.Math.PI;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
@@ -39,8 +40,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -51,11 +54,11 @@ import frc.robot.subsystems.TurretSubsystem;
 /**
  * This command automatically scores in the speaker.
  */
-public class ScoreSpeakerCommand extends Command {
+public class ScoreSpeakerMovingCommand extends Command {
 
   // Forward and reverse targets for the drivetrain when the turret is out of range
   // They're a few degrees (DRIVETRAIN_MARGIN) inside the turret shooting limits to avoid getting stuck on the edge
-  private static final Measure<Angle> DRIVETRAIN_MARGIN = Degrees.of(5);
+  private static final Measure<Angle> DRIVETRAIN_MARGIN = Degrees.of(10);
   private static final Rotation2d YAW_LIMIT_FORWARD = new Rotation2d(YAW_SHOOT_LIMIT_FORWARD.minus(DRIVETRAIN_MARGIN));
   private static final Rotation2d YAW_LIMIT_REVERSE = new Rotation2d(YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
 
@@ -64,6 +67,9 @@ public class ScoreSpeakerCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final LEDSubsystem ledSubsystem;
   private final BooleanSupplier turretIsSafe;
+
+  private final Supplier<Measure<Velocity<Distance>>> xSupplier;
+  private final Supplier<Measure<Velocity<Distance>>> ySupplier;
 
   private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
@@ -86,13 +92,16 @@ public class ScoreSpeakerCommand extends Command {
 
   private boolean isShooting = false;
 
-  public ScoreSpeakerCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
-      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem, BooleanSupplier turretIsSafe) {
+  public ScoreSpeakerMovingCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
+      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem, BooleanSupplier turretIsSafe,
+      Supplier<Measure<Velocity<Distance>>> xSupplier, Supplier<Measure<Velocity<Distance>>> ySupplier) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;
     this.turretIsSafe = turretIsSafe;
+    this.xSupplier = xSupplier;
+    this.ySupplier = ySupplier;
 
     addRequirements(drivetrain, shooter, turretSubsystem);
 
@@ -124,16 +133,32 @@ public class ScoreSpeakerCommand extends Command {
     // Lookup shooter settings for this distance
     var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
 
+    // Calculate time to hit speaker
+    var timeUntilScored = SHOOTER_COEFFICIENT * distanceToSpeaker * shootingSettings.getVelocity().in(RotationsPerSecond);
+
+    // Calculate the predicted offset of the speaker compared to current pose (in meters)
+    var speakerPredictedOffset = new Translation2d((drivetrain.getCurrentFieldChassisSpeeds().vxMetersPerSecond * timeUntilScored), 
+    (drivetrain.getCurrentFieldChassisSpeeds().vyMetersPerSecond * timeUntilScored));
+
+    var predictedSpeakerTranslation = speakerTranslation.minus(speakerPredictedOffset);
+
+    var predictedDist = predictedSpeakerTranslation.getDistance(robotTranslation);
+
     // Calculate the angle to the speaker
-    var angleToSpeaker = speakerTranslation.minus(robotTranslation).getAngle();
+    var angleToSpeaker = predictedSpeakerTranslation.minus(robotTranslation).getAngle();
     
     // Calculate required turret angle, accounting for the robot heading
     turretYawTarget.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
+
+    shootingSettings = SHOOTER_INTERPOLATOR.calculate(predictedDist);
     
     // Calculate ready state
     var isShooterReady = shooter.isReadyToShoot();
     var isInTurretRange = TurretSubsystem.isYawInShootingRange(turretYawTarget);
 
+    // Get driver translation speeds
+    chassisSpeeds.vxMetersPerSecond = xSupplier.get().in(MetersPerSecond) * 0.35;
+    chassisSpeeds.vyMetersPerSecond = ySupplier.get().in(MetersPerSecond) * 0.35;
 
     // Aim drivetrain
     // NOTE: Slew rate limit needs to be applied so the robot slows properly (see 2022 robot doing "stoppies")
@@ -146,8 +171,7 @@ public class ScoreSpeakerCommand extends Command {
       turretSubsystem.moveToYawPosition(turretYawTarget, turretIsSafe);
 
       // Turret can reach, stop robot
-      chassisSpeeds.vxMetersPerSecond = 0.0;
-      chassisSpeeds.vyMetersPerSecond = 0.0;
+
       var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
       drivetrain.setControl(swerveRequestRotation
           .withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
@@ -156,8 +180,6 @@ public class ScoreSpeakerCommand extends Command {
 
     } else {
       // Turret cannot reach, turn robot
-      chassisSpeeds.vxMetersPerSecond = 0.0;
-      chassisSpeeds.vyMetersPerSecond = 0.0;
       var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
 
       // Decide the direction to turn, then set the robot rotation target so the turret's shooting yaw limit on that
@@ -187,7 +209,7 @@ public class ScoreSpeakerCommand extends Command {
 
     var isPitchReady = turretSubsystem.isAtPitchTarget();
     var isYawReady = turretSubsystem.isAtYawTarget();
-    if (isShooterReady && isRobotStopped() && isPitchReady && isYawReady) {
+    if (isShooterReady && isPitchReady && isYawReady) {
       // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot and start timer
       turretSubsystem.shoot();
       isShooting = true;
@@ -200,22 +222,6 @@ public class ScoreSpeakerCommand extends Command {
       ledSubsystem.setUpdater(l -> 
           l.setLEDSegments(NOTE_COLOR, isShooterReady, isInTurretRange, isPitchReady, isYawReady));
     }
-  }
-
-  /**
-   * Checks if the robot is moving slow enough to allow shooting.
-   * @return true if the robot is moving slow enough to shoot, otherwise false
-   */
-  private boolean isRobotStopped() {
-    var currentSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
-    return new Translation2d(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond).getNorm()
-        < ROBOT_SPEED_TOLERANCE.in(MetersPerSecond)
-        && Math.abs(currentSpeeds.omegaRadiansPerSecond) < ROBOT_ROTATION_TOLERANCE.in(RadiansPerSecond);
-  }
-
-  @Override
-  public boolean isFinished() {
-    return !turretSubsystem.hasNote();
   }
 
   @Override

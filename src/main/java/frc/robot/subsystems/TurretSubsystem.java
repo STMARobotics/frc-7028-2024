@@ -64,7 +64,6 @@ import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.LaserCan.RangingMode;
 import au.grapplerobotics.LaserCan.TimingBudget;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -135,6 +134,7 @@ public class TurretSubsystem extends SubsystemBase {
     yawTalonConfig.Feedback.RotorToSensorRatio = YAW_ROTOR_TO_SENSOR_RATIO;
     yawTalonConfig.Feedback.FeedbackRemoteSensorID = yawEncoder.getDeviceID();
     yawTalonConfig.Feedback.FeedbackSensorSource = FusedCANcoder;
+    yawTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     yawTalonConfig.Slot0 = Slot0Configs.from(YAW_SLOT_CONFIGS);
     yawTalonConfig.MotionMagic = YAW_MOTION_MAGIC_CONFIGS;
     yawTalonConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -162,6 +162,7 @@ public class TurretSubsystem extends SubsystemBase {
     pitchTalonConfig.Feedback.RotorToSensorRatio = PITCH_ROTOR_TO_SENSOR_RATIO;
     pitchTalonConfig.Feedback.FeedbackRemoteSensorID = pitchEncoder.getDeviceID();
     pitchTalonConfig.Feedback.FeedbackSensorSource = FusedCANcoder;
+    pitchTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     pitchTalonConfig.Slot0 = Slot0Configs.from(PITCH_SLOT_CONFIGS);
     pitchTalonConfig.MotionMagic = PITCH_MOTION_MAGIC_CONFIGS;
     pitchTalonConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -234,20 +235,6 @@ public class TurretSubsystem extends SubsystemBase {
       return false;
     }
     return measure.distance_mm < NOTE_SENSOR_DISTANCE_THRESHOLD.in(Millimeters);
-  }
-
-  /**
-   * Set the turret yaw - but clamps to positions where it can shoot a note.
-   * @param yaw robot relative yaw
-   * @param isSafe a BooleanSupplier to indicate if it is safe to move the turret. This is required to make the
-   *        caller think about the fact that the elevator and turret interfere with eachother
-   */
-  public void moveToYawShootingPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
-    if (isSafe.getAsBoolean()) {
-      var clampedYawRotations =   
-          MathUtil.clamp(translateYaw(yaw), YAW_SHOOT_LIMIT_REVERSE.in(Rotations), YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
-      yawMotor.setControl(yawControl.withPosition(clampedYawRotations));
-    }
   }
 
   /**
@@ -410,6 +397,19 @@ public class TurretSubsystem extends SubsystemBase {
    */
   private void moveToYawPosition(Measure<Angle> yaw) {
     yawMotor.setControl(yawControl.withPosition(translateYaw(yaw)));
+  }
+
+  /**
+   * Sets the turret yaw (rotation around the Z axis) position target. Zero is robot forward, using the WPILib unit
+   * circle.
+   * @param yaw robot relative yaw
+   * @param isSafe a BooleanSupplier to indicate if it is safe to move the turret. This is required to make the
+   *        caller think about the fact that the elevator and turret interfere with eachother
+   */
+  public void moveToYawPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
+    if (isSafe.getAsBoolean()) {
+      moveToYawPosition(yaw);
+    }
   }
 
   /**

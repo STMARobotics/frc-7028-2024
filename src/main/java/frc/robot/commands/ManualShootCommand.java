@@ -32,7 +32,7 @@ public class ManualShootCommand extends Command {
   public void initialize() {
     shooterSubsystem.prepareToShoot(RotationsPerSecond.of(35));
     turretSubsystem.moveToPitchPosition(Degrees.of(39));
-    turretSubsystem.moveToYawShootingPosition(Degrees.of(180), turretIsSafe);
+    turretSubsystem.moveToYawPosition(Degrees.of(180), turretIsSafe);
     shootTimer.reset();
   }
 
