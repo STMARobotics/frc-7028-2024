@@ -3,57 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3693078263349512,
-        "y": 6.28103150943144
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 1.8680623326158936,
-        "y": 6.299168036932566
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.2101653676991564,
-        "y": 6.28103150943144
-      },
-      "prevControl": {
-        "x": 2.5097352566825406,
-        "y": 6.2495836268959994
-      },
-      "nextControl": {
-        "x": 5.431889986586991,
-        "y": 6.380782410687629
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 7.961935572993954,
         "y": 7.342018368247263
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.79711152404761,
+        "y": 7.577793225761891
+      },
+      "isLocked": false,
+      "linkedName": "Score while leave A2-end"
+    },
+    {
+      "anchor": {
+        "x": 8.134232584254644,
+        "y": 5.7732087393999345
+      },
       "prevControl": {
-        "x": 6.837470867924192,
-        "y": 7.196926148238261
+        "x": 5.368412140333054,
+        "y": 6.172212344424689
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score while leave A-end"
+      "linkedName": "Score while leave B2-end"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 1.55,
+      "name": "Intake Shoot Intake",
+      "waypointRelativePos": 0.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
             {
               "type": "named",
               "data": {
@@ -73,13 +69,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 6.203447901691738,
+    "rotation": 1.0416266760099966,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Score while leave",
+  "folder": "Score While Leave 2",
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": false

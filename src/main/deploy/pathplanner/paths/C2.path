@@ -8,52 +8,52 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.688292359040859,
-        "y": 3.9595559892874177
+        "x": 5.912507965366808,
+        "y": 6.562147685698881
       },
       "isLocked": false,
-      "linkedName": "Score while leave B-end"
+      "linkedName": "Score while leave B2-end"
     },
     {
       "anchor": {
-        "x": 3.04693662018903,
-        "y": 3.0436613504805963
+        "x": 4.83338457904986,
+        "y": 6.933946499471947
       },
       "prevControl": {
-        "x": 4.162333061508232,
-        "y": 3.08900266923341
+        "x": 5.150773810319551,
+        "y": 6.7979225432135095
       },
       "nextControl": {
-        "x": 2.4308035412845728,
-        "y": 3.0186152903625287
+        "x": 4.515995347780169,
+        "y": 7.069970455730385
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.158246772633896,
-        "y": 3.68750807677054
+        "x": 3.1648240489463437,
+        "y": 7.414564478251764
       },
       "prevControl": {
-        "x": 1.843272531978244,
-        "y": 3.654101717913122
+        "x": 3.4063269716293707,
+        "y": 7.63719998510018
       },
       "nextControl": {
-        "x": 3.355257587708158,
-        "y": 3.8144637692784165
+        "x": 2.5844551689103383,
+        "y": 6.87953691696857
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.575386905159775,
-        "y": 5.2019081231144915
+        "x": 2.602591696411463,
+        "y": 4.476447023069484
       },
       "prevControl": {
-        "x": 1.7683114313597046,
-        "y": 4.893587155595363
+        "x": 2.675137806415964,
+        "y": 5.863891376905561
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,29 +62,45 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.3,
-      "rotationDegrees": 29.279298494895297,
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 67.48669591659204,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 2.0,
-      "rotationDegrees": 7.989326766396888,
+      "waypointRelativePos": 1.85,
+      "rotationDegrees": -141.94611890866264,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 0.6000000000000001,
-      "rotationDegrees": -0.5254086693033281,
+      "waypointRelativePos": 2.3000000000000003,
+      "rotationDegrees": -60.37639900038606,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.3,
+      "rotationDegrees": 68.67626579436816,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.35,
+      "minWaypointRelativePos": 1.9,
       "maxWaypointRelativePos": 3.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.7,
         "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    },
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.65,
+      "maxWaypointRelativePos": 1.9,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 4.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
       }
@@ -110,11 +126,23 @@
     },
     {
       "name": "Shoot Note 4 and 3 more",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.44999999999999996,
       "command": {
         "type": "sequential",
         "data": {
           "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
             {
               "type": "named",
               "data": {
@@ -146,17 +174,17 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 32.47119229084856,
+    "rotation": -55.2651404602137,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Score while leave",
+  "folder": "Score While Leave 2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

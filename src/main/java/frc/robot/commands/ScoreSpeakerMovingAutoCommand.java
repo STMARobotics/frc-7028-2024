@@ -128,7 +128,7 @@ public class ScoreSpeakerMovingAutoCommand extends Command {
 
     var isPitchReady = turretSubsystem.isAtPitchTarget();
     var isYawReady = turretSubsystem.isAtYawTarget();
-    if (isShooterReady && isPitchReady && isYawReady) {
+    if (isShooterReady && isPitchReady && isYawReady && TurretSubsystem.isYawInShootingRange(turretYawTarget)) {
       // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot and start timer
       turretSubsystem.shoot();
       isShooting = true;

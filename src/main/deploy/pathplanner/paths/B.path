@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.061686474250143,
-        "y": 7.305745313245013
+        "x": 7.961935572993954,
+        "y": 7.342018368247263
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.896862425303799,
-        "y": 7.54152017075964
+        "x": 4.79711152404761,
+        "y": 7.577793225761891
       },
       "isLocked": false,
       "linkedName": "Score while leave A-end"
@@ -32,24 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot Note 2",
-      "waypointRelativePos": 0.15,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "scoreSpeakerWhileMoving"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Intake Note 2",
+      "name": "Intake Shoot Intake",
       "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
@@ -60,18 +43,13 @@
               "data": {
                 "name": "intake"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Intake Note 3",
-      "waypointRelativePos": 0.9,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
             {
               "type": "named",
               "data": {
@@ -84,7 +62,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 4.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -100,5 +78,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

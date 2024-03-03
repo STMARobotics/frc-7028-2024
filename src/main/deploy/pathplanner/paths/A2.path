@@ -41,7 +41,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score while leave A-end"
+      "linkedName": "Score while leave A2-end"
     }
   ],
   "rotationTargets": [],
@@ -77,7 +77,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Score while leave",
+  "folder": "Score While Leave 2",
   "previewStartingState": {
     "rotation": 0.0,
     "velocity": 0

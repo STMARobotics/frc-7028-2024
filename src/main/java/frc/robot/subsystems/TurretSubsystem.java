@@ -137,7 +137,6 @@ public class TurretSubsystem extends SubsystemBase {
     yawTalonConfig.Feedback.RotorToSensorRatio = YAW_ROTOR_TO_SENSOR_RATIO;
     yawTalonConfig.Feedback.FeedbackRemoteSensorID = yawEncoder.getDeviceID();
     yawTalonConfig.Feedback.FeedbackSensorSource = FusedCANcoder;
-    yawTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     yawTalonConfig.Slot0 = Slot0Configs.from(YAW_SLOT_CONFIGS);
     yawTalonConfig.MotionMagic = YAW_MOTION_MAGIC_CONFIGS;
     yawTalonConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -165,7 +164,6 @@ public class TurretSubsystem extends SubsystemBase {
     pitchTalonConfig.Feedback.RotorToSensorRatio = PITCH_ROTOR_TO_SENSOR_RATIO;
     pitchTalonConfig.Feedback.FeedbackRemoteSensorID = pitchEncoder.getDeviceID();
     pitchTalonConfig.Feedback.FeedbackSensorSource = FusedCANcoder;
-    pitchTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     pitchTalonConfig.Slot0 = Slot0Configs.from(PITCH_SLOT_CONFIGS);
     pitchTalonConfig.MotionMagic = PITCH_MOTION_MAGIC_CONFIGS;
     pitchTalonConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;

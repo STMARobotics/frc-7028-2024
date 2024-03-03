@@ -20,25 +20,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A"
+            "pathName": "A2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "B"
+            "pathName": "B2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "C"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
+            "pathName": "C2"
           }
         },
         {
