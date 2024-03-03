@@ -84,7 +84,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     elevatorMotor.getConfigurator().apply(motorConfig);
-    CTREUtil.optimizeSignals(elevatorMotor);
     elevatorMotor.setPosition(0); // Position starts at rotor absolute position, not necessarily 0
 
     elevatorPositionSignal = elevatorMotor.getPosition();

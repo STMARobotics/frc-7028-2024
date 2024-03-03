@@ -186,8 +186,6 @@ public class TurretSubsystem extends SubsystemBase {
     rollerTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
 
-    CTREUtil.optimizeSignals(rollerMotor, pitchMotor, yawMotor);
-
     // Configure the note sensor
     try {
       noteSensor.setRangingMode(RangingMode.SHORT);

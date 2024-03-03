@@ -67,7 +67,6 @@ public class AmperSubsystem extends SubsystemBase {
     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     rollerMotor.getConfigurator().apply(rollerConfig);
-    CTREUtil.optimizeSignals(rollerMotor);
     
     // Configure the note sensor
     try {

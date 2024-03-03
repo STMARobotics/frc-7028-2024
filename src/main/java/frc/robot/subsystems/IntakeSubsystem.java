@@ -62,7 +62,6 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     rollerMotor.getConfigurator().apply(rollerConfig);
-    CTREUtil.optimizeSignals(rollerMotor);
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {

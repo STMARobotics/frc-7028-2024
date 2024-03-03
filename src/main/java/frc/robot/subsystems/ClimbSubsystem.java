@@ -30,7 +30,6 @@ public class ClimbSubsystem extends SubsystemBase {
 
     leftWinchMotor.getConfigurator().apply(talonConfig);
     rightWinchMotor.getConfigurator().apply(talonConfig);
-    CTREUtil.optimizeSignals(leftWinchMotor, rightWinchMotor);
   }
 
   /**
