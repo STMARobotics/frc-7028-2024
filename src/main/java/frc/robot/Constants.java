@@ -25,6 +25,7 @@ import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -250,6 +251,7 @@ public class Constants {
 
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150.0);
 
+    /** Correction for note not launching perfectly straight from shooter wheels */
     public static final Measure<Angle> SHOOTING_YAW_CORRECTION = Degrees.of(1);
 
   }
@@ -307,7 +309,19 @@ public class Constants {
     public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
-    public static final double SHOOTER_COEFFICIENT = 0.0005;
+    /** A constant used applied to estimate the note's time of flight */
+    public static final double SHOOT_WHILE_MOVING_COEFFICIENT = 0.0005;
+
+    /**
+     * Margin inside the turret shooting limits to avoid getting to the edge and being unable to reach
+     */
+    public static final Measure<Angle> DRIVETRAIN_MARGIN = Degrees.of(10);
+
+    // Forward and reverse targets for the drivetrain when the turret is out of range
+    public static final Rotation2d DRIVETRAIN_YAW_LIMIT_FORWARD =
+        new Rotation2d(TurretConstants.YAW_SHOOT_LIMIT_FORWARD.minus(DRIVETRAIN_MARGIN));
+    public static final Rotation2d DRIVETRAIN_YAW_LIMIT_REVERSE =
+        new Rotation2d(TurretConstants.YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35)),

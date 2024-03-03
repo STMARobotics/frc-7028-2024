@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
@@ -34,7 +33,7 @@ import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectIntakeCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
-import frc.robot.commands.ScoreSpeakerMovingTeleopCommand;
+import frc.robot.commands.ScoreSpeakerTeleopCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
@@ -123,9 +122,7 @@ public class RobotContainer {
 
     // Elevator
     driverTab.addBoolean("Elevator Bottom", elevatorSubsystem::isAtBottomLimit)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 1);
-    driverTab.addNumber("Elevator Meters", () -> elevatorSubsystem.getPosition().in(Meters))
-        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 2);
+        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0);
 
   }
 
@@ -154,7 +151,7 @@ public class RobotContainer {
       new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
 
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(Commands.either(
-      new ScoreSpeakerMovingTeleopCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
+      new ScoreSpeakerTeleopCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
             elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY()),
       new LEDBlinkCommand(ledSubsystem, Color.kPurple, 0.05),
       turretSubsystem::hasNote)));

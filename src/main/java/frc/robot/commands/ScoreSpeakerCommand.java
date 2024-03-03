@@ -50,6 +50,8 @@ import frc.robot.subsystems.TurretSubsystem;
 
 /**
  * This command automatically scores in the speaker.
+ * @deprecated Not quite ready to delete, but replaced by {@link ScoreSpeackerMovingTeleopCommand} and
+ * {@link ScoreSpeakerAutoCommand}
  */
 public class ScoreSpeakerCommand extends Command {
 

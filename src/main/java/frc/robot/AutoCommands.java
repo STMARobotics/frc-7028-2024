@@ -11,8 +11,8 @@ import frc.robot.commands.IntakeToAmperCommand;
 import frc.robot.commands.IntakeToTurretCommand;
 import frc.robot.commands.LoadAmperCommand;
 import frc.robot.commands.ScoreAmpCommand;
+import frc.robot.commands.ScoreSpeakerAutoCommand;
 import frc.robot.commands.ScoreSpeakerCommand;
-import frc.robot.commands.ScoreSpeakerMovingAutoCommand;
 import frc.robot.commands.led.LEDAlternateCommand;
 import frc.robot.commands.led.LEDMarqueeCommand;
 import frc.robot.subsystems.AmperSubsystem;
@@ -53,14 +53,14 @@ public class AutoCommands {
    * Registers named commands for PathPlanner
    */
   public void registerPPNamedCommands() {
-    NamedCommands.registerCommand("scoreSpeaker", scoreSpeaker());
     NamedCommands.registerCommand("intake", intakeToTurret());
     NamedCommands.registerCommand("scoreSpeakerWhileMoving", autoScoreSpeaker());
   }
 
   /**
-   * Command to automatically score in the speaker
+   * Command to stop moving and automatically score in the speaker
    * @return new command
+   * @deprecated not quite ready to remove, but replaced with {@link #autoScoreSpeaker}
    */
   public Command scoreSpeaker() {
     return new ScoreSpeakerCommand(
@@ -72,7 +72,7 @@ public class AutoCommands {
    * @return new command
    */
   public Command autoScoreSpeaker() {
-    return new ScoreSpeakerMovingAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem,
+    return new ScoreSpeakerAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem,
         drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose,
         elevatorSubsystem::isParked);
   }

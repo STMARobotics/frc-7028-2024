@@ -15,16 +15,16 @@ import frc.robot.subsystems.TurretSubsystem;
  * Runs everything in reverse to attempt to eject a jammed note
  */
 public class EjectIntakeCommand extends Command {
-  private IntakeSubsystem intakeSubsystem;
-  private AmperSubsystem amperSubsystem;
-  private TurretSubsystem turretSubsystem;
-  private ShooterSubsystem shooterSubsystem;
-  private CommandSwerveDrivetrain drivetrainSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
+  private final AmperSubsystem amperSubsystem;
+  private final TurretSubsystem turretSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
+  private final CommandSwerveDrivetrain drivetrainSubsystem;
 
   private final SwerveRequest.RobotCentric swerveRequest = new SwerveRequest.RobotCentric()
-    .withDriveRequestType(DriveRequestType.Velocity)
-    .withSteerRequestType(SteerRequestType.MotionMagic)
-    .withVelocityX(-0.5);
+      .withDriveRequestType(DriveRequestType.Velocity)
+      .withSteerRequestType(SteerRequestType.MotionMagic)
+      .withVelocityX(-0.5);
 
   public EjectIntakeCommand(IntakeSubsystem intakeSubsystem, AmperSubsystem amperSubsystem,
       TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, CommandSwerveDrivetrain drivetrainSubsystem) {

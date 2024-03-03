@@ -11,18 +11,27 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
+/**
+ * Command to "feed the robot shooter" from the human player station. Tilts the shooter up so the human player can
+ * drop a note in.
+ */
 public class BabyBirdCommand extends Command {
+
   private final TurretSubsystem turretSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final BooleanSupplier turretIsSafe;
+
   private boolean sensorTripped = false;
   private boolean sensorCleared = false;
 
-  public BabyBirdCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem, BooleanSupplier turretIsSafe) {
+  public BabyBirdCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem,
+      BooleanSupplier turretIsSafe) {
+    
     this.turretSubsystem = turretSubsystem;
     this.turretIsSafe = turretIsSafe;
     this.shooterSubsystem = shooterSubsystem;
 
+    // Require the LEDSubsystem to stop the LEDs from coming on until the command is done
     addRequirements(turretSubsystem, shooterSubsystem, ledSubsystem);
   }
 

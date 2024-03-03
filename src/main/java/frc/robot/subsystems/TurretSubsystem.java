@@ -420,10 +420,22 @@ public class TurretSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * Sets the turret yaw (rotation around the z axix) position target, but for shooting. The difference between this
+   * and {@link #moveToYawPosition(Measure)} is that this method only turns the turret within the bounds where shooting
+   * is possible without hitting the elevator, and it applies correct for the shooter not launching perfectly straight.
+   * Zero is robot forward, using the WPILib unit circle.
+   * @param yaw robot relative yaw
+   * @param isSafe a BooleanSupplier to indicate if it is safe to move the turret. This is required to make the
+   *        caller think about the fact that the elevator and turret interfere with eachother
+   */
   public void moveToShootingYawPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
     // Clamp to shooting range, and correct for the fact that the shooter doesn't shoot straight
     var targetYaw = MathUtil.clamp(
-        translateYaw(yaw.plus(SHOOTING_YAW_CORRECTION)), YAW_SHOOT_LIMIT_REVERSE.in(Rotations), YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
+      translateYaw(yaw.plus(SHOOTING_YAW_CORRECTION)),
+      YAW_SHOOT_LIMIT_REVERSE.in(Rotations),
+      YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
+    
     if (isSafe.getAsBoolean()) {
       yawMotor.setControl(yawControl.withPosition(targetYaw));
     }

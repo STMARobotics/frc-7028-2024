@@ -1,18 +1,17 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
-import static frc.robot.Constants.ShootingConstants.SHOOTER_COEFFICIENT;
+import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD;
+import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
+import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
-import static frc.robot.Constants.TurretConstants.YAW_SHOOT_LIMIT_FORWARD;
-import static frc.robot.Constants.TurretConstants.YAW_SHOOT_LIMIT_REVERSE;
 import static java.lang.Math.PI;
 
 import java.util.function.BooleanSupplier;
@@ -23,7 +22,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,15 +30,10 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 /**
- * This command automatically scores in the speaker.
+ * This command automatically scores in the speaker while the robot is moving. It does not do anything with the
+ * drivetrain, only shooting when the turret can reach.
  */
-public class ScoreSpeakerMovingAutoCommand extends Command {
-
-  // Forward and reverse targets for the drivetrain when the turret is out of range
-  // They're a few degrees (DRIVETRAIN_MARGIN) inside the turret shooting limits to avoid getting stuck on the edge
-  private static final Measure<Angle> DRIVETRAIN_MARGIN = Degrees.of(10);
-  private static final Rotation2d YAW_LIMIT_FORWARD = new Rotation2d(YAW_SHOOT_LIMIT_FORWARD.minus(DRIVETRAIN_MARGIN));
-  private static final Rotation2d YAW_LIMIT_REVERSE = new Rotation2d(YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
+public class ScoreSpeakerAutoCommand extends Command {
 
   // private final CommandSwerveDrivetrain drivetrain;
   private final ShooterSubsystem shooter;
@@ -57,7 +50,7 @@ public class ScoreSpeakerMovingAutoCommand extends Command {
 
   private boolean isShooting = false;
 
-  public ScoreSpeakerMovingAutoCommand(ShooterSubsystem shooter, TurretSubsystem turretSubsystem,
+  public ScoreSpeakerAutoCommand(ShooterSubsystem shooter, TurretSubsystem turretSubsystem,
       LEDSubsystem ledSubsystem, Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier, Supplier<Pose2d> poseSupplier,
        BooleanSupplier turretIsSafe) {
     this.shooter = shooter;
@@ -89,7 +82,7 @@ public class ScoreSpeakerMovingAutoCommand extends Command {
     var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
 
     // Calculate time to hit speaker
-    var timeUntilScored = SHOOTER_COEFFICIENT * distanceToSpeaker * shootingSettings.getVelocity().in(RotationsPerSecond);
+    var timeUntilScored = SHOOT_WHILE_MOVING_COEFFICIENT * distanceToSpeaker * shootingSettings.getVelocity().in(RotationsPerSecond);
 
     // Calculate the predicted offset of the speaker compared to current pose (in meters)
     var fieldRelativeSpeed = fieldRelativeSpeedSupplier.get();
@@ -116,9 +109,9 @@ public class ScoreSpeakerMovingAutoCommand extends Command {
     // side is pointed at the speaker
     Rotation2d robotTargetDirection = angleToSpeaker.minus(fromRadians(PI)); // Turret is on the back of the robot
     if (robotTargetDirection.minus(robotPose.getRotation()).getRadians() > 0) {
-      robotTargetDirection = robotTargetDirection.minus(YAW_LIMIT_FORWARD);
+      robotTargetDirection = robotTargetDirection.minus(DRIVETRAIN_YAW_LIMIT_FORWARD);
     } else {
-      robotTargetDirection = robotTargetDirection.minus(YAW_LIMIT_REVERSE);
+      robotTargetDirection = robotTargetDirection.minus(DRIVETRAIN_YAW_LIMIT_REVERSE);
     }
 
     // Set the turret position
