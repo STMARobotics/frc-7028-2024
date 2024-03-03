@@ -248,7 +248,6 @@ public class Constants {
     public static final Measure<Angle> YAW_EXCHANGE_TOLERANCE = Degrees.of(3.0);
     public static final Measure<Angle> PITCH_EXCHANGE_TOLERANCE = Degrees.of(3.0);
 
-
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150.0);
 
     public static final Measure<Angle> SHOOTING_YAW_CORRECTION = Degrees.of(1);

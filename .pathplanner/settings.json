@@ -3,8 +3,8 @@
   "robotLength": 1.001713,
   "holonomicMode": true,
   "pathFolders": [
-    "Score While Leave 2",
-    "M1-M2-A3-A2"
+    "M1-M2-A3-A2",
+    "A3-A2-A1-M1-M2"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.5,
