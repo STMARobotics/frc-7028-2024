@@ -30,6 +30,7 @@ import static frc.robot.Constants.TurretConstants.PITCH_STATOR_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.ROLLER_VELOCITY_SLOT_CONFIGS;
+import static frc.robot.Constants.TurretConstants.SHOOTING_YAW_CORRECTION;
 import static frc.robot.Constants.TurretConstants.SHOOT_VELOCITY;
 import static frc.robot.Constants.TurretConstants.TRAP_PITCH_POSITION;
 import static frc.robot.Constants.TurretConstants.TRAP_YAW_POSITION;
@@ -420,7 +421,9 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void moveToShootingYawPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
-    var targetYaw = MathUtil.clamp(translateYaw(yaw), YAW_SHOOT_LIMIT_REVERSE.in(Rotations), YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
+    // Clamp to shooting range, and correct for the fact that the shooter doesn't shoot straight
+    var targetYaw = MathUtil.clamp(
+        translateYaw(yaw.plus(SHOOTING_YAW_CORRECTION)), YAW_SHOOT_LIMIT_REVERSE.in(Rotations), YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
     if (isSafe.getAsBoolean()) {
       yawMotor.setControl(yawControl.withPosition(targetYaw));
     }

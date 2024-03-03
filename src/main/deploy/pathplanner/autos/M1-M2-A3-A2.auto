@@ -12,12 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "scoreSpeakerWhileMoving"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "A"

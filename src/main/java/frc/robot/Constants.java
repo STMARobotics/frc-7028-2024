@@ -168,7 +168,7 @@ public class Constants {
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
     public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-75.0);
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-40.0);
-    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
+    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(75.0);
   
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200);
 
@@ -250,6 +250,8 @@ public class Constants {
 
 
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150.0);
+
+    public static final Measure<Angle> SHOOTING_YAW_CORRECTION = Degrees.of(1);
 
   }
 

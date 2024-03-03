@@ -168,7 +168,7 @@ public class ScoreSpeakerMovingTeleopCommand extends Command {
     
       // Set the turret position
       turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-      turretSubsystem.moveToYawPosition(turretYawTarget, turretIsSafe);
+      turretSubsystem.moveToShootingYawPosition(turretYawTarget, turretIsSafe);
 
       // Turret can reach, stop robot
 
@@ -197,7 +197,7 @@ public class ScoreSpeakerMovingTeleopCommand extends Command {
         shooter.prepareToShoot(shootingSettings.getVelocity());
         
         // Set the turret position
-        turretSubsystem.moveToYawPosition(turretYawTarget, turretIsSafe);
+        turretSubsystem.moveToShootingYawPosition(turretYawTarget, turretIsSafe);
         turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
       }
 

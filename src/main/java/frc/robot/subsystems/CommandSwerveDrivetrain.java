@@ -12,6 +12,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -72,6 +73,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     photonThread.start();
 
     m_pigeon2.getConfigurator().apply(PIGEON_MOUNT_POSE_CONFIG);
+
+    configNeutralMode(NeutralModeValue.Brake);
     
     configurePathPlanner();
   }

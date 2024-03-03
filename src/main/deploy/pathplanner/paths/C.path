@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.688292359040859,
-        "y": 3.9595559892874177
+        "x": 4.778974996546484,
+        "y": 3.805395505527854
       },
       "isLocked": false,
       "linkedName": "Score while leave B-end"
@@ -32,16 +32,32 @@
     },
     {
       "anchor": {
-        "x": 2.158246772633896,
-        "y": 3.68750807677054
+        "x": 2.2489294101395223,
+        "y": 3.4970745380087256
       },
       "prevControl": {
-        "x": 1.843272531978244,
-        "y": 3.654101717913122
+        "x": 2.0249598172382597,
+        "y": 3.273104945107463
       },
       "nextControl": {
-        "x": 3.355257587708158,
-        "y": 3.8144637692784165
+        "x": 2.4574994764024622,
+        "y": 3.7056446042716655
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.5300455864069624,
+        "y": 3.995829044289668
+      },
+      "prevControl": {
+        "x": 2.4037449807024998,
+        "y": 3.6941109306623416
+      },
+      "nextControl": {
+        "x": 2.6932743339170897,
+        "y": 4.385764385563859
       },
       "isLocked": false,
       "linkedName": null
@@ -68,7 +84,7 @@
     },
     {
       "waypointRelativePos": 2.0,
-      "rotationDegrees": 7.989326766396888,
+      "rotationDegrees": 23.860175191342368,
       "rotateFast": false
     },
     {
@@ -79,11 +95,22 @@
   ],
   "constraintZones": [
     {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.35,
-      "maxWaypointRelativePos": 3.0,
+      "name": "Pickup and Shoot A3 - A2",
+      "minWaypointRelativePos": 1.9,
+      "maxWaypointRelativePos": 4.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.75,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    },
+    {
+      "name": "Stop to shoot M2",
+      "minWaypointRelativePos": 1.0499999999999998,
+      "maxWaypointRelativePos": 1.25,
+      "constraints": {
+        "maxVelocity": 0.5,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -156,7 +183,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Score while leave",
+  "folder": "M1-M2-A3-A2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

@@ -29,7 +29,19 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Slow to Shoot M1",
+      "minWaypointRelativePos": 0.35,
+      "maxWaypointRelativePos": 0.6,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Intake Shoot Intake",
@@ -39,9 +51,22 @@
         "data": {
           "commands": [
             {
-              "type": "named",
+              "type": "parallel",
               "data": {
-                "name": "intake"
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 1.0
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "intake"
+                    }
+                  }
+                ]
               }
             },
             {
@@ -73,7 +98,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Score while leave",
+  "folder": "M1-M2-A3-A2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
