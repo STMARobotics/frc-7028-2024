@@ -14,25 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-A3-A2_1"
+            "pathName": "M1-M2-M3_1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-A3-A2_2"
+            "pathName": "M1-M2-M3_2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-A3-A2_3"
+            "pathName": "M1-M2-M3_3"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "intake"
+            "pathName": "M1-M2-M3_4"
           }
         },
         {

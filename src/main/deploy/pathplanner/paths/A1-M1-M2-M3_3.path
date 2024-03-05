@@ -3,39 +3,66 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.961935572993954,
-        "y": 7.342018368247263
+        "x": 7.934730781742266,
+        "y": 5.7732087393999345
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.79711152404761,
-        "y": 7.577793225761891
+        "x": 6.248033724137623,
+        "y": 6.4442602569415675
       },
       "isLocked": false,
-      "linkedName": "M1-M2-A3-A2_1"
+      "linkedName": "A1-M1-M2-M3_2"
     },
     {
       "anchor": {
-        "x": 8.134232584254644,
-        "y": 5.7732087393999345
+        "x": 5.821825327861182,
+        "y": 6.471465048193254
       },
       "prevControl": {
-        "x": 5.368412140333054,
-        "y": 6.172212344424689
+        "x": 5.831889496463891,
+        "y": 6.562042565617627
+      },
+      "nextControl": {
+        "x": 5.803688800360057,
+        "y": 6.308236300683127
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.043549946749017,
+        "y": 4.340423066811046
+      },
+      "prevControl": {
+        "x": 7.200201417946696,
+        "y": 6.126871025671876
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "M1-M2-A3-A2_2"
+      "linkedName": "A1-M1-M2-M3_3"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.3,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 1.6,
+      "rotationDegrees": -44.917453912127364,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
-      "name": "Slow to Shoot M1",
-      "minWaypointRelativePos": 0.35,
-      "maxWaypointRelativePos": 0.6,
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.9,
+      "maxWaypointRelativePos": 1.1,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.7,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -44,7 +71,7 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake Shoot Intake",
+      "name": "New Event Marker",
       "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
@@ -57,7 +84,7 @@
                   {
                     "type": "wait",
                     "data": {
-                      "waitTime": 1.0
+                      "waitTime": 1.25
                     }
                   },
                   {
@@ -74,7 +101,18 @@
               "data": {
                 "name": "scoreSpeakerWhileMoving"
               }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.7,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
@@ -94,14 +132,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 1.0416266760099966,
+    "rotation": -51.170175095029684,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "M1-M2-A3-A2",
+  "folder": "A1-M1-M2-M3",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

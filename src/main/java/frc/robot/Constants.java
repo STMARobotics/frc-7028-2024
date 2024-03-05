@@ -54,7 +54,7 @@ public class Constants {
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = (DrivetrainConstants.MAX_VELOCITY
         .in(MetersPerSecond) /
         Math.hypot(TRACKWIDTH.in(Meters) / 2.0, WHEELBASE.in(Meters) / 2.0));
-    public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 4);
+    public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 4 * 0.8);
 
     public static final MountPoseConfigs PIGEON_MOUNT_POSE_CONFIG = new MountPoseConfigs()
         .withMountPosePitch(9.096435546875)
@@ -64,7 +64,8 @@ public class Constants {
 
   public static final class TeleopDriveConstants {
 
-    public static final double DEADBAND = 0.05;
+    public static final double TRANSLATION_DEADBAND = 0.05;
+    public static final double ROTATIONAL_DEADBAND = 0.03;
 
     public static final Measure<Velocity<Velocity<Distance>>> TRANSLATION_RATE_LIMIT = MetersPerSecondPerSecond.of(20.0);
     public static final Measure<Velocity<Velocity<Angle>>> ROTATION_RATE_LIMIT =

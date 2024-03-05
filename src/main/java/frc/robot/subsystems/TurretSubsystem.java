@@ -162,6 +162,7 @@ public class TurretSubsystem extends SubsystemBase {
     pitchTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     pitchTalonConfig.CurrentLimits.SupplyCurrentLimit = PITCH_SUPPLY_CURRENT_LIMIT;
     pitchTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    pitchTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     pitchTalonConfig.Feedback.RotorToSensorRatio = PITCH_ROTOR_TO_SENSOR_RATIO;
     pitchTalonConfig.Feedback.FeedbackRemoteSensorID = pitchEncoder.getDeviceID();
     pitchTalonConfig.Feedback.FeedbackSensorSource = FusedCANcoder;
@@ -184,6 +185,8 @@ public class TurretSubsystem extends SubsystemBase {
     rollerTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     rollerTalonConfig.CurrentLimits.SupplyCurrentLimit = 40;
     rollerTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    rollerTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+    rollerTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
 
     // Configure the note sensor

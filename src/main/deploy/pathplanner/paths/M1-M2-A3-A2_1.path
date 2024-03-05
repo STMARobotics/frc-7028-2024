@@ -63,7 +63,7 @@
       "name": "Intake",
       "waypointRelativePos": 1.55,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {

@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -33,7 +35,7 @@ public class IntakeToAmperCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.stop();
-    amperSubsystem.stop();
+    amperSubsystem.runRollers(RotationsPerSecond.zero());
   }
 
 }

@@ -67,6 +67,8 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     shooterMotorConfig.CurrentLimits.SupplyCurrentLimit = SHOOTER_SUPPLY_CURRENT_LIMIT;
     shooterMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    shooterMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = SHOOTER_STATOR_CURRENT_LIMIT;
+    shooterMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -SHOOTER_STATOR_CURRENT_LIMIT / 2;
 
     shooterBottomMotor.getConfigurator().apply(shooterMotorConfig);
     shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);

@@ -3,37 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.961935572993954,
-        "y": 7.342018368247263
+        "x": 7.934730781742266,
+        "y": 7.378291423249514
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.79711152404761,
-        "y": 7.577793225761891
+        "x": 5.903439701616246,
+        "y": 6.852332125716884
       },
       "isLocked": false,
-      "linkedName": "M1-M2-A3-A2_1"
+      "linkedName": "A1-M1-M2-M3_1"
     },
     {
       "anchor": {
-        "x": 8.134232584254644,
+        "x": 5.676733107852181,
+        "y": 6.507738103195504
+      },
+      "prevControl": {
+        "x": 5.662394923914721,
+        "y": 6.550752655007884
+      },
+      "nextControl": {
+        "x": 5.722074426604995,
+        "y": 6.371714146937066
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.934730781742266,
         "y": 5.7732087393999345
       },
       "prevControl": {
-        "x": 5.368412140333054,
-        "y": 6.172212344424689
+        "x": 5.776484009108368,
+        "y": 6.262894981930314
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "M1-M2-A3-A2_2"
+      "linkedName": "A1-M1-M2-M3_2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Slow to Shoot M1",
-      "minWaypointRelativePos": 0.35,
-      "maxWaypointRelativePos": 0.6,
+      "minWaypointRelativePos": 0.7,
+      "maxWaypointRelativePos": 1.2,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 3.0,
@@ -57,7 +73,7 @@
                   {
                     "type": "wait",
                     "data": {
-                      "waitTime": 1.0
+                      "waitTime": 0.8
                     }
                   },
                   {
@@ -98,7 +114,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "M1-M2-A3-A2",
+  "folder": "A1-M1-M2-M3",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

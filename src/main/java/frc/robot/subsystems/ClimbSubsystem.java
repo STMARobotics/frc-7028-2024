@@ -27,6 +27,8 @@ public class ClimbSubsystem extends SubsystemBase {
     var talonConfig = new TalonFXConfiguration();
     talonConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = RAMP_RATE;
     talonConfig.MotorOutput.NeutralMode = Brake;
+    talonConfig.CurrentLimits.SupplyCurrentLimit = 80;
+    talonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     leftWinchMotor.getConfigurator().apply(talonConfig);
     rightWinchMotor.getConfigurator().apply(talonConfig);

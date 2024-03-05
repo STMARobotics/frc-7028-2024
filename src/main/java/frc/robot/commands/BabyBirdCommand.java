@@ -20,6 +20,7 @@ public class BabyBirdCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final BooleanSupplier turretIsSafe;
+  private final LEDSubsystem ledSubsystem;
 
   private boolean sensorTripped = false;
   private boolean sensorCleared = false;
@@ -30,6 +31,7 @@ public class BabyBirdCommand extends Command {
     this.turretSubsystem = turretSubsystem;
     this.turretIsSafe = turretIsSafe;
     this.shooterSubsystem = shooterSubsystem;
+    this.ledSubsystem = ledSubsystem;
 
     // Require the LEDSubsystem to stop the LEDs from coming on until the command is done
     addRequirements(turretSubsystem, shooterSubsystem, ledSubsystem);
@@ -41,6 +43,7 @@ public class BabyBirdCommand extends Command {
     turretSubsystem.moveToPitchPosition(Rotations.of(0.081));
     turretSubsystem.runRollers(RotationsPerSecond.of(-25));
     shooterSubsystem.reverse();
+    ledSubsystem.setUpdater(null);
     sensorTripped = false;
     sensorCleared = false;
   }

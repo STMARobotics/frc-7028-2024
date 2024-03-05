@@ -46,7 +46,7 @@ public class LoadAmperCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    amperSubsystem.stop();
+    amperSubsystem.runRollers(RotationsPerSecond.zero());
     turretSubsystem.stopYaw();
     turretSubsystem.stopPitch();
     turretSubsystem.runRollers(RotationsPerSecond.zero());

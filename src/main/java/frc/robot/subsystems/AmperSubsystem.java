@@ -57,12 +57,14 @@ public class AmperSubsystem extends SubsystemBase {
     
   public AmperSubsystem() {
     var rollerConfig = new TalonFXConfiguration();
-    rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     rollerConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rollerConfig.Feedback.SensorToMechanismRatio = ROLLER_SENSOR_TO_MECHANISM_RATIO;
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
     rollerConfig.CurrentLimits.StatorCurrentLimit = 60;
     rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+    rollerConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
     rollerConfig.CurrentLimits.SupplyCurrentLimit = 30;
     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 

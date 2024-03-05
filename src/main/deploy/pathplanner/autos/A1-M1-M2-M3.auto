@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3693078263349512,
-      "y": 6.28103150943144
+      "x": 1.3783760900855138,
+      "y": 6.979287818224759
     },
     "rotation": 0
   },
@@ -14,25 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-A3-A2_1"
+            "pathName": "A1-M1-M2-M3_1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-A3-A2_2"
+            "pathName": "A1-M1-M2-M3_2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-A3-A2_3"
+            "pathName": "A1-M1-M2-M3_3"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "intake"
+            "pathName": "A1-M1-M2-M3_4"
           }
         },
         {

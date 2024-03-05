@@ -3,8 +3,10 @@
   "robotLength": 1.001713,
   "holonomicMode": true,
   "pathFolders": [
+    "A3-A2-A1-M1-M2",
     "M1-M2-A3-A2",
-    "A3-A2-A1-M1-M2"
+    "M1-M2-M3",
+    "A1-M1-M2-M3"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.5,

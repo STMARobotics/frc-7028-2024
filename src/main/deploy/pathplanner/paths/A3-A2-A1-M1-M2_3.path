@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.60418699784768,
-        "y": 6.1359392894224385
+        "x": 5.676733107852181,
+        "y": 6.271963245680878
       },
       "prevControl": {
-        "x": 6.556354691656752,
-        "y": 6.163144080674125
+        "x": 6.628900801661253,
+        "y": 6.299168036932564
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,7 +29,19 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.7,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Intake and Shoot M2",
@@ -45,7 +57,7 @@
                   {
                     "type": "wait",
                     "data": {
-                      "waitTime": 0.75
+                      "waitTime": 1.0
                     }
                   },
                   {

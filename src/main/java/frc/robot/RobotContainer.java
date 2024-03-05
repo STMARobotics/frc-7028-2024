@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.TurretConstants;
@@ -33,10 +32,9 @@ import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectIntakeCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
-import frc.robot.commands.ScoreSpeakerTeleopCommand;
+import frc.robot.commands.SpeakerOrBlinkCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
-import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
@@ -150,11 +148,10 @@ public class RobotContainer {
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
       new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
 
-    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(Commands.either(
-      new ScoreSpeakerTeleopCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
-            elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY()),
-      new LEDBlinkCommand(ledSubsystem, Color.kPurple, 0.05),
-      turretSubsystem::hasNote)));
+    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
+      new SpeakerOrBlinkCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
+            elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY(),
+            controlBindings.omega())));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
