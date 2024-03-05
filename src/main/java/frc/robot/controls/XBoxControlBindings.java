@@ -96,11 +96,6 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> increaseProgress() {
-    return Optional.of(driverController.povLeft());
-  }
-
-  @Override
   public Optional<Trigger> eject() {
     return Optional.of(driverController.y());
   }

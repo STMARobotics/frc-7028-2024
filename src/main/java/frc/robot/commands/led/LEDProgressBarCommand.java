@@ -41,10 +41,10 @@ public class LEDProgressBarCommand extends Command {
       done = index >= ledStrips.getStripSize();
     }
 
-  @Override
-  public void execute() {
-    increaseCounter();
-  }
+    @Override
+    public void execute() {
+      increaseCounter();
+    }
     
   @Override
   public boolean isFinished() {

@@ -86,8 +86,6 @@ public interface ControlBindings {
    */
   Optional<Trigger> scoreAmp();
 
-  Optional<Trigger> increaseProgress();
-
   /**
    * Run everything in reverse to eject
    * @return trigger

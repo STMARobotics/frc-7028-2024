@@ -159,9 +159,6 @@ public class RobotContainer {
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
-  
-    // Testing
-    controlBindings.increaseProgress().ifPresent(trigger -> trigger.whileTrue(new LEDProgressBarCommand(ledSubsystem)));
   }
 
   public void populateSysIdDashboard() {
@@ -239,9 +236,11 @@ public class RobotContainer {
     tab.add("Tur Roll Dynam Fwd", turretSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
-    // Drivetrain test
-    columnIndex +=2;
-    tab.add("Drivetrain test", new DrivetrainTestCommand(drivetrain)).withPosition(columnIndex, 0);
+    // Testing
+    tab = Shuffleboard.getTab("Testing");
+
+    tab.add("Drivetrain test", new DrivetrainTestCommand(drivetrain)).withPosition(0, 0);
+    tab.add("Complete Test", new LEDProgressBarCommand(ledSubsystem)).withPosition(0, 1);
   }
 
   public void setAlliance(Alliance alliance) {
