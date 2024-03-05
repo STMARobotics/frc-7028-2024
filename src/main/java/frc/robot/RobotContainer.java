@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
+import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
 import java.util.Map;
 
@@ -37,6 +38,7 @@ import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.SpeakerOrBlinkCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
+import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
@@ -186,7 +188,8 @@ public class RobotContainer {
       new EjectIntakeCommand(intakeSubsystem, amperSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
     
     controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(
-      new BabyBirdCommand(turretSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
+      new BabyBirdCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)
+          .deadlineWith(new LEDBlinkCommand(ledSubsystem, NOTE_COLOR, 0.1))));
 
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
       turretSubsystem.moveToPitchPosition(TurretConstants.PITCH_LIMIT_FORWARD);

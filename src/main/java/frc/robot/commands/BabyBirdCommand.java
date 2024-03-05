@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
@@ -20,21 +19,18 @@ public class BabyBirdCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final BooleanSupplier turretIsSafe;
-  private final LEDSubsystem ledSubsystem;
 
   private boolean sensorTripped = false;
   private boolean sensorCleared = false;
 
-  public BabyBirdCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem,
+  public BabyBirdCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
       BooleanSupplier turretIsSafe) {
     
     this.turretSubsystem = turretSubsystem;
     this.turretIsSafe = turretIsSafe;
     this.shooterSubsystem = shooterSubsystem;
-    this.ledSubsystem = ledSubsystem;
 
-    // Require the LEDSubsystem to stop the LEDs from coming on until the command is done
-    addRequirements(turretSubsystem, shooterSubsystem, ledSubsystem);
+    addRequirements(turretSubsystem, shooterSubsystem);
   }
 
   @Override
@@ -43,7 +39,6 @@ public class BabyBirdCommand extends Command {
     turretSubsystem.moveToPitchPosition(Rotations.of(0.081));
     turretSubsystem.runRollers(RotationsPerSecond.of(-25));
     shooterSubsystem.reverse();
-    ledSubsystem.setUpdater(null);
     sensorTripped = false;
     sensorCleared = false;
   }
