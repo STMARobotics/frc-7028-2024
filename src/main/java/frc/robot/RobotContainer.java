@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -67,6 +69,7 @@ public class RobotContainer {
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
+  private final Field2d field2d = new Field2d();
 
   private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
       turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem);
@@ -112,15 +115,38 @@ public class RobotContainer {
     // Auto selector
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
 
-        // Driver camera
+    // Driver camera
     driverTab.add(new HttpCamera("photonvision_Port_1184_Output_MJPEG_Server", "http://10.70.28.11:1184"))
         .withWidget(BuiltInWidgets.kCameraStream)
         .withProperties(Map.of("showCrosshair", true, "showControls", false))
         .withSize(4, 5).withPosition(2, 0);
 
-    // Elevator
-    driverTab.addBoolean("Elevator Bottom", elevatorSubsystem::isAtBottomLimit)
+    // Note sensors
+    driverTab.addBoolean("Turret", turretSubsystem::hasNote)
         .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0);
+    
+    driverTab.addBoolean("Amper", amperSubsystem::hasNote)
+        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 1);
+    
+    // Elevator
+    driverTab.addBoolean("Elevator Down", elevatorSubsystem::isAtBottomLimit)
+        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 2);
+    
+    // Turret
+    driverTab.addNumber("Pitch", () -> turretSubsystem.getPitch().in(Degrees))
+        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 3);
+    
+    driverTab.addNumber("Yaw", () -> turretSubsystem.getYaw().in(Degrees))
+        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 4);
+
+    // Pose estimation
+    driverTab.add(field2d).withPosition(7, 0).withSize(4, 2).withPosition(7, 0);
+    driverTab.addString("Pose", () -> {
+      var pose = drivetrain.getState().Pose;
+      field2d.setRobotPose(pose);
+      return String.format("(%.3f, %.3f) %.2f deg", 
+          pose.getX(), pose.getY(), pose.getRotation().getDegrees());
+    }).withSize(2, 1).withPosition(7, 2);
 
   }
 

@@ -70,6 +70,7 @@ import au.grapplerobotics.LaserCan.TimingBudget;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -102,6 +103,10 @@ public class TurretSubsystem extends SubsystemBase {
 
   private final StatusSignal<Double> yawPositionSignal;
   private final StatusSignal<Double> pitchPositionSignal;
+
+  // Reusable objects to reduce memory pressure from reallocation
+  private final MutableMeasure<Angle> yawAngle = MutableMeasure.zero(Rotations);
+  private final MutableMeasure<Angle> pitchAngle = MutableMeasure.zero(Rotations);
   
   // SysId routines
   private final SysIdRoutine yawSysIdRoutine = new SysIdRoutine(
@@ -440,6 +445,25 @@ public class TurretSubsystem extends SubsystemBase {
     if (isSafe.getAsBoolean()) {
       yawMotor.setControl(yawControl.withPosition(targetYaw));
     }
+  }
+
+  /**
+   * Gets the current pitch angle
+   * @return pitch
+   */
+  public Measure<Angle> getPitch() {
+    pitchPositionSignal.refresh();
+    return pitchAngle.mut_replace(pitchPositionSignal.getValueAsDouble(), Rotations);
+  }
+
+  /**
+   * Gets the current yaw angle
+   * @return yaw
+   */
+  public Measure<Angle> getYaw() {
+    yawPositionSignal.refresh();
+    var translatedRotations = translateYaw(yawAngle.mut_replace(pitchPositionSignal.getValueAsDouble(), Rotations));
+    return yawAngle.mut_replace(translatedRotations, Rotations);
   }
 
   /**
