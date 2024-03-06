@@ -40,6 +40,7 @@ import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
+import frc.robot.commands.testing.TestCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
@@ -277,6 +278,11 @@ public class RobotContainer {
     tab.add("Tur Roll Dynam Fwd", turretSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
   
+    // Testing
+    tab = Shuffleboard.getTab("Testing");
+    
+    tab.add("Start Testing", new TestCommand(ledSubsystem, intakeSubsystem, 
+    shooterSubsystem, elevatorSubsystem, turretSubsystem, amperSubsystem));
   }
 
   public void setAlliance(Alliance alliance) {

@@ -12,7 +12,7 @@ public class LEDProgressBarCommand extends Command {
   private final TestCommand testCommand;
   private final LEDSubsystem ledSubsystem;
   private int index;
-  private double tests;
+  private int tests;
 
   public LEDProgressBarCommand(LEDSubsystem ledSubsystem, TestCommand testCommand) {
     this.ledSubsystem = ledSubsystem;
@@ -42,7 +42,7 @@ public class LEDProgressBarCommand extends Command {
 
   @Override
   public void execute() {
-    tests = testCommand.testsCompleted.getDouble(0);
+    tests = testCommand.teststate;
   }
     
   @Override
