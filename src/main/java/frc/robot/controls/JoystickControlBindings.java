@@ -94,6 +94,7 @@ public class JoystickControlBindings implements ControlBindings {
     return Optional.of(leftJoystick.povRight());
   }
 
+  @Override
   public Optional<Trigger> eject() {
     return Optional.of(leftJoystick.button(4));
   }
