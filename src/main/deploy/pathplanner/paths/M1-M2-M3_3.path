@@ -1,0 +1,118 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.134232584254644,
+        "y": 5.7732087393999345
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.104770393868377,
+        "y": 8.733518597547812
+      },
+      "isLocked": false,
+      "linkedName": "M1-M2-M3_2"
+    },
+    {
+      "anchor": {
+        "x": 7.998208627996204,
+        "y": 4.113716473046981
+      },
+      "prevControl": {
+        "x": 2.285202465141772,
+        "y": 2.826023020467094
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "M1-M2-M3_3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.45,
+      "maxWaypointRelativePos": 0.55,
+      "constraints": {
+        "maxVelocity": 0.7,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 1.25
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "intake"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.85,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "M1-M2-M3",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

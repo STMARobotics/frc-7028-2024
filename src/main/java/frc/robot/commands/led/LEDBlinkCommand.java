@@ -55,4 +55,9 @@ public class LEDBlinkCommand extends Command {
     }
   }
 
+  @Override
+  public void end(boolean interrupted) {
+    ledSubsystem.setUpdater(null);
+  }
+
 }

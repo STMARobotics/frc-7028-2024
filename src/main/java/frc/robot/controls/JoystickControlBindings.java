@@ -29,7 +29,7 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> wheelsToX() {
-    return Optional.of(leftJoystick.button(4));
+    return Optional.of(leftJoystick.button(3));
   }
 
   @Override
@@ -47,7 +47,7 @@ public class JoystickControlBindings implements ControlBindings {
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
     return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(rightJoystick.getX() * 0.8), RadiansPerSecond);
+        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(rightJoystick.getX()), RadiansPerSecond);
   }
   
   private static double squareAxis(double value) {
@@ -95,17 +95,22 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   public Optional<Trigger> eject() {
-    return Optional.empty();
+    return Optional.of(leftJoystick.button(4));
   }
 
   @Override
   public Optional<Trigger> babyBird() {
-    return Optional.empty();
+    return Optional.of(leftJoystick.button(2));
   }
 
   @Override
   public Optional<Trigger> liftShooter() {
     return Optional.of(rightJoystick.button(2));
+  }
+
+  @Override
+  public Optional<Trigger> setupShooter() {
+    return Optional.of(rightJoystick.button(4));
   }
 
 }

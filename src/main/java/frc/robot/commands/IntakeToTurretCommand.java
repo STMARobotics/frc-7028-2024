@@ -31,7 +31,7 @@ public class IntakeToTurretCommand extends Command {
   
   @Override
   public void execute() {
-    if (turretSubsystem.isAtYawAndPitchTarget()) {
+    if (turretSubsystem.isInExchangePosition()) {
       intakeSubsystem.intake();
       amperSubsystem.intake();
       turretSubsystem.load();

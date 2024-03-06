@@ -19,6 +19,7 @@ import static frc.robot.Constants.TurretConstants.INTAKE_PITCH_POSITION;
 import static frc.robot.Constants.TurretConstants.INTAKE_YAW_POSITION;
 import static frc.robot.Constants.TurretConstants.LOAD_VELOCITY;
 import static frc.robot.Constants.TurretConstants.NOTE_SENSOR_DISTANCE_THRESHOLD;
+import static frc.robot.Constants.TurretConstants.PITCH_EXCHANGE_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.PITCH_MAGNETIC_OFFSET;
@@ -29,9 +30,11 @@ import static frc.robot.Constants.TurretConstants.PITCH_STATOR_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.ROLLER_VELOCITY_SLOT_CONFIGS;
+import static frc.robot.Constants.TurretConstants.SHOOTING_YAW_CORRECTION;
 import static frc.robot.Constants.TurretConstants.SHOOT_VELOCITY;
 import static frc.robot.Constants.TurretConstants.TRAP_PITCH_POSITION;
 import static frc.robot.Constants.TurretConstants.TRAP_YAW_POSITION;
+import static frc.robot.Constants.TurretConstants.YAW_EXCHANGE_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.YAW_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.YAW_MAGNETIC_OFFSET;
@@ -64,8 +67,10 @@ import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.LaserCan.RangingMode;
 import au.grapplerobotics.LaserCan.TimingBudget;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -98,6 +103,10 @@ public class TurretSubsystem extends SubsystemBase {
 
   private final StatusSignal<Double> yawPositionSignal;
   private final StatusSignal<Double> pitchPositionSignal;
+
+  // Reusable objects to reduce memory pressure from reallocation
+  private final MutableMeasure<Angle> yawAngle = MutableMeasure.zero(Rotations);
+  private final MutableMeasure<Angle> pitchAngle = MutableMeasure.zero(Rotations);
   
   // SysId routines
   private final SysIdRoutine yawSysIdRoutine = new SysIdRoutine(
@@ -134,7 +143,6 @@ public class TurretSubsystem extends SubsystemBase {
     yawTalonConfig.Feedback.RotorToSensorRatio = YAW_ROTOR_TO_SENSOR_RATIO;
     yawTalonConfig.Feedback.FeedbackRemoteSensorID = yawEncoder.getDeviceID();
     yawTalonConfig.Feedback.FeedbackSensorSource = FusedCANcoder;
-    yawTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     yawTalonConfig.Slot0 = Slot0Configs.from(YAW_SLOT_CONFIGS);
     yawTalonConfig.MotionMagic = YAW_MOTION_MAGIC_CONFIGS;
     yawTalonConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -159,10 +167,10 @@ public class TurretSubsystem extends SubsystemBase {
     pitchTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     pitchTalonConfig.CurrentLimits.SupplyCurrentLimit = PITCH_SUPPLY_CURRENT_LIMIT;
     pitchTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    pitchTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     pitchTalonConfig.Feedback.RotorToSensorRatio = PITCH_ROTOR_TO_SENSOR_RATIO;
     pitchTalonConfig.Feedback.FeedbackRemoteSensorID = pitchEncoder.getDeviceID();
     pitchTalonConfig.Feedback.FeedbackSensorSource = FusedCANcoder;
-    pitchTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     pitchTalonConfig.Slot0 = Slot0Configs.from(PITCH_SLOT_CONFIGS);
     pitchTalonConfig.MotionMagic = PITCH_MOTION_MAGIC_CONFIGS;
     pitchTalonConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
@@ -182,9 +190,9 @@ public class TurretSubsystem extends SubsystemBase {
     rollerTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     rollerTalonConfig.CurrentLimits.SupplyCurrentLimit = 40;
     rollerTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    rollerTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+    rollerTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
-
-    CTREUtil.optimizeSignals(rollerMotor, pitchMotor, yawMotor);
 
     // Configure the note sensor
     try {
@@ -350,6 +358,12 @@ public class TurretSubsystem extends SubsystemBase {
         && isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
   }
 
+  public boolean isInExchangePosition() {
+    BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
+    return isInTolerance(yawControl.Position, yawPositionSignal, YAW_EXCHANGE_TOLERANCE.in(Rotations))
+        && isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_EXCHANGE_TOLERANCE.in(Rotations));
+  }
+
   /**
    * Indicates if the yaw is at its target position
    * @return true if the yaw is at the target position
@@ -410,6 +424,46 @@ public class TurretSubsystem extends SubsystemBase {
     if (isSafe.getAsBoolean()) {
       moveToYawPosition(yaw);
     }
+  }
+
+  /**
+   * Sets the turret yaw (rotation around the z axix) position target, but for shooting. The difference between this
+   * and {@link #moveToYawPosition(Measure)} is that this method only turns the turret within the bounds where shooting
+   * is possible without hitting the elevator, and it applies correct for the shooter not launching perfectly straight.
+   * Zero is robot forward, using the WPILib unit circle.
+   * @param yaw robot relative yaw
+   * @param isSafe a BooleanSupplier to indicate if it is safe to move the turret. This is required to make the
+   *        caller think about the fact that the elevator and turret interfere with eachother
+   */
+  public void moveToShootingYawPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
+    // Clamp to shooting range, and correct for the fact that the shooter doesn't shoot straight
+    var targetYaw = MathUtil.clamp(
+      translateYaw(yaw.plus(SHOOTING_YAW_CORRECTION)),
+      YAW_SHOOT_LIMIT_REVERSE.in(Rotations),
+      YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
+    
+    if (isSafe.getAsBoolean()) {
+      yawMotor.setControl(yawControl.withPosition(targetYaw));
+    }
+  }
+
+  /**
+   * Gets the current pitch angle
+   * @return pitch
+   */
+  public Measure<Angle> getPitch() {
+    pitchPositionSignal.refresh();
+    return pitchAngle.mut_replace(pitchPositionSignal.getValueAsDouble(), Rotations);
+  }
+
+  /**
+   * Gets the current yaw angle
+   * @return yaw
+   */
+  public Measure<Angle> getYaw() {
+    yawPositionSignal.refresh();
+    var translatedRotations = translateYaw(yawAngle.mut_replace(pitchPositionSignal.getValueAsDouble(), Rotations));
+    return yawAngle.mut_replace(translatedRotations, Rotations);
   }
 
   /**

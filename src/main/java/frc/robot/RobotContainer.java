@@ -4,11 +4,13 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
+import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
 import java.util.Map;
 
@@ -22,8 +24,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DefaultElevatorCommand;
@@ -31,7 +33,7 @@ import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.DrivetrainTestCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
-import frc.robot.commands.ScoreSpeakerMovingCommand;
+import frc.robot.commands.SpeakerOrBlinkCommand;
 import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
@@ -68,6 +70,7 @@ public class RobotContainer {
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
+  private final Field2d field2d = new Field2d();
 
   private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
       turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem);
@@ -113,17 +116,38 @@ public class RobotContainer {
     // Auto selector
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
 
-        // Driver camera
+    // Driver camera
     driverTab.add(new HttpCamera("photonvision_Port_1184_Output_MJPEG_Server", "http://10.70.28.11:1184"))
         .withWidget(BuiltInWidgets.kCameraStream)
         .withProperties(Map.of("showCrosshair", true, "showControls", false))
         .withSize(4, 5).withPosition(2, 0);
 
-    // Elevator
-    driverTab.addBoolean("Elevator Bottom", elevatorSubsystem::isAtBottomLimit)
+    // Note sensors
+    driverTab.addBoolean("Turret", turretSubsystem::hasNote)
+        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0);
+    
+    driverTab.addBoolean("Amper", amperSubsystem::hasNote)
         .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 1);
-    driverTab.addNumber("Elevator Meters", () -> elevatorSubsystem.getPosition().in(Meters))
-        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 2);
+    
+    // Elevator
+    driverTab.addBoolean("Elevator Down", elevatorSubsystem::isAtBottomLimit)
+        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 2);
+    
+    // Turret
+    driverTab.addNumber("Pitch", () -> turretSubsystem.getPitch().in(Degrees))
+        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 3);
+    
+    driverTab.addNumber("Yaw", () -> turretSubsystem.getYaw().in(Degrees))
+        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 4);
+
+    // Pose estimation
+    driverTab.add(field2d).withPosition(7, 0).withSize(4, 2).withPosition(7, 0);
+    driverTab.addString("Pose", () -> {
+      var pose = drivetrain.getState().Pose;
+      field2d.setRobotPose(pose);
+      return String.format("(%.3f, %.3f) %.2f deg", 
+          pose.getX(), pose.getY(), pose.getRotation().getDegrees());
+    }).withSize(2, 1).withPosition(7, 2);
 
   }
 
@@ -151,14 +175,30 @@ public class RobotContainer {
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
       new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
 
-    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(Commands.either(
-      new ScoreSpeakerMovingCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
-            elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY()),
-      new LEDBlinkCommand(ledSubsystem, Color.kPurple, 0.05),
-      turretSubsystem::hasNote)));
+    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
+      new SpeakerOrBlinkCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
+            elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY(),
+            controlBindings.omega())));
     
     controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
       new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
+    
+    controlBindings.eject().ifPresent(trigger -> trigger.whileTrue(
+      new EjectIntakeCommand(intakeSubsystem, amperSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
+    
+    controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(
+      new BabyBirdCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)
+          .deadlineWith(new LEDBlinkCommand(ledSubsystem, NOTE_COLOR, 0.1))));
+
+    controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
+      turretSubsystem.moveToPitchPosition(TurretConstants.PITCH_LIMIT_FORWARD);
+      turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
+    })));
+
+    controlBindings.setupShooter().ifPresent(trigger -> trigger.onTrue(turretSubsystem.run(() -> {
+      turretSubsystem.moveToPitchPosition(Rotations.of(0.0586));
+      turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
+    })));
   }
 
   public void populateSysIdDashboard() {

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2,
-      "y": 4.18
+      "x": 1.3693078263349512,
+      "y": 6.28103150943144
     },
     "rotation": 0
   },
@@ -12,27 +12,33 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "scoreSpeaker"
+            "pathName": "M1-M2-M3_1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score and leave"
+            "pathName": "M1-M2-M3_2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M1-M2-M3_3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M1-M2-M3_4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreSpeaker"
+            "name": "scoreSpeakerWhileMoving"
           }
         }
       ]

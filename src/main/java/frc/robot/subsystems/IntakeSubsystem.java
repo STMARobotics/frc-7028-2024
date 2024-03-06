@@ -58,11 +58,12 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
     rollerConfig.CurrentLimits.StatorCurrentLimit = 60;
     rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+    rollerConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
     rollerConfig.CurrentLimits.SupplyCurrentLimit = 30;
     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     rollerMotor.getConfigurator().apply(rollerConfig);
-    CTREUtil.optimizeSignals(rollerMotor);
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {

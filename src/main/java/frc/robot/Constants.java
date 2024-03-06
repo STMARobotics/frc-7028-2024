@@ -25,6 +25,7 @@ import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -53,7 +54,7 @@ public class Constants {
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = (DrivetrainConstants.MAX_VELOCITY
         .in(MetersPerSecond) /
         Math.hypot(TRACKWIDTH.in(Meters) / 2.0, WHEELBASE.in(Meters) / 2.0));
-    public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 4);
+    public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 4 * 0.8);
 
     public static final MountPoseConfigs PIGEON_MOUNT_POSE_CONFIG = new MountPoseConfigs()
         .withMountPosePitch(9.096435546875)
@@ -63,7 +64,8 @@ public class Constants {
 
   public static final class TeleopDriveConstants {
 
-    public static final double DEADBAND = 0.05;
+    public static final double TRANSLATION_DEADBAND = 0.05;
+    public static final double ROTATIONAL_DEADBAND = 0.03;
 
     public static final Measure<Velocity<Velocity<Distance>>> TRANSLATION_RATE_LIMIT = MetersPerSecondPerSecond.of(20.0);
     public static final Measure<Velocity<Velocity<Angle>>> ROTATION_RATE_LIMIT =
@@ -151,7 +153,7 @@ public class Constants {
         .withKS(16)
         .withKV(.08);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
-    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
+    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(70.0);
     public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-20.0);
   }
 
@@ -168,7 +170,7 @@ public class Constants {
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
     public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-75.0);
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-40.0);
-    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(50.0);
+    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(75.0);
   
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200);
 
@@ -209,7 +211,7 @@ public class Constants {
         .withMotionMagicAcceleration(10.0)
         .withMotionMagicCruiseVelocity(2.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.357910);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.358887);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.117);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
@@ -223,7 +225,7 @@ public class Constants {
         .withKG(0.5)
         .withGravityType(GravityTypeValue.Arm_Cosine);
     public static final MotionMagicConfigs PITCH_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(1.0)
+        .withMotionMagicAcceleration(5.0)
         .withMotionMagicCruiseVelocity(1.5);
 
     public static final SlotConfigs ROLLER_VELOCITY_SLOT_CONFIGS = new SlotConfigs()
@@ -245,7 +247,13 @@ public class Constants {
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(1.0);
     public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(1);
 
+    public static final Measure<Angle> YAW_EXCHANGE_TOLERANCE = Degrees.of(3.0);
+    public static final Measure<Angle> PITCH_EXCHANGE_TOLERANCE = Degrees.of(3.0);
+
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150.0);
+
+    /** Correction for note not launching perfectly straight from shooter wheels */
+    public static final Measure<Angle> SHOOTING_YAW_CORRECTION = Degrees.of(1);
 
   }
 
@@ -302,7 +310,19 @@ public class Constants {
     public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
-    public static final double SHOOTER_COEFFICIENT = 0.0005;
+    /** A constant used applied to estimate the note's time of flight */
+    public static final double SHOOT_WHILE_MOVING_COEFFICIENT = 0.0005;
+
+    /**
+     * Margin inside the turret shooting limits to avoid getting to the edge and being unable to reach
+     */
+    public static final Measure<Angle> DRIVETRAIN_MARGIN = Degrees.of(10);
+
+    // Forward and reverse targets for the drivetrain when the turret is out of range
+    public static final Rotation2d DRIVETRAIN_YAW_LIMIT_FORWARD =
+        new Rotation2d(TurretConstants.YAW_SHOOT_LIMIT_FORWARD.minus(DRIVETRAIN_MARGIN));
+    public static final Rotation2d DRIVETRAIN_YAW_LIMIT_REVERSE =
+        new Rotation2d(TurretConstants.YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35)),

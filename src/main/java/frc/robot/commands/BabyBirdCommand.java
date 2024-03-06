@@ -7,23 +7,30 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
+/**
+ * Command to "feed the robot shooter" from the human player station. Tilts the shooter up so the human player can
+ * drop a note in.
+ */
 public class BabyBirdCommand extends Command {
+
   private final TurretSubsystem turretSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final BooleanSupplier turretIsSafe;
+
   private boolean sensorTripped = false;
   private boolean sensorCleared = false;
 
-  public BabyBirdCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem, BooleanSupplier turretIsSafe) {
+  public BabyBirdCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
+      BooleanSupplier turretIsSafe) {
+    
     this.turretSubsystem = turretSubsystem;
     this.turretIsSafe = turretIsSafe;
     this.shooterSubsystem = shooterSubsystem;
 
-    addRequirements(turretSubsystem, shooterSubsystem, ledSubsystem);
+    addRequirements(turretSubsystem, shooterSubsystem);
   }
 
   @Override

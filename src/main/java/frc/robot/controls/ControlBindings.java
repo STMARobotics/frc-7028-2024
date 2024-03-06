@@ -99,8 +99,15 @@ public interface ControlBindings {
   Optional<Trigger> babyBird();
 
   /**
-   * Lifts the shooter pitch
+   * Lifts the shooter to max pitch and facing backwards
    * @return trigger
    */
   Optional<Trigger> liftShooter();
+
+  /**
+   * Moves the shooter pitch and yaw to the starting configuration
+   * @return trigger
+   */
+  Optional<Trigger> setupShooter();
+
 }

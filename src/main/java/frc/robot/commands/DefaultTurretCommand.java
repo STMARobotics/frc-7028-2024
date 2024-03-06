@@ -24,7 +24,7 @@ public class DefaultTurretCommand extends Command {
 
   @Override
   public void execute() {
-    if (turretSubsystem.isAtYawAndPitchTarget()) {
+    if (turretSubsystem.isInExchangePosition()) {
       turretSubsystem.stop();
     }
   }
