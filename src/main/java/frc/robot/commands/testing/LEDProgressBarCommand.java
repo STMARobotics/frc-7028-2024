@@ -13,7 +13,6 @@ public class LEDProgressBarCommand extends Command {
   private final LEDSubsystem ledSubsystem;
   private int index;
   private int tests;
-  private int testPercentage;
 
   public LEDProgressBarCommand(LEDSubsystem ledSubsystem, TestCommand testCommand) {
     this.ledSubsystem = ledSubsystem;
