@@ -6,8 +6,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static frc.robot.Constants.DrivetrainConstants.MAX_ANGULAR_VELOCITY;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
-import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
+import static frc.robot.Constants.TeleopDriveConstants.ROTATIONAL_DEADBAND;
 import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
+import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_DEADBAND;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -28,12 +29,12 @@ public class DrivetrainTestCommand extends Command {
   private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond), ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
 
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MAX_VELOCITY.times(DEADBAND).in(MetersPerSecond))
-      .withRotationalDeadband(MAX_ANGULAR_VELOCITY.times(DEADBAND).in(RadiansPerSecond))
+      private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+      .withDeadband(MAX_VELOCITY.times(TRANSLATION_DEADBAND).in(MetersPerSecond))
+      .withRotationalDeadband(MAX_ANGULAR_VELOCITY.times(ROTATIONAL_DEADBAND).in(RadiansPerSecond))
       .withDriveRequestType(DriveRequestType.Velocity)
       .withSteerRequestType(SteerRequestType.MotionMagic);
-
+      
   // Desired chassis speeds. Defined here to prevent reallocation.
   private ChassisSpeeds desiredChassisSpeeds = new ChassisSpeeds();
 
