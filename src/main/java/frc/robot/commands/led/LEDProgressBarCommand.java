@@ -1,28 +1,25 @@
 package frc.robot.commands.led;
 
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.LEDStrips;
 import frc.robot.subsystems.LEDSubsystem;
 
 /** Command to run the boot animation on the LED strips */
 public class LEDProgressBarCommand extends Command {
   
+  private final RobotContainer robotContainer;
   private final LEDSubsystem ledSubsystem;
   private boolean done;
   private int index;
 
-  public LEDProgressBarCommand(LEDSubsystem ledSubsystem) {
+  public LEDProgressBarCommand(LEDSubsystem ledSubsystem, RobotContainer robotContainer) {
     this.ledSubsystem = ledSubsystem;
+    this.robotContainer = robotContainer;
 
     addRequirements(ledSubsystem);
-  }
-
-
-  public double progressCounter;
-
-  public void increaseCounter() {
-    progressCounter+=2;
   }
 
   @Override
@@ -33,17 +30,17 @@ public class LEDProgressBarCommand extends Command {
 
   private void animate(LEDStrips ledStrips) {
       for(int strip = 0; strip < ledStrips.getStripCount(); strip++) {
-        for(index = 0; index < progressCounter; index++) {
+        for(index = 0; index < robotContainer.getTestsDone(); index++) {
             ledStrips.setLED(strip, index, Color.kBlue);
         }
       }
       ledStrips.refresh();
-      done = index >= ledStrips.getStripSize();
+      done = !RobotState.isTest();
     }
 
     @Override
     public void execute() {
-      increaseCounter();
+
     }
     
   @Override

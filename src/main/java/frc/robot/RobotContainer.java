@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -68,6 +69,7 @@ public class RobotContainer {
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
+  public GenericEntry testsCompleted;
 
   private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
       turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem);
@@ -240,7 +242,9 @@ public class RobotContainer {
     tab = Shuffleboard.getTab("Testing");
 
     tab.add("Drivetrain test", new DrivetrainTestCommand(drivetrain)).withPosition(0, 0);
-    tab.add("Complete Test", new LEDProgressBarCommand(ledSubsystem)).withPosition(0, 1);
+    tab.add("Complete Test", new LEDProgressBarCommand(ledSubsystem, this)).withPosition(0, 1);
+        testsCompleted =
+    tab.add("Tests Completed", 0).getEntry();
   }
 
   public void setAlliance(Alliance alliance) {
@@ -252,4 +256,8 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
+  public double getTestsDone() {
+    double tests = testsCompleted.getDouble(0);
+    return tests;
+  }
 }
