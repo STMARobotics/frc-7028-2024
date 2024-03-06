@@ -3,19 +3,15 @@ package frc.robot.commands.testing;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class TestCommand extends Command {
   
-  private final LEDSubsystem ledSubsystem;
   private final IntakeSubsystem intakeSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
@@ -26,30 +22,25 @@ public class TestCommand extends Command {
 
   private Timer timer = new Timer();
 
-  ShuffleboardTab tab = Shuffleboard.getTab("Testing");
+
 
   public TestCommand(
-    LEDSubsystem ledSubsystem, 
     IntakeSubsystem intakeSubsystem, 
     ShooterSubsystem shooterSubsystem,
     ElevatorSubsystem elevatorSubsystem,
     TurretSubsystem turretSubsystem,
     AmperSubsystem amperSubsystem) {
-      this.ledSubsystem = ledSubsystem;
       this.intakeSubsystem = intakeSubsystem;
       this.shooterSubsystem = shooterSubsystem;
       this.elevatorSubsystem = elevatorSubsystem;
       this.turretSubsystem = turretSubsystem;
       this.amperSubsystem = amperSubsystem;
 
-    addRequirements(ledSubsystem, intakeSubsystem, shooterSubsystem, elevatorSubsystem, turretSubsystem, amperSubsystem);
+    addRequirements(intakeSubsystem, shooterSubsystem, elevatorSubsystem, turretSubsystem, amperSubsystem);
   }
 
   @Override
   public void initialize() {
-
-    tab.addNumber("Number of Tests Run", () -> getTestState());
-    tab.add("Start LED Progress Bar", new LEDProgressBarCommand(ledSubsystem, this)).withPosition(0, 0);
   }
   
   @Override

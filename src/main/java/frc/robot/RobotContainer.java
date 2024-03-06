@@ -40,6 +40,7 @@ import frc.robot.commands.TuneSpeakerCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
+import frc.robot.commands.testing.LEDProgressBarCommand;
 import frc.robot.commands.testing.TestCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.JoystickControlBindings;
@@ -69,6 +70,7 @@ public class RobotContainer {
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+  private final TestCommand testCommand = new TestCommand(intakeSubsystem, shooterSubsystem, elevatorSubsystem, turretSubsystem, amperSubsystem);
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -281,7 +283,9 @@ public class RobotContainer {
     // Testing
     tab = Shuffleboard.getTab("Testing");
     
-    tab.add("Start Testing", new TestCommand(ledSubsystem, intakeSubsystem, 
+    tab.addNumber("Number of Tests Run", () -> testCommand.getTestState());
+    tab.add("Start LED Progress Bar", new LEDProgressBarCommand(ledSubsystem, testCommand)).withPosition(0, 0);
+    tab.add("Start Testing", new TestCommand(intakeSubsystem, 
     shooterSubsystem, elevatorSubsystem, turretSubsystem, amperSubsystem));
   }
 
