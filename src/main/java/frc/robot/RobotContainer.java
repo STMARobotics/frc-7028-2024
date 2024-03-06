@@ -69,7 +69,7 @@ public class RobotContainer {
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
-  public GenericEntry testsCompleted;
+  private double tests;
 
   private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
       turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem);
@@ -243,8 +243,9 @@ public class RobotContainer {
 
     tab.add("Drivetrain test", new DrivetrainTestCommand(drivetrain)).withPosition(0, 0);
     tab.add("Complete Test", new LEDProgressBarCommand(ledSubsystem, this)).withPosition(0, 1);
-        testsCompleted =
-    tab.add("Tests Completed", 0).getEntry();
+       GenericEntry testsCompleted =
+    tab.add("Tests Completed", 0).withPosition(0, 2).getEntry();
+    tests = testsCompleted.getDouble(0);
   }
 
   public void setAlliance(Alliance alliance) {
@@ -257,7 +258,6 @@ public class RobotContainer {
   }
 
   public double getTestsDone() {
-    double tests = testsCompleted.getDouble(0);
     return tests;
   }
 }
