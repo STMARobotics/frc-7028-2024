@@ -119,7 +119,8 @@ public class PhotonRunnable implements Runnable {
         // Get AprilTag data
         var photonResults = getLatestResult(cameraIndex);
         if (photonResults.hasTargets() && (photonResults.targets.size() > 1
-            || photonResults.targets.get(0).getPoseAmbiguity() < APRILTAG_AMBIGUITY_THRESHOLD)) {
+            || (photonResults.targets.get(0).getPoseAmbiguity() < APRILTAG_AMBIGUITY_THRESHOLD
+            && photonResults.targets.get(0).getBestCameraToTarget().getX() < 5))) {
           
           // Send the AprilTag(s) to NT for AdvantageScope
           aprilTagPublisher.accept(photonResults.targets.stream().map(target ->
