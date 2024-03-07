@@ -129,7 +129,7 @@ public class TestCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return teststate == 7;
+    return teststate >= 7;
   }
 }
 
