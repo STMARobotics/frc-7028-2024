@@ -18,7 +18,7 @@ public class TestCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final AmperSubsystem amperSubsystem;
 
-  public int teststate = 0;
+  private int teststate = 0;
 
   private Timer timer = new Timer();
 
@@ -41,6 +41,7 @@ public class TestCommand extends Command {
 
   @Override
   public void initialize() {
+    timer.reset();
   }
   
   @Override
@@ -48,37 +49,37 @@ public class TestCommand extends Command {
     var shootingSettings = SHOOTER_INTERPOLATOR.calculate(1.34);
     switch (teststate) {
       case 0:
-        timer.reset();
         intakeSubsystem.intake();
         timer.start();
         if (timer.hasElapsed(2)) {
           intakeSubsystem.stop();
           teststate++;
-          break;
+          timer.reset();
         }
+        break;
       case 1:
-        timer.reset();
         intakeSubsystem.reverse();
         timer.start();
         if (timer.hasElapsed(2)) {
           intakeSubsystem.stop();
           teststate++;
-          break;
+          timer.reset();
         }
+        break;
       case 2:
         shooterSubsystem.prepareToShoot(shootingSettings.getVelocity());
         if (shooterSubsystem.isReadyToShoot()) {
           shooterSubsystem.stop();
           teststate++;
-          break;
         }
+        break;
       case 3:
         shooterSubsystem.reverse();
         if (shooterSubsystem.isReadyToShoot()) {
           shooterSubsystem.stop();
           teststate++;
-          break;
         }
+        break;
       case 4:
         turretSubsystem.prepareToTrap(elevatorSubsystem::isParked);
         if (turretSubsystem.isInTrapPosition()) {
@@ -90,50 +91,45 @@ public class TestCommand extends Command {
         if (elevatorSubsystem.isParked()) {
           turretSubsystem.stop();
           teststate++;
-          break;
         }
+        break;
       case 5:
-        timer.reset();
         amperSubsystem.intake();
         timer.start();
         if (timer.hasElapsed(2)) {
           amperSubsystem.stop();
           teststate++;
-          break;
+          timer.reset();
         }
+        break;
       case 6:
-        timer.reset();  
         turretSubsystem.shoot();
         timer.start();
         if (timer.hasElapsed(2)) {
           turretSubsystem.stop();
           teststate++;
-          break;
+          timer.reset();
         }
-      case 7:
-        timer.reset();  
+        break;
+      case 7: 
         turretSubsystem.eject();
         timer.start();
         if (timer.hasElapsed(2)) {
           turretSubsystem.stop();
           teststate++;
-          break;
+          timer.reset();
         } 
+        break;
       }
   }
 
-  public double getTestState() {
+  public int getTestState() {
     return teststate;
   }
 
   @Override
   public boolean isFinished() {
     return teststate == 7;
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    
   }
 }
 

@@ -284,7 +284,7 @@ public class RobotContainer {
     tab = Shuffleboard.getTab("Testing");
     
     tab.addNumber("Number of Tests Run", () -> testCommand.getTestState());
-    tab.add("Start LED Progress Bar", new LEDProgressBarCommand(ledSubsystem, testCommand)).withPosition(0, 0);
+    tab.add("Start LED Progress Bar", new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)).withPosition(0, 0);
     tab.add("Start Testing", new TestCommand(intakeSubsystem, 
     shooterSubsystem, elevatorSubsystem, turretSubsystem, amperSubsystem));
   }

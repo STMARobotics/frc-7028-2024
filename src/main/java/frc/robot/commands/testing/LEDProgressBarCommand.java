@@ -1,5 +1,7 @@
 package frc.robot.commands.testing;
 
+import java.util.function.IntSupplier;
+
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,14 +11,14 @@ import frc.robot.subsystems.LEDSubsystem;
 /** Command to run the boot animation on the LED strips */
 public class LEDProgressBarCommand extends Command {
   
-  private final TestCommand testCommand;
+  private final IntSupplier intSupplier;
   private final LEDSubsystem ledSubsystem;
   private int index;
   private int tests;
 
-  public LEDProgressBarCommand(LEDSubsystem ledSubsystem, TestCommand testCommand) {
+  public LEDProgressBarCommand(LEDSubsystem ledSubsystem, IntSupplier intSupplier) {
     this.ledSubsystem = ledSubsystem;
-    this.testCommand = testCommand;
+    this.intSupplier = intSupplier;
     
     addRequirements(ledSubsystem);
   }
@@ -42,7 +44,7 @@ public class LEDProgressBarCommand extends Command {
 
   @Override
   public void execute() {
-    tests = testCommand.teststate;
+    tests = intSupplier.getAsInt();
   }
     
   @Override
