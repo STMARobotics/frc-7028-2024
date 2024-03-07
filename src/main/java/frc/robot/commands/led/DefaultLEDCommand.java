@@ -69,12 +69,12 @@ public class DefaultLEDCommand extends Command {
    * @return LED mode
    */
   private int getMode() {
-    if (!DriverStation.isDSAttached()) {
-      return MODE_DS_DISCONNECT;
-    } else if (noteInTurret.getAsBoolean()) {
+    if (noteInTurret.getAsBoolean()) {
       return MODE_NOTE_IN_TURRET;
     } else if (noteInAmper.getAsBoolean()) {
       return MODE_NOTE_IN_AMPER;
+    } else if (!DriverStation.isDSAttached()) {
+      return MODE_DS_DISCONNECT;
     } else if (RobotState.isDisabled()) {
       return MODE_ROBOT_DISABLED;
     } else {
