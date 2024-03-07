@@ -76,7 +76,7 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> tuneSpeakerShooting() {
-    return Optional.empty();
+    return Optional.of(rightJoystick.povRight());
   }
 
   @Override
