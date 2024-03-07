@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.351171298833826,
+      "y": 1.6199439416422696
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M5-M4-M3_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M5-M4-M3_2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M5-M4-M3_3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M5-M4-M3_4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreSpeakerWhileMoving"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
