@@ -168,11 +168,11 @@ public class Constants {
         .withKS(22)
         .withKV(0.17);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
-    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-75.0);
+    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-56.0);
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-40.0);
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(75.0);
   
-    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(200);
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(300);
 
   }
 
@@ -302,7 +302,7 @@ public class Constants {
   public static class ShootingConstants {
 
     public static final double TARGET_OFFSET = inchesToMeters(4);
-    public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(652.73) - TARGET_OFFSET, inchesToMeters(218.42));
+    public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(646.73) - TARGET_OFFSET, inchesToMeters(218.42));
     public static final Translation2d SPEAKER_BLUE = new Translation2d(TARGET_OFFSET, inchesToMeters(218.42));
 
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);

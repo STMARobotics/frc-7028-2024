@@ -3,55 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.034481682998454,
-        "y": 2.6809308004580927
+        "x": 8.088891265501829,
+        "y": 7.405496214501202
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.710515175416315,
-        "y": 1.393237347878205
+        "x": 5.740210954106117,
+        "y": 7.441769269503453
       },
       "isLocked": false,
-      "linkedName": "M5-M4-M3_2"
+      "linkedName": "R_A3-A2-A1-M1-M2_1"
     },
     {
       "anchor": {
-        "x": 4.343698336519481,
-        "y": 2.363541569188402
+        "x": 8.134232584254644,
+        "y": 5.546502145635871
       },
       "prevControl": {
-        "x": 4.534131875281295,
-        "y": 2.5539751079502158
-      },
-      "nextControl": {
-        "x": 4.201323707682853,
-        "y": 2.2211669403517744
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.934730781742266,
-        "y": 0.9307558965995125
-      },
-      "prevControl": {
-        "x": 6.492876845402814,
-        "y": 1.565534359138893
+        "x": 4.933135480306049,
+        "y": 5.872959640656123
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "M5-M4-M3_3"
+      "linkedName": "R_A3-A2-A1-M1-M2_2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.8,
-      "maxWaypointRelativePos": 1.15,
+      "name": "Shoot M1",
+      "minWaypointRelativePos": 0.35,
+      "maxWaypointRelativePos": 0.65,
       "constraints": {
-        "maxVelocity": 0.7,
+        "maxVelocity": 0.8,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -60,7 +44,7 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake and Shoot M2",
+      "name": "Intake and Shoot M1",
       "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
@@ -71,15 +55,15 @@
               "data": {
                 "commands": [
                   {
-                    "type": "wait",
-                    "data": {
-                      "waitTime": 0.75
-                    }
-                  },
-                  {
                     "type": "named",
                     "data": {
                       "name": "intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.9
                     }
                   }
                 ]
@@ -96,8 +80,8 @@
       }
     },
     {
-      "name": "Intake M1",
-      "waypointRelativePos": 1.75,
+      "name": "Intake M2",
+      "waypointRelativePos": 0.8499999999999996,
       "command": {
         "type": "sequential",
         "data": {
@@ -125,10 +109,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "M5-M4-M3",
+  "folder": "R_A3-A2-A1-M1-M2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.351171298833826,
+      "y": 4.095579945545856
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "R_A3-A2-A1-M1-M2_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "R_A3-A2-A1-M1-M2_2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "R_A3-A2-A1-M1-M2_3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreSpeakerWhileMoving"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
