@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems;
 
-import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
+import static com.ctre.phoenix6.signals.NeutralModeValue.Coast;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Second;
@@ -70,7 +70,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     var motorConfig = new TalonFXConfiguration();
     motorConfig.Slot0 = Slot0Configs.from(SLOT_CONFIGS);
     motorConfig.MotionMagic = MOTION_MAGIC_CONFIGS;
-    motorConfig.MotorOutput.NeutralMode = Brake;
+    motorConfig.MotorOutput.NeutralMode = Coast;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     motorConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
         TOP_LIMIT.in(Meters) / METERS_PER_ROTATION.in(Meters.per(Rotations));
