@@ -34,11 +34,25 @@ public class LEDProgressBarCommand extends Command {
       for (int strip = 0; strip < ledStrips.getStripCount(); strip++) {
         for (index = 0; index < ledStrips.getStripSize(); index++) {
           if (index < tests * 2) {
-            ledStrips.setLED(strip, index, Color.kBlue);
-          } else {
-            ledStrips.setLED(strip, index, Color.kBlack);
+            if (index < 1) {
+                ledStrips.setLED(strip, index, Color.kRed);
+              } else if (index < 2) {
+                ledStrips.setLED(strip, index, Color.kOrange);
+              } else if (index < 3) {
+                ledStrips.setLED(strip, index, Color.kYellow);
+              } else if (index < 4) {
+                ledStrips.setLED(strip, index, Color.kLimeGreen);
+              } else if (index < 5) {
+                ledStrips.setLED(strip, index, Color.kBlue);
+              } else if (index < 6) {
+                ledStrips.setLED(strip, index, Color.kPurple);
+              } else {
+                ledStrips.setLED(strip, index, Color.kPink);
+              }
+            } else {
+              ledStrips.setLED(strip, index, Color.kBlack);
+            }
           }
-        }
       }
       ledStrips.refresh();
     } else {
