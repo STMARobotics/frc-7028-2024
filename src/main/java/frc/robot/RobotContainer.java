@@ -285,8 +285,7 @@ public class RobotContainer {
     
     tab.addNumber("Number of Tests Run", () -> testCommand.getTestState());
     tab.add("Start LED Progress Bar", new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)).withPosition(0, 0);
-    tab.add("Start Testing", new TestCommand(intakeSubsystem, 
-    shooterSubsystem, elevatorSubsystem, turretSubsystem, amperSubsystem));
+    tab.add("Start Testing", testCommand);
   }
 
   public void setAlliance(Alliance alliance) {

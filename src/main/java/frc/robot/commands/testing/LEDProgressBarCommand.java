@@ -10,7 +10,7 @@ import frc.robot.subsystems.LEDSubsystem;
 
 /** Command to run the boot animation on the LED strips */
 public class LEDProgressBarCommand extends Command {
-  
+
   private final IntSupplier intSupplier;
   private final LEDSubsystem ledSubsystem;
   private int index;
@@ -19,7 +19,7 @@ public class LEDProgressBarCommand extends Command {
   public LEDProgressBarCommand(LEDSubsystem ledSubsystem, IntSupplier intSupplier) {
     this.ledSubsystem = ledSubsystem;
     this.intSupplier = intSupplier;
-    
+
     addRequirements(ledSubsystem);
   }
 
@@ -29,10 +29,10 @@ public class LEDProgressBarCommand extends Command {
     ledSubsystem.setUpdater(this::animate);
   }
 
-  private void animate(LEDStrips ledStrips) { 
-    for(int strip = 0; strip < ledStrips.getStripCount(); strip++) {
-      for(index = 0; index < ledStrips.getStripSize(); index++) { 
-        if (index<tests*2) {
+  private void animate(LEDStrips ledStrips) {
+    for (int strip = 0; strip < ledStrips.getStripCount(); strip++) {
+      for (index = 0; index < ledStrips.getStripSize(); index++) {
+        if (index < tests * 2) {
           ledStrips.setLED(strip, index, Color.kBlue);
         } else {
           ledStrips.setLED(strip, index, Color.kBlack);
@@ -40,13 +40,13 @@ public class LEDProgressBarCommand extends Command {
       }
     }
     ledStrips.refresh();
-    }
+  }
 
   @Override
   public void execute() {
     tests = intSupplier.getAsInt();
   }
-    
+
   @Override
   public boolean isFinished() {
     return !RobotState.isTest();
