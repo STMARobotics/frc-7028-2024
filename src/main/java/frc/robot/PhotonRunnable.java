@@ -67,6 +67,8 @@ public class PhotonRunnable implements Runnable {
     PortForwarder.add(1184, "10.70.28.11", 1184);
     PortForwarder.add(1185, "10.70.28.11", 1185);
     PortForwarder.add(1186, "10.70.28.11", 1186);
+    PortForwarder.add(1187, "10.70.28.11", 1187);
+    PortForwarder.add(1188, "10.70.28.11", 1188);
 
     // NT publishers to send data to AdvantageScope
     for (int i = 0; i < cameraNames.length; i++) {
