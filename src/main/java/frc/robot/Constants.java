@@ -168,7 +168,7 @@ public class Constants {
         .withKS(22)
         .withKV(0.17);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
-    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-56.0);
+    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-53.0);
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-40.0);
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(75.0);
   
@@ -324,19 +324,22 @@ public class Constants {
     public static final Rotation2d DRIVETRAIN_YAW_LIMIT_REVERSE =
         new Rotation2d(TurretConstants.YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
 
+
+    private static final double PITCH_OFFSET = 3.0; // temporarycorrection for turret bend
+
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
-      new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35)),
-      new ShootingSettings().distance(Meters.of(1.56).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(33)),
-      new ShootingSettings().distance(Meters.of(1.922).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(26)),
-      new ShootingSettings().distance(Meters.of(2.216).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(22)),
-      new ShootingSettings().distance(Meters.of(2.673).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(17)),
-      new ShootingSettings().distance(Meters.of(3.442).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(65)).pitch(Degrees.of(9.5)),
-      new ShootingSettings().distance(Meters.of(4.005).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(5)),
-      new ShootingSettings().distance(Meters.of(4.445).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(3)),
-      new ShootingSettings().distance(Meters.of(4.905).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(1.25)),
-      new ShootingSettings().distance(Meters.of(5.357).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(72)).pitch(Degrees.of(0)),
-      new ShootingSettings().distance(Meters.of(5.728).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(67.25)).pitch(Degrees.of(0)),
-      new ShootingSettings().distance(Meters.of(6.194).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(64.5)).pitch(Degrees.of(0.0))
+      new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(1.56).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(33 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(1.922).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(26 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(2.216).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(22 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(2.673).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(17 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(3.442).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(65)).pitch(Degrees.of(9. + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(4.005).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(5 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(4.445).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(3 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(4.905).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(1.25 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(5.357).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(72)).pitch(Degrees.of(0 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(5.728).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(67.25)).pitch(Degrees.of(0 + PITCH_OFFSET)),
+      new ShootingSettings().distance(Meters.of(6.194).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(64.5)).pitch(Degrees.of(0.0 + PITCH_OFFSET))
     ));
 
   }
