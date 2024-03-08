@@ -45,7 +45,6 @@ import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AmperSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -66,7 +65,6 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
-  private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
