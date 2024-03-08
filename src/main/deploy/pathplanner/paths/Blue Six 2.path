@@ -3,39 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.351171298833826,
-        "y": 1.6199439416422696
+        "x": 7.925662517991703,
+        "y": 7.296677049494451
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3511712988338305,
-        "y": 1.6199439416422696
+        "x": 5.576982206595991,
+        "y": 7.332950104496702
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Blue Six 1"
     },
     {
       "anchor": {
-        "x": 7.961935572993954,
-        "y": 4.240672165554857
+        "x": 7.925662517991703,
+        "y": 5.700662629395434
       },
       "prevControl": {
-        "x": 4.561336666532982,
-        "y": 4.657812298080736
+        "x": 4.724565414043108,
+        "y": 6.027120124415686
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "M5-M4-M3_1"
+      "linkedName": "Blue Six 2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "Shoot Preload",
-      "minWaypointRelativePos": 0.5,
-      "maxWaypointRelativePos": 0.55,
+      "name": "Shoot M1",
+      "minWaypointRelativePos": 0.35,
+      "maxWaypointRelativePos": 0.65,
       "constraints": {
-        "maxVelocity": 0.7,
+        "maxVelocity": 0.8,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -44,12 +44,31 @@
   ],
   "eventMarkers": [
     {
-      "name": "Shoot Preload",
-      "waypointRelativePos": 0.4,
+      "name": "Intake and Shoot M1",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
         "data": {
           "commands": [
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.9
+                    }
+                  }
+                ]
+              }
+            },
             {
               "type": "named",
               "data": {
@@ -61,10 +80,10 @@
       }
     },
     {
-      "name": "Intake M3",
-      "waypointRelativePos": 0.85,
+      "name": "Intake M2",
+      "waypointRelativePos": 0.8499999999999996,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -90,10 +109,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "M5-M4-M3",
+  "folder": "Blue Six",
   "previewStartingState": {
-    "rotation": -1.636577041616796,
+    "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

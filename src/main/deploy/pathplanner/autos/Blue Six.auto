@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 1.351171298833826,
-      "y": 1.6199439416422696
+      "y": 4.095579945545856
     },
     "rotation": 0
   },
@@ -14,25 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M5-M4-M3_1"
+            "pathName": "Blue Six 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M5-M4-M3_2"
+            "pathName": "Blue Six 2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M5-M4-M3_3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "M5-M4-M3_4"
+            "pathName": "Blue Six 3"
           }
         },
         {

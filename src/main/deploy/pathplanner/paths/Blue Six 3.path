@@ -3,39 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.961935572993954,
-        "y": 7.342018368247263
+        "x": 7.925662517991703,
+        "y": 5.700662629395434
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.79711152404761,
-        "y": 7.577793225761891
+        "x": 8.028580719645635,
+        "y": 5.674704574981831
       },
       "isLocked": false,
-      "linkedName": "M1-M2-A3-A2_1"
+      "linkedName": "Blue Six 2"
     },
     {
       "anchor": {
-        "x": 8.134232584254644,
-        "y": 5.7732087393999345
+        "x": 5.676733107852181,
+        "y": 6.271963245680878
       },
       "prevControl": {
-        "x": 5.368412140333054,
-        "y": 6.172212344424689
+        "x": 6.628900801661253,
+        "y": 6.299168036932564
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "M1-M2-A3-A2_2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "Slow to Shoot M1",
-      "minWaypointRelativePos": 0.35,
-      "maxWaypointRelativePos": 0.6,
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.7,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -44,7 +44,7 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake Shoot Intake",
+      "name": "Intake and Shoot M2",
       "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
@@ -74,12 +74,6 @@
               "data": {
                 "name": "scoreSpeakerWhileMoving"
               }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "intake"
-              }
             }
           ]
         }
@@ -94,11 +88,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 1.0416266760099966,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "z_M1-M2-A3-A2",
+  "folder": "Blue Six",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

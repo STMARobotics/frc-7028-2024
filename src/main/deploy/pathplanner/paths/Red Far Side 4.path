@@ -3,39 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.088891265501829,
-        "y": 7.405496214501202
+        "x": 7.789638561733264,
+        "y": 0.939824160350076
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.740210954106117,
-        "y": 7.441769269503453
+        "x": 6.048531921625248,
+        "y": 1.86478706290746
       },
       "isLocked": false,
-      "linkedName": "R_A3-A2-A1-M1-M2_1"
+      "linkedName": "Red Far Side 3"
     },
     {
       "anchor": {
-        "x": 8.134232584254644,
-        "y": 5.546502145635871
+        "x": 3.6091689727239107,
+        "y": 3.0164565592289088
       },
       "prevControl": {
-        "x": 4.933135480306049,
-        "y": 5.872959640656123
+        "x": 4.398107919022852,
+        "y": 2.1640397666760247
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "R_A3-A2-A1-M1-M2_2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "Shoot M1",
-      "minWaypointRelativePos": 0.35,
-      "maxWaypointRelativePos": 0.65,
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.7,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.8,
+        "maxVelocity": 0.7,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -44,8 +44,8 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake and Shoot M1",
-      "waypointRelativePos": 0.0,
+      "name": "Intake and shoot M1",
+      "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
@@ -55,15 +55,15 @@
               "data": {
                 "commands": [
                   {
-                    "type": "named",
+                    "type": "wait",
                     "data": {
-                      "name": "intake"
+                      "waitTime": 1.0
                     }
                   },
                   {
-                    "type": "wait",
+                    "type": "named",
                     "data": {
-                      "waitTime": 0.9
+                      "name": "intake"
                     }
                   }
                 ]
@@ -73,23 +73,6 @@
               "type": "named",
               "data": {
                 "name": "scoreSpeakerWhileMoving"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Intake M2",
-      "waypointRelativePos": 0.8499999999999996,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "intake"
               }
             }
           ]
@@ -105,14 +88,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -25.97439396243136,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "R_A3-A2-A1-M1-M2",
+  "folder": "Red Far Side",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

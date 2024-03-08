@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3693078263349512,
-      "y": 6.28103150943144
+      "x": 1.351171298833826,
+      "y": 1.6199439416422696
     },
     "rotation": 0
   },
@@ -14,25 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-M3_1"
+            "pathName": "Blue Far Side 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-M3_2"
+            "pathName": "Blue Far Side 2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-M3_3"
+            "pathName": "Blue Far Side 3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "M1-M2-M3_4"
+            "pathName": "Blue Far Side 4"
           }
         },
         {

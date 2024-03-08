@@ -73,7 +73,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "R_A3-A2-A1-M1-M2_1"
+      "linkedName": "Red Six 1"
     }
   ],
   "rotationTargets": [
@@ -228,7 +228,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -238,7 +238,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "R_A3-A2-A1-M1-M2",
+  "folder": "Red Six",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

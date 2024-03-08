@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.934730781742266,
-        "y": 0.9307558965995125
+        "x": 1.351171298833826,
+        "y": 1.6199439416422696
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.193624141634249,
-        "y": 1.8557187991568966
+        "x": 2.3511712988338305,
+        "y": 1.6199439416422696
       },
       "isLocked": false,
-      "linkedName": "M5-M4-M3_3"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.6091689727239107,
-        "y": 3.0164565592289088
+        "x": 7.961935572993954,
+        "y": 4.240672165554857
       },
       "prevControl": {
-        "x": 4.398107919022852,
-        "y": 2.1640397666760247
+        "x": 4.561336666532982,
+        "y": 4.657812298080736
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Blue Far Side 1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.7,
-      "maxWaypointRelativePos": 1.0,
+      "name": "Shoot Preload",
+      "minWaypointRelativePos": 0.5,
+      "maxWaypointRelativePos": 0.55,
       "constraints": {
         "maxVelocity": 0.7,
         "maxAcceleration": 3.0,
@@ -44,35 +44,33 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake and shoot M1",
-      "waypointRelativePos": 0,
+      "name": "Shoot Preload",
+      "waypointRelativePos": 0.4,
       "command": {
         "type": "sequential",
         "data": {
           "commands": [
             {
-              "type": "parallel",
-              "data": {
-                "commands": [
-                  {
-                    "type": "wait",
-                    "data": {
-                      "waitTime": 1.0
-                    }
-                  },
-                  {
-                    "type": "named",
-                    "data": {
-                      "name": "intake"
-                    }
-                  }
-                ]
-              }
-            },
-            {
               "type": "named",
               "data": {
                 "name": "scoreSpeakerWhileMoving"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake M3",
+      "waypointRelativePos": 0.85,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
               }
             }
           ]
@@ -88,13 +86,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -25.97439396243136,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "M5-M4-M3",
+  "folder": "Blue Far Side",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

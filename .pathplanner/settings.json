@@ -3,12 +3,13 @@
   "robotLength": 1.001713,
   "holonomicMode": true,
   "pathFolders": [
-    "A1-M1-M2-M3",
-    "A3-A2-A1-M1-M2",
-    "M1-M2-A3-A2",
-    "M1-M2-M3",
-    "M5-M4-M3",
-    "R_A3-A2-A1-M1-M2"
+    "Blue Far Side",
+    "Blue Six",
+    "z_M1-M2-A3-A2",
+    "z_M1-M2-M3",
+    "Red Far Side",
+    "Red Six",
+    "z_A1-M1-M2-M3"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.5,

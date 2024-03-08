@@ -3,52 +3,63 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.034481682998454,
-        "y": 2.6809308004580927
+        "x": 7.961935572993954,
+        "y": 4.240672165554857
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.710515175416315,
-        "y": 1.393237347878205
+        "x": 5.177978601571239,
+        "y": 4.177194319300919
       },
       "isLocked": false,
-      "linkedName": "M5-M4-M3_2"
+      "linkedName": "Blue Far Side 1"
     },
     {
       "anchor": {
-        "x": 4.343698336519481,
-        "y": 2.363541569188402
+        "x": 4.3527666002700425,
+        "y": 4.893587155595364
       },
       "prevControl": {
-        "x": 4.534131875281295,
-        "y": 2.5539751079502158
+        "x": 4.386772589334652,
+        "y": 4.968400331537506
       },
       "nextControl": {
-        "x": 4.201323707682853,
-        "y": 2.2211669403517744
+        "x": 4.341431270581839,
+        "y": 4.868649430281317
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.934730781742266,
-        "y": 0.9307558965995125
+        "x": 8.034481682998454,
+        "y": 2.6809308004580927
       },
       "prevControl": {
-        "x": 6.492876845402814,
-        "y": 1.565534359138893
+        "x": 7.42690801171076,
+        "y": 3.9504877255368593
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "M5-M4-M3_3"
+      "linkedName": "Blue Far Side 2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.5,
+      "rotationDegrees": -23.673017487707952,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.8,
+      "minWaypointRelativePos": 1.1,
       "maxWaypointRelativePos": 1.15,
       "constraints": {
         "maxVelocity": 0.7,
@@ -60,35 +71,42 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake and Shoot M2",
-      "waypointRelativePos": 0.0,
+      "name": "Intake and shoot M3",
+      "waypointRelativePos": 0,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
-              "type": "parallel",
+              "type": "sequential",
               "data": {
                 "commands": [
                   {
-                    "type": "wait",
+                    "type": "parallel",
                     "data": {
-                      "waitTime": 0.75
+                      "commands": [
+                        {
+                          "type": "wait",
+                          "data": {
+                            "waitTime": 1.25
+                          }
+                        },
+                        {
+                          "type": "named",
+                          "data": {
+                            "name": "intake"
+                          }
+                        }
+                      ]
                     }
                   },
                   {
                     "type": "named",
                     "data": {
-                      "name": "intake"
+                      "name": "scoreSpeakerWhileMoving"
                     }
                   }
                 ]
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "scoreSpeakerWhileMoving"
               }
             }
           ]
@@ -96,8 +114,8 @@
       }
     },
     {
-      "name": "Intake M1",
-      "waypointRelativePos": 1.75,
+      "name": "Intake M2",
+      "waypointRelativePos": 1.65,
       "command": {
         "type": "sequential",
         "data": {
@@ -121,11 +139,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -25.740708356232858,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "M5-M4-M3",
+  "folder": "Blue Far Side",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

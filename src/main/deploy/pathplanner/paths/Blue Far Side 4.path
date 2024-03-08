@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.925662517991703,
-        "y": 5.700662629395434
+        "x": 7.934730781742266,
+        "y": 0.9307558965995125
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.028580719645635,
-        "y": 5.674704574981831
+        "x": 6.193624141634249,
+        "y": 1.8557187991568966
       },
       "isLocked": false,
-      "linkedName": "A3-A2-A1-M1-M2_2"
+      "linkedName": "Blue Far Side 3"
     },
     {
       "anchor": {
-        "x": 5.676733107852181,
-        "y": 6.271963245680878
+        "x": 3.6091689727239107,
+        "y": 3.0164565592289088
       },
       "prevControl": {
-        "x": 6.628900801661253,
-        "y": 6.299168036932564
+        "x": 4.398107919022852,
+        "y": 2.1640397666760247
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.85,
+      "minWaypointRelativePos": 0.7,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 0.7,
@@ -44,8 +44,8 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake and Shoot M2",
-      "waypointRelativePos": 0.0,
+      "name": "Intake and shoot M1",
+      "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
@@ -88,14 +88,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -25.97439396243136,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "A3-A2-A1-M1-M2",
+  "folder": "Blue Far Side",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
