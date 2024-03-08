@@ -14,7 +14,7 @@ public class LEDProgressBarCommand extends Command {
   private final IntSupplier intSupplier;
   private final LEDSubsystem ledSubsystem;
   private int index;
-  private int tests;
+  private double tests;
 
   public LEDProgressBarCommand(LEDSubsystem ledSubsystem, IntSupplier intSupplier) {
     this.ledSubsystem = ledSubsystem;
@@ -30,16 +30,20 @@ public class LEDProgressBarCommand extends Command {
   }
 
   private void animate(LEDStrips ledStrips) {
-    for (int strip = 0; strip < ledStrips.getStripCount(); strip++) {
-      for (index = 0; index < ledStrips.getStripSize(); index++) {
-        if (index < tests * 2) {
-          ledStrips.setLED(strip, index, Color.kBlue);
-        } else {
-          ledStrips.setLED(strip, index, Color.kBlack);
+    if (tests <= 7) {
+      for (int strip = 0; strip < ledStrips.getStripCount(); strip++) {
+        for (index = 0; index < ledStrips.getStripSize(); index++) {
+          if (index < tests * 2) {
+            ledStrips.setLED(strip, index, Color.kBlue);
+          } else {
+            ledStrips.setLED(strip, index, Color.kBlack);
+          }
         }
       }
+      ledStrips.refresh();
+    } else {
+      ledStrips.setAll(Color.kLimeGreen);
     }
-    ledStrips.refresh();
   }
 
   @Override
