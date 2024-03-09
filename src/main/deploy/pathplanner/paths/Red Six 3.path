@@ -72,7 +72,7 @@
             {
               "type": "named",
               "data": {
-                "name": "scoreSpeakerWhileMoving"
+                "name": "scoreSpeakerWhileMoving-Long"
               }
             }
           ]

@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,6 +43,7 @@ public class ScoreSpeakerAutoCommand extends Command {
   private final BooleanSupplier turretIsSafe;
   private final Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier;
   private final Supplier<Pose2d> poseSupplier;
+  private final Measure<Angle> pitchAdjustment;
     
   // Reusable objects to prevent reallocation (to reduce memory pressure)
   private final MutableMeasure<Angle> turretYawTarget = MutableMeasure.zero(Rotations);
@@ -52,13 +54,14 @@ public class ScoreSpeakerAutoCommand extends Command {
 
   public ScoreSpeakerAutoCommand(ShooterSubsystem shooter, TurretSubsystem turretSubsystem,
       LEDSubsystem ledSubsystem, Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier, Supplier<Pose2d> poseSupplier,
-       BooleanSupplier turretIsSafe) {
+       BooleanSupplier turretIsSafe, Measure<Angle> pitchAdjustment) {
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;
     this.fieldRelativeSpeedSupplier = fieldRelativeSpeedSupplier;
     this.poseSupplier = poseSupplier;
     this.turretIsSafe = turretIsSafe;
+    this.pitchAdjustment = pitchAdjustment;
 
     addRequirements(shooter, turretSubsystem);
   }
@@ -116,7 +119,7 @@ public class ScoreSpeakerAutoCommand extends Command {
 
     // Set the turret position
     turretSubsystem.moveToShootingYawPosition(turretYawTarget, turretIsSafe);
-    turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
+    turretSubsystem.moveToPitchPosition(shootingSettings.getPitch(), pitchAdjustment);
     shooter.prepareToShoot(shootingSettings.getVelocity());
 
     var isPitchReady = turretSubsystem.isAtPitchTarget();

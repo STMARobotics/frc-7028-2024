@@ -255,6 +255,16 @@ public class TurretSubsystem extends SubsystemBase {
     pitchMotor.setControl(pitchControl.withPosition(pitch.in(Rotations)));
   }
 
+    /**
+   * Sets the turret pitch (rotation around the Y axis) position target. Zero is horizontal, upward is positive
+   * (since the turret is facing backward).
+   * @param pitch pitch
+   * @param pitchAdjustment pitch added to the pitch (kind of a hack, but avoids reallocation of Measure)
+   */
+  public void moveToPitchPosition(Measure<Angle> pitch, Measure<Angle> pitchAdjustment) {
+    pitchMotor.setControl(pitchControl.withPosition(pitch.in(Rotations) + pitchAdjustment.in(Rotations)));
+  }
+
   /**
    * Loads a note from the amper/intake. Must likely {@link #prepareToExchange()} and {@link #isAtYawAndPitchTarget()}
    * should be called first.

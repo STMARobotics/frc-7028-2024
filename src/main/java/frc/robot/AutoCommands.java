@@ -1,5 +1,6 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
@@ -56,6 +57,7 @@ public class AutoCommands {
   public void registerPPNamedCommands() {
     NamedCommands.registerCommand("intake", intakeToTurret());
     NamedCommands.registerCommand("scoreSpeakerWhileMoving", autoScoreSpeaker());
+    NamedCommands.registerCommand("scoreSpeakerWhileMoving-Long", autoScoreSpeakerLong());
   }
 
   /**
@@ -75,7 +77,17 @@ public class AutoCommands {
   public Command autoScoreSpeaker() {
     return new ScoreSpeakerAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem,
         drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose,
-        elevatorSubsystem::isParked);
+        elevatorSubsystem::isParked, Degrees.zero());
+  }
+
+  /**
+   * Command to automatically score in the speaker while moving, with a boost to the angle for longer shots
+   * @return new command
+   */
+  private Command autoScoreSpeakerLong() {
+    return new ScoreSpeakerAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem,
+        drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose,
+        elevatorSubsystem::isParked, Degrees.of(3.0));
   }
 
   /**
