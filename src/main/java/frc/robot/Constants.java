@@ -162,17 +162,17 @@ public class Constants {
     public static final int DEVICE_ID_NOTE_SENSOR = 1;
 
     public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(4.0)
+        .withKP(6.0)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(22)
         .withKV(0.17);
-    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
+    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 0.75;
     public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-53.0);
     public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-40.0);
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(75.0);
   
-    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(300);
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150);
 
   }
 
@@ -242,7 +242,8 @@ public class Constants {
     public static final Measure<Angle> TRAP_YAW_POSITION = Degrees.of(0.25);
 
     public static final Measure<Angle> INTAKE_YAW_POSITION = Radians.of(PI);
-    public static final Measure<Angle> INTAKE_PITCH_POSITION = Radians.of(0.003);
+    public static final Measure<Angle> INTAKE_PITCH_POSITION = Degrees.of(15.0);
+    public static final Measure<Angle> TRANSFER_PITCH = Radians.of(0.003);
 
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(1.0);
     public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(1);
@@ -286,7 +287,7 @@ public class Constants {
     public static final Measure<Distance> SCORE_TRAP_HEIGHT = Meters.of(0.42);
     public static final Measure<Distance> PARK_HEIGHT = Meters.of(0.0);
     public static final Measure<Distance> PARK_TOLERANCE = Meters.of(0.01);
-    public static final Measure<Distance> ELEVATOR_TRANSFER_TO_AMP_HEIGHT = Inches.of(0.5);
+    public static final Measure<Distance> ELEVATOR_TRANSFER_TO_AMP_HEIGHT = Inches.of(0.75);
 
     public static final Measure<Distance> POSITION_TOLERANCE = Meters.of(.01);
   }

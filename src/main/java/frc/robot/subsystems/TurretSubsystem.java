@@ -32,6 +32,7 @@ import static frc.robot.Constants.TurretConstants.PITCH_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.ROLLER_VELOCITY_SLOT_CONFIGS;
 import static frc.robot.Constants.TurretConstants.SHOOTING_YAW_CORRECTION;
 import static frc.robot.Constants.TurretConstants.SHOOT_VELOCITY;
+import static frc.robot.Constants.TurretConstants.TRANSFER_PITCH;
 import static frc.robot.Constants.TurretConstants.TRAP_PITCH_POSITION;
 import static frc.robot.Constants.TurretConstants.TRAP_YAW_POSITION;
 import static frc.robot.Constants.TurretConstants.YAW_EXCHANGE_TOLERANCE;
@@ -322,7 +323,7 @@ public class TurretSubsystem extends SubsystemBase {
    */
   public void prepareToExchange() {
     moveToYawPosition(INTAKE_YAW_POSITION);
-    moveToPitchPosition(INTAKE_PITCH_POSITION);
+    moveToPitchPosition(TRANSFER_PITCH);
     stopRollers();
   }
 

@@ -61,10 +61,10 @@ public class AmperSubsystem extends SubsystemBase {
     rollerConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rollerConfig.Feedback.SensorToMechanismRatio = ROLLER_SENSOR_TO_MECHANISM_RATIO;
     rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
-    rollerConfig.CurrentLimits.StatorCurrentLimit = 60;
+    rollerConfig.CurrentLimits.StatorCurrentLimit = 120;
     rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
-    rollerConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
+    rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = 120;
+    rollerConfig.TorqueCurrent.PeakReverseTorqueCurrent = -120;
     rollerConfig.CurrentLimits.SupplyCurrentLimit = 30;
     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
