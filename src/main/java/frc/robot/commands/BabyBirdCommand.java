@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.function.BooleanSupplier;
@@ -36,7 +35,7 @@ public class BabyBirdCommand extends Command {
   @Override
   public void initialize() {
     turretSubsystem.moveToYawPosition(Degrees.of(180), turretIsSafe);
-    turretSubsystem.moveToPitchPosition(Rotations.of(0.081));
+    turretSubsystem.moveToPitchPosition(Degrees.of(32));
     turretSubsystem.runRollers(RotationsPerSecond.of(-25));
     shooterSubsystem.reverse();
     sensorTripped = false;
