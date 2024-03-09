@@ -86,12 +86,12 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> exchangeToAmper() {
-    return Optional.of(rightJoystick.povLeft());
+    return Optional.empty();
   }
 
   @Override
   public Optional<Trigger> intakeToAmper() {
-    return Optional.of(leftJoystick.povRight());
+    return Optional.empty();
   }
 
   @Override
