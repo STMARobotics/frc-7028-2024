@@ -40,7 +40,7 @@ public class IntakeToTurretCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return turretSubsystem.hasNote();
+    return turretSubsystem.hasNote() || amperSubsystem.hasNote();
   }
 
   @Override

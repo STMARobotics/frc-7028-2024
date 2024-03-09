@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID_ROLLERS;
+import static frc.robot.Constants.IntakeConstants.ROLLER_EXCHANGE_VELOCITY;
 import static frc.robot.Constants.IntakeConstants.ROLLER_INTAKE_VELOCITY;
 import static frc.robot.Constants.IntakeConstants.ROLLER_REVERSE_VELOCITY;
 import static frc.robot.Constants.IntakeConstants.ROLLER_SENSOR_TO_MECHANISM_RATIO;
@@ -78,6 +79,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void intake() {
     runRollers(ROLLER_INTAKE_VELOCITY);
+  }
+
+  public void exchange() {
+    runRollers(ROLLER_EXCHANGE_VELOCITY);
   }
 
   public void reverse() {

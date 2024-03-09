@@ -35,7 +35,7 @@ public class LoadAmperCommand extends Command {
     if (turretSubsystem.isInExchangePosition() && elevatorSubsystem.isAtTarget()) {
       amperSubsystem.load();
       turretSubsystem.eject();
-      intakeSubsystem.intake();
+      intakeSubsystem.exchange();
     }
   }
 

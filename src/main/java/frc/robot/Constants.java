@@ -154,6 +154,7 @@ public class Constants {
         .withKV(.08);
     public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
     public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(70.0);
+    public static final Measure<Velocity<Angle>> ROLLER_EXCHANGE_VELOCITY = RotationsPerSecond.of(50.0);
     public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-20.0);
   }
 
@@ -326,7 +327,7 @@ public class Constants {
         new Rotation2d(TurretConstants.YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
 
 
-    private static final double PITCH_OFFSET = 3.0; // temporarycorrection for turret bend
+    private static final double PITCH_OFFSET = 4.0; // temporarycorrection for turret bend
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35 + PITCH_OFFSET)),
