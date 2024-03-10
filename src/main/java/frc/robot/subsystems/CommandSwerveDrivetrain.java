@@ -70,6 +70,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     // Start PhotonVision thread
     photonThread.setName("PhotonVision");
+    photonThread.setDaemon(true);
     photonThread.start();
 
     m_pigeon2.getConfigurator().apply(PIGEON_MOUNT_POSE_CONFIG);
