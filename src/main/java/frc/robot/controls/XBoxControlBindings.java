@@ -55,7 +55,7 @@ public class XBoxControlBindings implements ControlBindings {
     return Math.copySign(value * value, value);
   }
   
-  public Optional<Trigger> intakeToTurret() {
+  public Optional<Trigger> intake() {
     return Optional.of(driverController.rightBumper());
   }
 
@@ -86,16 +86,6 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> exchangeToAmper() {
-    return Optional.of(driverController.povUp());
-  }
-
-  @Override
-  public Optional<Trigger> intakeToAmper() {
-    return Optional.of(driverController.povDown());
-  }
-
-  @Override
   public Optional<Trigger> eject() {
     return Optional.of(driverController.y());
   }
@@ -108,11 +98,6 @@ public class XBoxControlBindings implements ControlBindings {
   @Override
   public Optional<Trigger> liftShooter() {
     return Optional.empty();
-  }
-
-  @Override
-  public Optional<Trigger> setupShooter() {
-    return Optional.of(driverController.x());
   }
 
 }

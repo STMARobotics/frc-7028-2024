@@ -33,7 +33,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.util.Color;
@@ -123,58 +122,41 @@ public class Constants {
     public static final double SHOOTER_STATOR_CURRENT_LIMIT = 220;
     public static final double SHOOTER_SUPPLY_CURRENT_LIMIT = 80;
 
-    public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_TOP = new SlotConfigs()
+    public static final SlotConfigs SLOT_CONFIG_TOP = new SlotConfigs()
         .withKP(10.0)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(6.5)
         .withKV(0.1);
 
-    public static final SlotConfigs SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM = new SlotConfigs()
+    public static final SlotConfigs SLOT_CONFIG_BOTTOM = new SlotConfigs()
         .withKP(10.0)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(6.5)
         .withKV(0.101);
   
-    public static final double SHOOTER_SENSOR_TO_MECHANISM_RATIO = 1.0;
+    public static final double SENSOR_TO_MECHANISM_RATIO = 1.0;
   
-    public static final Measure<Velocity<Angle>> SHOOTER_ERROR_TOLERANCE = RotationsPerSecond.of(1.5);
-    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-10);
+    public static final Measure<Velocity<Angle>> ERROR_TOLERANCE = RotationsPerSecond.of(1.5);
+    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
+
+    public static final Measure<Velocity<Angle>> AMP_TOP_VELOCITY = RotationsPerSecond.of(5.0);
+    public static final Measure<Velocity<Angle>> AMP_BOTTOM_VELOCITY = RotationsPerSecond.of(26.0);
   }
 
   public static class IntakeConstants {
-    public static final int DEVICE_ID_ROLLERS = 42;
+    public static final int DEVICE_ID = 42;
 
-    public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
+    public static final SlotConfigs SLOT_CONFIGS = new SlotConfigs()
         .withKP(8.5)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(16)
         .withKV(.08);
-    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 1.0;
-    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(70.0);
-    public static final Measure<Velocity<Angle>> ROLLER_EXCHANGE_VELOCITY = RotationsPerSecond.of(50.0);
-    public static final Measure<Velocity<Angle>> ROLLER_REVERSE_VELOCITY = RotationsPerSecond.of(-20.0);
-  }
-
-  public static class AmperConstants {
-    public static final int DEVICE_ID_ROLLERS = 40;
-    public static final int DEVICE_ID_NOTE_SENSOR = 1;
-
-    public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(6.0)
-        .withKI(0.0)
-        .withKD(0.0)
-        .withKS(22)
-        .withKV(0.17);
-    public static final double ROLLER_SENSOR_TO_MECHANISM_RATIO = 0.75;
-    public static final Measure<Velocity<Angle>> ROLLER_LOAD_VELOCITY = RotationsPerSecond.of(-53.0);
-    public static final Measure<Velocity<Angle>> ROLLER_SCORE_VELOCITY = RotationsPerSecond.of(-40.0);
-    public static final Measure<Velocity<Angle>> ROLLER_INTAKE_VELOCITY = RotationsPerSecond.of(75.0);
-  
-    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150);
-
+    public static final double SENSOR_TO_MECHANISM_RATIO = 1.0;
+    public static final Measure<Velocity<Angle>> INTAKE_VELOCITY = RotationsPerSecond.of(70.0);
+    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-20.0);
   }
 
   public static class TurretConstants {
@@ -229,28 +211,31 @@ public class Constants {
         .withMotionMagicAcceleration(5.0)
         .withMotionMagicCruiseVelocity(1.5);
 
-    public static final SlotConfigs ROLLER_VELOCITY_SLOT_CONFIGS = new SlotConfigs()
+    public static final SlotConfigs ROLLER_SLOT_CONFIGS = new SlotConfigs()
         .withKP(5.0)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(12);
     
-    public static final Measure<Velocity<Angle>> LOAD_VELOCITY = RotationsPerSecond.of(15);
+    public static final Measure<Velocity<Angle>> INTAKE_VELOCITY = RotationsPerSecond.of(15);
     public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-10);
     public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(40);
 
-    public static final Measure<Angle> TRAP_PITCH_POSITION = Rotations.of(.114);
-    public static final Measure<Angle> TRAP_YAW_POSITION = Degrees.of(0.25);
+    public static final Measure<Angle> INTAKE_YAW = Radians.of(PI);
+    public static final Measure<Angle> INTAKE_PITCH = Radians.of(0.003);
 
-    public static final Measure<Angle> INTAKE_YAW_POSITION = Radians.of(PI);
-    public static final Measure<Angle> INTAKE_PITCH_POSITION = Degrees.of(15.0);
-    public static final Measure<Angle> TRANSFER_PITCH = Radians.of(0.003);
+    public static final Measure<Angle> AMP_YAW = Degrees.of(180);
+    public static final Measure<Angle> AMP_PITCH = Degrees.of(37);
 
     public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(1.0);
     public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(1);
 
-    public static final Measure<Angle> YAW_EXCHANGE_TOLERANCE = Degrees.of(3.0);
-    public static final Measure<Angle> PITCH_EXCHANGE_TOLERANCE = Degrees.of(3.0);
+    public static final Measure<Angle> INTAKE_YAW_TOLERANCE = Degrees.of(3.0);
+    public static final Measure<Angle> INTAKE_PITCH_TOLERANCE = Degrees.of(3.0);
+
+    public static final Measure<Angle> BABY_BIRD_YAW = Degrees.of(180.0);
+    public static final Measure<Angle> BABY_BIRD_PITCH = Degrees.of(32.0);
+    public static final Measure<Velocity<Angle>> BABY_BIRD_ROLLER_VELOCITY = RotationsPerSecond.of(-25);
 
     public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150.0);
 
@@ -259,43 +244,9 @@ public class Constants {
 
   }
 
-  public static class ElevatorConstants {
-    public static int DEVICE_ID_MOTOR = 60;
-    public static int DEVICE_PORT_TOP_LIMIT = 7;
-    public static int DEVICE_PORT_BOTTOM_LIMIT = 9;
-
-    public static Measure<Per<Distance, Angle>> METERS_PER_ROTATION = 
-        Meters.per(Rotations).of((inchesToMeters(1.27) * PI) / 3.0 / 3.0);
-
-    public static SlotConfigs SLOT_CONFIGS = new SlotConfigs()
-        .withKP(1.2)
-        .withKI(0.0)
-        .withKD(0.0)
-        .withKS(0.43)
-        .withKV(0.0)
-        .withKA(0.0)
-        .withKG(0.21)
-        .withGravityType(GravityTypeValue.Elevator_Static);
-    
-    public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicAcceleration(250)
-        .withMotionMagicCruiseVelocity(90);
-    
-    public static final Measure<Distance> TOP_LIMIT = Meters.of(0.425);
-    public static final Measure<Distance> BOTTOM_LIMIT = Meters.zero();
-
-    public static final Measure<Distance> SCORE_AMP_HEIGHT = Meters.of(0.25);
-    public static final Measure<Distance> SCORE_TRAP_HEIGHT = Meters.of(0.42);
-    public static final Measure<Distance> PARK_HEIGHT = Meters.of(0.0);
-    public static final Measure<Distance> PARK_TOLERANCE = Meters.of(0.01);
-    public static final Measure<Distance> ELEVATOR_TRANSFER_TO_AMP_HEIGHT = Inches.of(0.75);
-
-    public static final Measure<Distance> POSITION_TOLERANCE = Meters.of(.01);
-  }
-
   public static class LEDConstants {
     
-    public static final int DEVICE_ID_LEDS = 9;
+    public static final int DEVICE_ID = 9;
 
     public static final Color NOTE_COLOR = Color.fromHSV(3, 255, 255);
 
@@ -326,32 +277,20 @@ public class Constants {
     public static final Rotation2d DRIVETRAIN_YAW_LIMIT_REVERSE =
         new Rotation2d(TurretConstants.YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
 
-
-    private static final double PITCH_OFFSET = 4.0; // temporarycorrection for turret bend
-
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
-      new ShootingSettings().distance(Meters.of(1.34).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(1.56).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(33 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(1.922).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(26 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(2.216).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(22 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(2.673).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(17 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(3.442).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(65)).pitch(Degrees.of(9. + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(4.005).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(5 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(4.445).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(3 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(4.905).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(1.25 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(5.357).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(72)).pitch(Degrees.of(0 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(5.728).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(67.25)).pitch(Degrees.of(0 + PITCH_OFFSET)),
-      new ShootingSettings().distance(Meters.of(6.194).minus(Meters.of(TARGET_OFFSET))).velocity(RotationsPerSecond.of(64.5)).pitch(Degrees.of(0.0 + PITCH_OFFSET))
+      new ShootingSettings().distance(Meters.of(1.34)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35)),
+      new ShootingSettings().distance(Meters.of(1.56)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(33)),
+      new ShootingSettings().distance(Meters.of(1.922)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(26)),
+      new ShootingSettings().distance(Meters.of(2.216)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(22)),
+      new ShootingSettings().distance(Meters.of(2.673)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(17)),
+      new ShootingSettings().distance(Meters.of(3.442)).velocity(RotationsPerSecond.of(65)).pitch(Degrees.of(9)),
+      new ShootingSettings().distance(Meters.of(4.005)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(5)),
+      new ShootingSettings().distance(Meters.of(4.445)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(3)),
+      new ShootingSettings().distance(Meters.of(4.905)).velocity(RotationsPerSecond.of(80)).pitch(Degrees.of(1.25)),
+      new ShootingSettings().distance(Meters.of(5.357)).velocity(RotationsPerSecond.of(72)).pitch(Degrees.of(0)),
+      new ShootingSettings().distance(Meters.of(5.728)).velocity(RotationsPerSecond.of(67.25)).pitch(Degrees.of(0)),
+      new ShootingSettings().distance(Meters.of(6.194)).velocity(RotationsPerSecond.of(64.5)).pitch(Degrees.of(0.0))
     ));
-
-  }
-
-  public static class ClimbConstants {
-
-    public static final int DEVICE_ID_LEFT = 55;
-    public static final int DEVICE_ID_RIGHT = 56;
-
-    public static final double RAMP_RATE = 0.25;
 
   }
 

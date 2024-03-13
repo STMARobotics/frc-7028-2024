@@ -4,15 +4,12 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -24,10 +21,8 @@ import frc.robot.subsystems.TurretSubsystem;
 public class TuneShootingCommand extends Command {
   
   private final TurretSubsystem turretSubsystem;
-  private final AmperSubsystem amperSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final LEDSubsystem ledSubsystem;
-  private final BooleanSupplier turretIsSafe;
 
   private final DoubleEntry pitchSubscriber;
   private final DoubleEntry topVelocitySubscriber;
@@ -43,16 +38,12 @@ public class TuneShootingCommand extends Command {
 
   public TuneShootingCommand(
       TurretSubsystem turretSubsystem,
-      AmperSubsystem amperSubsystem,
       ShooterSubsystem shooterSubsystem,
-      LEDSubsystem ledSubsystem, 
-      BooleanSupplier turretIsSafe) {
+      LEDSubsystem ledSubsystem) {
     
     this.turretSubsystem = turretSubsystem;
-    this.amperSubsystem = amperSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.ledSubsystem = ledSubsystem;
-    this.turretIsSafe = turretIsSafe;
 
     var nt = NetworkTableInstance.getDefault();
     var table = nt.getTable("Tune Shoot");
@@ -65,7 +56,7 @@ public class TuneShootingCommand extends Command {
     yawSubscriber = table.getDoubleTopic("Yaw (Degrees)").getEntry(180.0);
     yawSubscriber.set(180.0);
 
-    addRequirements(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem);
+    addRequirements(turretSubsystem, shooterSubsystem, ledSubsystem);
   }
 
   @Override
@@ -76,7 +67,7 @@ public class TuneShootingCommand extends Command {
   @Override
   public void execute() {
     turretSubsystem.moveToPitchPosition(pitchMeasure.mut_replace(pitchSubscriber.get(0.0), Degrees));
-    turretSubsystem.moveToShootingYawPosition(yawMeasure.mut_replace(yawSubscriber.get(180.0), Degrees), turretIsSafe);
+    turretSubsystem.moveToShootingYawPosition(yawMeasure.mut_replace(yawSubscriber.get(180.0), Degrees));
     shooterSubsystem.spinShooterWheels(
         topVelocityMeasure.mut_replace(topVelocitySubscriber.get(0.0), RotationsPerSecond),
         bottomVelocityMeasure.mut_replace(bottomVelocitySubscriber.get(10), RotationsPerSecond));
@@ -92,7 +83,6 @@ public class TuneShootingCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     turretSubsystem.stop();
-    amperSubsystem.stop();
     shooterSubsystem.stop();
   }
 }

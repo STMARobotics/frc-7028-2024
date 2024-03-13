@@ -1,46 +1,40 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AmperSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 /**
- * Command to score in the amp, when there is already a note in the amper.
+ * Command to score in the amp, when there is already a note in the turret.
  */
 public class ScoreAmpCommand extends Command {
   
-  private final ElevatorSubsystem elevatorSubsystem;
-  private final AmperSubsystem amperSubsystem;
   private final TurretSubsystem turretSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
 
-  public ScoreAmpCommand(ElevatorSubsystem elevatorSubsystem, AmperSubsystem amperSubsystem, TurretSubsystem turretSubsystem) {
-    this.elevatorSubsystem = elevatorSubsystem;
-    this.amperSubsystem = amperSubsystem;
+  public ScoreAmpCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem) {
     this.turretSubsystem = turretSubsystem;
+    this.shooterSubsystem = shooterSubsystem;
 
-    addRequirements(elevatorSubsystem, amperSubsystem);
+    addRequirements(turretSubsystem, shooterSubsystem);
   }
 
   @Override
   public void initialize() {
-    turretSubsystem.prepareToExchange();
+    turretSubsystem.prepareToAmp();
+    shooterSubsystem.prepareToAmp();
   }
 
   @Override
   public void execute() {
-    if (turretSubsystem.isAtYawAndPitchTarget()) {
-      elevatorSubsystem.prepareToAmp(turretSubsystem::isClearOfElevator);
-      if (elevatorSubsystem.isAtTarget()) {
-        amperSubsystem.score();
-      }
+    if (turretSubsystem.isAtYawAndPitchTarget() && shooterSubsystem.isReadyToShoot()) {
+      turretSubsystem.shoot();
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    amperSubsystem.stop();
-    elevatorSubsystem.park(turretSubsystem::isClearOfElevator);
     turretSubsystem.stop();
+    shooterSubsystem.stop();
   }
 }

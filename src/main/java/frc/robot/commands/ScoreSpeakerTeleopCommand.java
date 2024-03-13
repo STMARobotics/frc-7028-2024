@@ -25,7 +25,6 @@ import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
 import static java.lang.Math.PI;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -60,7 +59,6 @@ public class ScoreSpeakerTeleopCommand extends Command {
   private final ShooterSubsystem shooter;
   private final TurretSubsystem turretSubsystem;
   private final LEDSubsystem ledSubsystem;
-  private final BooleanSupplier turretIsSafe;
 
   private final Supplier<Measure<Velocity<Distance>>> xSupplier;
   private final Supplier<Measure<Velocity<Distance>>> ySupplier;
@@ -87,13 +85,12 @@ public class ScoreSpeakerTeleopCommand extends Command {
   private boolean isShooting = false;
 
   public ScoreSpeakerTeleopCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
-      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem, BooleanSupplier turretIsSafe,
+      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem,
       Supplier<Measure<Velocity<Distance>>> xSupplier, Supplier<Measure<Velocity<Distance>>> ySupplier) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;
-    this.turretIsSafe = turretIsSafe;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
 
@@ -162,7 +159,7 @@ public class ScoreSpeakerTeleopCommand extends Command {
     
       // Set the turret position
       turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-      turretSubsystem.moveToShootingYawPosition(turretYawTarget, turretIsSafe);
+      turretSubsystem.moveToShootingYawPosition(turretYawTarget);
 
       // Turret can reach, stop robot
 
@@ -191,7 +188,7 @@ public class ScoreSpeakerTeleopCommand extends Command {
         shooter.prepareToShoot(shootingSettings.getVelocity());
         
         // Set the turret position
-        turretSubsystem.moveToShootingYawPosition(turretYawTarget, turretIsSafe);
+        turretSubsystem.moveToShootingYawPosition(turretYawTarget);
         turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
       }
 
@@ -221,7 +218,7 @@ public class ScoreSpeakerTeleopCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stop();
-    turretSubsystem.prepareToExchange();
+    turretSubsystem.prepareToIntake();
     drivetrain.setControl(new SwerveRequest.Idle());
     ledSubsystem.setUpdater(null);
   }

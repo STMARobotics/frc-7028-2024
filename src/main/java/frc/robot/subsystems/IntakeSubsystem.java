@@ -10,12 +10,11 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
-import static frc.robot.Constants.IntakeConstants.DEVICE_ID_ROLLERS;
-import static frc.robot.Constants.IntakeConstants.ROLLER_EXCHANGE_VELOCITY;
-import static frc.robot.Constants.IntakeConstants.ROLLER_INTAKE_VELOCITY;
-import static frc.robot.Constants.IntakeConstants.ROLLER_REVERSE_VELOCITY;
-import static frc.robot.Constants.IntakeConstants.ROLLER_SENSOR_TO_MECHANISM_RATIO;
-import static frc.robot.Constants.IntakeConstants.ROLLER_SLOT_CONFIGS;
+import static frc.robot.Constants.IntakeConstants.DEVICE_ID;
+import static frc.robot.Constants.IntakeConstants.INTAKE_VELOCITY;
+import static frc.robot.Constants.IntakeConstants.REVERSE_VELOCITY;
+import static frc.robot.Constants.IntakeConstants.SENSOR_TO_MECHANISM_RATIO;
+import static frc.robot.Constants.IntakeConstants.SLOT_CONFIGS;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -39,7 +38,7 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
  */
 public class IntakeSubsystem extends SubsystemBase {
 
-  private final TalonFX rollerMotor = new TalonFX(DEVICE_ID_ROLLERS, CANIVORE_BUS_NAME);
+  private final TalonFX rollerMotor = new TalonFX(DEVICE_ID, CANIVORE_BUS_NAME);
 
   // Motor request objects
   private final VelocityTorqueCurrentFOC rollerControl = new VelocityTorqueCurrentFOC(0.0);
@@ -55,8 +54,8 @@ public class IntakeSubsystem extends SubsystemBase {
     var rollerConfig = new TalonFXConfiguration();
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    rollerConfig.Feedback.SensorToMechanismRatio = ROLLER_SENSOR_TO_MECHANISM_RATIO;
-    rollerConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
+    rollerConfig.Feedback.SensorToMechanismRatio = SENSOR_TO_MECHANISM_RATIO;
+    rollerConfig.Slot0 = Slot0Configs.from(SLOT_CONFIGS);
     rollerConfig.CurrentLimits.StatorCurrentLimit = 60;
     rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
@@ -78,23 +77,19 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intake() {
-    runRollers(ROLLER_INTAKE_VELOCITY);
-  }
-
-  public void exchange() {
-    runRollers(ROLLER_EXCHANGE_VELOCITY);
+    runRollers(INTAKE_VELOCITY);
   }
 
   public void reverse() {
-    runRollers(ROLLER_REVERSE_VELOCITY);
+    runRollers(REVERSE_VELOCITY);
   }
-
-  public void runRollers(Measure<Velocity<Angle>> velocity) {
-    rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
-  }
-
+  
   public void stop() {
     rollerMotor.stopMotor();
   }
-
+  
+  private void runRollers(Measure<Velocity<Angle>> velocity) {
+    rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
+  }
+  
 }

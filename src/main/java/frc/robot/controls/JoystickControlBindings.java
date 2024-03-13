@@ -55,7 +55,7 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> intakeToTurret() {
+  public Optional<Trigger> intake() {
     return Optional.of(leftJoystick.trigger());
   }
 
@@ -85,16 +85,6 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> exchangeToAmper() {
-    return Optional.of(rightJoystick.povLeft());
-  }
-
-  @Override
-  public Optional<Trigger> intakeToAmper() {
-    return Optional.empty();
-  }
-
-  @Override
   public Optional<Trigger> eject() {
     return Optional.of(leftJoystick.button(4));
   }
@@ -107,11 +97,6 @@ public class JoystickControlBindings implements ControlBindings {
   @Override
   public Optional<Trigger> liftShooter() {
     return Optional.of(rightJoystick.button(2));
-  }
-
-  @Override
-  public Optional<Trigger> setupShooter() {
-    return Optional.of(rightJoystick.button(4));
   }
 
 }

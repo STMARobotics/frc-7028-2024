@@ -5,15 +5,17 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
+import static frc.robot.Constants.ShooterConstants.AMP_BOTTOM_VELOCITY;
+import static frc.robot.Constants.ShooterConstants.AMP_TOP_VELOCITY;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_TOP;
+import static frc.robot.Constants.ShooterConstants.ERROR_TOLERANCE;
 import static frc.robot.Constants.ShooterConstants.REVERSE_VELOCITY;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_ERROR_TOLERANCE;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_SENSOR_TO_MECHANISM_RATIO;
+import static frc.robot.Constants.ShooterConstants.SENSOR_TO_MECHANISM_RATIO;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_STATOR_CURRENT_LIMIT;
 import static frc.robot.Constants.ShooterConstants.SHOOTER_SUPPLY_CURRENT_LIMIT;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_TOP;
+import static frc.robot.Constants.ShooterConstants.SLOT_CONFIG_BOTTOM;
+import static frc.robot.Constants.ShooterConstants.SLOT_CONFIG_TOP;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -60,9 +62,9 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     // Configure shooter motors
     var motorConfig = new TalonFXConfiguration();
-    motorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM);
+    motorConfig.Slot0 = Slot0Configs.from(SLOT_CONFIG_BOTTOM);
     motorConfig.MotorOutput.NeutralMode = Coast;
-    motorConfig.Feedback.SensorToMechanismRatio = SHOOTER_SENSOR_TO_MECHANISM_RATIO;
+    motorConfig.Feedback.SensorToMechanismRatio = SENSOR_TO_MECHANISM_RATIO;
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     motorConfig.CurrentLimits.StatorCurrentLimit = SHOOTER_STATOR_CURRENT_LIMIT;
     motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -72,7 +74,7 @@ public class ShooterSubsystem extends SubsystemBase {
     motorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -SHOOTER_STATOR_CURRENT_LIMIT / 2;
 
     bottomMotor.getConfigurator().apply(motorConfig);
-    motorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);
+    motorConfig.Slot0 = Slot0Configs.from(SLOT_CONFIG_TOP);
     topMotor.getConfigurator().apply(motorConfig);
 
     topVelocity = topMotor.getVelocity();
@@ -117,6 +119,16 @@ public class ShooterSubsystem extends SubsystemBase {
     spinShooterWheels(shooterVelocity);
   }
 
+  /**
+   * Spins the wheels to amper velocity
+   */
+  public void prepareToAmp() {
+    spinShooterWheels(AMP_TOP_VELOCITY, AMP_BOTTOM_VELOCITY);
+  }
+
+  /**
+   * Spins the wheels in reverse
+   */
   public void reverse() {
     spinShooterWheels(REVERSE_VELOCITY);
   }
@@ -126,7 +138,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return true if the shooter is at the target velocity
    */
   public boolean isReadyToShoot() {
-    var errorToleranceRPS = SHOOTER_ERROR_TOLERANCE.in(RotationsPerSecond);
+    var errorToleranceRPS = ERROR_TOLERANCE.in(RotationsPerSecond);
     BaseStatusSignal.refreshAll(bottomVelocity, topVelocity);
 
     return Math.abs(bottomVelocity.getValueAsDouble() - bottomControl.Velocity) < errorToleranceRPS

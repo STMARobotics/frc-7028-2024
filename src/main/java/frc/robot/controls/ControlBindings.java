@@ -39,16 +39,10 @@ public interface ControlBindings {
   Supplier<Measure<Velocity<Angle>>> omega();
 
   /**
-   * Intake off the floor and into the amper
-   * @return trigger
-   */
-  Optional<Trigger> intakeToAmper();
-
-  /**
    * Intake off the floor and into the turret
    * @return trigger
    */
-  Optional<Trigger> intakeToTurret();
+  Optional<Trigger> intake();
 
   /**
    * Stop the intake
@@ -75,12 +69,6 @@ public interface ControlBindings {
   Optional<Trigger> tuneShooting();
 
   /**
-   * Exchange a note from turret to amper
-   * @return trigger
-   */
-  Optional<Trigger> exchangeToAmper();
-
-  /**
    * Score a note that's already in the amper into the amp
    * @return trigger
    */
@@ -103,11 +91,5 @@ public interface ControlBindings {
    * @return trigger
    */
   Optional<Trigger> liftShooter();
-
-  /**
-   * Moves the shooter pitch and yaw to the starting configuration
-   * @return trigger
-   */
-  Optional<Trigger> setupShooter();
 
 }

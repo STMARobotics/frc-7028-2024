@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import static edu.wpi.first.wpilibj.util.Color.kPurple;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.units.Angle;
@@ -27,7 +26,7 @@ public class SpeakerOrBlinkCommand extends Command {
   private Command selectedCommand;
 
   public SpeakerOrBlinkCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
-      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem, BooleanSupplier turretIsSafe,
+      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem,
       Supplier<Measure<Velocity<Distance>>> xSupplier, Supplier<Measure<Velocity<Distance>>> ySupplier,
       Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
     
@@ -35,7 +34,7 @@ public class SpeakerOrBlinkCommand extends Command {
     this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
         .alongWith(new LEDBlinkCommand(ledSubsystem, kPurple, 0.05));
     this.shootCommand = new ScoreSpeakerTeleopCommand(
-        drivetrain, shooter, turretSubsystem, ledSubsystem, turretIsSafe, xSupplier, ySupplier);
+        drivetrain, shooter, turretSubsystem, ledSubsystem, xSupplier, ySupplier);
 
     addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
   }
