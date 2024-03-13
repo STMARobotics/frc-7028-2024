@@ -36,7 +36,7 @@ import frc.robot.commands.EjectIntakeCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.SpeakerOrBlinkCommand;
-import frc.robot.commands.TuneSpeakerCommand;
+import frc.robot.commands.TuneShootingCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
@@ -179,8 +179,8 @@ public class RobotContainer {
             elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY(),
             controlBindings.omega())));
     
-    controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
-      new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
+    controlBindings.tuneShooting().ifPresent(trigger -> trigger.whileTrue(
+      new TuneShootingCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
     
     controlBindings.eject().ifPresent(trigger -> trigger.whileTrue(
       new EjectIntakeCommand(intakeSubsystem, amperSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));

@@ -69,10 +69,10 @@ public interface ControlBindings {
   Optional<Trigger> scoreSpeaker();
 
   /**
-   * Tune speaker shooting
+   * Tune shooting
    * @return trigger
    */
-  Optional<Trigger> tuneSpeakerShooting();
+  Optional<Trigger> tuneShooting();
 
   /**
    * Exchange a note from turret to amper

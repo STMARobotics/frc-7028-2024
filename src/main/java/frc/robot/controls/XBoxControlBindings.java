@@ -75,7 +75,7 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
-  public Optional<Trigger> tuneSpeakerShooting() {
+  public Optional<Trigger> tuneShooting() {
     return Optional.of(driverController.start());
   }
 
