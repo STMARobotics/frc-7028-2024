@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
- * Control bindings for driving with joysticks
+ * Control bindings for demos with joysticks
  */
 public class DemoControlBindings implements ControlBindings {
 
