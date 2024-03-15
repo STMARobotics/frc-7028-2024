@@ -51,6 +51,7 @@ import frc.robot.subsystems.TurretSubsystem;
  * @deprecated Not quite ready to delete, but replaced by {@link ScoreSpeakerTeleopCommand} and
  * {@link ScoreSpeakerAutoCommand}
  */
+@Deprecated
 public class ScoreSpeakerCommand extends Command {
 
   // Forward and reverse targets for the drivetrain when the turret is out of range
