@@ -1,10 +1,11 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -17,21 +18,29 @@ public class ManualShootCommand extends Command {
   
   private final TurretSubsystem turretSubsystem;
   private final ShooterSubsystem shooterSubsystem;
+  private final Measure<Velocity<Angle>> shooterVelocity;
+  private final Measure<Angle> pitchAngle;
+  private final Measure<Angle> yawAngle;
 
   private final Timer shootTimer = new Timer();
 
-  public ManualShootCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem) {
+  public ManualShootCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
+      Measure<Velocity<Angle>> shooterVelocity, Measure<Angle> pitchAngle, Measure<Angle> yawAngle) {
+    
     this.turretSubsystem = turretSubsystem;
     this.shooterSubsystem = shooterSubsystem;
+    this.shooterVelocity = shooterVelocity;
+    this.pitchAngle = pitchAngle;
+    this.yawAngle = yawAngle;
   
     addRequirements(turretSubsystem, shooterSubsystem);
   }
 
   @Override
   public void initialize() {
-    shooterSubsystem.prepareToShoot(RotationsPerSecond.of(39));
-    turretSubsystem.moveToPitchPosition(Degrees.of(39));
-    turretSubsystem.moveToShootingYawPosition(Degrees.of(180));
+    shooterSubsystem.prepareToShoot(shooterVelocity);
+    turretSubsystem.moveToPitchPosition(pitchAngle);
+    turretSubsystem.moveToShootingYawPosition(yawAngle);
     shootTimer.reset();
   }
 
