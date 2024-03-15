@@ -110,4 +110,20 @@ public interface ControlBindings {
    */
   Optional<Trigger> setupShooter();
 
+  /**
+   * Toss a note short for demo purposes. Not intended for comp use.
+   * @return trigger
+   */
+  default Optional<Trigger> demoToss1() {
+    return Optional.empty();
+  }
+
+  /**
+   * Toss a note longer for demo purposes. Not intended for comp use.
+   * @return trigger
+   */
+  default Optional<Trigger> demoToss2() {
+    return Optional.empty();
+  }
+
 }

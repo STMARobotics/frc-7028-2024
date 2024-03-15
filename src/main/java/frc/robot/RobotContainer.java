@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
@@ -41,6 +42,7 @@ import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
 import frc.robot.controls.ControlBindings;
+import frc.robot.controls.DemoControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
 import frc.robot.generated.TunerConstants;
@@ -53,6 +55,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class RobotContainer {
+
+  private static final boolean DEMO_MODE = true;
 
   private final ControlBindings controlBindings;
 
@@ -76,7 +80,9 @@ public class RobotContainer {
   
   public RobotContainer() {
     // Configure control binding scheme
-    if (DriverStation.getJoystickIsXbox(0) || Robot.isSimulation()) {
+    if (DEMO_MODE) {
+      controlBindings = new DemoControlBindings();
+    } else if (DriverStation.getJoystickIsXbox(0) || Robot.isSimulation()) {
       controlBindings = new XBoxControlBindings();
     } else {
       controlBindings = new JoystickControlBindings();
@@ -172,7 +178,8 @@ public class RobotContainer {
     
     // Speaker
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
-      new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
+      new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked,
+      RotationsPerSecond.of(39), Degrees.of(39), Degrees.of(180))));
 
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
       new SpeakerOrBlinkCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
@@ -198,6 +205,15 @@ public class RobotContainer {
       turretSubsystem.moveToPitchPosition(Rotations.of(0.0586));
       turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
     })));
+
+    // Demo shots
+    controlBindings.demoToss1().ifPresent(trigger -> trigger.whileTrue(
+        new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked,
+            RotationsPerSecond.of(10), Degrees.of(15), Degrees.of(180))));
+
+    controlBindings.demoToss2().ifPresent(trigger -> trigger.whileTrue(
+        new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked,
+            RotationsPerSecond.of(15), Degrees.of(15), Degrees.of(180))));
   }
 
   public void populateSysIdDashboard() {
