@@ -63,7 +63,7 @@ public class DemoControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> intakeToTurret() {
-    return Optional.of(leftJoystick.trigger());
+    return Optional.empty();
   }
 
   @Override
@@ -103,12 +103,12 @@ public class DemoControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> eject() {
-    return Optional.of(leftJoystick.button(4));
+    return Optional.empty();
   }
 
   @Override
   public Optional<Trigger> babyBird() {
-    return Optional.of(leftJoystick.button(2));
+    return Optional.of(leftJoystick.trigger());
   }
 
   @Override
@@ -119,6 +119,21 @@ public class DemoControlBindings implements ControlBindings {
   @Override
   public Optional<Trigger> setupShooter() {
     return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> demoToss1() {
+    return Optional.of(rightJoystick.trigger());
+  }
+
+  @Override
+  public Optional<Trigger> demoToss2() {
+    return Optional.of(rightJoystick.povLeft());
+  }
+
+  @Override
+  public Optional<Trigger> seedFieldRelative() {
+    return Optional.of(rightJoystick.button(13));
   }
 
 }

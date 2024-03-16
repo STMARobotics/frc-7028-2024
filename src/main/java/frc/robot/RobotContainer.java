@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
@@ -28,7 +29,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.commands.BabyBirdCommand;
 import frc.robot.commands.DefaultElevatorCommand;
@@ -163,7 +163,7 @@ public class RobotContainer {
     // Intake
     controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
     
-    controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(Commands.runOnce(() -> {
+    controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(runOnce(() -> {
       intakeSubsystem.stop();
       amperSubsystem.stop();
       turretSubsystem.stop();
@@ -209,11 +209,15 @@ public class RobotContainer {
     // Demo shots
     controlBindings.demoToss1().ifPresent(trigger -> trigger.whileTrue(
         new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked,
-            RotationsPerSecond.of(10), Degrees.of(15), Degrees.of(180))));
+            RotationsPerSecond.of(20), Degrees.of(25), Degrees.of(180))));
 
     controlBindings.demoToss2().ifPresent(trigger -> trigger.whileTrue(
         new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked,
-            RotationsPerSecond.of(15), Degrees.of(15), Degrees.of(180))));
+            RotationsPerSecond.of(30), Degrees.of(20), Degrees.of(180))));
+
+    controlBindings.seedFieldRelative().ifPresent(trigger -> trigger.onTrue(
+      runOnce(drivetrain::seedFieldRelative, drivetrain)
+    ));
   }
 
   public void populateSysIdDashboard() {

@@ -126,4 +126,12 @@ public interface ControlBindings {
     return Optional.empty();
   }
 
+  /**
+   * Resets the heading to zero. There is no reason this should be used in comp.
+   * @return trigger
+   */
+  default Optional<Trigger> seedFieldRelative() {
+    return Optional.empty();
+  }
+
 }
