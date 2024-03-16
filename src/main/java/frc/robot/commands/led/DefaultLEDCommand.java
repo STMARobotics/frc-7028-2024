@@ -46,7 +46,8 @@ public class DefaultLEDCommand extends Command {
             .until(() -> getMode() != LEDMode.MODE_DS_DISCONNECT).schedule();
         break;
       case MODE_NOTE_IN_TURRET:
-        strips.setAll(NOTE_COLOR);
+        new LEDMarqueeCommand(ledSubsystem, 3, 255, 0, 15, .07)
+            .until(() -> getMode() != LEDMode.MODE_NOTE_IN_TURRET).schedule();
         break;
       case MODE_ROBOT_DISABLED:
         new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.one())
