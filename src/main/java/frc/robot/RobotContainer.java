@@ -56,7 +56,7 @@ import frc.robot.subsystems.TurretSubsystem;
 
 public class RobotContainer {
 
-  private static final boolean DEMO_MODE = true;
+  private static final boolean DEMO_MODE = false;
 
   private final ControlBindings controlBindings;
 
