@@ -1,7 +1,6 @@
 package frc.robot.commands.led;
 
 import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
 import java.util.function.BooleanSupplier;
 
