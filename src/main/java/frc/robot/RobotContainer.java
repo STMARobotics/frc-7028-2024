@@ -19,6 +19,7 @@ import java.util.Map;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -94,6 +95,9 @@ public class RobotContainer {
     configureDashboard();
 
     new LEDBootAnimationCommand(ledSubsystem).schedule();
+
+    // Warm up PathPlanner https://pathplanner.dev/pplib-follow-a-single-path.html#java-warmup
+    FollowPathCommand.warmupCommand().schedule();
   }
 
   private void configureDefaultCommands() {
