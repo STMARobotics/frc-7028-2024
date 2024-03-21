@@ -64,16 +64,16 @@
     },
     {
       "anchor": {
-        "x": 8.143300848005206,
-        "y": 7.296677049494451
+        "x": 8.252120013011957,
+        "y": 7.423632742002327
       },
       "prevControl": {
-        "x": 7.653614605474824,
-        "y": 7.260403994492202
+        "x": 7.762433770481576,
+        "y": 7.387359687000077
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Blue Six 1"
+      "linkedName": "Six 1"
     }
   ],
   "rotationTargets": [
@@ -228,7 +228,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -238,7 +238,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Blue Six",
+  "folder": "Six",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

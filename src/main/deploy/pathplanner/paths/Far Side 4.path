@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.19771043050858,
-        "y": 5.682526101894309
+        "x": 8.170505639256893,
+        "y": 0.9307558965995125
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.300628632162514,
-        "y": 5.6565680474807065
+        "x": 6.4293989991488765,
+        "y": 1.8557187991568966
       },
       "isLocked": false,
-      "linkedName": "Blue Six 2"
+      "linkedName": "Far Side 3"
     },
     {
       "anchor": {
-        "x": 5.676733107852181,
-        "y": 6.271963245680878
+        "x": 3.6091689727239107,
+        "y": 3.0164565592289088
       },
       "prevControl": {
-        "x": 6.628900801661253,
-        "y": 6.299168036932564
+        "x": 4.398107919022852,
+        "y": 2.1640397666760247
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.85,
+      "minWaypointRelativePos": 0.7,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 0.7,
@@ -44,8 +44,8 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake and Shoot M2",
-      "waypointRelativePos": 0.0,
+      "name": "Intake and shoot M1",
+      "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
@@ -72,7 +72,7 @@
             {
               "type": "named",
               "data": {
-                "name": "scoreSpeakerWhileMoving-Long"
+                "name": "scoreSpeakerWhileMoving"
               }
             }
           ]
@@ -88,14 +88,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -25.97439396243136,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Blue Six",
+  "folder": "Far Side",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
