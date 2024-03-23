@@ -90,7 +90,7 @@ public class FieldOrientedDriveCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    drivetrainSubsystem.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(new ChassisSpeeds()));
+    drivetrainSubsystem.setControl(new SwerveRequest.Idle());
   }
 
   @Override
