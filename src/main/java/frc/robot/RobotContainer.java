@@ -182,7 +182,7 @@ public class RobotContainer {
     
     // Testing
     controlBindings.tuneShooting().ifPresent(trigger -> trigger.whileTrue(
-      new TuneShootingCommand(turretSubsystem, shooterSubsystem, ledSubsystem)));
+      new TuneShootingCommand(turretSubsystem, shooterSubsystem, ledSubsystem, () -> drivetrain.getState().Pose)));
 
     // Demo shots
     controlBindings.demoToss1().ifPresent(trigger -> trigger.whileTrue(
