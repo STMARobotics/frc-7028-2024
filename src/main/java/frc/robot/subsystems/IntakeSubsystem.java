@@ -6,15 +6,19 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID;
 import static frc.robot.Constants.IntakeConstants.INTAKE_VELOCITY;
+import static frc.robot.Constants.IntakeConstants.PEAK_FORWARD_CURRENT;
+import static frc.robot.Constants.IntakeConstants.PEAK_REVERSE_CURRENT;
 import static frc.robot.Constants.IntakeConstants.REVERSE_VELOCITY;
 import static frc.robot.Constants.IntakeConstants.SENSOR_TO_MECHANISM_RATIO;
 import static frc.robot.Constants.IntakeConstants.SLOT_CONFIGS;
+import static frc.robot.Constants.IntakeConstants.SUPPLY_CURRENT_LIMIT;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -56,11 +60,9 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rollerConfig.Feedback.SensorToMechanismRatio = SENSOR_TO_MECHANISM_RATIO;
     rollerConfig.Slot0 = Slot0Configs.from(SLOT_CONFIGS);
-    rollerConfig.CurrentLimits.StatorCurrentLimit = 60;
-    rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
-    rollerConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
-    rollerConfig.CurrentLimits.SupplyCurrentLimit = 30;
+    rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = PEAK_FORWARD_CURRENT.in(Amps);
+    rollerConfig.TorqueCurrent.PeakReverseTorqueCurrent = PEAK_REVERSE_CURRENT.in(Amps);
+    rollerConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     rollerMotor.getConfigurator().apply(rollerConfig);

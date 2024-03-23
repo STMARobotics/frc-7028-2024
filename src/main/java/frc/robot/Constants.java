@@ -2,6 +2,7 @@ package frc.robot;
 
 import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.math.util.Units.inchesToMeters;
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
@@ -31,6 +32,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Current;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Time;
@@ -119,8 +121,9 @@ public class Constants {
     public static final int DEVICE_ID_TOP = 50;
     public static final int DEVICE_ID_BOTTOM = 51;
 
-    public static final double SHOOTER_STATOR_CURRENT_LIMIT = 220;
-    public static final double SHOOTER_SUPPLY_CURRENT_LIMIT = 80;
+    public static final Measure<Current> PEAK_FORWARD_CURRENT = Amps.of(220);
+    public static final Measure<Current> PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.negate();
+    public static final Measure<Current> SUPPLY_CURRENT_LIMIT = Amps.of(80);
 
     public static final SlotConfigs SLOT_CONFIG_TOP = new SlotConfigs()
         .withKP(10.0)
@@ -147,6 +150,9 @@ public class Constants {
 
   public static class IntakeConstants {
     public static final int DEVICE_ID = 42;
+    public static final Measure<Current> PEAK_FORWARD_CURRENT = Amps.of(60);
+    public static final Measure<Current> PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.negate();
+    public static final Measure<Current> SUPPLY_CURRENT_LIMIT = Amps.of(30);
 
     public static final SlotConfigs SLOT_CONFIGS = new SlotConfigs()
         .withKP(8.5)
@@ -167,11 +173,15 @@ public class Constants {
     public static final int DEVICE_ID_ROLLER_MOTOR = 41;
     public static final int DEVICE_ID_NOTE_SENSOR = 3;
 
-    public static final double YAW_STATOR_CURRENT_LIMIT = 80;
-    public static final double YAW_SUPPLY_CURRENT_LIMIT = 40;
+    public static final Measure<Current> YAW_STATOR_CURRENT_LIMIT = Amps.of(80);
+    public static final Measure<Current> YAW_SUPPLY_CURRENT_LIMIT = Amps.of(40);
 
-    public static final double PITCH_STATOR_CURRENT_LIMIT = 40;
-    public static final double PITCH_SUPPLY_CURRENT_LIMIT = 30;
+    public static final Measure<Current> PITCH_STATOR_CURRENT_LIMIT = Amps.of(40);
+    public static final Measure<Current> PITCH_SUPPLY_CURRENT_LIMIT = Amps.of(30);
+
+    public static final Measure<Current> ROLLER_PEAK_FORWARD_CURRENT = Amps.of(60);
+    public static final Measure<Current> ROLLER_PEAK_REVERSE_CURRENT = ROLLER_PEAK_FORWARD_CURRENT.negate();
+    public static final Measure<Current> ROLLER_SUPPLY_CURRENT_LIMIT = Amps.of(40);
 
     public static final Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.428223); 
     public static final double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;

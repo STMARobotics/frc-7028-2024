@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.signals.FeedbackSensorSourceValue.FusedCANcoder;
 import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -35,7 +36,10 @@ import static frc.robot.Constants.TurretConstants.PITCH_SLOT_CONFIGS;
 import static frc.robot.Constants.TurretConstants.PITCH_STATOR_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_TOLERANCE;
+import static frc.robot.Constants.TurretConstants.ROLLER_PEAK_FORWARD_CURRENT;
+import static frc.robot.Constants.TurretConstants.ROLLER_PEAK_REVERSE_CURRENT;
 import static frc.robot.Constants.TurretConstants.ROLLER_SLOT_CONFIGS;
+import static frc.robot.Constants.TurretConstants.ROLLER_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.SHOOTING_YAW_CORRECTION;
 import static frc.robot.Constants.TurretConstants.SHOOT_VELOCITY;
 import static frc.robot.Constants.TurretConstants.YAW_LIMIT_FORWARD;
@@ -139,9 +143,9 @@ public class TurretSubsystem extends SubsystemBase {
     var yawTalonConfig = new TalonFXConfiguration();
     yawTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     yawTalonConfig.MotorOutput.NeutralMode = Brake;
-    yawTalonConfig.CurrentLimits.StatorCurrentLimit = YAW_STATOR_CURRENT_LIMIT;
+    yawTalonConfig.CurrentLimits.StatorCurrentLimit = YAW_STATOR_CURRENT_LIMIT.in(Amps);
     yawTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    yawTalonConfig.CurrentLimits.SupplyCurrentLimit = YAW_SUPPLY_CURRENT_LIMIT;
+    yawTalonConfig.CurrentLimits.SupplyCurrentLimit = YAW_SUPPLY_CURRENT_LIMIT.in(Amps);
     yawTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     yawTalonConfig.Feedback.RotorToSensorRatio = YAW_ROTOR_TO_SENSOR_RATIO;
     yawTalonConfig.Feedback.FeedbackRemoteSensorID = yawEncoder.getDeviceID();
@@ -167,9 +171,9 @@ public class TurretSubsystem extends SubsystemBase {
     var pitchTalonConfig = new TalonFXConfiguration();
     pitchTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     pitchTalonConfig.MotorOutput.NeutralMode = Brake;
-    pitchTalonConfig.CurrentLimits.StatorCurrentLimit = PITCH_STATOR_CURRENT_LIMIT;
+    pitchTalonConfig.CurrentLimits.StatorCurrentLimit = PITCH_STATOR_CURRENT_LIMIT.in(Amps);
     pitchTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    pitchTalonConfig.CurrentLimits.SupplyCurrentLimit = PITCH_SUPPLY_CURRENT_LIMIT;
+    pitchTalonConfig.CurrentLimits.SupplyCurrentLimit = PITCH_SUPPLY_CURRENT_LIMIT.in(Amps);
     pitchTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     pitchTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     pitchTalonConfig.Feedback.RotorToSensorRatio = PITCH_ROTOR_TO_SENSOR_RATIO;
@@ -191,12 +195,10 @@ public class TurretSubsystem extends SubsystemBase {
     rollerTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rollerTalonConfig.MotorOutput.NeutralMode = Brake;
     rollerTalonConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
-    rollerTalonConfig.CurrentLimits.StatorCurrentLimit = 60;
-    rollerTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    rollerTalonConfig.CurrentLimits.SupplyCurrentLimit = 40;
+    rollerTalonConfig.CurrentLimits.SupplyCurrentLimit = ROLLER_SUPPLY_CURRENT_LIMIT.in(Amps);
     rollerTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    rollerTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
-    rollerTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
+    rollerTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = ROLLER_PEAK_FORWARD_CURRENT.in(Amps);
+    rollerTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = ROLLER_PEAK_REVERSE_CURRENT.in(Amps);
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
 
     // Configure the note sensor

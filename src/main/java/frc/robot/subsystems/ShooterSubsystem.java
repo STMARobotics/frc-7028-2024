@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.signals.NeutralModeValue.Coast;
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -10,12 +11,13 @@ import static frc.robot.Constants.ShooterConstants.AMP_TOP_VELOCITY;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_TOP;
 import static frc.robot.Constants.ShooterConstants.ERROR_TOLERANCE;
+import static frc.robot.Constants.ShooterConstants.PEAK_FORWARD_CURRENT;
+import static frc.robot.Constants.ShooterConstants.PEAK_REVERSE_CURRENT;
 import static frc.robot.Constants.ShooterConstants.REVERSE_VELOCITY;
 import static frc.robot.Constants.ShooterConstants.SENSOR_TO_MECHANISM_RATIO;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_STATOR_CURRENT_LIMIT;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.ShooterConstants.SLOT_CONFIG_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.SLOT_CONFIG_TOP;
+import static frc.robot.Constants.ShooterConstants.SUPPLY_CURRENT_LIMIT;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -68,12 +70,10 @@ public class ShooterSubsystem extends SubsystemBase {
     motorConfig.MotorOutput.NeutralMode = Coast;
     motorConfig.Feedback.SensorToMechanismRatio = SENSOR_TO_MECHANISM_RATIO;
     motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    motorConfig.CurrentLimits.StatorCurrentLimit = SHOOTER_STATOR_CURRENT_LIMIT;
-    motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    motorConfig.CurrentLimits.SupplyCurrentLimit = SHOOTER_SUPPLY_CURRENT_LIMIT;
+    motorConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
     motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    motorConfig.TorqueCurrent.PeakForwardTorqueCurrent = SHOOTER_STATOR_CURRENT_LIMIT;
-    motorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -SHOOTER_STATOR_CURRENT_LIMIT / 2;
+    motorConfig.TorqueCurrent.PeakForwardTorqueCurrent = PEAK_FORWARD_CURRENT.in(Amps);
+    motorConfig.TorqueCurrent.PeakReverseTorqueCurrent = PEAK_REVERSE_CURRENT.in(Amps);
 
     bottomMotor.getConfigurator().apply(motorConfig);
     motorConfig.Slot0 = Slot0Configs.from(SLOT_CONFIG_TOP);
