@@ -102,8 +102,10 @@ public class TurretSubsystem extends SubsystemBase {
   private final TorqueCurrentFOC rollerSysIdControl = new TorqueCurrentFOC(0.0);
   private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true);
 
-  private final StatusSignal<Double> yawPositionSignal;
-  private final StatusSignal<Double> pitchPositionSignal;
+  private final StatusSignal<Double> yawPosition;
+  private final StatusSignal<Double> yawVelocity;
+  private final StatusSignal<Double> pitchPosition;
+  private final StatusSignal<Double> pitchVelocity;
 
   // Reusable objects to reduce memory pressure from reallocation
   private final MutableMeasure<Angle> yawAngle = MutableMeasure.zero(Rotations);
@@ -152,7 +154,8 @@ public class TurretSubsystem extends SubsystemBase {
     yawTalonConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = YAW_LIMIT_REVERSE.in(Rotations);
     yawMotor.getConfigurator().apply(yawTalonConfig);
 
-    yawPositionSignal = yawMotor.getPosition();
+    yawPosition = yawMotor.getPosition();
+    yawVelocity = yawMotor.getVelocity();
 
     // Configure the pitch CANCoder
     var pitchCanCoderConfig = new CANcoderConfiguration();
@@ -180,7 +183,8 @@ public class TurretSubsystem extends SubsystemBase {
     pitchTalonConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PITCH_LIMIT_REVERSE.in(Rotations);
     pitchMotor.getConfigurator().apply(pitchTalonConfig);
 
-    pitchPositionSignal = pitchMotor.getPosition();
+    pitchPosition = pitchMotor.getPosition();
+    pitchVelocity = pitchMotor.getVelocity();
 
     // Configure the roller motor
     var rollerTalonConfig = new TalonFXConfiguration();
@@ -325,9 +329,9 @@ public class TurretSubsystem extends SubsystemBase {
    * @return true if the yaw and pitch are at their target positions
    */
   public boolean isAtYawAndPitchTarget() {
-    BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
-    return isInTolerance(yawControl.Position, yawPositionSignal, YAW_TOLERANCE.in(Rotations))
-        && isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
+    BaseStatusSignal.refreshAll(yawPosition, yawVelocity, pitchPosition, pitchVelocity);
+    return isInTolerance(yawControl.Position, yawPosition, yawVelocity, YAW_TOLERANCE.in(Rotations))
+        && isInTolerance(pitchControl.Position, pitchPosition, pitchVelocity, PITCH_TOLERANCE.in(Rotations));
   }
 
   /**
@@ -336,9 +340,9 @@ public class TurretSubsystem extends SubsystemBase {
    * @return true if the yaw and pitch are at the intake position
    */
   public boolean isInIntakePosition() {
-    BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
-    return isInTolerance(yawControl.Position, yawPositionSignal, INTAKE_YAW_TOLERANCE.in(Rotations))
-        && isInTolerance(pitchControl.Position, pitchPositionSignal, INTAKE_PITCH_TOLERANCE.in(Rotations));
+    BaseStatusSignal.refreshAll(yawPosition, yawVelocity, pitchPosition, pitchVelocity);
+    return isInTolerance(yawControl.Position, yawPosition, yawVelocity, INTAKE_YAW_TOLERANCE.in(Rotations))
+        && isInTolerance(pitchControl.Position, pitchPosition, pitchVelocity, INTAKE_PITCH_TOLERANCE.in(Rotations));
   }
 
   /**
@@ -346,8 +350,8 @@ public class TurretSubsystem extends SubsystemBase {
    * @return true if the yaw is at the target position
    */
   public boolean isAtYawTarget() {
-    yawPositionSignal.refresh();
-    return isInTolerance(yawControl.Position, yawPositionSignal, YAW_TOLERANCE.in(Rotations));
+    BaseStatusSignal.refreshAll(yawPosition, yawVelocity);
+    return isInTolerance(yawControl.Position, yawPosition, yawVelocity, YAW_TOLERANCE.in(Rotations));
   }
 
   /**
@@ -355,8 +359,8 @@ public class TurretSubsystem extends SubsystemBase {
    * @return true if the pitch is at the target position
    */
   public boolean isAtPitchTarget() {
-    pitchPositionSignal.refresh();
-    return isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
+    BaseStatusSignal.refreshAll(pitchPosition, pitchVelocity);
+    return isInTolerance(pitchControl.Position, pitchPosition, pitchVelocity, PITCH_TOLERANCE.in(Rotations));
   }
 
   /**
@@ -390,8 +394,9 @@ public class TurretSubsystem extends SubsystemBase {
    * @return pitch
    */
   public Measure<Angle> getPitch() {
-    pitchPositionSignal.refresh();
-    return pitchAngle.mut_replace(pitchPositionSignal.getValueAsDouble(), Rotations);
+    BaseStatusSignal.refreshAll(pitchPosition, pitchVelocity);
+    var compensatedPitch = BaseStatusSignal.getLatencyCompensatedValue(pitchPosition, pitchVelocity);
+    return pitchAngle.mut_replace(compensatedPitch, Rotations);
   }
 
   /**
@@ -399,8 +404,9 @@ public class TurretSubsystem extends SubsystemBase {
    * @return yaw
    */
   public Measure<Angle> getYaw() {
-    yawPositionSignal.refresh();
-    var translatedRotations = translateYaw(yawAngle.mut_replace(pitchPositionSignal.getValueAsDouble(), Rotations));
+    BaseStatusSignal.refreshAll(yawPosition, yawVelocity);
+    var compensatedYaw = BaseStatusSignal.getLatencyCompensatedValue(yawPosition, yawVelocity);
+    var translatedRotations = translateYaw(yawAngle.mut_replace(compensatedYaw, Rotations));
     return yawAngle.mut_replace(translatedRotations, Rotations);
   }
 
@@ -448,12 +454,15 @@ public class TurretSubsystem extends SubsystemBase {
   /**
    * Checks if a signal is within tolerance of a target
    * @param target target
-   * @param valueSignal status signal for current value. You may want to refresh first, this method does not refresh
+   * @param value status signal for current value. You may want to refresh first, this method does not refresh
+   * @param slope derivative of the signal that defines the slope for latency compensation, this method does not refresh
    * @param tolerance tolerance
    * @return true if value is within tolerance of the target
    */
-  private static boolean isInTolerance(double target, StatusSignal<Double> valueSignal, double tolerance) {
-    return Math.abs(target - valueSignal.getValueAsDouble()) < tolerance;
+  private static boolean isInTolerance(
+        double target, StatusSignal<Double> value, StatusSignal<Double> slope, double tolerance) {
+    var compensated = BaseStatusSignal.getLatencyCompensatedValue(value, slope);
+    return Math.abs(target - compensated) < tolerance;
   }
   
   /**

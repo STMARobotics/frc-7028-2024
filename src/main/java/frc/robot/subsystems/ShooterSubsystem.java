@@ -46,7 +46,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final VelocityTorqueCurrentFOC bottomControl = new VelocityTorqueCurrentFOC(0.0);
 
   private final StatusSignal<Double> bottomVelocity;
+  private final StatusSignal<Double> bottomAcceleration;
   private final StatusSignal<Double> topVelocity;
+  private final StatusSignal<Double> topAcceleration;
 
   private final TorqueCurrentFOC sysIdControl = new TorqueCurrentFOC(0.0);
   
@@ -78,7 +80,9 @@ public class ShooterSubsystem extends SubsystemBase {
     topMotor.getConfigurator().apply(motorConfig);
 
     topVelocity = topMotor.getVelocity();
+    topAcceleration = topMotor.getAcceleration();
     bottomVelocity = bottomMotor.getVelocity();
+    bottomAcceleration = bottomMotor.getAcceleration();
   }
 
   public Command sysIdShooterDynamicCommand(Direction direction) {
@@ -139,10 +143,13 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public boolean isReadyToShoot() {
     var errorToleranceRPS = ERROR_TOLERANCE.in(RotationsPerSecond);
-    BaseStatusSignal.refreshAll(bottomVelocity, topVelocity);
+    BaseStatusSignal.refreshAll(bottomVelocity, bottomAcceleration, topVelocity, topAcceleration);
 
-    return Math.abs(bottomVelocity.getValueAsDouble() - bottomControl.Velocity) < errorToleranceRPS
-        && Math.abs(topVelocity.getValueAsDouble() - topControl.Velocity) < errorToleranceRPS;
+    var compensatedTop = BaseStatusSignal.getLatencyCompensatedValue(topVelocity, topAcceleration);
+    var compensatedBottom = BaseStatusSignal.getLatencyCompensatedValue(bottomVelocity, bottomAcceleration);
+
+    return Math.abs(compensatedBottom - bottomControl.Velocity) < errorToleranceRPS
+        && Math.abs(compensatedTop - topControl.Velocity) < errorToleranceRPS;
   }
 
   /**
