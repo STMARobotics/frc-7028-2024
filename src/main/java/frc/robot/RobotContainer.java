@@ -22,6 +22,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.cscore.HttpCamera;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -137,6 +138,9 @@ public class RobotContainer {
     driverTab.add(field2d).withPosition(7, 0).withSize(4, 2).withPosition(7, 0);
     driverTab.addString("Pose", () -> {
       var pose = drivetrain.getState().Pose;
+      if (pose == null) {
+        pose = new Pose2d();
+      }
       field2d.setRobotPose(pose);
       return String.format("(%.3f, %.3f) %.2f deg", 
           pose.getX(), pose.getY(), pose.getRotation().getDegrees());

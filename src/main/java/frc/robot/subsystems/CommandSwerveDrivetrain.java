@@ -128,6 +128,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
    */
   public ChassisSpeeds getCurrentFieldChassisSpeeds() {
     var state = getState();
+    if (state == null || state.Pose == null) {
+      return new ChassisSpeeds();
+    }
     var robotAngle = state.Pose.getRotation();
     var chassisSpeeds = state.speeds;
     var fieldSpeeds = 
