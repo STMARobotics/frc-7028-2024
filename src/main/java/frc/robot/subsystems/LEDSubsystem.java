@@ -5,7 +5,6 @@ import static frc.robot.Constants.LEDConstants.DEVICE_ID_LEDS;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Notifier;
@@ -19,9 +18,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LEDSubsystem extends SubsystemBase {
   
   private static final int LED_COUNT = 64;
-  private static final int STRIP_COUNT = 4;
-  private static final int STRIP_SIZE = LED_COUNT / STRIP_COUNT;
-
+  private static final int[] ledCounts = {1, 2, 3};
+  private static final int stripCount = ledCounts.length;
   private final AtomicReference<Consumer<LEDStrips>> ledUpdateConsumer = new AtomicReference<Consumer<LEDStrips>>(null);
   private final Notifier ledNotifier;
   private final LEDStripMethods ledStripMethods = new LEDStripMethods();
@@ -65,9 +63,13 @@ public class LEDSubsystem extends SubsystemBase {
    * @return LED index in the buffer
    */
   private int calculateUpdateIndex(int stripId, int ledId) {
-    int firstId = stripId * STRIP_SIZE;
-    int index = stripId % 2 == 0 ? firstId + ledId : firstId + STRIP_SIZE - ledId - 1;
-    return MathUtil.clamp(index, 0, LED_COUNT - 1);
+    int ledIndex = 0;
+
+    for (int stripLengthIndex = 0; stripLengthIndex < stripId; stripLengthIndex++) {
+      ledIndex += ledCounts[stripLengthIndex];
+    } 
+
+    return ledIndex;
   }
 
   /**
