@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LEDSubsystem extends SubsystemBase {
   
   private static final int LED_COUNT = 64;
-  private static final int[] ledCounts = {1, 2, 3};
-  private static final int stripCount = ledCounts.length;
+  private static final int[] stripSizes = {1, 2, 3};
+  private static final int stripCount = stripSizes.length;
   private final AtomicReference<Consumer<LEDStrips>> ledUpdateConsumer = new AtomicReference<Consumer<LEDStrips>>(null);
   private final Notifier ledNotifier;
   private final LEDStripMethods ledStripMethods = new LEDStripMethods();
@@ -66,7 +66,7 @@ public class LEDSubsystem extends SubsystemBase {
     int ledIndex = 0;
 
     for (int stripLengthIndex = 0; stripLengthIndex < stripId; stripLengthIndex++) {
-      ledIndex += ledCounts[stripLengthIndex];
+      ledIndex += stripSizes[stripLengthIndex];
     } 
 
     return ledIndex;
@@ -112,13 +112,10 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public void setLEDSegments(Color color, boolean... segmentValues) {
-      int ledsPerStatus = LEDSubsystem.STRIP_SIZE / segmentValues.length;
-      for(int stripId = 0; stripId < LEDSubsystem.STRIP_COUNT; stripId++) {
-        int ledIndex = 0;
-        for (int segmentId = 0; segmentId < segmentValues.length; segmentId++) {
-          for(;ledIndex < (ledsPerStatus * (segmentId + 1)); ledIndex++) {
-            setLED(stripId, ledIndex, segmentValues[segmentId] ? color : Color.kBlack);
-          }
+      for (int segmentIndex = 0; segmentIndex < stripCount; segmentIndex++) {
+        Color segmentColor = segmentValues[segmentIndex] ? color : Color.kBlack;
+        for (int stripLedIndex = 0; stripLedIndex < stripSizes[segmentIndex]; stripLedIndex++) {
+          setLED(segmentIndex, stripLedIndex, segmentColor);
         }
       }
       refresh();
@@ -126,12 +123,12 @@ public class LEDSubsystem extends SubsystemBase {
 
     @Override
     public int getStripCount() {
-      return STRIP_COUNT;
+      return stripCount;
     }
 
     @Override
-    public int getStripSize() {
-      return STRIP_SIZE;
+    public int getStripSize(int stripIndex) {
+      return stripSizes[stripIndex];
     }
   }
 
