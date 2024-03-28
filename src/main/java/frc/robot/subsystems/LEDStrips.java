@@ -79,5 +79,5 @@ public interface LEDStrips {
    * Gets the number of LEDs per strip
    * @return number of LEDs per strip
    */
-  public int getStripSize();
+  public int getStripSize(int stripId);
 }
