@@ -155,14 +155,14 @@ public class Constants {
     public static final Measure<Current> SUPPLY_CURRENT_LIMIT = Amps.of(30);
 
     public static final SlotConfigs SLOT_CONFIGS = new SlotConfigs()
-        .withKP(8.5)
+        .withKP(34.0)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(16)
-        .withKV(.08);
-    public static final double SENSOR_TO_MECHANISM_RATIO = 1.0;
-    public static final Measure<Velocity<Angle>> INTAKE_VELOCITY = RotationsPerSecond.of(70.0);
-    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-20.0);
+        .withKV(.32);
+    public static final double SENSOR_TO_MECHANISM_RATIO = 3.0;
+    public static final Measure<Velocity<Angle>> INTAKE_VELOCITY = RotationsPerSecond.of(17.5);
+    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-5.0);
   }
 
   public static class TurretConstants {
