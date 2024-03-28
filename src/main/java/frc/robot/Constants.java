@@ -26,11 +26,15 @@ import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Current;
 import edu.wpi.first.units.Distance;
@@ -114,6 +118,13 @@ public class Constants {
      * in view in a single camera.
      */
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
+    public static final Measure<Distance> SINGLE_TAG_DISTANCE_THRESHOLD = Meters.of(5.0);
+
+    // These Standard Deviations can be increased to "trust" vision measurements more. They are scaled based distance.
+    /** Single tag standard deviation at 1-meter */
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
+    /** Multitag standard deviation at 1-meter */
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
 
   }
 
