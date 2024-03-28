@@ -99,11 +99,11 @@ public class Constants {
      */
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
-            new Translation3d(inchesToMeters(7.678), inchesToMeters(-12.333), inchesToMeters(10.619)),
-            new Rotation3d(0, degreesToRadians(-24), degreesToRadians(-86))),
+            new Translation3d(inchesToMeters(11.227), inchesToMeters(-10.446), inchesToMeters(8.238)),
+            new Rotation3d(0, degreesToRadians(-25), degreesToRadians(-90))),
         new Transform3d(
-            new Translation3d(inchesToMeters(7.678), inchesToMeters(12.333), inchesToMeters(10.619)),
-            new Rotation3d(degreesToRadians(-0.25), degreesToRadians(-25), degreesToRadians(94)))
+            new Translation3d(inchesToMeters(11.227), inchesToMeters(10.446), inchesToMeters(8.238)),
+            new Rotation3d(0, degreesToRadians(-25), degreesToRadians(90)))
       };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
