@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class LEDSubsystem extends SubsystemBase {
   
-  private static final int LED_COUNT = 64;
-  private static final int[] stripSizes = {1, 2, 3};
+  private static final int LED_COUNT = 90; // 64
+  private static final int[] stripSizes = {20, 20, 18, 32};
   private static final int stripCount = stripSizes.length;
   private final AtomicReference<Consumer<LEDStrips>> ledUpdateConsumer = new AtomicReference<Consumer<LEDStrips>>(null);
   private final Notifier ledNotifier;
