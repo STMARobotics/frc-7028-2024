@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class LEDSubsystem extends SubsystemBase {
   
-  private static final int LED_COUNT = 64;
+  private static final int LED_COUNT = 20 + 18 + 20 + 34;
   private static final int STRIP_COUNT = 4;
   private static final int STRIP_SIZE = LED_COUNT / STRIP_COUNT;
 
