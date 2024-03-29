@@ -117,6 +117,7 @@ public class ScoreSpeakerTeleopCommand extends Command {
   public void execute() {
     var robotPose = drivetrain.getState().Pose;
     var robotTranslation = robotPose.getTranslation();
+    // TODO Apply a transform to the center of the TURRET instead of the center of the ROBOT
 
     // Distance between the robot and the speaker
     var distanceToSpeaker = robotTranslation.getDistance(speakerTranslation);

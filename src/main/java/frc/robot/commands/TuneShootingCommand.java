@@ -64,9 +64,9 @@ public class TuneShootingCommand extends Command {
     distancePublisher = table.getDoubleTopic("Speaker Distance").publish();
     pitchSubscriber = table.getDoubleTopic("Pitch (degrees)").getEntry(0.0);
     pitchSubscriber.set(0.0);
-    topVelocitySubscriber = table.getDoubleTopic("Top Velocity (RPS)").getEntry(0.0);
+    topVelocitySubscriber = table.getDoubleTopic("Velocity Top (RPS)").getEntry(0.0);
     topVelocitySubscriber.set(0.0);
-    bottomVelocitySubscriber = table.getDoubleTopic("Bottom Velocity (RPS)").getEntry(0.0);
+    bottomVelocitySubscriber = table.getDoubleTopic("Velocity Bottom (RPS)").getEntry(0.0);
     bottomVelocitySubscriber.set(0);
     yawSubscriber = table.getDoubleTopic("Yaw (Degrees)").getEntry(180.0);
     yawSubscriber.set(180.0);
