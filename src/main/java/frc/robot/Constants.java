@@ -241,9 +241,9 @@ public class Constants {
         .withKD(0.0)
         .withKS(12);
     
-    public static final Measure<Velocity<Angle>> INTAKE_VELOCITY = RotationsPerSecond.of(15);
+    public static final Measure<Velocity<Angle>> INTAKE_VELOCITY = RotationsPerSecond.of(7);
     public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-10);
-    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(40);
+    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(20);
 
     public static final Measure<Angle> INTAKE_YAW = Radians.of(PI);
     public static final Measure<Angle> INTAKE_PITCH = Radians.of(0.003);
@@ -261,7 +261,7 @@ public class Constants {
     public static final Measure<Angle> BABY_BIRD_PITCH = Degrees.of(29.0);
     public static final Measure<Velocity<Angle>> BABY_BIRD_ROLLER_VELOCITY = RotationsPerSecond.of(-25);
 
-    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(150.0);
+    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(250.0);
 
     /** Correction for note not launching perfectly straight from shooter wheels */
     public static final Measure<Angle> SHOOTING_YAW_CORRECTION = Degrees.of(1);
@@ -281,6 +281,9 @@ public class Constants {
     public static final double TARGET_OFFSET = inchesToMeters(4);
     public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(646.73) - TARGET_OFFSET, inchesToMeters(218.42));
     public static final Translation2d SPEAKER_BLUE = new Translation2d(TARGET_OFFSET, inchesToMeters(218.42));
+
+    public static final Translation2d STOCKPILE_RED = new Translation2d(Meters.of(15.698), Meters.of(6.7));
+    public static final Translation2d STOCKPILE_BLUE = new Translation2d(Meters.of(0.5595), Meters.of(6.7));
 
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);

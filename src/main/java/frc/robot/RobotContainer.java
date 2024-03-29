@@ -12,6 +12,9 @@ import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForwa
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
+import static frc.robot.Constants.ShootingConstants.STOCKPILE_BLUE;
+import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
+import static frc.robot.Constants.ShootingConstants.STOCKPILE_RED;
 import static frc.robot.Constants.TurretConstants.INTAKE_YAW;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 
@@ -37,6 +40,7 @@ import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
+import frc.robot.commands.ShootTeleopCommand;
 import frc.robot.commands.SpeakerOrBlinkCommand;
 import frc.robot.commands.TuneShootingCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
@@ -177,6 +181,10 @@ public class RobotContainer {
 
     // Amp 
     controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));
+
+    controlBindings.stockpile().ifPresent(trigger -> trigger.whileTrue(new ShootTeleopCommand(
+        drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, controlBindings.translationX(),
+        controlBindings.translationY(), STOCKPILE_RED, STOCKPILE_BLUE, STOCKPILE_INTERPOLATOR)));
     
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {

@@ -75,6 +75,11 @@ public class XBoxControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> stockpile() {
+    return Optional.empty();
+  }
+
+  @Override
   public Optional<Trigger> tuneShooting() {
     return Optional.of(driverController.start());
   }

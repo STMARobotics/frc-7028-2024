@@ -75,6 +75,11 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> stockpile() {
+    return Optional.of(rightJoystick.button(3));
+  }
+
+  @Override
   public Optional<Trigger> tuneShooting() {
     return Optional.of(rightJoystick.povRight());
   }

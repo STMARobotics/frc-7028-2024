@@ -17,10 +17,7 @@ import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
-import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
 import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
 import static frc.robot.Constants.TurretConstants.ROBOT_TO_TURRET;
@@ -45,16 +42,17 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.math.VelocityPitchInterpolator;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 /**
- * This command automatically scores in the speaker while a supplier (the driver) is translating the robot. This command
+ * This command automatically shoots at a target while a supplier (the driver) is translating the robot. This command
  * will slow translation, and take of rotation to make sure the turret can reach the target.
  */
-public class ScoreSpeakerTeleopCommand extends Command {
+public class ShootTeleopCommand extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
   private final ShooterSubsystem shooter;
@@ -70,8 +68,11 @@ public class ScoreSpeakerTeleopCommand extends Command {
   // Reusable objects to prevent reallocation (to reduce memory pressure)
   private final ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
   private final MutableMeasure<Angle> turretYawTarget = MutableMeasure.zero(Rotations);
+  private final Translation2d targetRed;
+  private final Translation2d targetBlue;
+  private final VelocityPitchInterpolator lookupTable;
 
-  private Translation2d speakerTranslation;
+  private Translation2d targetTranslation;
 
   private final SwerveRequest.FieldCentricFacingAngle swerveRequestFacing = new SwerveRequest.FieldCentricFacingAngle()
     .withDriveRequestType(DriveRequestType.Velocity)
@@ -85,15 +86,19 @@ public class ScoreSpeakerTeleopCommand extends Command {
 
   private boolean isShooting = false;
 
-  public ScoreSpeakerTeleopCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
+  public ShootTeleopCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
       TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem,
-      Supplier<Measure<Velocity<Distance>>> xSupplier, Supplier<Measure<Velocity<Distance>>> ySupplier) {
+      Supplier<Measure<Velocity<Distance>>> xSupplier, Supplier<Measure<Velocity<Distance>>> ySupplier,
+      Translation2d targetRed, Translation2d targetBlue, VelocityPitchInterpolator lookupTable) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
+    this.targetRed = targetRed;
+    this.targetBlue = targetBlue;
+    this.lookupTable = lookupTable;
 
     addRequirements(drivetrain, shooter, turretSubsystem);
 
@@ -110,7 +115,7 @@ public class ScoreSpeakerTeleopCommand extends Command {
     swerveRequestFacing.HeadingController.reset();
     rateLimiter.reset(drivetrain.getCurrentFieldChassisSpeeds());
     var alliance = DriverStation.getAlliance();
-    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE : SPEAKER_RED;
+    targetTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? targetBlue : targetRed;
     isShooting = false;
   }
 
@@ -122,32 +127,32 @@ public class ScoreSpeakerTeleopCommand extends Command {
     // Translation to the center of the turret
     var turretTranslation = robotTranslation.plus(ROBOT_TO_TURRET.rotateBy(robotPose.getRotation()));
 
-    // Distance between the robot and the speaker
-    var distanceToSpeaker = turretTranslation.getDistance(speakerTranslation);
+    // Distance between the robot and the target
+    var distanceToTarget = turretTranslation.getDistance(targetTranslation);
 
     // Lookup shooter settings for this distance
-    var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
+    var shootingSettings = lookupTable.calculate(distanceToTarget);
 
-    // Calculate time to hit speaker
+    // Calculate time to hit target
     var timeUntilScored = 
-        SHOOT_WHILE_MOVING_COEFFICIENT * (distanceToSpeaker / shootingSettings.getVelocity().in(RotationsPerSecond));
+        SHOOT_WHILE_MOVING_COEFFICIENT * (distanceToTarget / shootingSettings.getVelocity().in(RotationsPerSecond));
 
-    // Calculate the predicted offset of the speaker compared to current pose (in meters)
-    var speakerPredictedOffset =
+    // Calculate the predicted offset of the target compared to current pose (in meters)
+    var targetPredictedOffset =
         new Translation2d((drivetrain.getCurrentFieldChassisSpeeds().vxMetersPerSecond * timeUntilScored), 
             (drivetrain.getCurrentFieldChassisSpeeds().vyMetersPerSecond * timeUntilScored));
 
-    var predictedSpeakerTranslation = speakerTranslation.minus(speakerPredictedOffset);
+    var predictedTargetTranslation = targetTranslation.minus(targetPredictedOffset);
 
-    var predictedDist = predictedSpeakerTranslation.getDistance(turretTranslation);
+    var predictedDist = predictedTargetTranslation.getDistance(turretTranslation);
 
-    // Calculate the angle to the speaker
-    var angleToSpeaker = predictedSpeakerTranslation.minus(turretTranslation).getAngle();
+    // Calculate the angle to the target
+    var angleToTarget = predictedTargetTranslation.minus(turretTranslation).getAngle();
     
     // Calculate required turret angle, accounting for the robot heading
-    turretYawTarget.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
+    turretYawTarget.mut_replace(angleToTarget.minus(robotPose.getRotation()).getRotations(), Rotations);
 
-    shootingSettings = SHOOTER_INTERPOLATOR.calculate(predictedDist);
+    shootingSettings = lookupTable.calculate(predictedDist);
     
     // Calculate ready state
     var isShooterReady = shooter.isReadyToShoot();
@@ -180,8 +185,8 @@ public class ScoreSpeakerTeleopCommand extends Command {
       var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
 
       // Decide the direction to turn, then set the robot rotation target so the turret's shooting yaw limit on that
-      // side is pointed at the speaker
-      Rotation2d robotTargetDirection = angleToSpeaker.minus(fromRadians(PI)); // Turret is on the back of the robot
+      // side is pointed at the target
+      Rotation2d robotTargetDirection = angleToTarget.minus(fromRadians(PI)); // Turret is on the back of the robot
       if (robotTargetDirection.minus(robotPose.getRotation()).getRadians() > 0) {
         robotTargetDirection = robotTargetDirection.minus(DRIVETRAIN_YAW_LIMIT_FORWARD);
       } else {

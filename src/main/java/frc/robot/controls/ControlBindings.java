@@ -63,6 +63,12 @@ public interface ControlBindings {
   Optional<Trigger> scoreSpeaker();
 
   /**
+   * Shoot a note into a stockpile by our amp
+   * @return
+   */
+  Optional<Trigger> stockpile();
+
+  /**
    * Tune shooting
    * @return trigger
    */
