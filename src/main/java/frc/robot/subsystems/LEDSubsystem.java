@@ -23,6 +23,9 @@ public class LEDSubsystem extends SubsystemBase {
   private static final int LED_COUNT = Arrays.stream(STRIP_SIZES).sum();
   private static final int STRIP_COUNT = STRIP_SIZES.length;
 
+  // Number of LEDs for mirror annimations. This is int math, so it'll drop the remainder.
+  private static final int MIRROR_LENGTH = LED_COUNT / 2;
+
   private final AtomicReference<Consumer<LEDStrips>> ledUpdateConsumer = new AtomicReference<Consumer<LEDStrips>>(null);
   private final Notifier ledNotifier;
   private final LEDStripMethods ledStripMethods = new LEDStripMethods();
@@ -93,31 +96,70 @@ public class LEDSubsystem extends SubsystemBase {
     return index;
   }
 
+  private int calculateMirrorIndex(int stripId, int ledId) {
+    int index = 0;
+    if (stripId == 0) {
+      // Strip 0 runs along the left side of the robot, front to back
+      if (ledId < STRIP_SIZES[3] / 2) {
+        // Segment across the front left of robot (right to left)
+        index = STRIP_SIZES[0] + STRIP_SIZES[1] + STRIP_SIZES[2] + (STRIP_SIZES[3] / 2) + 1;
+        index += ledId;
+      } else {
+        // Segment across the left side of the robot (front to back), and across the back left (left to right)
+        index = ledId - STRIP_SIZES[3] / 2;
+      }
+    } else {
+      // Strip 1 runs along the right side of the robot, front to back
+      index = STRIP_SIZES[0] + STRIP_SIZES[1] + STRIP_SIZES[2] + (STRIP_SIZES[3] / 2) - 1;
+      index -= ledId;
+    }
+
+    return index;
+  }
+
   /**
    * Implementation of {@link LEDStrips} for the LEDs managed by this subsystem
    */
   private class LEDStripMethods implements LEDStrips {
     
+    @Override
     public void setLED(int stripId, int ledId, Color color) {
       buffer.setLED(calculateUpdateIndex(stripId, ledId), color);
     }
 
+    @Override
     public void setLED(int stripId, int ledId, Color8Bit color) {
       buffer.setLED(calculateUpdateIndex(stripId, ledId), color);
     }
 
+    @Override
+    public void setMirrorLED(int ledId, Color color) {
+      buffer.setLED(calculateMirrorIndex(0, ledId), color);
+      buffer.setLED(calculateMirrorIndex(1, ledId), color);      
+    }
+
+    @Override
     public void setHSV(int stripId, int ledId, int h, int s, int v) {
       buffer.setHSV(calculateUpdateIndex(stripId, ledId), h, s, v);
     }
 
+    @Override
+    public void setMirrorHSV(int ledId, int h, int s, int v) {
+      buffer.setHSV(calculateMirrorIndex(0, ledId), h, s, v);
+      buffer.setHSV(calculateMirrorIndex(1, ledId), h, s, v);
+    }
+
+    @Override
     public void setRGB(int stripId, int ledId, int r, int g, int b) {
       buffer.setRGB(calculateUpdateIndex(stripId, ledId), r, g, b);
     }
-      
+    
+    @Override
     public void refresh() {
       leds.setData(buffer);
     }
 
+    @Override
     public void setAll(Color color) {
       for (var i = 0; i < LED_COUNT; i++) {
         buffer.setLED(i, color);
@@ -125,6 +167,7 @@ public class LEDSubsystem extends SubsystemBase {
       refresh();
     }
 
+    @Override
     public void setAll(int r, int g, int b) {
       for (var i = 0; i < LED_COUNT; i++) {
         buffer.setRGB(i, r, g, b);
@@ -132,6 +175,7 @@ public class LEDSubsystem extends SubsystemBase {
       refresh();
     }
 
+    @Override
     public void setLEDSegments(Color color, boolean... segmentValues) {
       // Only lights up the side strips, strips 1 and 2. Front and back stay off.
       // Light up the segments
@@ -176,8 +220,8 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     @Override
-    public int getMaxStripSize() {
-      return Arrays.stream(STRIP_SIZES).max().getAsInt();
+    public int getMirrorStripSize() {
+      return MIRROR_LENGTH;
     }
   }
 
