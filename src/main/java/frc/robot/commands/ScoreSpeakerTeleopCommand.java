@@ -23,6 +23,7 @@ import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
 import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
+import static frc.robot.Constants.TurretConstants.ROBOT_TO_TURRET;
 import static java.lang.Math.PI;
 
 import java.util.function.Supplier;
@@ -117,27 +118,31 @@ public class ScoreSpeakerTeleopCommand extends Command {
   public void execute() {
     var robotPose = drivetrain.getState().Pose;
     var robotTranslation = robotPose.getTranslation();
-    // TODO Apply a transform to the center of the TURRET instead of the center of the ROBOT
+    
+    // Translation to the center of the turret
+    var turretTranslation = robotTranslation.plus(ROBOT_TO_TURRET.rotateBy(robotPose.getRotation()));
 
     // Distance between the robot and the speaker
-    var distanceToSpeaker = robotTranslation.getDistance(speakerTranslation);
+    var distanceToSpeaker = turretTranslation.getDistance(speakerTranslation);
 
     // Lookup shooter settings for this distance
     var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
 
     // Calculate time to hit speaker
-    var timeUntilScored = SHOOT_WHILE_MOVING_COEFFICIENT * (distanceToSpeaker / shootingSettings.getVelocity().in(RotationsPerSecond));
+    var timeUntilScored = 
+        SHOOT_WHILE_MOVING_COEFFICIENT * (distanceToSpeaker / shootingSettings.getVelocity().in(RotationsPerSecond));
 
     // Calculate the predicted offset of the speaker compared to current pose (in meters)
-    var speakerPredictedOffset = new Translation2d((drivetrain.getCurrentFieldChassisSpeeds().vxMetersPerSecond * timeUntilScored), 
-    (drivetrain.getCurrentFieldChassisSpeeds().vyMetersPerSecond * timeUntilScored));
+    var speakerPredictedOffset =
+        new Translation2d((drivetrain.getCurrentFieldChassisSpeeds().vxMetersPerSecond * timeUntilScored), 
+            (drivetrain.getCurrentFieldChassisSpeeds().vyMetersPerSecond * timeUntilScored));
 
     var predictedSpeakerTranslation = speakerTranslation.minus(speakerPredictedOffset);
 
-    var predictedDist = predictedSpeakerTranslation.getDistance(robotTranslation);
+    var predictedDist = predictedSpeakerTranslation.getDistance(turretTranslation);
 
     // Calculate the angle to the speaker
-    var angleToSpeaker = predictedSpeakerTranslation.minus(robotTranslation).getAngle();
+    var angleToSpeaker = predictedSpeakerTranslation.minus(turretTranslation).getAngle();
     
     // Calculate required turret angle, accounting for the robot heading
     turretYawTarget.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);

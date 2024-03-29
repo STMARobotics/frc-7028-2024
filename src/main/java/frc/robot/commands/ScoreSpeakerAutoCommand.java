@@ -12,6 +12,7 @@ import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
+import static frc.robot.Constants.TurretConstants.ROBOT_TO_TURRET;
 import static java.lang.Math.PI;
 
 import java.util.function.Supplier;
@@ -70,15 +71,19 @@ public class ScoreSpeakerAutoCommand extends Command {
   public void execute() {
     var robotPose = poseSupplier.get();
     var robotTranslation = robotPose.getTranslation();
+    
+    // Translation to the center of the turret
+    var turretTranslation = robotTranslation.plus(ROBOT_TO_TURRET.rotateBy(robotPose.getRotation()));
 
     // Distance between the robot and the speaker
-    var distanceToSpeaker = robotTranslation.getDistance(speakerTranslation);
+    var distanceToSpeaker = turretTranslation.getDistance(speakerTranslation);
 
     // Lookup shooter settings for this distance
     var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
 
     // Calculate time to hit speaker
-    var timeUntilScored = SHOOT_WHILE_MOVING_COEFFICIENT * distanceToSpeaker * shootingSettings.getVelocity().in(RotationsPerSecond);
+    var timeUntilScored = 
+        SHOOT_WHILE_MOVING_COEFFICIENT * (distanceToSpeaker / shootingSettings.getVelocity().in(RotationsPerSecond));
 
     // Calculate the predicted offset of the speaker compared to current pose (in meters)
     var fieldRelativeSpeed = fieldRelativeSpeedSupplier.get();
@@ -88,10 +93,10 @@ public class ScoreSpeakerAutoCommand extends Command {
 
     var predictedSpeakerTranslation = speakerTranslation.minus(speakerPredictedOffset);
 
-    var predictedDist = predictedSpeakerTranslation.getDistance(robotTranslation);
+    var predictedDist = predictedSpeakerTranslation.getDistance(turretTranslation);
 
     // Calculate the angle to the speaker
-    var angleToSpeaker = predictedSpeakerTranslation.minus(robotTranslation).getAngle();
+    var angleToSpeaker = predictedSpeakerTranslation.minus(turretTranslation).getAngle();
     
     // Calculate required turret angle, accounting for the robot heading
     turretYawTarget.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
