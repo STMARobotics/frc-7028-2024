@@ -204,19 +204,18 @@ public class LEDSubsystem extends SubsystemBase {
 
     @Override
     public int getStripSize(int stripId) {
-      if (stripId == 0) {
-        return STRIP_SIZES[3];
+      switch (stripId) {
+        case 0:
+          return STRIP_SIZES[3];
+        case 1:
+          return STRIP_SIZES[0];
+        case 2:
+          return STRIP_SIZES[2];
+        case 3:
+          return STRIP_SIZES[1];
+        default:
+          return 0;
       }
-      if (stripId == 1) {
-        return STRIP_SIZES[0];
-      }
-      if (2 == stripId) {
-        return STRIP_SIZES[2];
-      }
-      if (3 == stripId) {
-        return STRIP_SIZES[0];
-      }
-      return 0;
     }
 
     @Override
