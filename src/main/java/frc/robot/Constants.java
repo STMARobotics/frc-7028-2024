@@ -285,7 +285,7 @@ public class Constants {
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
     /** A constant used applied to estimate the note's time of flight */
-    public static final double SHOOT_WHILE_MOVING_COEFFICIENT = 0.0005;
+    public static final double SHOOT_WHILE_MOVING_COEFFICIENT = 8;
 
     /**
      * Margin inside the turret shooting limits to avoid getting to the edge and being unable to reach
