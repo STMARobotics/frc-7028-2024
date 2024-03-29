@@ -204,6 +204,9 @@ public class Constants {
     public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = YAW_LIMIT_FORWARD;
     public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = YAW_LIMIT_REVERSE;
 
+    // Distance from robot center to turret center
+    public static final Translation2d ROBOT_TO_TURRET = new Translation2d(Inches.of(-5.508), Inches.zero());
+
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(110)
         .withKI(0.0)
@@ -220,7 +223,7 @@ public class Constants {
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
     public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(130)
+        .withKP(145)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(0.4)
@@ -285,7 +288,7 @@ public class Constants {
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
     /** A constant used applied to estimate the note's time of flight */
-    public static final double SHOOT_WHILE_MOVING_COEFFICIENT = 0.0005;
+    public static final double SHOOT_WHILE_MOVING_COEFFICIENT = 6;
 
     /**
      * Margin inside the turret shooting limits to avoid getting to the edge and being unable to reach
