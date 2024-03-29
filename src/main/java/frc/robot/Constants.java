@@ -312,7 +312,8 @@ public class Constants {
       new ShootingSettings().distance(Meters.of(3.29)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(10.75)),
       new ShootingSettings().distance(Meters.of(3.93)).velocity(RotationsPerSecond.of(52)).pitch(Degrees.of(8.0)),
       new ShootingSettings().distance(Meters.of(4.66)).velocity(RotationsPerSecond.of(57)).pitch(Degrees.of(4.0)),
-      new ShootingSettings().distance(Meters.of(5.55)).velocity(RotationsPerSecond.of(67)).pitch(Degrees.of(0.25))
+      new ShootingSettings().distance(Meters.of(5.55)).velocity(RotationsPerSecond.of(67)).pitch(Degrees.of(0.25)),
+      new ShootingSettings().distance(Meters.of(6.22)).velocity(RotationsPerSecond.of(67)).pitch(Degrees.of(0))
     ));
 
     public static final VelocityPitchInterpolator STOCKPILE_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
