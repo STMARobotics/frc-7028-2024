@@ -1,5 +1,7 @@
 package frc.robot.commands.led;
 
+import static edu.wpi.first.wpilibj.util.Color.kBlack;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDStrips;
@@ -8,16 +10,17 @@ import frc.robot.subsystems.LEDSubsystem;
 /** Runs an LED marquee effect */
 public class LEDMarqueeCommand extends Command {
   
-  private static final int MARQUEE_SIZE = 16;
+  private static final int MARQUEE_SIZE = 15;
   private final LEDSubsystem ledSubsystem;
   private final int hue;
   private final int saturation;
   private final int minValue;
   private final int valueStep;
   private final double duration;
-
+  
   private final Timer timer = new Timer();
   
+  private boolean initialized = false;
   private int frame = 0;
 
   /**
@@ -45,19 +48,22 @@ public class LEDMarqueeCommand extends Command {
   public void initialize() {
     timer.reset();
     timer.start();
+    initialized = false;
     ledSubsystem.setUpdater(this::animate);
   }
 
   private void animate(LEDStrips ledStrips) {
-    if (timer.advanceIfElapsed(duration)) {
-      if (frame == 0) {
-        frame = ledStrips.getStripSize();
+    if (timer.advanceIfElapsed(duration) || !initialized) {
+      if (!initialized) {
+        ledStrips.setAll(kBlack);
+        initialized = true;
       }
-      for(int strip = 0; strip < ledStrips.getStripCount(); strip++) {
-        for(int index = 0; index < ledStrips.getStripSize(); index++) {
-          int value = minValue + ((index + frame) % MARQUEE_SIZE) * valueStep;
-          ledStrips.setHSV(strip, index, hue, saturation, value);
-        }
+      if (frame == 0) {
+        frame = ledStrips.getMirrorStripSize();
+      }
+      for(int index = 0; index < ledStrips.getMirrorStripSize(); index++) {
+        int value = minValue + ((index + frame) % MARQUEE_SIZE) * valueStep;
+        ledStrips.setMirrorHSV(index, hue, saturation, value);
       }
       frame--;
     }

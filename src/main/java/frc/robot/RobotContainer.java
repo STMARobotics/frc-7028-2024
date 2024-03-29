@@ -6,18 +6,23 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
+import static frc.robot.Constants.TurretConstants.INTAKE_YAW;
+import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 
 import java.util.Map;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.cscore.HttpCamera;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -27,32 +32,30 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.TurretConstants;
 import frc.robot.commands.BabyBirdCommand;
-import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultTurretCommand;
-import frc.robot.commands.EjectIntakeCommand;
+import frc.robot.commands.EjectCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.commands.SpeakerOrBlinkCommand;
-import frc.robot.commands.TuneSpeakerCommand;
+import frc.robot.commands.TuneShootingCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
 import frc.robot.controls.ControlBindings;
+import frc.robot.controls.DemoControlBindings;
 import frc.robot.controls.JoystickControlBindings;
 import frc.robot.controls.XBoxControlBindings;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class RobotContainer {
+
+  private static final boolean DEMO_MODE = false;
 
   private final ControlBindings controlBindings;
 
@@ -61,9 +64,7 @@ public class RobotContainer {
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  private final AmperSubsystem amperSubsystem = new AmperSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
@@ -71,12 +72,14 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   private final Field2d field2d = new Field2d();
 
-  private final AutoCommands autoCommands = new AutoCommands(amperSubsystem, drivetrain, shooterSubsystem,
-      turretSubsystem, intakeSubsystem, ledSubsystem, elevatorSubsystem);
+  private final AutoCommands autoCommands = new AutoCommands(
+      drivetrain, shooterSubsystem, turretSubsystem, intakeSubsystem, ledSubsystem);
   
   public RobotContainer() {
     // Configure control binding scheme
-    if (DriverStation.getJoystickIsXbox(0) || Robot.isSimulation()) {
+    if (DEMO_MODE) {
+      controlBindings = new DemoControlBindings();
+    } else if (DriverStation.getJoystickIsXbox(0) || Robot.isSimulation()) {
       controlBindings = new XBoxControlBindings();
     } else {
       controlBindings = new JoystickControlBindings();
@@ -93,6 +96,9 @@ public class RobotContainer {
     configureDashboard();
 
     new LEDBootAnimationCommand(ledSubsystem).schedule();
+
+    // Warm up PathPlanner https://pathplanner.dev/pplib-follow-a-single-path.html#java-warmup
+    FollowPathCommand.warmupCommand().schedule();
   }
 
   private void configureDefaultCommands() {
@@ -102,11 +108,7 @@ public class RobotContainer {
         controlBindings.translationY(),
         controlBindings.omega()));
     
-    ledSubsystem.setDefaultCommand(
-        new DefaultLEDCommand(ledSubsystem, turretSubsystem::hasNote, amperSubsystem::hasNote));
-    
-    elevatorSubsystem.setDefaultCommand(
-        new DefaultElevatorCommand(elevatorSubsystem, turretSubsystem::isClearOfElevator));
+    ledSubsystem.setDefaultCommand(new DefaultLEDCommand(ledSubsystem, turretSubsystem::hasNote));
     
     turretSubsystem.setDefaultCommand(new DefaultTurretCommand(turretSubsystem));
   }
@@ -121,28 +123,24 @@ public class RobotContainer {
         .withProperties(Map.of("showCrosshair", true, "showControls", false))
         .withSize(4, 5).withPosition(2, 0);
 
-    // Note sensors
+    // Note sensor
     driverTab.addBoolean("Turret", turretSubsystem::hasNote)
         .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0);
     
-    driverTab.addBoolean("Amper", amperSubsystem::hasNote)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 1);
-    
-    // Elevator
-    driverTab.addBoolean("Elevator Down", elevatorSubsystem::isAtBottomLimit)
-        .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 2);
-    
     // Turret
     driverTab.addNumber("Pitch", () -> turretSubsystem.getPitch().in(Degrees))
-        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 3);
+        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 1);
     
     driverTab.addNumber("Yaw", () -> turretSubsystem.getYaw().in(Degrees))
-        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 4);
+        .withWidget(BuiltInWidgets.kTextView).withPosition(6, 2);
 
     // Pose estimation
     driverTab.add(field2d).withPosition(7, 0).withSize(4, 2).withPosition(7, 0);
     driverTab.addString("Pose", () -> {
       var pose = drivetrain.getState().Pose;
+      if (pose == null) {
+        pose = new Pose2d();
+      }
       field2d.setRobotPose(pose);
       return String.format("(%.3f, %.3f) %.2f deg", 
           pose.getX(), pose.getY(), pose.getRotation().getDegrees());
@@ -155,49 +153,53 @@ public class RobotContainer {
     controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
 
     // Intake
-    controlBindings.intakeToTurret().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
+    controlBindings.intake().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
     
-    controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(Commands.runOnce(() -> {
+    controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(runOnce(() -> {
       intakeSubsystem.stop();
-      amperSubsystem.stop();
       turretSubsystem.stop();
-    }, intakeSubsystem, amperSubsystem, turretSubsystem)));
-
-    // Amper
-    controlBindings.exchangeToAmper().ifPresent(trigger -> trigger.onTrue(autoCommands.transferToAmper()));
-    
-    controlBindings.intakeToAmper().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToAmper()));
-    
-    controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));
-    
-    // Speaker
-    controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(
-      new ManualShootCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)));
-
-    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
-      new SpeakerOrBlinkCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
-            elevatorSubsystem::isParked, controlBindings.translationX(), controlBindings.translationY(),
-            controlBindings.omega())));
-    
-    controlBindings.tuneSpeakerShooting().ifPresent(trigger -> trigger.whileTrue(
-      new TuneSpeakerCommand(turretSubsystem, amperSubsystem, shooterSubsystem, ledSubsystem, elevatorSubsystem::isParked)));
+    }, intakeSubsystem, turretSubsystem)));
     
     controlBindings.eject().ifPresent(trigger -> trigger.whileTrue(
-      new EjectIntakeCommand(intakeSubsystem, amperSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
+      new EjectCommand(intakeSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
     
     controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(
-      new BabyBirdCommand(turretSubsystem, shooterSubsystem, elevatorSubsystem::isParked)
+      new BabyBirdCommand(turretSubsystem, shooterSubsystem)
           .deadlineWith(new LEDBlinkCommand(ledSubsystem, NOTE_COLOR, 0.1))));
 
-    controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
-      turretSubsystem.moveToPitchPosition(TurretConstants.PITCH_LIMIT_FORWARD);
-      turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
-    })));
+    // Speaker
+    controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
+      new SpeakerOrBlinkCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
+            controlBindings.translationX(), controlBindings.translationY(), controlBindings.omega())));
+    
+    controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(new ManualShootCommand(
+        turretSubsystem, shooterSubsystem, RotationsPerSecond.of(39), Degrees.of(39), Degrees.of(180))));
 
-    controlBindings.setupShooter().ifPresent(trigger -> trigger.onTrue(turretSubsystem.run(() -> {
-      turretSubsystem.moveToPitchPosition(Rotations.of(0.0586));
-      turretSubsystem.moveToYawPosition(TurretConstants.INTAKE_YAW_POSITION, elevatorSubsystem::isParked);
+    // Amp 
+    controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));
+    
+    // Misc
+    controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
+      turretSubsystem.moveToPitchPosition(PITCH_LIMIT_FORWARD);
+      turretSubsystem.moveToYawPosition(INTAKE_YAW);
     })));
+    
+    // Testing
+    controlBindings.tuneShooting().ifPresent(trigger -> trigger.whileTrue(
+      new TuneShootingCommand(turretSubsystem, shooterSubsystem, ledSubsystem, () -> drivetrain.getState().Pose)));
+
+    // Demo shots
+    controlBindings.demoToss1().ifPresent(trigger -> trigger.whileTrue(
+        new ManualShootCommand(turretSubsystem, shooterSubsystem,
+            RotationsPerSecond.of(20), Degrees.of(25), Degrees.of(180))));
+
+    controlBindings.demoToss2().ifPresent(trigger -> trigger.whileTrue(
+        new ManualShootCommand(turretSubsystem, shooterSubsystem,
+            RotationsPerSecond.of(30), Degrees.of(20), Degrees.of(180))));
+
+    controlBindings.seedFieldRelative().ifPresent(trigger -> trigger.onTrue(
+      runOnce(drivetrain::seedFieldRelative, drivetrain)
+    ));
   }
 
   public void populateSysIdDashboard() {
@@ -239,20 +241,6 @@ public class RobotContainer {
     tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDynamicCommand(kReverse)).withPosition(columnIndex, 3);
-
-    // Elevator
-    columnIndex += 2;
-    tab.add("Elev Quasi Fwd", elevatorSubsystem.sysIdQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
-    tab.add("Elev Quasi Rev", elevatorSubsystem.sysIdQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
-    tab.add("Elev Dynam Fwd", elevatorSubsystem.sysIdDynamicCommand(kForward)).withPosition(columnIndex, 2);
-    tab.add("Elev Dynam Rev", elevatorSubsystem.sysIdDynamicCommand(kReverse)).withPosition(columnIndex, 3);
-
-    // Intake
-    columnIndex += 2;
-    tab.add("Amper Quasi Fwd", amperSubsystem.sysIdRollerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
-    tab.add("Amper Quasi Rev", amperSubsystem.sysIdRollerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
-    tab.add("Amper Dynam Fwd", amperSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
-    tab.add("Amper Dynam Rev", amperSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
     // Turret yaw
     columnIndex += 2;

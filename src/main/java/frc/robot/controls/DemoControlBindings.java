@@ -17,9 +17,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
- * Control bindings for driving with joysticks
+ * Control bindings for demos with joysticks
  */
-public class JoystickControlBindings implements ControlBindings {
+public class DemoControlBindings implements ControlBindings {
+
+  private static final double DEMO_SPEED_FACTOR = 0.25;
 
   private final CommandJoystick leftJoystick = new CommandJoystick(0);
   private final CommandJoystick rightJoystick = new CommandJoystick(1);
@@ -35,28 +37,33 @@ public class JoystickControlBindings implements ControlBindings {
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationX() {
     return () -> translationX.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getY()), MetersPerSecond);
+      MAX_VELOCITY.in(MetersPerSecond) * (-modifyAxis(leftJoystick.getY()) ), MetersPerSecond);
   }
 
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
    return () -> translationY.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getX()), MetersPerSecond);
+      MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(leftJoystick.getX()), MetersPerSecond);
   }
   
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
     return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(rightJoystick.getX()), RadiansPerSecond);
+        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -modifyAxis(rightJoystick.getX()), RadiansPerSecond);
   }
   
-  private static double squareAxis(double value) {
-    return Math.copySign(value * value, value);
+  /**
+   * Square the input and slow it down for demo
+   * @param value axis value
+   * @return modified value
+   */
+  private static double modifyAxis(double value) {
+    return Math.copySign(value * value, value) * DEMO_SPEED_FACTOR;
   }
 
   @Override
   public Optional<Trigger> intake() {
-    return Optional.of(leftJoystick.trigger());
+    return Optional.empty();
   }
 
   @Override
@@ -66,37 +73,52 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> manualShoot() {
-    return Optional.of(rightJoystick.povDown());
+    return Optional.empty();
   }
 
   @Override
   public Optional<Trigger> scoreSpeaker() {
-    return Optional.of(rightJoystick.trigger());
+    return Optional.empty();
   }
 
   @Override
   public Optional<Trigger> tuneShooting() {
-    return Optional.of(rightJoystick.povRight());
+    return Optional.empty();
   }
 
   @Override
   public Optional<Trigger> scoreAmp() {
-    return Optional.of(rightJoystick.povUp());
+    return Optional.empty();
   }
 
   @Override
   public Optional<Trigger> eject() {
-    return Optional.of(leftJoystick.button(4));
+    return Optional.empty();
   }
 
   @Override
   public Optional<Trigger> babyBird() {
-    return Optional.of(leftJoystick.button(2));
+    return Optional.of(leftJoystick.trigger());
   }
 
   @Override
   public Optional<Trigger> liftShooter() {
-    return Optional.of(rightJoystick.button(2));
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Trigger> demoToss1() {
+    return Optional.of(rightJoystick.trigger());
+  }
+
+  @Override
+  public Optional<Trigger> demoToss2() {
+    return Optional.of(rightJoystick.povLeft());
+  }
+
+  @Override
+  public Optional<Trigger> seedFieldRelative() {
+    return Optional.of(rightJoystick.button(13));
   }
 
 }

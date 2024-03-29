@@ -14,7 +14,6 @@ import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
 import static java.lang.Math.PI;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,7 +21,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,10 +38,8 @@ public class ScoreSpeakerAutoCommand extends Command {
   private final ShooterSubsystem shooter;
   private final TurretSubsystem turretSubsystem;
   private final LEDSubsystem ledSubsystem;
-  private final BooleanSupplier turretIsSafe;
   private final Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier;
   private final Supplier<Pose2d> poseSupplier;
-  private final Measure<Angle> pitchAdjustment;
     
   // Reusable objects to prevent reallocation (to reduce memory pressure)
   private final MutableMeasure<Angle> turretYawTarget = MutableMeasure.zero(Rotations);
@@ -53,15 +49,12 @@ public class ScoreSpeakerAutoCommand extends Command {
   private boolean isShooting = false;
 
   public ScoreSpeakerAutoCommand(ShooterSubsystem shooter, TurretSubsystem turretSubsystem,
-      LEDSubsystem ledSubsystem, Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier, Supplier<Pose2d> poseSupplier,
-       BooleanSupplier turretIsSafe, Measure<Angle> pitchAdjustment) {
+      LEDSubsystem ledSubsystem, Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier, Supplier<Pose2d> poseSupplier) {
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;
     this.fieldRelativeSpeedSupplier = fieldRelativeSpeedSupplier;
     this.poseSupplier = poseSupplier;
-    this.turretIsSafe = turretIsSafe;
-    this.pitchAdjustment = pitchAdjustment;
 
     addRequirements(shooter, turretSubsystem);
   }
@@ -118,8 +111,8 @@ public class ScoreSpeakerAutoCommand extends Command {
     }
 
     // Set the turret position
-    turretSubsystem.moveToShootingYawPosition(turretYawTarget, turretIsSafe);
-    turretSubsystem.moveToPitchPosition(shootingSettings.getPitch(), pitchAdjustment);
+    turretSubsystem.moveToShootingYawPosition(turretYawTarget);
+    turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
     shooter.prepareToShoot(shootingSettings.getVelocity());
 
     var isPitchReady = turretSubsystem.isAtPitchTarget();
@@ -147,7 +140,7 @@ public class ScoreSpeakerAutoCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stop();
-    turretSubsystem.prepareToExchange();
+    turretSubsystem.prepareToIntake();
     ledSubsystem.setUpdater(null);
     turretSubsystem.stopRollers();
   }

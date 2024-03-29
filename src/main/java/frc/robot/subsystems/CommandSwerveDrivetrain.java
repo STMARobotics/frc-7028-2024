@@ -8,6 +8,7 @@ import static frc.robot.Constants.VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -23,6 +24,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -55,10 +57,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       new SysIdRoutine.Config(null, Volts.of(3), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(steerCharacterization.withVolts(volts)), null, this));
 
-  private final SysIdRoutine rotationSysIdRoutine  = new SysIdRoutine(
+  private final SysIdRoutine rotationSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(rotationCharacterization.withVolts(volts)), null, this));
-      
+
   private final SysIdRoutine slipSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
@@ -76,14 +78,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_pigeon2.getConfigurator().apply(PIGEON_MOUNT_POSE_CONFIG);
 
     configNeutralMode(NeutralModeValue.Brake);
-    
+
     configurePathPlanner();
   }
 
   private void configurePathPlanner() {
     double driveBaseRadius = 0;
     for (var moduleLocation : m_moduleLocations) {
-        driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+      driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
 
     AutoBuilder.configureHolonomic(
@@ -108,14 +110,29 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   @Override
+  protected boolean checkIsOnCanFD(String name) {
+    // Troubleshooting method CTRE provided to help determine why odometry is running at 100Hz
+    boolean isFd = CANBus.isNetworkFD(name);
+    int maxCount = 20; // Wait at most 2 seconds checking if we're FD
+    while (!isFd && maxCount-- > 0) {
+      Timer.delay(0.1);
+      isFd = CANBus.isNetworkFD(name);
+      System.err.println("isNetworkFD reported network is not FD!!");
+    }
+    System.out.println("Network is FD? " + isFd);
+    return isFd;
+  }
+
+  @Override
   public void simulationPeriodic() {
     /* Assume 20ms update rate, get battery voltage from WPILib */
     updateSimState(0.02, RobotController.getBatteryVoltage());
-    SmartDashboard.putString("Command", getCurrentCommand() == null ? "" :getCurrentCommand().getName());
+    SmartDashboard.putString("Command", getCurrentCommand() == null ? "" : getCurrentCommand().getName());
   }
 
   /**
    * Gets the current robot-oriented chassis speeds
+   * 
    * @return robot oriented chassis speeds
    */
   public ChassisSpeeds getCurrentRobotChassisSpeeds() {
@@ -124,14 +141,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   /**
    * Gets the current field-oriented chassis speeds
+   * 
    * @return field oriented chassis speeds
    */
   public ChassisSpeeds getCurrentFieldChassisSpeeds() {
     var state = getState();
+    if (state == null || state.Pose == null) {
+      return new ChassisSpeeds();
+    }
     var robotAngle = state.Pose.getRotation();
     var chassisSpeeds = state.speeds;
-    var fieldSpeeds = 
-        new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond).rotateBy(robotAngle);
+    var fieldSpeeds = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+        .rotateBy(robotAngle);
     return new ChassisSpeeds(fieldSpeeds.getX(), fieldSpeeds.getY(), chassisSpeeds.omegaRadiansPerSecond);
   }
 

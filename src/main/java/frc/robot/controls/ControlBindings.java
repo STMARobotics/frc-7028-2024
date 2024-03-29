@@ -39,16 +39,10 @@ public interface ControlBindings {
   Supplier<Measure<Velocity<Angle>>> omega();
 
   /**
-   * Intake off the floor and into the amper
-   * @return trigger
-   */
-  Optional<Trigger> intakeToAmper();
-
-  /**
    * Intake off the floor and into the turret
    * @return trigger
    */
-  Optional<Trigger> intakeToTurret();
+  Optional<Trigger> intake();
 
   /**
    * Stop the intake
@@ -69,16 +63,10 @@ public interface ControlBindings {
   Optional<Trigger> scoreSpeaker();
 
   /**
-   * Tune speaker shooting
+   * Tune shooting
    * @return trigger
    */
-  Optional<Trigger> tuneSpeakerShooting();
-
-  /**
-   * Exchange a note from turret to amper
-   * @return trigger
-   */
-  Optional<Trigger> exchangeToAmper();
+  Optional<Trigger> tuneShooting();
 
   /**
    * Score a note that's already in the amper into the amp
@@ -105,9 +93,27 @@ public interface ControlBindings {
   Optional<Trigger> liftShooter();
 
   /**
-   * Moves the shooter pitch and yaw to the starting configuration
+   * Toss a note short for demo purposes. Not intended for comp use.
    * @return trigger
    */
-  Optional<Trigger> setupShooter();
+  default Optional<Trigger> demoToss1() {
+    return Optional.empty();
+  }
+
+  /**
+   * Toss a note longer for demo purposes. Not intended for comp use.
+   * @return trigger
+   */
+  default Optional<Trigger> demoToss2() {
+    return Optional.empty();
+  }
+
+  /**
+   * Resets the heading to zero. There is no reason this should be used in comp.
+   * @return trigger
+   */
+  default Optional<Trigger> seedFieldRelative() {
+    return Optional.empty();
+  }
 
 }

@@ -1,19 +1,23 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.signals.NeutralModeValue.Coast;
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
+import static frc.robot.Constants.ShooterConstants.AMP_BOTTOM_VELOCITY;
+import static frc.robot.Constants.ShooterConstants.AMP_TOP_VELOCITY;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_BOTTOM;
 import static frc.robot.Constants.ShooterConstants.DEVICE_ID_TOP;
+import static frc.robot.Constants.ShooterConstants.ERROR_TOLERANCE;
+import static frc.robot.Constants.ShooterConstants.PEAK_FORWARD_CURRENT;
+import static frc.robot.Constants.ShooterConstants.PEAK_REVERSE_CURRENT;
 import static frc.robot.Constants.ShooterConstants.REVERSE_VELOCITY;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_ERROR_TOLERANCE;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_SENSOR_TO_MECHANISM_RATIO;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_STATOR_CURRENT_LIMIT;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_SUPPLY_CURRENT_LIMIT;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM;
-import static frc.robot.Constants.ShooterConstants.SHOOTER_VELOCITY_SLOT_CONFIG_TOP;
+import static frc.robot.Constants.ShooterConstants.SENSOR_TO_MECHANISM_RATIO;
+import static frc.robot.Constants.ShooterConstants.SLOT_CONFIG_BOTTOM;
+import static frc.robot.Constants.ShooterConstants.SLOT_CONFIG_TOP;
+import static frc.robot.Constants.ShooterConstants.SUPPLY_CURRENT_LIMIT;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -37,61 +41,78 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
  * Subsystem for the shooter mechanism
  */
 public class ShooterSubsystem extends SubsystemBase {
-  private final TalonFX shooterTopMotor = new TalonFX(DEVICE_ID_TOP, CANIVORE_BUS_NAME);
-  private final TalonFX shooterBottomMotor = new TalonFX(DEVICE_ID_BOTTOM, CANIVORE_BUS_NAME);
+  private final TalonFX topMotor = new TalonFX(DEVICE_ID_TOP, CANIVORE_BUS_NAME);
+  private final TalonFX bottomMotor = new TalonFX(DEVICE_ID_BOTTOM, CANIVORE_BUS_NAME);
 
-  private final VelocityTorqueCurrentFOC shooterVelocityControl = new VelocityTorqueCurrentFOC(0.0);
+  private final VelocityTorqueCurrentFOC topControl = new VelocityTorqueCurrentFOC(0.0);
+  private final VelocityTorqueCurrentFOC bottomControl = new VelocityTorqueCurrentFOC(0.0);
 
-  private final StatusSignal<Double> shooterBottomVelocity;
-  private final StatusSignal<Double> shooterTopVelocity;
+  private final StatusSignal<Double> bottomVelocity;
+  private final StatusSignal<Double> bottomAcceleration;
+  private final StatusSignal<Double> topVelocity;
+  private final StatusSignal<Double> topAcceleration;
 
   private final TorqueCurrentFOC sysIdControl = new TorqueCurrentFOC(0.0);
   
   // SysId routine - NOTE: the output type is amps, NOT volts (even though it says volts)
   // https://www.chiefdelphi.com/t/sysid-with-ctre-swerve-characterization/452631/8
-  private final SysIdRoutine shooterSysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(3.0).per(Seconds.of(1)), Volts.of(25), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((amps) -> {
-        shooterTopMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
-        shooterBottomMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
+        topMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
+        bottomMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
       }, null, this));
 
   public ShooterSubsystem() {
     // Configure shooter motors
-    var shooterMotorConfig = new TalonFXConfiguration();
-    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_BOTTOM);
-    shooterMotorConfig.MotorOutput.NeutralMode = Coast;
-    shooterMotorConfig.Feedback.SensorToMechanismRatio = SHOOTER_SENSOR_TO_MECHANISM_RATIO;
-    shooterMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    shooterMotorConfig.CurrentLimits.StatorCurrentLimit = SHOOTER_STATOR_CURRENT_LIMIT;
-    shooterMotorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    shooterMotorConfig.CurrentLimits.SupplyCurrentLimit = SHOOTER_SUPPLY_CURRENT_LIMIT;
-    shooterMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    shooterMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = SHOOTER_STATOR_CURRENT_LIMIT;
-    shooterMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -SHOOTER_STATOR_CURRENT_LIMIT / 2;
+    var motorConfig = new TalonFXConfiguration();
+    motorConfig.Slot0 = Slot0Configs.from(SLOT_CONFIG_BOTTOM);
+    motorConfig.MotorOutput.NeutralMode = Coast;
+    motorConfig.Feedback.SensorToMechanismRatio = SENSOR_TO_MECHANISM_RATIO;
+    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
+    motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    motorConfig.TorqueCurrent.PeakForwardTorqueCurrent = PEAK_FORWARD_CURRENT.in(Amps);
+    motorConfig.TorqueCurrent.PeakReverseTorqueCurrent = PEAK_REVERSE_CURRENT.in(Amps);
 
-    shooterBottomMotor.getConfigurator().apply(shooterMotorConfig);
-    shooterMotorConfig.Slot0 = Slot0Configs.from(SHOOTER_VELOCITY_SLOT_CONFIG_TOP);
-    shooterTopMotor.getConfigurator().apply(shooterMotorConfig);
+    bottomMotor.getConfigurator().apply(motorConfig);
+    motorConfig.Slot0 = Slot0Configs.from(SLOT_CONFIG_TOP);
+    topMotor.getConfigurator().apply(motorConfig);
 
-    shooterTopVelocity = shooterTopMotor.getVelocity();
-    shooterBottomVelocity = shooterBottomMotor.getVelocity();
+    topVelocity = topMotor.getVelocity();
+    topAcceleration = topMotor.getAcceleration();
+    bottomVelocity = bottomMotor.getVelocity();
+    bottomAcceleration = bottomMotor.getAcceleration();
   }
 
   public Command sysIdShooterDynamicCommand(Direction direction) {
-    return shooterSysIdRoutine.dynamic(direction).withName("Shooter dynam " + direction)
+    return sysIdRoutine.dynamic(direction).withName("Shooter dynam " + direction)
         .finallyDo(this::stop);
   }
 
   public Command sysIdShooterQuasistaticCommand(Direction direction) {
-    return shooterSysIdRoutine.quasistatic(direction).withName("Shooter quasi " + direction)
+    return sysIdRoutine.quasistatic(direction).withName("Shooter quasi " + direction)
         .finallyDo(this::stop);
   }
 
+  /**
+   * Spins the shooter wheels at a given velocity
+   * @param velocity velocity for both sets of wheels
+   */
   public void spinShooterWheels(Measure<Velocity<Angle>> velocity) {
     var targetVelocity = velocity.in(RotationsPerSecond);
-    shooterTopMotor.setControl(shooterVelocityControl.withVelocity(targetVelocity));
-    shooterBottomMotor.setControl(shooterVelocityControl.withVelocity(targetVelocity));
+    topMotor.setControl(topControl.withVelocity(targetVelocity));
+    bottomMotor.setControl(bottomControl.withVelocity(targetVelocity));
+  }
+
+  /**
+   * Spins the shooter wheels at a given velocity
+   * @param topVelocity velocity for top set of wheels
+   * @param bottomVelocity velocity for bottom set of wheels
+   */
+  public void spinShooterWheels(Measure<Velocity<Angle>> topVelocity, Measure<Velocity<Angle>> bottomVelocity) {
+    topMotor.setControl(topControl.withVelocity(topVelocity.in(RotationsPerSecond)));
+    bottomMotor.setControl(bottomControl.withVelocity(bottomVelocity.in(RotationsPerSecond)));
   }
 
   /**
@@ -102,6 +123,16 @@ public class ShooterSubsystem extends SubsystemBase {
     spinShooterWheels(shooterVelocity);
   }
 
+  /**
+   * Spins the wheels to amper velocity
+   */
+  public void prepareToAmp() {
+    spinShooterWheels(AMP_TOP_VELOCITY, AMP_BOTTOM_VELOCITY);
+  }
+
+  /**
+   * Spins the wheels in reverse
+   */
   public void reverse() {
     spinShooterWheels(REVERSE_VELOCITY);
   }
@@ -111,19 +142,22 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return true if the shooter is at the target velocity
    */
   public boolean isReadyToShoot() {
-    var errorToleranceRPS = SHOOTER_ERROR_TOLERANCE.in(RotationsPerSecond);
-    BaseStatusSignal.refreshAll(shooterBottomVelocity, shooterTopVelocity);
+    var errorToleranceRPS = ERROR_TOLERANCE.in(RotationsPerSecond);
+    BaseStatusSignal.refreshAll(bottomVelocity, bottomAcceleration, topVelocity, topAcceleration);
 
-    return Math.abs(shooterBottomVelocity.getValueAsDouble() - shooterVelocityControl.Velocity) < errorToleranceRPS
-        && Math.abs(shooterTopVelocity.getValueAsDouble() - shooterVelocityControl.Velocity) < errorToleranceRPS;
+    var compensatedTop = BaseStatusSignal.getLatencyCompensatedValue(topVelocity, topAcceleration);
+    var compensatedBottom = BaseStatusSignal.getLatencyCompensatedValue(bottomVelocity, bottomAcceleration);
+
+    return Math.abs(compensatedBottom - bottomControl.Velocity) < errorToleranceRPS
+        && Math.abs(compensatedTop - topControl.Velocity) < errorToleranceRPS;
   }
 
   /**
    * Stops the shooter
    */
   public void stop() {
-    shooterBottomMotor.stopMotor();
-    shooterTopMotor.stopMotor();
+    bottomMotor.stopMotor();
+    topMotor.stopMotor();
   }
 
 }

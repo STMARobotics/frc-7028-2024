@@ -2,12 +2,18 @@ package frc.robot.subsystems;
 
 import static com.ctre.phoenix6.signals.FeedbackSensorSourceValue.FusedCANcoder;
 import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
+import static frc.robot.Constants.TurretConstants.AMP_PITCH;
+import static frc.robot.Constants.TurretConstants.AMP_YAW;
+import static frc.robot.Constants.TurretConstants.BABY_BIRD_PITCH;
+import static frc.robot.Constants.TurretConstants.BABY_BIRD_ROLLER_VELOCITY;
+import static frc.robot.Constants.TurretConstants.BABY_BIRD_YAW;
 import static frc.robot.Constants.TurretConstants.DEVICE_ID_NOTE_SENSOR;
 import static frc.robot.Constants.TurretConstants.DEVICE_ID_PITCH_ENCODER;
 import static frc.robot.Constants.TurretConstants.DEVICE_ID_PITCH_MOTOR;
@@ -15,11 +21,12 @@ import static frc.robot.Constants.TurretConstants.DEVICE_ID_ROLLER_MOTOR;
 import static frc.robot.Constants.TurretConstants.DEVICE_ID_YAW_ENCODER;
 import static frc.robot.Constants.TurretConstants.DEVICE_ID_YAW_MOTOR;
 import static frc.robot.Constants.TurretConstants.EJECT_VELOCITY;
-import static frc.robot.Constants.TurretConstants.INTAKE_PITCH_POSITION;
-import static frc.robot.Constants.TurretConstants.INTAKE_YAW_POSITION;
-import static frc.robot.Constants.TurretConstants.LOAD_VELOCITY;
+import static frc.robot.Constants.TurretConstants.INTAKE_PITCH;
+import static frc.robot.Constants.TurretConstants.INTAKE_PITCH_TOLERANCE;
+import static frc.robot.Constants.TurretConstants.INTAKE_VELOCITY;
+import static frc.robot.Constants.TurretConstants.INTAKE_YAW;
+import static frc.robot.Constants.TurretConstants.INTAKE_YAW_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.NOTE_SENSOR_DISTANCE_THRESHOLD;
-import static frc.robot.Constants.TurretConstants.PITCH_EXCHANGE_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.PITCH_MAGNETIC_OFFSET;
@@ -29,13 +36,12 @@ import static frc.robot.Constants.TurretConstants.PITCH_SLOT_CONFIGS;
 import static frc.robot.Constants.TurretConstants.PITCH_STATOR_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_TOLERANCE;
-import static frc.robot.Constants.TurretConstants.ROLLER_VELOCITY_SLOT_CONFIGS;
+import static frc.robot.Constants.TurretConstants.ROLLER_PEAK_FORWARD_CURRENT;
+import static frc.robot.Constants.TurretConstants.ROLLER_PEAK_REVERSE_CURRENT;
+import static frc.robot.Constants.TurretConstants.ROLLER_SLOT_CONFIGS;
+import static frc.robot.Constants.TurretConstants.ROLLER_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.SHOOTING_YAW_CORRECTION;
 import static frc.robot.Constants.TurretConstants.SHOOT_VELOCITY;
-import static frc.robot.Constants.TurretConstants.TRANSFER_PITCH;
-import static frc.robot.Constants.TurretConstants.TRAP_PITCH_POSITION;
-import static frc.robot.Constants.TurretConstants.TRAP_YAW_POSITION;
-import static frc.robot.Constants.TurretConstants.YAW_EXCHANGE_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.YAW_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.TurretConstants.YAW_MAGNETIC_OFFSET;
@@ -47,8 +53,6 @@ import static frc.robot.Constants.TurretConstants.YAW_SLOT_CONFIGS;
 import static frc.robot.Constants.TurretConstants.YAW_STATOR_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.YAW_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.YAW_TOLERANCE;
-
-import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -102,8 +106,10 @@ public class TurretSubsystem extends SubsystemBase {
   private final TorqueCurrentFOC rollerSysIdControl = new TorqueCurrentFOC(0.0);
   private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true);
 
-  private final StatusSignal<Double> yawPositionSignal;
-  private final StatusSignal<Double> pitchPositionSignal;
+  private final StatusSignal<Double> yawPosition;
+  private final StatusSignal<Double> yawVelocity;
+  private final StatusSignal<Double> pitchPosition;
+  private final StatusSignal<Double> pitchVelocity;
 
   // Reusable objects to reduce memory pressure from reallocation
   private final MutableMeasure<Angle> yawAngle = MutableMeasure.zero(Rotations);
@@ -130,16 +136,16 @@ public class TurretSubsystem extends SubsystemBase {
     // Configure the yaw CANCoder
     var yawCanCoderConfig = new CANcoderConfiguration();
     yawCanCoderConfig.MagnetSensor.MagnetOffset = YAW_MAGNETIC_OFFSET.in(Rotations);
-    yawCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    yawCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     yawEncoder.getConfigurator().apply(yawCanCoderConfig);
 
     // Configure the yaw motor
     var yawTalonConfig = new TalonFXConfiguration();
     yawTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     yawTalonConfig.MotorOutput.NeutralMode = Brake;
-    yawTalonConfig.CurrentLimits.StatorCurrentLimit = YAW_STATOR_CURRENT_LIMIT;
+    yawTalonConfig.CurrentLimits.StatorCurrentLimit = YAW_STATOR_CURRENT_LIMIT.in(Amps);
     yawTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    yawTalonConfig.CurrentLimits.SupplyCurrentLimit = YAW_SUPPLY_CURRENT_LIMIT;
+    yawTalonConfig.CurrentLimits.SupplyCurrentLimit = YAW_SUPPLY_CURRENT_LIMIT.in(Amps);
     yawTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     yawTalonConfig.Feedback.RotorToSensorRatio = YAW_ROTOR_TO_SENSOR_RATIO;
     yawTalonConfig.Feedback.FeedbackRemoteSensorID = yawEncoder.getDeviceID();
@@ -152,21 +158,22 @@ public class TurretSubsystem extends SubsystemBase {
     yawTalonConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = YAW_LIMIT_REVERSE.in(Rotations);
     yawMotor.getConfigurator().apply(yawTalonConfig);
 
-    yawPositionSignal = yawMotor.getPosition();
+    yawPosition = yawMotor.getPosition();
+    yawVelocity = yawMotor.getVelocity();
 
     // Configure the pitch CANCoder
     var pitchCanCoderConfig = new CANcoderConfiguration();
     pitchCanCoderConfig.MagnetSensor.MagnetOffset = PITCH_MAGNETIC_OFFSET.in(Rotations);
-    pitchCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    pitchCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     pitchEncoder.getConfigurator().apply(pitchCanCoderConfig);
 
     // Configure the pitch motor
     var pitchTalonConfig = new TalonFXConfiguration();
     pitchTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     pitchTalonConfig.MotorOutput.NeutralMode = Brake;
-    pitchTalonConfig.CurrentLimits.StatorCurrentLimit = PITCH_STATOR_CURRENT_LIMIT;
+    pitchTalonConfig.CurrentLimits.StatorCurrentLimit = PITCH_STATOR_CURRENT_LIMIT.in(Amps);
     pitchTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    pitchTalonConfig.CurrentLimits.SupplyCurrentLimit = PITCH_SUPPLY_CURRENT_LIMIT;
+    pitchTalonConfig.CurrentLimits.SupplyCurrentLimit = PITCH_SUPPLY_CURRENT_LIMIT.in(Amps);
     pitchTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     pitchTalonConfig.ClosedLoopGeneral.ContinuousWrap = true;
     pitchTalonConfig.Feedback.RotorToSensorRatio = PITCH_ROTOR_TO_SENSOR_RATIO;
@@ -180,19 +187,18 @@ public class TurretSubsystem extends SubsystemBase {
     pitchTalonConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PITCH_LIMIT_REVERSE.in(Rotations);
     pitchMotor.getConfigurator().apply(pitchTalonConfig);
 
-    pitchPositionSignal = pitchMotor.getPosition();
+    pitchPosition = pitchMotor.getPosition();
+    pitchVelocity = pitchMotor.getVelocity();
 
     // Configure the roller motor
     var rollerTalonConfig = new TalonFXConfiguration();
     rollerTalonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rollerTalonConfig.MotorOutput.NeutralMode = Brake;
-    rollerTalonConfig.Slot0 = Slot0Configs.from(ROLLER_VELOCITY_SLOT_CONFIGS);
-    rollerTalonConfig.CurrentLimits.StatorCurrentLimit = 60;
-    rollerTalonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    rollerTalonConfig.CurrentLimits.SupplyCurrentLimit = 40;
+    rollerTalonConfig.Slot0 = Slot0Configs.from(ROLLER_SLOT_CONFIGS);
+    rollerTalonConfig.CurrentLimits.SupplyCurrentLimit = ROLLER_SUPPLY_CURRENT_LIMIT.in(Amps);
     rollerTalonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    rollerTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
-    rollerTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
+    rollerTalonConfig.TorqueCurrent.PeakForwardTorqueCurrent = ROLLER_PEAK_FORWARD_CURRENT.in(Amps);
+    rollerTalonConfig.TorqueCurrent.PeakReverseTorqueCurrent = ROLLER_PEAK_REVERSE_CURRENT.in(Amps);
     rollerMotor.getConfigurator().apply(rollerTalonConfig);
 
     // Configure the note sensor
@@ -255,31 +261,24 @@ public class TurretSubsystem extends SubsystemBase {
     pitchMotor.setControl(pitchControl.withPosition(pitch.in(Rotations)));
   }
 
-    /**
-   * Sets the turret pitch (rotation around the Y axis) position target. Zero is horizontal, upward is positive
-   * (since the turret is facing backward).
-   * @param pitch pitch
-   * @param pitchAdjustment pitch added to the pitch (kind of a hack, but avoids reallocation of Measure)
-   */
-  public void moveToPitchPosition(Measure<Angle> pitch, Measure<Angle> pitchAdjustment) {
-    pitchMotor.setControl(pitchControl.withPosition(pitch.in(Rotations) + pitchAdjustment.in(Rotations)));
-  }
-
   /**
-   * Loads a note from the amper/intake. Must likely {@link #prepareToExchange()} and {@link #isAtYawAndPitchTarget()}
+   * Loads a note from the intake. Must likely {@link #prepareToIntake()} and {@link #isAtYawAndPitchTarget()}
    * should be called first.
    */
-  public void load() {
-    runRollers(LOAD_VELOCITY);
-    moveToYawPosition(INTAKE_YAW_POSITION);
-    moveToPitchPosition(INTAKE_PITCH_POSITION);
+  public void intake() {
+    runRollers(INTAKE_VELOCITY);
+    moveToYawPosition(INTAKE_YAW);
+    moveToPitchPosition(INTAKE_PITCH);
   }
 
   /**
-   * Ejects a note into the amper/intake
+   * Ejects a note into the intake. Must likely {@link #prepareToIntake()} and {@link #isAtYawAndPitchTarget()}
+   * should be called first.
    */
   public void eject() {
     runRollers(EJECT_VELOCITY);
+    moveToYawPosition(INTAKE_YAW);
+    moveToPitchPosition(INTAKE_PITCH);
   }
 
   /**
@@ -295,6 +294,122 @@ public class TurretSubsystem extends SubsystemBase {
    */
   public void runRollers(Measure<Velocity<Angle>> velocity) {
     rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
+  }
+
+  /**
+   * Gets the turret yaw and pitch into position to intake / eject. Check {@link #isInIntakePosition()} to find out
+   * when the turret is ready
+   */
+  public void prepareToIntake() {
+    moveToYawPosition(INTAKE_YAW);
+    moveToPitchPosition(INTAKE_PITCH);
+    stopRollers();
+  }
+
+  /**
+   * Gets the turret yaw and pitch in position to amp. Check {@link #isAtYawAndPitchTarget()} to find out when the
+   * turret is ready
+   */
+  public void prepareToAmp() {
+    moveToYawPosition(AMP_YAW);
+    moveToPitchPosition(AMP_PITCH);
+    stopRollers();
+  }
+
+  /**
+   * Gets the turret yaw and pitch in position for baby bird.  Check {@link #isAtYawAndPitchTarget()} to find out when
+   * the turret is ready
+   */
+  public void prepareToBabyBird() {
+    moveToYawPosition(BABY_BIRD_YAW);
+    moveToPitchPosition(BABY_BIRD_PITCH);
+    runRollers(BABY_BIRD_ROLLER_VELOCITY);
+  }
+
+  /**
+   * Indicates if the yaw and pitch are at their target positions
+   * @return true if the yaw and pitch are at their target positions
+   */
+  public boolean isAtYawAndPitchTarget() {
+    BaseStatusSignal.refreshAll(yawPosition, yawVelocity, pitchPosition, pitchVelocity);
+    return isInTolerance(yawControl.Position, yawPosition, yawVelocity, YAW_TOLERANCE.in(Rotations))
+        && isInTolerance(pitchControl.Position, pitchPosition, pitchVelocity, PITCH_TOLERANCE.in(Rotations));
+  }
+
+  /**
+   * Indicates if the turret is in the intake position. This is similar to {@link #isAtYawAndPitchTarget()}, except the
+   * tolerance is wider.
+   * @return true if the yaw and pitch are at the intake position
+   */
+  public boolean isInIntakePosition() {
+    BaseStatusSignal.refreshAll(yawPosition, yawVelocity, pitchPosition, pitchVelocity);
+    return isInTolerance(yawControl.Position, yawPosition, yawVelocity, INTAKE_YAW_TOLERANCE.in(Rotations))
+        && isInTolerance(pitchControl.Position, pitchPosition, pitchVelocity, INTAKE_PITCH_TOLERANCE.in(Rotations));
+  }
+
+  /**
+   * Indicates if the yaw is at its target position
+   * @return true if the yaw is at the target position
+   */
+  public boolean isAtYawTarget() {
+    BaseStatusSignal.refreshAll(yawPosition, yawVelocity);
+    return isInTolerance(yawControl.Position, yawPosition, yawVelocity, YAW_TOLERANCE.in(Rotations));
+  }
+
+  /**
+   * Indicates if the pitch is at its target position
+   * @return true if the pitch is at the target position
+   */
+  public boolean isAtPitchTarget() {
+    BaseStatusSignal.refreshAll(pitchPosition, pitchVelocity);
+    return isInTolerance(pitchControl.Position, pitchPosition, pitchVelocity, PITCH_TOLERANCE.in(Rotations));
+  }
+
+  /**
+   * Sets the turret yaw (rotation around the Z axis) position target. Zero is robot forward, using the WPILib unit
+   * circle.
+   * @param yaw robot relative yaw
+   */
+  public void moveToYawPosition(Measure<Angle> yaw) {
+    yawMotor.setControl(yawControl.withPosition(translateYaw(yaw)));
+  }
+
+  /**
+   * Sets the turret yaw (rotation around the z axix) position target, but for shooting. The difference between this
+   * and {@link #moveToYawPosition(Measure)} is that this method only turns the turret within the bounds where shooting
+   * is possible, and it applies correct for the shooter not launching perfectly straight.
+   * Zero is robot forward, using the WPILib unit circle.
+   * @param yaw robot relative yaw
+   */
+  public void moveToShootingYawPosition(Measure<Angle> yaw) {
+    // Clamp to shooting range, and correct for the fact that the shooter doesn't shoot straight
+    var targetYaw = MathUtil.clamp(
+      translateYaw(yaw.plus(SHOOTING_YAW_CORRECTION)),
+      YAW_SHOOT_LIMIT_REVERSE.in(Rotations),
+      YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
+    
+    yawMotor.setControl(yawControl.withPosition(targetYaw));
+  }
+
+  /**
+   * Gets the current pitch angle
+   * @return pitch
+   */
+  public Measure<Angle> getPitch() {
+    BaseStatusSignal.refreshAll(pitchPosition, pitchVelocity);
+    var compensatedPitch = BaseStatusSignal.getLatencyCompensatedValue(pitchPosition, pitchVelocity);
+    return pitchAngle.mut_replace(compensatedPitch, Rotations);
+  }
+
+  /**
+   * Gets the current yaw angle
+   * @return yaw
+   */
+  public Measure<Angle> getYaw() {
+    BaseStatusSignal.refreshAll(yawPosition, yawVelocity);
+    var compensatedYaw = BaseStatusSignal.getLatencyCompensatedValue(yawPosition, yawVelocity);
+    var translatedRotations = translateYaw(yawAngle.mut_replace(compensatedYaw, Rotations));
+    return yawAngle.mut_replace(translatedRotations, Rotations);
   }
 
   /**
@@ -326,83 +441,7 @@ public class TurretSubsystem extends SubsystemBase {
     stopPitch();
     stopRollers();
   }
-
-  /**
-   * Gets the turret yaw and pitch into position to load / eject. Check {@link #isAtYawAndPitchTarget()} to see find out
-   * when the turret is ready
-   */
-  public void prepareToExchange() {
-    moveToYawPosition(INTAKE_YAW_POSITION);
-    moveToPitchPosition(TRANSFER_PITCH);
-    stopRollers();
-  }
-
-  /**
-   * Safely moves the turret into the trap position. Call this repeatedly until {@link #isInTrapPosition()} is true.
-   * @param isSafe a BooleanSupplier to indicate if it is safe to move the turret. This is required to make the
-   *        caller think about the fact that the elevator and turret interfere with eachother
-   */
-  public void prepareToTrap(BooleanSupplier isSafe) {
-    moveToPitchPosition(TRAP_PITCH_POSITION);
-    if (isAtPitchTarget() && isSafe.getAsBoolean()) {
-      moveToYawPosition(TRAP_YAW_POSITION);
-    }
-  }
-
-  /**
-   * Checks if the turret is in the trap position
-   * @return true if the turret is in trap position
-   */
-  public boolean isInTrapPosition() {
-    BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
-    return isInTolerance(translateYaw(TRAP_YAW_POSITION), yawPositionSignal, YAW_TOLERANCE.in(Rotations))
-        && isInTolerance(TRAP_PITCH_POSITION.in(Rotations), pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
-  }
-
-  /**
-   * Indicates if the yaw and pitch are at their target positions
-   * @return true if the yaw and pitch are at their target positions
-   */
-  public boolean isAtYawAndPitchTarget() {
-    BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
-    return isInTolerance(yawControl.Position, yawPositionSignal, YAW_TOLERANCE.in(Rotations))
-        && isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
-  }
-
-  public boolean isInExchangePosition() {
-    BaseStatusSignal.refreshAll(yawPositionSignal, pitchPositionSignal);
-    return isInTolerance(yawControl.Position, yawPositionSignal, YAW_EXCHANGE_TOLERANCE.in(Rotations))
-        && isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_EXCHANGE_TOLERANCE.in(Rotations));
-  }
-
-  /**
-   * Indicates if the yaw is at its target position
-   * @return true if the yaw is at the target position
-   */
-  public boolean isAtYawTarget() {
-    yawPositionSignal.refresh();
-    return isInTolerance(yawControl.Position, yawPositionSignal, YAW_TOLERANCE.in(Rotations));
-  }
-
-  /**
-   * Indicates if the pitch is at its target position
-   * @return true if the pitch is at the target position
-   */
-  public boolean isAtPitchTarget() {
-    pitchPositionSignal.refresh();
-    return isInTolerance(pitchControl.Position, pitchPositionSignal, PITCH_TOLERANCE.in(Rotations));
-  }
-
-  /**
-   * Checks if the turret is clear of the elevator's path
-   * @return true if the turret is clear of the elevator, otherwise false
-   */
-  public boolean isClearOfElevator() {
-    // Checking for intake position depends on isInTrapPosition() refreshing yawPositionSignal
-    return isInTrapPosition()
-      || isInTolerance(translateYaw(INTAKE_YAW_POSITION), yawPositionSignal, YAW_TOLERANCE.in(Rotations));
-  }
-
+  
   /**
    * Checks if the specified yaw angle is within the range from where the turret can shoot a note
    * @param angle angle to check
@@ -415,77 +454,17 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   /**
-   * Sets the turret yaw (rotation around the Z axis) position target. Zero is robot forward, using the WPILib unit
-   * circle. This method DOES NOT check if the the turret will hit the elevator. Only use it after checking for
-   * interference, or when moving to intake position (where there is no interference)
-   * @param yaw robot relative yaw
-   */
-  private void moveToYawPosition(Measure<Angle> yaw) {
-    yawMotor.setControl(yawControl.withPosition(translateYaw(yaw)));
-  }
-
-  /**
-   * Sets the turret yaw (rotation around the Z axis) position target. Zero is robot forward, using the WPILib unit
-   * circle.
-   * @param yaw robot relative yaw
-   * @param isSafe a BooleanSupplier to indicate if it is safe to move the turret. This is required to make the
-   *        caller think about the fact that the elevator and turret interfere with eachother
-   */
-  public void moveToYawPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
-    if (isSafe.getAsBoolean()) {
-      moveToYawPosition(yaw);
-    }
-  }
-
-  /**
-   * Sets the turret yaw (rotation around the z axix) position target, but for shooting. The difference between this
-   * and {@link #moveToYawPosition(Measure)} is that this method only turns the turret within the bounds where shooting
-   * is possible without hitting the elevator, and it applies correct for the shooter not launching perfectly straight.
-   * Zero is robot forward, using the WPILib unit circle.
-   * @param yaw robot relative yaw
-   * @param isSafe a BooleanSupplier to indicate if it is safe to move the turret. This is required to make the
-   *        caller think about the fact that the elevator and turret interfere with eachother
-   */
-  public void moveToShootingYawPosition(Measure<Angle> yaw, BooleanSupplier isSafe) {
-    // Clamp to shooting range, and correct for the fact that the shooter doesn't shoot straight
-    var targetYaw = MathUtil.clamp(
-      translateYaw(yaw.plus(SHOOTING_YAW_CORRECTION)),
-      YAW_SHOOT_LIMIT_REVERSE.in(Rotations),
-      YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
-    
-    if (isSafe.getAsBoolean()) {
-      yawMotor.setControl(yawControl.withPosition(targetYaw));
-    }
-  }
-
-  /**
-   * Gets the current pitch angle
-   * @return pitch
-   */
-  public Measure<Angle> getPitch() {
-    pitchPositionSignal.refresh();
-    return pitchAngle.mut_replace(pitchPositionSignal.getValueAsDouble(), Rotations);
-  }
-
-  /**
-   * Gets the current yaw angle
-   * @return yaw
-   */
-  public Measure<Angle> getYaw() {
-    yawPositionSignal.refresh();
-    var translatedRotations = translateYaw(yawAngle.mut_replace(pitchPositionSignal.getValueAsDouble(), Rotations));
-    return yawAngle.mut_replace(translatedRotations, Rotations);
-  }
-
-  /**
    * Checks if a signal is within tolerance of a target
    * @param target target
-   * @param valueSignal status signal for current value. You may want to refresh first, this method does not refresh
+   * @param value status signal for current value. You may want to refresh first, this method does not refresh
+   * @param slope derivative of the signal that defines the slope for latency compensation, this method does not refresh
    * @param tolerance tolerance
    * @return true if value is within tolerance of the target
    */
-  private static boolean isInTolerance(double target, StatusSignal<Double> valueSignal, double tolerance) {
-    return Math.abs(target - valueSignal.getValueAsDouble()) < tolerance;
+  private static boolean isInTolerance(
+        double target, StatusSignal<Double> value, StatusSignal<Double> slope, double tolerance) {
+    var compensated = BaseStatusSignal.getLatencyCompensatedValue(value, slope);
+    return Math.abs(target - compensated) < tolerance;
   }
   
   /**

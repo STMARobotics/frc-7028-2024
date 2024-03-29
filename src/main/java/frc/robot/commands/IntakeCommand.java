@@ -3,44 +3,40 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AmperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 /**
  * Command to intake a note from the floor to the turret
  */
-public class IntakeToTurretCommand extends Command {
+public class IntakeCommand extends Command {
   
   private final IntakeSubsystem intakeSubsystem;
   private final TurretSubsystem turretSubsystem;
-  private final AmperSubsystem amperSubsystem;
 
-  public IntakeToTurretCommand(IntakeSubsystem intakeSubsystem, TurretSubsystem turretSubsystem, AmperSubsystem amperSubsystem) {
+  public IntakeCommand(IntakeSubsystem intakeSubsystem, TurretSubsystem turretSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.turretSubsystem = turretSubsystem;
-    this.amperSubsystem = amperSubsystem;
 
-    addRequirements(intakeSubsystem, turretSubsystem, amperSubsystem);
+    addRequirements(intakeSubsystem, turretSubsystem);
   }
 
   @Override
   public void initialize() {
-    turretSubsystem.prepareToExchange();
+    turretSubsystem.prepareToIntake();
   }
   
   @Override
   public void execute() {
-    if (turretSubsystem.isInExchangePosition()) {
+    if (turretSubsystem.isInIntakePosition()) {
       intakeSubsystem.intake();
-      amperSubsystem.intake();
-      turretSubsystem.load();
+      turretSubsystem.intake();
     }
   }
 
   @Override
   public boolean isFinished() {
-    return turretSubsystem.hasNote() || amperSubsystem.hasNote();
+    return turretSubsystem.hasNote();
   }
 
   @Override
@@ -49,7 +45,6 @@ public class IntakeToTurretCommand extends Command {
     turretSubsystem.stopPitch();
     turretSubsystem.stopYaw();
     turretSubsystem.runRollers(RotationsPerSecond.zero());
-    amperSubsystem.stop();
   }
 
 }
