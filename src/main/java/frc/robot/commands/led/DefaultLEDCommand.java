@@ -39,6 +39,14 @@ public class DefaultLEDCommand extends Command {
   }
 
   private void updateLeds(LEDStrips strips) {
+    // DO NOT schedule commands here, this is on a the LED callback thread and the scheduler is not threadsafe.
+    // execute() handles all of the cases where the LEDs should be on. If this is called, the LEDs should be off.
+    strips.setAll(Color.kBlack);
+  }
+
+  @Override
+  public void execute() {
+    // Based on the mode, schedule a command to do the animation.
     switch(getMode()) {
       case MODE_DS_DISCONNECT:
         new LEDAlternateCommand(ledSubsystem, Color.kDarkRed, Color.kIndianRed, Seconds.of(0.5))
@@ -53,8 +61,7 @@ public class DefaultLEDCommand extends Command {
             .until(() -> getMode() != LEDMode.MODE_ROBOT_DISABLED).schedule();
         break;
       default:
-        // default state is off
-        strips.setAll(Color.kBlack);
+        // Don't do anything for default. LEDs will go off.
     }
   }
 
