@@ -136,7 +136,7 @@ public class TurretSubsystem extends SubsystemBase {
     // Configure the yaw CANCoder
     var yawCanCoderConfig = new CANcoderConfiguration();
     yawCanCoderConfig.MagnetSensor.MagnetOffset = YAW_MAGNETIC_OFFSET.in(Rotations);
-    yawCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    yawCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     yawEncoder.getConfigurator().apply(yawCanCoderConfig);
 
     // Configure the yaw motor
@@ -164,7 +164,7 @@ public class TurretSubsystem extends SubsystemBase {
     // Configure the pitch CANCoder
     var pitchCanCoderConfig = new CANcoderConfiguration();
     pitchCanCoderConfig.MagnetSensor.MagnetOffset = PITCH_MAGNETIC_OFFSET.in(Rotations);
-    pitchCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+    pitchCanCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     pitchEncoder.getConfigurator().apply(pitchCanCoderConfig);
 
     // Configure the pitch motor

@@ -194,15 +194,15 @@ public class Constants {
     public static final Measure<Current> ROLLER_PEAK_REVERSE_CURRENT = ROLLER_PEAK_FORWARD_CURRENT.negate();
     public static final Measure<Current> ROLLER_SUPPLY_CURRENT_LIMIT = Amps.of(40);
 
-    public static final Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.428223); 
+    public static final Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.096191); 
     public static final double YAW_ROTOR_TO_SENSOR_RATIO = (140 / 10) * 4.0;
     // NOTE: Yaw limits are set using turret encoder angles, so they're 180-degrees off from robot
     public static final Measure<Angle> YAW_LIMIT_FORWARD = Degrees.of(179.9);
     public static final Measure<Angle> YAW_LIMIT_REVERSE = Degrees.of(-179.9);
 
     // Range turret can shoot from without needing to turn the drivetrain
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(0.25);
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-0.25);
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = Rotations.of(0.323486);
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = Rotations.of(-0.641113);
 
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
         .withKP(110)
@@ -215,9 +215,9 @@ public class Constants {
         .withMotionMagicAcceleration(10.0)
         .withMotionMagicCruiseVelocity(2.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.358887);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.480469);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
-    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.117);
+    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.181396);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
     public static final SlotConfigs PITCH_SLOT_CONFIGS = new SlotConfigs()
         .withKP(130)
