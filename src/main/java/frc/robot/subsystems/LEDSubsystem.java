@@ -1,11 +1,12 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.wpilibj.util.Color.kBlack;
 import static frc.robot.Constants.LEDConstants.DEVICE_ID;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Notifier;
@@ -18,9 +19,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class LEDSubsystem extends SubsystemBase {
   
-  private static final int LED_COUNT = 20 + 18 + 20 + 34;
-  private static final int STRIP_COUNT = 4;
-  private static final int STRIP_SIZE = LED_COUNT / STRIP_COUNT;
+  private static final int[] STRIP_SIZES = {20, 18, 20, 33};
+  private static final int LED_COUNT = Arrays.stream(STRIP_SIZES).sum();
+  private static final int STRIP_COUNT = STRIP_SIZES.length;
 
   private final AtomicReference<Consumer<LEDStrips>> ledUpdateConsumer = new AtomicReference<Consumer<LEDStrips>>(null);
   private final Notifier ledNotifier;
@@ -65,9 +66,31 @@ public class LEDSubsystem extends SubsystemBase {
    * @return LED index in the buffer
    */
   private int calculateUpdateIndex(int stripId, int ledId) {
-    int firstId = stripId * STRIP_SIZE;
-    int index = stripId % 2 == 0 ? firstId + ledId : firstId + STRIP_SIZE - ledId - 1;
-    return MathUtil.clamp(index, 0, LED_COUNT - 1);
+    int index = 0;
+    if (0 == stripId) {
+      // Strip ID 0 is along the front, right to left
+      // These LEDS are at the end of the string, in the same direction
+      index = STRIP_SIZES[0] + STRIP_SIZES[1] + STRIP_SIZES[2];
+      index += ledId;
+    }
+    if (1 == stripId) {
+      // Strip ID 1 is along the left side, front to back
+      // These LEDs are at the start of the string, in the same direction
+      index = ledId;
+    }
+    if (2 == stripId) {
+      // Strip ID 2 is along the right side, front to back
+      // These LEDs are in the third segment of the string, in reverse order
+      index = STRIP_SIZES[0] + STRIP_SIZES[1] + STRIP_SIZES[2] - 1;
+      index -= ledId;
+    }
+    if (3 == stripId) {
+      // StripID 3 is along the back side, right to left
+      // These LEDs are in the second segment of the string, in reverse order
+      index = STRIP_SIZES[0] + STRIP_SIZES[1] - 1;
+      index -= ledId;
+    }
+    return index;
   }
 
   /**
@@ -110,13 +133,21 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public void setLEDSegments(Color color, boolean... segmentValues) {
-      int ledsPerStatus = LEDSubsystem.STRIP_SIZE / segmentValues.length;
-      for(int stripId = 0; stripId < LEDSubsystem.STRIP_COUNT; stripId++) {
+      // Only lights up the side strips, strips 1 and 2. Front and back stay off.
+      // Light up the segments
+      int ledsPerStatus = getStripSize(1) / segmentValues.length;
+      for(int stripId = 1; stripId < LEDSubsystem.STRIP_COUNT; stripId ++) {
         int ledIndex = 0;
         for (int segmentId = 0; segmentId < segmentValues.length; segmentId++) {
           for(;ledIndex < (ledsPerStatus * (segmentId + 1)); ledIndex++) {
             setLED(stripId, ledIndex, segmentValues[segmentId] ? color : Color.kBlack);
           }
+        }
+      }
+      // Turn off the front and back strips (0 and 3)
+      for (int stripId = 0; stripId < STRIP_COUNT; stripId += 3) {
+        for (int ledId = 0; ledId < getStripSize(stripId); ledId++) {
+          setLED(stripId, ledId, kBlack);
         }
       }
       refresh();
@@ -128,8 +159,25 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     @Override
-    public int getStripSize() {
-      return STRIP_SIZE;
+    public int getStripSize(int stripId) {
+      if (stripId == 0) {
+        return STRIP_SIZES[3];
+      }
+      if (stripId == 1) {
+        return STRIP_SIZES[0];
+      }
+      if (2 == stripId) {
+        return STRIP_SIZES[2];
+      }
+      if (3 == stripId) {
+        return STRIP_SIZES[0];
+      }
+      return 0;
+    }
+
+    @Override
+    public int getMaxStripSize() {
+      return Arrays.stream(STRIP_SIZES).max().getAsInt();
     }
   }
 

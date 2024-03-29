@@ -33,7 +33,7 @@ public class LEDBootAnimationCommand extends Command {
   private void animate(LEDStrips ledStrips) {
     if (timer.advanceIfElapsed(0.05)) {
       for(int strip = 0; strip < ledStrips.getStripCount(); strip++) {
-        for(int index = 0; index < ledStrips.getStripSize(); index++) {
+        for(int index = 0; index < ledStrips.getStripSize(strip); index++) {
           if (index <= blipIndex && index >= blipIndex - (BLIP_SIZE - 1)) {
             ledStrips.setLED(strip, index, Color.kOrange);
           } else {
@@ -43,7 +43,7 @@ public class LEDBootAnimationCommand extends Command {
       }
       blipIndex++;
       ledStrips.refresh();
-      done = blipIndex - (BLIP_SIZE + 1) >= ledStrips.getStripSize();
+      done = blipIndex - (BLIP_SIZE + 1) >= ledStrips.getMaxStripSize();
     }
   }
 

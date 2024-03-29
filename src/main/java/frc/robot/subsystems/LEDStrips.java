@@ -77,7 +77,14 @@ public interface LEDStrips {
 
   /**
    * Gets the number of LEDs per strip
+   * @param stripId which stripID to get the length of
    * @return number of LEDs per strip
    */
-  public int getStripSize();
+  public int getStripSize(int stripId);
+
+  /**
+   * Gets the length of the longest strip
+   * @return length of the longest strip
+   */
+  public int getMaxStripSize();
 }

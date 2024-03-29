@@ -51,10 +51,10 @@ public class LEDMarqueeCommand extends Command {
   private void animate(LEDStrips ledStrips) {
     if (timer.advanceIfElapsed(duration)) {
       if (frame == 0) {
-        frame = ledStrips.getStripSize();
+        frame = ledStrips.getMaxStripSize();
       }
       for(int strip = 0; strip < ledStrips.getStripCount(); strip++) {
-        for(int index = 0; index < ledStrips.getStripSize(); index++) {
+        for(int index = 0; index < ledStrips.getStripSize(strip); index++) {
           int value = minValue + ((index + frame) % MARQUEE_SIZE) * valueStep;
           ledStrips.setHSV(strip, index, hue, saturation, value);
         }

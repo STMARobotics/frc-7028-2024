@@ -52,7 +52,7 @@ public class LEDAlternateCommand extends Command {
     if (timer.advanceIfElapsed(interval) || refresh) {
       long currentTime = System.currentTimeMillis();
       for (int strip = 0; strip < ledStrips.getStripCount(); strip++) {
-        for (int index = 0; index < ledStrips.getStripSize(); index++) {
+        for (int index = 0; index < ledStrips.getStripSize(strip); index++) {
           if (index % 2 == (currentTime / (int) (interval * 1000) % 2)) {
             ledStrips.setLED(strip, index, color1);
           } else {
