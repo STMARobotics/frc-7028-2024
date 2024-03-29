@@ -1,5 +1,7 @@
 package frc.robot.commands.led;
 
+import java.util.stream.IntStream;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,7 +45,7 @@ public class LEDBootAnimationCommand extends Command {
       }
       blipIndex++;
       ledStrips.refresh();
-      done = blipIndex - (BLIP_SIZE + 1) >= ledStrips.getMaxStripSize();
+      done = blipIndex - (BLIP_SIZE + 1) >= IntStream.range(0, ledStrips.getStripCount() -1).map(i -> ledStrips.getStripSize(i)).max().getAsInt();
     }
   }
 
