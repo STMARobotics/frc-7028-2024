@@ -8,7 +8,6 @@ import static frc.robot.Constants.VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS;
 
 import java.util.function.Supplier;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -24,7 +23,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -111,16 +109,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   @Override
   protected boolean checkIsOnCanFD(String name) {
-    // Troubleshooting method CTRE provided to help determine why odometry is running at 100Hz
-    boolean isFd = CANBus.isNetworkFD(name);
-    int maxCount = 20; // Wait at most 2 seconds checking if we're FD
-    while (!isFd && maxCount-- > 0) {
-      Timer.delay(0.1);
-      isFd = CANBus.isNetworkFD(name);
-      System.err.println("isNetworkFD reported network is not FD!!");
-    }
-    System.out.println("Network is FD? " + isFd);
-    return isFd;
+    // Hack for CTRE's library sometimes saying the network is not CAN-FD
+    return true;
   }
 
   @Override
