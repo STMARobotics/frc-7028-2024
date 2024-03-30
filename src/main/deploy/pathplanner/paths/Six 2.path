@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.252120013011957,
-        "y": 7.423632742002327
+        "x": 8.460690079274897,
+        "y": 7.459905797004577
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.200201417946698,
-        "y": 6.952083026973072
+        "x": 7.408771484209638,
+        "y": 6.988356081975322
       },
       "isLocked": false,
-      "linkedName": "Six 1"
+      "linkedName": "Six 1a"
     },
     {
       "anchor": {
@@ -115,7 +115,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 2.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -130,5 +130,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

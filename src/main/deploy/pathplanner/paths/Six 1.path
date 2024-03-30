@@ -33,15 +33,15 @@
     {
       "anchor": {
         "x": 2.7295473889193396,
-        "y": 5.1928398593639296
+        "y": 5.365136870624618
       },
       "prevControl": {
         "x": 2.0947689263799583,
-        "y": 4.703153616833549
+        "y": 4.875450628094238
       },
       "nextControl": {
         "x": 2.8990036053369757,
-        "y": 5.323563226314677
+        "y": 5.495860237575366
       },
       "isLocked": false,
       "linkedName": null
@@ -64,12 +64,12 @@
     },
     {
       "anchor": {
-        "x": 8.252120013011957,
-        "y": 7.423632742002327
+        "x": 3.8812168852407885,
+        "y": 6.933946499471947
       },
       "prevControl": {
-        "x": 7.762433770481576,
-        "y": 7.387359687000077
+        "x": 3.391530642710407,
+        "y": 6.897673444469698
       },
       "nextControl": null,
       "isLocked": false,
@@ -79,7 +79,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.65,
-      "rotationDegrees": 32.15814497219817,
+      "rotationDegrees": 42.879900368153415,
       "rotateFast": false
     },
     {
@@ -93,26 +93,16 @@
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 3.5,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    },
-    {
       "waypointRelativePos": 0.5,
       "rotationDegrees": 0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 3.3,
-      "rotationDegrees": 47.00113315568044,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "Pickup A3 - A2",
-      "minWaypointRelativePos": 1.25,
-      "maxWaypointRelativePos": 2.4000000000000004,
+      "minWaypointRelativePos": 1.05,
+      "maxWaypointRelativePos": 2.25,
       "constraints": {
         "maxVelocity": 0.7,
         "maxAcceleration": 3.0,
@@ -122,8 +112,8 @@
     },
     {
       "name": "Pickup A1",
-      "minWaypointRelativePos": 2.4000000000000004,
-      "maxWaypointRelativePos": 3.1,
+      "minWaypointRelativePos": 2.65,
+      "maxWaypointRelativePos": 3.15,
       "constraints": {
         "maxVelocity": 1.2,
         "maxAcceleration": 3.0,
@@ -133,8 +123,8 @@
     },
     {
       "name": "Shoot A3",
-      "minWaypointRelativePos": 3.3,
-      "maxWaypointRelativePos": 3.35,
+      "minWaypointRelativePos": 3.55,
+      "maxWaypointRelativePos": 4.0,
       "constraints": {
         "maxVelocity": 0.6,
         "maxAcceleration": 3.0,
@@ -145,7 +135,7 @@
     {
       "name": "Shoot Preload",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.3,
+      "maxWaypointRelativePos": 0.15,
       "constraints": {
         "maxVelocity": 0.5,
         "maxAcceleration": 3.0,
@@ -207,23 +197,6 @@
           ]
         }
       }
-    },
-    {
-      "name": "Intake and Shoot M1",
-      "waypointRelativePos": 3.65,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "intake"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {
@@ -234,7 +207,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 21.412969474871833,
     "rotateFast": false
   },
   "reversed": false,

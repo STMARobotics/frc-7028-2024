@@ -18,6 +18,31 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "scoreSpeakerWhileMoving"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Six 1a"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Six 2"
