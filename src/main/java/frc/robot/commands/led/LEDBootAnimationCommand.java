@@ -1,6 +1,6 @@
 package frc.robot.commands.led;
 
-import java.util.stream.IntStream;
+import static edu.wpi.first.wpilibj.util.Color.kBlack;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
@@ -17,6 +17,7 @@ public class LEDBootAnimationCommand extends Command {
   
   private int blipIndex = -1;
   private boolean done = false;
+  private boolean initialized = false;
 
   public LEDBootAnimationCommand(LEDSubsystem ledSubsystem) {
     this.ledSubsystem = ledSubsystem;
@@ -30,22 +31,25 @@ public class LEDBootAnimationCommand extends Command {
     timer.start();
     ledSubsystem.setUpdater(this::animate);
     done = false;
+    initialized = false;
   }
 
   private void animate(LEDStrips ledStrips) {
-    if (timer.advanceIfElapsed(0.05)) {
-      for(int strip = 0; strip < ledStrips.getStripCount(); strip++) {
-        for(int index = 0; index < ledStrips.getStripSize(strip); index++) {
-          if (index <= blipIndex && index >= blipIndex - (BLIP_SIZE - 1)) {
-            ledStrips.setLED(strip, index, Color.kOrange);
-          } else {
-            ledStrips.setLED(strip, index, Color.kBlue);
-          }
+    if (timer.advanceIfElapsed(0.05) || !initialized) {
+      if (!initialized) {
+        ledStrips.setAll(kBlack);
+        initialized = true;
+      }
+      for(int index = 0; index < ledStrips.getMirrorStripSize(); index++) {
+        if (index <= blipIndex && index >= blipIndex - (BLIP_SIZE - 1)) {
+          ledStrips.setMirrorLED(index, Color.kOrange);
+        } else {
+          ledStrips.setMirrorLED(index, Color.kBlue);
         }
       }
       blipIndex++;
       ledStrips.refresh();
-      done = blipIndex - (BLIP_SIZE + 1) >= IntStream.range(0, ledStrips.getStripCount() -1).map(i -> ledStrips.getStripSize(i)).max().getAsInt();
+      done = blipIndex - (BLIP_SIZE + 1) >= ledStrips.getMirrorStripSize();
     }
   }
 
