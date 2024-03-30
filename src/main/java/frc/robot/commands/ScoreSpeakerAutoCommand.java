@@ -12,7 +12,6 @@ import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
-import static frc.robot.Constants.TurretConstants.ROBOT_TO_TURRET;
 import static java.lang.Math.PI;
 
 import java.util.function.Supplier;
@@ -70,10 +69,9 @@ public class ScoreSpeakerAutoCommand extends Command {
   @Override
   public void execute() {
     var robotPose = poseSupplier.get();
-    var robotTranslation = robotPose.getTranslation();
     
     // Translation to the center of the turret
-    var turretTranslation = robotTranslation.plus(ROBOT_TO_TURRET.rotateBy(robotPose.getRotation()));
+    var turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);
 
     // Distance between the robot and the speaker
     var distanceToSpeaker = turretTranslation.getDistance(speakerTranslation);

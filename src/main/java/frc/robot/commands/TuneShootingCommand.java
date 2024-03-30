@@ -83,8 +83,9 @@ public class TuneShootingCommand extends Command {
   
   @Override
   public void execute() {
-    var distanceToSpeaker = poseSupplier.get().getTranslation().getDistance(speakerTranslation);
-    distancePublisher.accept(distanceToSpeaker);
+    var turretDistanceToSpeaker = 
+        TurretSubsystem.getTurretTranslation(poseSupplier.get()).getDistance(speakerTranslation);
+    distancePublisher.accept(turretDistanceToSpeaker);
 
     turretSubsystem.moveToPitchPosition(pitchMeasure.mut_replace(pitchSubscriber.get(0.0), Degrees));
     turretSubsystem.moveToShootingYawPosition(yawMeasure.mut_replace(yawSubscriber.get(180.0), Degrees));

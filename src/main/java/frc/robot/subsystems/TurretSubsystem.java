@@ -36,6 +36,7 @@ import static frc.robot.Constants.TurretConstants.PITCH_SLOT_CONFIGS;
 import static frc.robot.Constants.TurretConstants.PITCH_STATOR_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_SUPPLY_CURRENT_LIMIT;
 import static frc.robot.Constants.TurretConstants.PITCH_TOLERANCE;
+import static frc.robot.Constants.TurretConstants.ROBOT_TO_TURRET;
 import static frc.robot.Constants.TurretConstants.ROLLER_PEAK_FORWARD_CURRENT;
 import static frc.robot.Constants.TurretConstants.ROLLER_PEAK_REVERSE_CURRENT;
 import static frc.robot.Constants.TurretConstants.ROLLER_SLOT_CONFIGS;
@@ -73,6 +74,8 @@ import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.LaserCan.RangingMode;
 import au.grapplerobotics.LaserCan.TimingBudget;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
@@ -451,6 +454,10 @@ public class TurretSubsystem extends SubsystemBase {
     var angleRotations = translateYaw(angle);
     return angleRotations < YAW_SHOOT_LIMIT_FORWARD.in(Rotations) 
         && angleRotations > YAW_SHOOT_LIMIT_REVERSE.in(Rotations);
+  }
+
+  public static Translation2d getTurretTranslation(Pose2d robotPose) {
+    return robotPose.getTranslation().plus(ROBOT_TO_TURRET.rotateBy(robotPose.getRotation()));
   }
 
   /**

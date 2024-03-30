@@ -20,7 +20,6 @@ import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE
 import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
 import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
-import static frc.robot.Constants.TurretConstants.ROBOT_TO_TURRET;
 import static java.lang.Math.PI;
 
 import java.util.function.Supplier;
@@ -122,10 +121,9 @@ public class ShootTeleopCommand extends Command {
   @Override
   public void execute() {
     var robotPose = drivetrain.getState().Pose;
-    var robotTranslation = robotPose.getTranslation();
     
     // Translation to the center of the turret
-    var turretTranslation = robotTranslation.plus(ROBOT_TO_TURRET.rotateBy(robotPose.getRotation()));
+    var turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);
 
     // Distance between the robot and the target
     var distanceToTarget = turretTranslation.getDistance(targetTranslation);

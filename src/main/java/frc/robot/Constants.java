@@ -197,18 +197,18 @@ public class Constants {
     public static final Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(0.093262);
     public static final double YAW_ROTOR_TO_SENSOR_RATIO = (170 / 10) * 4.0;
     // NOTE: Yaw limits are set using turret encoder angles, so they're 180-degrees off from robot
-    public static final Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.452881);
-    public static final Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(-0.488525);
+    public static final Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.48);
+    public static final Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(-0.46);
 
     // Range turret can shoot from without needing to turn the drivetrain
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = YAW_LIMIT_FORWARD;
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = YAW_LIMIT_REVERSE;
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD = YAW_LIMIT_FORWARD.minus(Degrees.of(1.0));
+    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE = YAW_LIMIT_REVERSE.minus(Degrees.of(1.0));
 
     // Distance from robot center to turret center
     public static final Translation2d ROBOT_TO_TURRET = new Translation2d(Inches.of(-5.508), Inches.zero());
 
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(110)
+        .withKP(120)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(0.59)
@@ -291,7 +291,7 @@ public class Constants {
     public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
     /** A constant used applied to estimate the note's time of flight */
-    public static final double SHOOT_WHILE_MOVING_COEFFICIENT = 6;
+    public static final double SHOOT_WHILE_MOVING_COEFFICIENT = 4;
 
     /**
      * Margin inside the turret shooting limits to avoid getting to the edge and being unable to reach
@@ -305,15 +305,15 @@ public class Constants {
         new Rotation2d(TurretConstants.YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
 
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
-      new ShootingSettings().distance(Meters.of(1.18)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35.0)),
-      new ShootingSettings().distance(Meters.of(1.58)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(29.0)),
-      new ShootingSettings().distance(Meters.of(1.99)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(21.5)),
-      new ShootingSettings().distance(Meters.of(2.52)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(15.5)),
-      new ShootingSettings().distance(Meters.of(3.29)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(10.75)),
-      new ShootingSettings().distance(Meters.of(3.93)).velocity(RotationsPerSecond.of(52)).pitch(Degrees.of(8.0)),
-      new ShootingSettings().distance(Meters.of(4.66)).velocity(RotationsPerSecond.of(57)).pitch(Degrees.of(4.0)),
-      new ShootingSettings().distance(Meters.of(5.55)).velocity(RotationsPerSecond.of(67)).pitch(Degrees.of(0.25)),
-      new ShootingSettings().distance(Meters.of(6.22)).velocity(RotationsPerSecond.of(67)).pitch(Degrees.of(0))
+      new ShootingSettings().distance(Meters.of(1.0400968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35.0)),
+      new ShootingSettings().distance(Meters.of(1.4400968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(29.0)),
+      new ShootingSettings().distance(Meters.of(1.8500968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(21.5)),
+      new ShootingSettings().distance(Meters.of(2.3800968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(15.5)),
+      new ShootingSettings().distance(Meters.of(3.1500968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(10.75)),
+      new ShootingSettings().distance(Meters.of(3.7900968)).velocity(RotationsPerSecond.of(52)).pitch(Degrees.of(8.0)),
+      new ShootingSettings().distance(Meters.of(4.5200968)).velocity(RotationsPerSecond.of(57)).pitch(Degrees.of(4.0)),
+      new ShootingSettings().distance(Meters.of(5.4100968)).velocity(RotationsPerSecond.of(67)).pitch(Degrees.of(0.25)),
+      new ShootingSettings().distance(Meters.of(6.0800968)).velocity(RotationsPerSecond.of(67)).pitch(Degrees.of(0))
     ));
 
     public static final VelocityPitchInterpolator STOCKPILE_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
