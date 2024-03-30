@@ -307,7 +307,7 @@ public class Constants {
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.18)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(35.0)),
       new ShootingSettings().distance(Meters.of(1.58)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(29.0)),
-      new ShootingSettings().distance(Meters.of(1.99)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(22.0)),
+      new ShootingSettings().distance(Meters.of(1.99)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(21.5)),
       new ShootingSettings().distance(Meters.of(2.52)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(15.5)),
       new ShootingSettings().distance(Meters.of(3.29)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(10.75)),
       new ShootingSettings().distance(Meters.of(3.93)).velocity(RotationsPerSecond.of(52)).pitch(Degrees.of(8.0)),
