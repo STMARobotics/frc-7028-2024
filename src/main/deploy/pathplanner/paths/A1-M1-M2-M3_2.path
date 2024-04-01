@@ -1,0 +1,123 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.38,
+        "y": 7.38
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.348708919873981,
+        "y": 6.85404070246737
+      },
+      "isLocked": false,
+      "linkedName": "A1-M1-M2-M3_1"
+    },
+    {
+      "anchor": {
+        "x": 5.676733107852181,
+        "y": 6.507738103195504
+      },
+      "prevControl": {
+        "x": 5.662394923914721,
+        "y": 6.550752655007884
+      },
+      "nextControl": {
+        "x": 5.722074426604995,
+        "y": 6.371714146937066
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.379075705519833,
+        "y": 5.791345266901061
+      },
+      "prevControl": {
+        "x": 6.220828932885936,
+        "y": 6.281031509431441
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "A1-M1-M2-M3_2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Slow to Shoot M1",
+      "minWaypointRelativePos": 0.7,
+      "maxWaypointRelativePos": 1.2,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Intake Shoot Intake",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.75
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "intake"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -18.034285567130045,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Five",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

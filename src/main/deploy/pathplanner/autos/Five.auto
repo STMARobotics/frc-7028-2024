@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3783760900855138,
+      "y": 6.979287818224759
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A1-M1-M2-M3_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A1-M1-M2-M3_2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A1-M1-M2-M3_3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A1-M1-M2-M3_4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreSpeakerWhileMoving"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
