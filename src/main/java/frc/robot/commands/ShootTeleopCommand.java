@@ -9,11 +9,11 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
+import static edu.wpi.first.wpilibj.util.Color.kBlue;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
-import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
@@ -220,7 +220,7 @@ public class ShootTeleopCommand extends Command {
       ledSubsystem.setUpdater(l -> l.setAll(kGreen));
     } else {
       ledSubsystem.setUpdater(l -> 
-          l.setLEDSegments(NOTE_COLOR, isShooterReady, isInTurretRange, isPitchReady, isYawReady));
+          l.setLEDSegments(kBlue, isShooterReady, isInTurretRange, isPitchReady, isYawReady));
     }
   }
 

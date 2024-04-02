@@ -4,8 +4,8 @@ import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
+import static edu.wpi.first.wpilibj.util.Color.kBlue;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
-import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
@@ -131,7 +131,7 @@ public class ScoreSpeakerAutoCommand extends Command {
       ledSubsystem.setUpdater(l -> l.setAll(kGreen));
     } else {
       ledSubsystem.setUpdater(l -> 
-          l.setLEDSegments(NOTE_COLOR, isShooterReady, isPitchReady, isYawReady));
+          l.setLEDSegments(kBlue, isShooterReady, isPitchReady, isYawReady));
     }
   }
 

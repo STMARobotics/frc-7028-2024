@@ -178,14 +178,18 @@ public class LEDSubsystem extends SubsystemBase {
     @Override
     public void setLEDSegments(Color color, boolean... segmentValues) {
       // Only lights up the side strips, strips 1 and 2. Front and back stay off.
-      // Light up the segments
       int ledsPerStatus = getStripSize(1) / segmentValues.length;
-      for(int stripId = 1; stripId < LEDSubsystem.STRIP_COUNT; stripId ++) {
+      for(int stripId = 1; stripId < LEDSubsystem.STRIP_COUNT; stripId++) {
         int ledIndex = 0;
+        // Light up the segments
         for (int segmentId = 0; segmentId < segmentValues.length; segmentId++) {
           for(;ledIndex < (ledsPerStatus * (segmentId + 1)); ledIndex++) {
             setLED(stripId, ledIndex, segmentValues[segmentId] ? color : Color.kBlack);
           }
+        }
+        // Turn off the remaining LEDs on the strip (remainder of strip size / segments)
+        for(;ledIndex < getStripSize(stripId); ledIndex++) {
+          setLED(stripId, ledIndex, kBlack);
         }
       }
       // Turn off the front and back strips (0 and 3)
