@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.243051749261394,
-        "y": 2.544906844199654
+        "x": 8.415348760522082,
+        "y": 2.472360734195153
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.919085241679255,
-        "y": 1.257213391619766
+        "x": 5.586050470346556,
+        "y": 1.6199439416422694
       },
       "isLocked": false,
       "linkedName": "Far Side 2"
@@ -20,24 +20,24 @@
         "y": 2.363541569188402
       },
       "prevControl": {
-        "x": 4.534131875281295,
-        "y": 2.5539751079502158
+        "x": 4.379053675578808,
+        "y": 2.398896908247729
       },
       "nextControl": {
-        "x": 4.201323707682853,
-        "y": 2.2211669403517744
+        "x": 4.308342997460153,
+        "y": 2.3281862301290746
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.170505639256893,
-        "y": 0.9307558965995125
+        "x": 8.415348760522082,
+        "y": 0.7584588853388241
       },
       "prevControl": {
-        "x": 6.728651702917442,
-        "y": 1.565534359138893
+        "x": 6.973494824182631,
+        "y": 1.393237347878205
       },
       "nextControl": null,
       "isLocked": false,
@@ -114,14 +114,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.75,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -13.448615051686389,
     "rotateFast": false
   },
   "reversed": false,
@@ -130,5 +130,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
