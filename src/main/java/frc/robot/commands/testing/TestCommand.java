@@ -38,6 +38,7 @@ public class TestCommand extends Command {
   public void execute() {
     var shootingSettings = SHOOTER_INTERPOLATOR.calculate(1.34);
     switch (teststate) {
+      
       case 0:
         intakeSubsystem.intake();
         timer.start();
@@ -50,6 +51,7 @@ public class TestCommand extends Command {
           }
         }
         break;
+
       case 1:
         intakeSubsystem.reverse();
         timer.start();
@@ -62,6 +64,7 @@ public class TestCommand extends Command {
           }
         }
         break;
+
       case 2:
         shooterSubsystem.prepareToShoot(shootingSettings.getVelocity());
         if (shooterSubsystem.isReadyToShoot()) {
@@ -73,6 +76,7 @@ public class TestCommand extends Command {
           timer.reset();
         }
         break;
+
       case 3:
         shooterSubsystem.reverse();
         if (shooterSubsystem.isReadyToShoot()) {
@@ -85,6 +89,7 @@ public class TestCommand extends Command {
           timer.reset();
         }
         break;
+      
       case 4:
         turretSubsystem.shoot();
         timer.start();
@@ -97,6 +102,7 @@ public class TestCommand extends Command {
           }
         }
         break;
+      
       case 5:
         turretSubsystem.eject();
         timer.start();
