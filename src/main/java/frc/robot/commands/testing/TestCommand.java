@@ -16,8 +16,7 @@ public class TestCommand extends Command {
 
   private int teststate = 0;
 
-  private Timer startTimer = new Timer();
-  private Timer endTimer = new Timer();
+  private Timer timer = new Timer();
 
   public TestCommand(
       IntakeSubsystem intakeSubsystem,
@@ -32,8 +31,7 @@ public class TestCommand extends Command {
 
   @Override
   public void initialize() {
-    startTimer.reset();
-    endTimer.reset();
+    timer.reset();
   }
 
   @Override
@@ -42,25 +40,25 @@ public class TestCommand extends Command {
     switch (teststate) {
       case 0:
         intakeSubsystem.intake();
-        startTimer.start();
-        if (startTimer.hasElapsed(2)) {
-          endTimer.start();
+        timer.start();
+        if (timer.hasElapsed(2)) {
           intakeSubsystem.stop();
-          startTimer.reset();
-          if (endTimer.hasElapsed(3)) {
+          if (timer.hasElapsed(5)) {
             teststate++;
+            timer.stop();
+            timer.reset();
           }
         }
         break;
       case 1:
         intakeSubsystem.reverse();
-        startTimer.start();
-        if (startTimer.hasElapsed(2)) {
+        timer.start();
+        if (timer.hasElapsed(2)) {
           intakeSubsystem.stop();
-          startTimer.reset();
-          endTimer.start();
-          if (endTimer.hasElapsed(3)) {
+          if (timer.hasElapsed(5)) {
             teststate++;
+            timer.stop();
+            timer.reset();
           }
         }
         break;
@@ -68,47 +66,46 @@ public class TestCommand extends Command {
         shooterSubsystem.prepareToShoot(shootingSettings.getVelocity());
         if (shooterSubsystem.isReadyToShoot()) {
           shooterSubsystem.stop();
-          endTimer.start();
         }
-        if (endTimer.hasElapsed(3)) {
+        if (timer.hasElapsed(5)) {
           teststate++;
-          endTimer.reset();
+          timer.stop();
+          timer.reset();
         }
         break;
       case 3:
         shooterSubsystem.reverse();
         if (shooterSubsystem.isReadyToShoot()) {
           shooterSubsystem.stop();
-          endTimer.start();
+          timer.start();
         }
-        if (endTimer.hasElapsed(3)) {
+        if (timer.hasElapsed(5)) {
           teststate++;
-          endTimer.reset();
+          timer.stop();
+          timer.reset();
         }
         break;
       case 4:
         turretSubsystem.shoot();
-        startTimer.start();
-        if (startTimer.hasElapsed(2)) {
+        timer.start();
+        if (timer.hasElapsed(2)) {
           turretSubsystem.stop();
-          startTimer.reset();
-          endTimer.start();
-          if (endTimer.hasElapsed(3)) {
+          if (timer.hasElapsed(5)) {
             teststate++;
-            endTimer.reset();
+            timer.stop();
+            timer.reset();
           }
         }
         break;
       case 5:
         turretSubsystem.eject();
-        startTimer.start();
-        if (startTimer.hasElapsed(2)) {
+        timer.start();
+        if (timer.hasElapsed(2)) {
           turretSubsystem.stop();
-          startTimer.reset();
-          endTimer.start();
-          if (endTimer.hasElapsed(3)) {
+          if (timer.hasElapsed(5)) {
             teststate++;
-            endTimer.reset();
+            timer.stop();
+            timer.reset();
           }
         }
         break;
