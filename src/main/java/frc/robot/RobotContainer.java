@@ -43,6 +43,8 @@ import frc.robot.commands.TuneShootingCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
+import frc.robot.commands.testing.LEDProgressBarCommand;
+import frc.robot.commands.testing.TestCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.DemoControlBindings;
 import frc.robot.controls.JoystickControlBindings;
@@ -68,6 +70,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+  private final TestCommand testCommand = new TestCommand(intakeSubsystem, shooterSubsystem, turretSubsystem);
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -268,6 +271,11 @@ public class RobotContainer {
     tab.add("Tur Roll Dynam Fwd", turretSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
     tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
+    // Testing
+    tab = Shuffleboard.getTab("Testing");
+    tab.addNumber("Number of Tests Run", () -> testCommand.getTestState());
+    tab.add("Start Testing", testCommand
+    .deadlineWith(new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)).withName("Test Mode"));
   }
 
   public void setAlliance(Alliance alliance) {
