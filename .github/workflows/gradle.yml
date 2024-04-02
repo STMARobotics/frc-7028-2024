@@ -19,15 +19,16 @@ jobs:
     - name: Add repository to git safe directories
       run: git config --global --add safe.directory $GITHUB_WORKSPACE
 
-    - name: Test with Gradle
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: test
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+    
+    - name: Execute Gradle build
+      run: ./gradlew test
 
     - name: Send status to Slack
       if: always()
       id: slack
-      uses: slackapi/slack-github-action@v1.23.0
+      uses: slackapi/slack-github-action@v1.25.0
       with:
         channel-id: 'C8Q6UHPA5'
         payload: |
