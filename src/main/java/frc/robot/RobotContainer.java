@@ -275,7 +275,7 @@ public class RobotContainer {
     tab = Shuffleboard.getTab("Testing");
     tab.addNumber("Number of Tests Run", () -> testCommand.getTestState());
     tab.add("Start Testing", testCommand
-    .deadlineWith(new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)).withName("Test Mode"));
+      .deadlineWith(new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)).withName("Test Mode"));
   }
 
   public void setAlliance(Alliance alliance) {

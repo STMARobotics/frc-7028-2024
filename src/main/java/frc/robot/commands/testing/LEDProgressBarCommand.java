@@ -13,8 +13,7 @@ public class LEDProgressBarCommand extends Command {
 
   private final IntSupplier intSupplier;
   private final LEDSubsystem ledSubsystem;
-  private int index;
-  private double tests;
+  private int tests;
 
   public LEDProgressBarCommand(LEDSubsystem ledSubsystem, IntSupplier intSupplier) {
     this.ledSubsystem = ledSubsystem;
@@ -30,8 +29,10 @@ public class LEDProgressBarCommand extends Command {
   }
 
   private void animate(LEDStrips ledStrips) {
+  
     if (tests <= 7) {
       for (int strip = 0; strip < ledStrips.getStripCount(); strip++) {
+        int index;
         for (index = 0; index < ledStrips.getStripSize(strip); index++) {
           if (index < tests * 2) {
             if (index < 1) {
