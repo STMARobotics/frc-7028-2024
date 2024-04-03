@@ -194,7 +194,7 @@ public class Constants {
     public static final Measure<Current> ROLLER_PEAK_REVERSE_CURRENT = ROLLER_PEAK_FORWARD_CURRENT.negate();
     public static final Measure<Current> ROLLER_SUPPLY_CURRENT_LIMIT = Amps.of(40);
 
-    public static final Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(0.093262);
+    public static final Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.407715);
     public static final double YAW_ROTOR_TO_SENSOR_RATIO = (170 / 10) * 4.0;
     // NOTE: Yaw limits are set using turret encoder angles, so they're 180-degrees off from robot
     public static final Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.48);
