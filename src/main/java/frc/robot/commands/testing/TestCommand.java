@@ -124,10 +124,6 @@ public class TestCommand extends Command {
     teststate++;
   }
 
-  public void endy() {
-
-  }
-
   public int getTestState() {
     return teststate;
   }

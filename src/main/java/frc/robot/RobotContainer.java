@@ -32,7 +32,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.BabyBirdCommand;
 import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectCommand;
@@ -275,9 +275,9 @@ public class RobotContainer {
     // Testing
     tab = Shuffleboard.getTab("Testing");
     tab.addNumber("Number of Tests Run", () -> testCommand.getTestState());
-    tab.add("Start Testing", testCommand
-      .deadlineWith(new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)).withName("Test Mode"));
-    tab.add("add test", new StartEndCommand(testCommand::addTestState, testCommand::endy, ledSubsystem));
+    tab.add("Start Testing", testCommand);
+    tab.add("lights", new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState));
+    tab.add("add test state", new InstantCommand(testCommand::addTestState));
   }
 
   public void setAlliance(Alliance alliance) {
