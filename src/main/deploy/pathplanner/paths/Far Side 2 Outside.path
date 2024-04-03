@@ -1,0 +1,141 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.417113363743722,
+        "y": 0.6
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.171968571536552,
+        "y": 1.3295824940487102
+      },
+      "isLocked": false,
+      "linkedName": "Far Side Outside 1"
+    },
+    {
+      "anchor": {
+        "x": 4.542663224861332,
+        "y": 2.0332327176282265
+      },
+      "prevControl": {
+        "x": 4.49390330508291,
+        "y": 2.022166091078016
+      },
+      "nextControl": {
+        "x": 4.569376894924369,
+        "y": 2.0392956933615047
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.415348760522082,
+        "y": 2.472360734195153
+      },
+      "prevControl": {
+        "x": 5.340026090817055,
+        "y": 1.7790684873154443
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Far Side Outside 2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Shoot M3",
+      "minWaypointRelativePos": 0.75,
+      "maxWaypointRelativePos": 0.85,
+      "constraints": {
+        "maxVelocity": 0.7,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Intake and shoot M3",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "parallel",
+                    "data": {
+                      "commands": [
+                        {
+                          "type": "wait",
+                          "data": {
+                            "waitTime": 1.25
+                          }
+                        },
+                        {
+                          "type": "named",
+                          "data": {
+                            "name": "intake"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "scoreSpeakerWhileMoving"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake M2",
+      "waypointRelativePos": 1.65,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.75,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.49721298168944056,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Far Side Outside",
+  "previewStartingState": {
+    "rotation": 0.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
