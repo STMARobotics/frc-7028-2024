@@ -15,6 +15,7 @@ public class TestCommand extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final TurretSubsystem turretSubsystem;
 
+  private boolean hasStopped = false;
   private int teststate = 0;
 
   private Timer timer = new Timer();
@@ -39,31 +40,37 @@ public class TestCommand extends Command {
   public void execute() {
     var shootingSettings = SHOOTER_INTERPOLATOR.calculate(1.34);
     switch (teststate) {
-      
+
       case 0:
         intakeSubsystem.intake();
         timer.start();
-        if (timer.hasElapsed(2)) {
+        if (timer.hasElapsed(2) && !hasStopped) {
           intakeSubsystem.stop();
-          if (timer.hasElapsed(5)) {
-            teststate++;
-            timer.stop();
-            timer.reset();
-          }
+          hasStopped = true;
         }
+        if (timer.hasElapsed(5)) {
+          teststate++;
+          timer.stop();
+          timer.reset();
+          hasStopped = false;
+        }
+
         break;
 
       case 1:
         intakeSubsystem.reverse();
         timer.start();
-        if (timer.hasElapsed(2)) {
+        if (timer.hasElapsed(2) && !hasStopped) {
           intakeSubsystem.stop();
-          if (timer.hasElapsed(5)) {
-            teststate++;
-            timer.stop();
-            timer.reset();
-          }
+          hasStopped = true;
         }
+        if (timer.hasElapsed(5)) {
+          teststate++;
+          timer.stop();
+          timer.reset();
+          hasStopped = false;
+        }
+
         break;
 
       case 2:
@@ -91,30 +98,34 @@ public class TestCommand extends Command {
           timer.reset();
         }
         break;
-      
+
       case 4:
         turretSubsystem.shoot();
         timer.start();
-        if (timer.hasElapsed(2)) {
+        if (timer.hasElapsed(2) && !hasStopped) {
           turretSubsystem.stop();
-          if (timer.hasElapsed(5)) {
-            teststate++;
-            timer.stop();
-            timer.reset();
-          }
+          hasStopped = true;
+        }
+        if (timer.hasElapsed(5)) {
+          teststate++;
+          timer.stop();
+          timer.reset();
+          hasStopped = false;
         }
         break;
-      
+
       case 5:
         turretSubsystem.eject();
         timer.start();
-        if (timer.hasElapsed(2)) {
+        if (timer.hasElapsed(2) && !hasStopped) {
           turretSubsystem.stop();
-          if (timer.hasElapsed(5)) {
-            teststate++;
-            timer.stop();
-            timer.reset();
-          }
+          hasStopped = true;
+        }
+        if (timer.hasElapsed(5)) {
+          teststate++;
+          timer.stop();
+          timer.reset();
+          hasStopped = false;
         }
         break;
     }
