@@ -2,6 +2,7 @@ package frc.robot.commands.testing;
 
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -69,6 +70,7 @@ public class TestCommand extends Command {
         shooterSubsystem.prepareToShoot(shootingSettings.getVelocity());
         if (shooterSubsystem.isReadyToShoot()) {
           shooterSubsystem.stop();
+          timer.start();
         }
         if (timer.hasElapsed(5)) {
           teststate++;
@@ -118,12 +120,20 @@ public class TestCommand extends Command {
     }
   }
 
+  public void addTestState() {
+    teststate++;
+  }
+
+  public void endy() {
+
+  }
+
   public int getTestState() {
     return teststate;
   }
 
   @Override
   public boolean isFinished() {
-    return teststate >= 5;
+    return !RobotState.isTest();
   }
 }
