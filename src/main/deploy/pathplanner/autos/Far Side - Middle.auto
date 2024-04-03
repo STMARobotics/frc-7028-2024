@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4055808813372015,
+      "y": 2.8350912842176568
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Side - Middle 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Side 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Side 3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Side 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreSpeakerWhileMoving"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
