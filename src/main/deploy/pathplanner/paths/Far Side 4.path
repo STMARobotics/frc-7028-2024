@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.7,
+      "minWaypointRelativePos": 0.65,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 0.7,
@@ -94,7 +94,7 @@
   "reversed": false,
   "folder": "Far Side",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -18.083445383048655,
     "velocity": 0
   },
   "useDefaultConstraints": false

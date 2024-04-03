@@ -44,7 +44,13 @@
       "linkedName": "Far Side 3"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.1,
+      "rotationDegrees": -15.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
@@ -121,13 +127,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -13.448615051686389,
+    "rotation": -13.449999999999989,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Far Side",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -10.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
