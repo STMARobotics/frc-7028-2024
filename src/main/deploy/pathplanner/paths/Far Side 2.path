@@ -59,7 +59,7 @@
   "constraintZones": [
     {
       "name": "Shoot M3",
-      "minWaypointRelativePos": 0.75,
+      "minWaypointRelativePos": 0.7,
       "maxWaypointRelativePos": 0.85,
       "constraints": {
         "maxVelocity": 0.7,
@@ -88,7 +88,7 @@
                         {
                           "type": "wait",
                           "data": {
-                            "waitTime": 0.75
+                            "waitTime": 1.5
                           }
                         },
                         {
@@ -139,14 +139,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -30.018367427609018,
-    "rotateFast": false
+    "rotation": -15.0,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "Far Side",
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
-  },
+  "previewStartingState": null,
   "useDefaultConstraints": false
 }
