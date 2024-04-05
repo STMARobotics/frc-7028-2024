@@ -1,5 +1,6 @@
 package frc.robot.commands.testing;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 
 import edu.wpi.first.wpilibj.RobotState;
@@ -128,6 +129,42 @@ public class TestCommand extends Command {
           hasStopped = false;
         }
         break;
+
+      case 6:
+        turretSubsystem.moveToYawPosition(Degrees.of(90));
+        if (turretSubsystem.isAtYawTarget()) {
+          turretSubsystem.prepareToIntake();
+          timer.start();
+        }
+        if (timer.hasElapsed(3)) {
+          teststate++;
+          timer.stop();
+          timer.reset();
+        }
+
+      case 7:
+        turretSubsystem.moveToYawPosition(Degrees.of(270));
+        if (turretSubsystem.isAtYawTarget()) {
+          turretSubsystem.prepareToIntake();
+          timer.start();
+        }
+        if (timer.hasElapsed(3)) {
+          teststate++;
+          timer.stop();
+          timer.reset();
+        }
+
+      case 8:
+        turretSubsystem.moveToPitchPosition(Degrees.of(30));
+        if (turretSubsystem.isAtPitchTarget()) {
+          turretSubsystem.prepareToIntake();
+          timer.start();
+        }
+        if (timer.hasElapsed(3)) {
+          teststate++;
+          timer.stop();
+          timer.reset();
+        }
     }
   }
 
@@ -137,6 +174,10 @@ public class TestCommand extends Command {
 
   public int getTestState() {
     return teststate;
+  }
+
+  public boolean getHasStopped() {
+    return hasStopped;
   }
 
   @Override
