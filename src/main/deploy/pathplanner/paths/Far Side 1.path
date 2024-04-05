@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.351171298833826,
-        "y": 1.6199439416422696
+        "x": 1.4055808813372015,
+        "y": 2.8350912842176568
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2579976738900847,
-        "y": 2.154971502925463
+        "x": 4.325561809018355,
+        "y": 2.889500866721032
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 4.122784736797544
       },
       "prevControl": {
-        "x": 4.497858820279045,
-        "y": 4.113716473046981
+        "x": 4.0353773690003525,
+        "y": 4.095579945545856
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,37 +29,8 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Shoot Preload",
-      "minWaypointRelativePos": 0.5,
-      "maxWaypointRelativePos": 0.55,
-      "constraints": {
-        "maxVelocity": 0.7,
-        "maxAcceleration": 3.5,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
-    {
-      "name": "Shoot Preload",
-      "waypointRelativePos": 0.4,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "scoreSpeakerWhileMoving"
-              }
-            }
-          ]
-        }
-      }
-    },
     {
       "name": "Intake M3",
       "waypointRelativePos": 0.85,

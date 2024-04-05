@@ -8,58 +8,29 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.325561809018355,
-        "y": 2.889500866721032
+        "x": 4.615746249036357,
+        "y": 2.7806817017142804
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.415348760522082,
-        "y": 4.122784736797544
+        "x": 8.417113363743722,
+        "y": 0.6
       },
       "prevControl": {
-        "x": 4.0353773690003525,
-        "y": 4.095579945545856
+        "x": 5.331947542657285,
+        "y": 1.2866268732537463
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Far Side 1"
+      "linkedName": "Far Side Outside 1"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Shoot Preload",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.15,
-      "constraints": {
-        "maxVelocity": 1.1,
-        "maxAcceleration": 3.5,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
-    {
-      "name": "Shoot Preload",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "scoreSpeakerWhileMoving"
-              }
-            }
-          ]
-        }
-      }
-    },
     {
       "name": "Intake M3",
       "waypointRelativePos": 0.85,
@@ -86,11 +57,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Far Side Middle",
+  "folder": "Far Side Outside",
   "previewStartingState": {
     "rotation": 0.0,
     "velocity": 0

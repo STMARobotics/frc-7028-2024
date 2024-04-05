@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.351171298833826,
-      "y": 1.6199439416422696
+      "x": 1.4055808813372015,
+      "y": 2.8350912842176568
     },
     "rotation": 0
   },
@@ -11,6 +11,12 @@
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreSpeakerWhileMoving"
+          }
+        },
         {
           "type": "path",
           "data": {

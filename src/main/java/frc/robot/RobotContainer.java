@@ -178,7 +178,7 @@ public class RobotContainer {
             controlBindings.translationX(), controlBindings.translationY(), controlBindings.omega())));
     
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(new ManualShootCommand(
-        turretSubsystem, shooterSubsystem, RotationsPerSecond.of(39), Degrees.of(39), Degrees.of(180))));
+        turretSubsystem, shooterSubsystem, RotationsPerSecond.of(50), Degrees.of(35), Degrees.of(180))));
 
     // Amp 
     controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));

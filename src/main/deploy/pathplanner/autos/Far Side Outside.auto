@@ -12,27 +12,33 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Far Side - Middle 1"
+            "name": "scoreSpeakerWhileMoving"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Far Side 2"
+            "pathName": "Far Side 1 Outside"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Far Side 3"
+            "pathName": "Far Side 2 Outside"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Far Side 4"
+            "pathName": "Far Side 3 Outside"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Side 4 Outside"
           }
         },
         {
