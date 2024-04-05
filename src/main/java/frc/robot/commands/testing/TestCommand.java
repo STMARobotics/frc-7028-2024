@@ -131,7 +131,7 @@ public class TestCommand extends Command {
         break;
 
       case 6:
-        turretSubsystem.moveToYawPosition(Degrees.of(90));
+        turretSubsystem.moveToYawPosition(Degrees.of(135));
         if (turretSubsystem.isAtYawTarget()) {
           turretSubsystem.prepareToIntake();
           timer.start();
@@ -143,7 +143,7 @@ public class TestCommand extends Command {
         }
 
       case 7:
-        turretSubsystem.moveToYawPosition(Degrees.of(270));
+        turretSubsystem.moveToYawPosition(Degrees.of(225));
         if (turretSubsystem.isAtYawTarget()) {
           turretSubsystem.prepareToIntake();
           timer.start();
