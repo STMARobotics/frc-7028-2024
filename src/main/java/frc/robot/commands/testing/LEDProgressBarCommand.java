@@ -56,6 +56,8 @@ public class LEDProgressBarCommand extends Command {
               ledStrips.setLED(strip, index, Color.kPurple);
             } else if (index < 14) {
               ledStrips.setLED(strip, index, Color.kPink);
+            } else if (index < 16) {
+              ledStrips.setLED(strip, index, Color.kWhite);
             }
           } else {
             ledStrips.setLED(strip, index, Color.kBlack);

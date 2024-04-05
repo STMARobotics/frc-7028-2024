@@ -184,4 +184,13 @@ public class TestCommand extends Command {
   public boolean isFinished() {
     return !RobotState.isTest();
   }
+
+  @Override
+  public void end(boolean interrupted) {
+    shooterSubsystem.stop();
+    turretSubsystem.stop();
+    intakeSubsystem.stop();
+    turretSubsystem.prepareToIntake();
+    teststate = 0;
+  }
 }
