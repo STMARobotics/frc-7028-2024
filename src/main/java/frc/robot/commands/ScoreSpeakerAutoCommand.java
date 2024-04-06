@@ -10,7 +10,7 @@ import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
+import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_AUTO;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
 import static java.lang.Math.PI;
 
@@ -62,7 +62,7 @@ public class ScoreSpeakerAutoCommand extends Command {
   @Override
   public void initialize() {
     var alliance = DriverStation.getAlliance();
-    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE : SPEAKER_RED;
+    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE_AUTO : SPEAKER_RED;
     isShooting = false;
   }
 
