@@ -10,8 +10,8 @@ import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_AUTO;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
+import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_AUTO_OFFSET;
+import static frc.robot.Constants.ShootingConstants.SPEAKER_RED_OFFSET;
 import static java.lang.Math.PI;
 
 import java.util.function.Supplier;
@@ -32,7 +32,7 @@ import frc.robot.subsystems.TurretSubsystem;
  * This command automatically scores in the speaker while the robot is moving. It does not do anything with the
  * drivetrain, only shooting when the turret can reach.
  */
-public class ScoreSpeakerAutoCommand extends Command {
+public class ScoreSpeakerOffsetAutoCommand extends Command {
 
   // private final CommandSwerveDrivetrain drivetrain;
   private final ShooterSubsystem shooter;
@@ -48,7 +48,7 @@ public class ScoreSpeakerAutoCommand extends Command {
 
   private boolean isShooting = false;
 
-  public ScoreSpeakerAutoCommand(ShooterSubsystem shooter, TurretSubsystem turretSubsystem,
+  public ScoreSpeakerOffsetAutoCommand(ShooterSubsystem shooter, TurretSubsystem turretSubsystem,
       LEDSubsystem ledSubsystem, Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier, Supplier<Pose2d> poseSupplier) {
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
@@ -62,7 +62,7 @@ public class ScoreSpeakerAutoCommand extends Command {
   @Override
   public void initialize() {
     var alliance = DriverStation.getAlliance();
-    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE_AUTO : SPEAKER_RED;
+    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE_AUTO_OFFSET : SPEAKER_RED_OFFSET;
     isShooting = false;
   }
 

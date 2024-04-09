@@ -281,6 +281,9 @@ public class Constants {
     public static final double TARGET_OFFSET = inchesToMeters(4);
     public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(646.73) - TARGET_OFFSET, inchesToMeters(218.42));
     public static final Translation2d SPEAKER_BLUE = new Translation2d(TARGET_OFFSET, inchesToMeters(218.42));
+    public static final Translation2d SPEAKER_BLUE_AUTO = new Translation2d(TARGET_OFFSET, inchesToMeters(208.42));
+    public static final Translation2d SPEAKER_BLUE_AUTO_OFFSET = new Translation2d(TARGET_OFFSET, inchesToMeters(210.42));
+    public static final Translation2d SPEAKER_RED_OFFSET = new Translation2d(inchesToMeters(646.73) - TARGET_OFFSET, inchesToMeters(220.42));
 
     public static final Translation2d STOCKPILE_RED = new Translation2d(Meters.of(15.698), Meters.of(6.7));
     public static final Translation2d STOCKPILE_BLUE = new Translation2d(Meters.of(0.5595), Meters.of(6.7));

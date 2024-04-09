@@ -11,6 +11,7 @@ import frc.robot.Constants.LEDConstants;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.ScoreSpeakerAutoCommand;
+import frc.robot.commands.ScoreSpeakerOffsetAutoCommand;
 import frc.robot.commands.led.LEDAlternateCommand;
 import frc.robot.commands.led.LEDMarqueeCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+
 
 /**
  * Non-static command factory for creating commands. See 
@@ -46,6 +48,7 @@ public class AutoCommands {
   public void registerPPNamedCommands() {
     NamedCommands.registerCommand("intake", intakeToTurret());
     NamedCommands.registerCommand("scoreSpeakerWhileMoving", autoScoreSpeaker());
+    NamedCommands.registerCommand("firstAutoShot", autoScoreSpeakerOffset());
   }
 
   /**
@@ -55,6 +58,11 @@ public class AutoCommands {
   public Command autoScoreSpeaker() {
     return new ScoreSpeakerAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem,
         drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose);
+  }
+
+  public Command autoScoreSpeakerOffset() {
+    return new ScoreSpeakerOffsetAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem, 
+    drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose);
   }
 
   /**
