@@ -278,12 +278,23 @@ public class Constants {
 
   public static class ShootingConstants {
 
-    public static final double TARGET_OFFSET = inchesToMeters(4);
-    public static final Translation2d SPEAKER_RED = new Translation2d(inchesToMeters(646.73) - TARGET_OFFSET, inchesToMeters(218.42));
-    public static final Translation2d SPEAKER_BLUE = new Translation2d(TARGET_OFFSET, inchesToMeters(218.42));
-    public static final Translation2d SPEAKER_BLUE_AUTO = new Translation2d(TARGET_OFFSET, inchesToMeters(208.42));
-    public static final Translation2d SPEAKER_BLUE_AUTO_OFFSET = new Translation2d(TARGET_OFFSET, inchesToMeters(210.42));
-    public static final Translation2d SPEAKER_RED_OFFSET = new Translation2d(inchesToMeters(646.73) - TARGET_OFFSET, inchesToMeters(220.42));
+    /** Distance in front of the speaker to aim */
+    public static final double SPEAKER_X_OFFSET = inchesToMeters(4);
+
+    // Speaker targets for teleop
+    public static final Translation2d SPEAKER_RED_TELE = 
+        new Translation2d(inchesToMeters(646.73) - SPEAKER_X_OFFSET, inchesToMeters(218.42));
+    public static final Translation2d SPEAKER_BLUE_TELE = new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(218.42));
+
+    // Speaker targets for auto - except the first shot on the "far side"
+    public static final Translation2d SPEAKER_BLUE_AUTO = new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(208.42));
+    public static final Translation2d SPEAKER_RED_AUTO = SPEAKER_RED_TELE;
+    
+    // Speaker targets for the first shot in "far side" autos
+    public static final Translation2d SPEAKER_BLUE_AUTO_FIRST_SHOT = 
+        new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(210.42));
+    public static final Translation2d SPEAKER_RED_AUTO_FIRST_SHOT =
+        new Translation2d(inchesToMeters(646.73) - SPEAKER_X_OFFSET, inchesToMeters(220.42));
 
     public static final Translation2d STOCKPILE_RED = new Translation2d(Meters.of(15.698), Meters.of(6.7));
     public static final Translation2d STOCKPILE_BLUE = new Translation2d(Meters.of(0.5595), Meters.of(6.7));

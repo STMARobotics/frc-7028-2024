@@ -10,8 +10,6 @@ import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_AUTO;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
 import static java.lang.Math.PI;
 
 import java.util.function.Supplier;
@@ -44,17 +42,22 @@ public class ScoreSpeakerAutoCommand extends Command {
   // Reusable objects to prevent reallocation (to reduce memory pressure)
   private final MutableMeasure<Angle> turretYawTarget = MutableMeasure.zero(Rotations);
 
+  private final Translation2d targetRed;
+  private final Translation2d targetBlue;
   private Translation2d speakerTranslation;
 
   private boolean isShooting = false;
 
   public ScoreSpeakerAutoCommand(ShooterSubsystem shooter, TurretSubsystem turretSubsystem,
-      LEDSubsystem ledSubsystem, Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier, Supplier<Pose2d> poseSupplier) {
+      LEDSubsystem ledSubsystem, Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier, Supplier<Pose2d> poseSupplier,
+      Translation2d targetRed, Translation2d targetBlue) {
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;
     this.fieldRelativeSpeedSupplier = fieldRelativeSpeedSupplier;
     this.poseSupplier = poseSupplier;
+    this.targetRed = targetRed;
+    this.targetBlue = targetBlue;
 
     addRequirements(shooter, turretSubsystem);
   }
@@ -62,7 +65,7 @@ public class ScoreSpeakerAutoCommand extends Command {
   @Override
   public void initialize() {
     var alliance = DriverStation.getAlliance();
-    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE_AUTO : SPEAKER_RED;
+    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? targetBlue : targetRed;
     isShooting = false;
   }
 

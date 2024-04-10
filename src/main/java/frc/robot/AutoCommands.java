@@ -8,10 +8,10 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LEDConstants;
+import frc.robot.Constants.ShootingConstants;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.ScoreSpeakerAutoCommand;
-import frc.robot.commands.ScoreSpeakerOffsetAutoCommand;
 import frc.robot.commands.led.LEDAlternateCommand;
 import frc.robot.commands.led.LEDMarqueeCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -48,7 +48,7 @@ public class AutoCommands {
   public void registerPPNamedCommands() {
     NamedCommands.registerCommand("intake", intakeToTurret());
     NamedCommands.registerCommand("scoreSpeakerWhileMoving", autoScoreSpeaker());
-    NamedCommands.registerCommand("firstAutoShot", autoScoreSpeakerOffset());
+    NamedCommands.registerCommand("firstAutoShot", autoScoreScoreSpeakerFarSideFirstShot());
   }
 
   /**
@@ -57,12 +57,14 @@ public class AutoCommands {
    */
   public Command autoScoreSpeaker() {
     return new ScoreSpeakerAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem,
-        drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose);
+        drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose,
+        ShootingConstants.SPEAKER_RED_AUTO, ShootingConstants.SPEAKER_BLUE_AUTO);
   }
 
-  public Command autoScoreSpeakerOffset() {
-    return new ScoreSpeakerOffsetAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem, 
-    drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose);
+  public Command autoScoreScoreSpeakerFarSideFirstShot() {
+    return new ScoreSpeakerAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem, 
+    drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose,
+    ShootingConstants.SPEAKER_RED_AUTO_FIRST_SHOT, ShootingConstants.SPEAKER_BLUE_AUTO_FIRST_SHOT);
   }
 
   /**
