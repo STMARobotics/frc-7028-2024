@@ -73,7 +73,7 @@ public class LEDProgressBarCommand extends Command {
           ledStrips.setAll(Color.kBlack);
         } else {
           ledsOn = true;
-          ledStrips.setAll(Color.kViolet);
+          ledStrips.setAll(Color.kOrange);
         }
         hasBlinked++;
       }

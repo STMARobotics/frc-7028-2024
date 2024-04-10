@@ -20,7 +20,8 @@ public class DefaultLEDCommand extends Command {
     MODE_DS_DISCONNECT,
     MODE_NOTE_IN_TURRET,
     MODE_ROBOT_DISABLED,
-    MODE_DEFAULT;
+    MODE_DEFAULT,
+    MODE_TEST;
   }
 
   private final LEDSubsystem ledSubsystem;
@@ -60,6 +61,10 @@ public class DefaultLEDCommand extends Command {
         new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.one())
             .until(() -> getMode() != LEDMode.MODE_ROBOT_DISABLED).schedule();
         break;
+      case MODE_TEST:
+        new LEDAlternateCommand(ledSubsystem, Color.kBlack, Color.kOrange, Seconds.one())
+          .until(() -> getMode() != LEDMode.MODE_TEST).schedule();
+        break;
       default:
         // Don't do anything for default. LEDs will go off.
     }
@@ -77,6 +82,8 @@ public class DefaultLEDCommand extends Command {
       return LEDMode.MODE_DS_DISCONNECT;
     } else if (RobotState.isDisabled()) {
       return LEDMode.MODE_ROBOT_DISABLED;
+    } else if (RobotState.isTest()) {
+      return LEDMode.MODE_TEST;
     } else {
       return LEDMode.MODE_DEFAULT;
     }
