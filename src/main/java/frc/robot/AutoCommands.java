@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LEDConstants;
+import frc.robot.Constants.ShootingConstants;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.ScoreSpeakerAutoCommand;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+
 
 /**
  * Non-static command factory for creating commands. See 
@@ -46,6 +48,7 @@ public class AutoCommands {
   public void registerPPNamedCommands() {
     NamedCommands.registerCommand("intake", intakeToTurret());
     NamedCommands.registerCommand("scoreSpeakerWhileMoving", autoScoreSpeaker());
+    NamedCommands.registerCommand("firstAutoShot", autoScoreScoreSpeakerFarSideFirstShot());
   }
 
   /**
@@ -54,7 +57,14 @@ public class AutoCommands {
    */
   public Command autoScoreSpeaker() {
     return new ScoreSpeakerAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem,
-        drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose);
+        drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose,
+        ShootingConstants.SPEAKER_RED_AUTO, ShootingConstants.SPEAKER_BLUE_AUTO);
+  }
+
+  public Command autoScoreScoreSpeakerFarSideFirstShot() {
+    return new ScoreSpeakerAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem, 
+    drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose,
+    ShootingConstants.SPEAKER_RED_AUTO_FIRST_SHOT, ShootingConstants.SPEAKER_BLUE_AUTO_FIRST_SHOT);
   }
 
   /**

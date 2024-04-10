@@ -4,8 +4,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
+import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_TELE;
+import static frc.robot.Constants.ShootingConstants.SPEAKER_RED_TELE;
 
 import java.util.function.Supplier;
 
@@ -78,7 +78,7 @@ public class TuneShootingCommand extends Command {
   public void initialize() {
     shooting = false;
     var alliance = DriverStation.getAlliance();
-    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE : SPEAKER_RED;
+    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE_TELE : SPEAKER_RED_TELE;
   }
   
   @Override

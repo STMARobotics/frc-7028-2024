@@ -2,8 +2,8 @@ package frc.robot.commands;
 
 import static edu.wpi.first.wpilibj.util.Color.kPurple;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE;
-import static frc.robot.Constants.ShootingConstants.SPEAKER_RED;
+import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_TELE;
+import static frc.robot.Constants.ShootingConstants.SPEAKER_RED_TELE;
 
 import java.util.function.Supplier;
 
@@ -37,7 +37,7 @@ public class SpeakerOrBlinkCommand extends Command {
     this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
         .alongWith(new LEDBlinkCommand(ledSubsystem, kPurple, 0.05));
     this.shootCommand = new ShootTeleopCommand(drivetrain, shooter, turretSubsystem, ledSubsystem,
-        xSupplier, ySupplier, SPEAKER_RED, SPEAKER_BLUE, SHOOTER_INTERPOLATOR);
+        xSupplier, ySupplier, SPEAKER_RED_TELE, SPEAKER_BLUE_TELE, SHOOTER_INTERPOLATOR);
 
     addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
   }
