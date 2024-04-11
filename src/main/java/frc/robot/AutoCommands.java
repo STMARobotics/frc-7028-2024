@@ -1,14 +1,18 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.ShootingConstants;
+import frc.robot.commands.BloopCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.ScoreSpeakerAutoCommand;
@@ -49,6 +53,10 @@ public class AutoCommands {
     NamedCommands.registerCommand("intake", intakeToTurret());
     NamedCommands.registerCommand("scoreSpeakerWhileMoving", autoScoreSpeaker());
     NamedCommands.registerCommand("firstAutoShot", autoScoreScoreSpeakerFarSideFirstShot());
+    NamedCommands.registerCommand("bloopNorth", bloopFirstNorth());
+    NamedCommands.registerCommand("bloopSouth", bloopFirstSouth());
+    NamedCommands.registerCommand("bloopEast", bloopFirstEast());
+    NamedCommands.registerCommand("bloopWest", bloopFirstWest());
   }
 
   /**
@@ -65,6 +73,46 @@ public class AutoCommands {
     return new ScoreSpeakerAutoCommand(shooterSubsystem, turretSubsystem, ledSubsystem, 
     drivetrainSubsystem::getCurrentFieldChassisSpeeds, () -> drivetrainSubsystem.getState().Pose,
     ShootingConstants.SPEAKER_RED_AUTO_FIRST_SHOT, ShootingConstants.SPEAKER_BLUE_AUTO_FIRST_SHOT);
+  }
+
+  /**
+   * Command to bloop a note out of the shooter in the field +Y direction
+   * @return new command
+   */
+  public Command bloopFirstNorth() {
+    return new BloopCommand(
+        shooterSubsystem, turretSubsystem, ledSubsystem, () -> drivetrainSubsystem.getState().Pose.getRotation(),
+        Rotation2d.fromDegrees(90), Degrees.of(1), RotationsPerSecond.of(12));
+  }
+
+  /**
+   * Command to bloop a note out of the shooter in the field -Y direction
+   * @return new command
+   */
+  public Command bloopFirstSouth() {
+    return new BloopCommand(
+        shooterSubsystem, turretSubsystem, ledSubsystem, () -> drivetrainSubsystem.getState().Pose.getRotation(),
+        Rotation2d.fromDegrees(-90), Degrees.of(1), RotationsPerSecond.of(12));
+  }
+
+  /**
+   * Command to bloop a note out of the shooter toward the opposing alliance wall
+   * @return new command
+   */
+  public Command bloopFirstEast() {
+    return new BloopCommand(
+        shooterSubsystem, turretSubsystem, ledSubsystem, () -> drivetrainSubsystem.getState().Pose.getRotation(),
+        Rotation2d.fromDegrees(0), Degrees.of(1), RotationsPerSecond.of(12));
+  }
+
+  /**
+   * Command to bloop a note out of the shooter toward your alliance wall
+   * @return new command
+   */
+  public Command bloopFirstWest() {
+    return new BloopCommand(
+        shooterSubsystem, turretSubsystem, ledSubsystem, () -> drivetrainSubsystem.getState().Pose.getRotation(),
+        Rotation2d.fromDegrees(180), Degrees.of(1), RotationsPerSecond.of(12));
   }
 
   /**
