@@ -16,44 +16,92 @@
     },
     {
       "anchor": {
-        "x": 8.417113363743722,
-        "y": 0.6
+        "x": 7.2636792642006345,
+        "y": 0.7131175665860102
       },
       "prevControl": {
-        "x": 5.211923374047174,
-        "y": 0.712753263093088
+        "x": 4.089001102111302,
+        "y": 1.1685017291807922
       },
       "nextControl": {
-        "x": 9.06826375056259,
-        "y": 0.5770936103275722
+        "x": 9.476335619337906,
+        "y": 0.39572833531631907
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.016345155497328,
-        "y": 4.1046482092964185
+        "x": 8.143300848005206,
+        "y": 3.4698697467570376
       },
       "prevControl": {
-        "x": 7.399703220459074,
-        "y": 1.4748517216332682
+        "x": 7.272747527951198,
+        "y": 1.4929882491343938
       },
       "nextControl": {
-        "x": 8.027759694081388,
-        "y": 4.153327859140199
+        "x": 8.733926567538791,
+        "y": 4.811082318197888
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.867166646613995,
-        "y": 1.891991854159147
+        "x": 4.534131875281295,
+        "y": 4.730358408085237
       },
       "prevControl": {
-        "x": 6.710515175416316,
-        "y": 1.8013092166535216
+        "x": 6.241505382306074,
+        "y": 3.990496555041166
+      },
+      "nextControl": {
+        "x": 4.262083962764417,
+        "y": 4.848245836842551
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.084804976627497,
+        "y": 3.578688911763789
+      },
+      "prevControl": {
+        "x": 6.021327130373559,
+        "y": 3.4789380105076004
+      },
+      "nextControl": {
+        "x": 6.119912435377657,
+        "y": 3.63385777551404
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.534131875281295,
+        "y": 4.730358408085237
+      },
+      "prevControl": {
+        "x": 5.647934199611861,
+        "y": 4.09920375763125
+      },
+      "nextControl": {
+        "x": 4.262083962764417,
+        "y": 4.8845188918448015
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.225810907762167,
+        "y": 3.7237811317727902
+      },
+      "prevControl": {
+        "x": 4.62481451278692,
+        "y": 4.38576438556386
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,14 +110,14 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.35,
-      "rotationDegrees": 0,
+      "waypointRelativePos": 1.15,
+      "rotationDegrees": 18.42594875649607,
       "rotateFast": false
     },
     {
       "waypointRelativePos": 1.5,
       "rotationDegrees": 47.82396705077249,
-      "rotateFast": false
+      "rotateFast": true
     },
     {
       "waypointRelativePos": 2.15,
@@ -77,8 +125,18 @@
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 2.65,
-      "rotationDegrees": -90.0,
+      "waypointRelativePos": 2.5,
+      "rotationDegrees": -21.600000000000023,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4.65,
+      "rotationDegrees": -118.47608396752554,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4.1,
+      "rotationDegrees": -23.877592207651293,
       "rotateFast": false
     }
   ],
@@ -86,7 +144,7 @@
     {
       "name": "New Constraints Zone",
       "minWaypointRelativePos": 1.3,
-      "maxWaypointRelativePos": 2.0,
+      "maxWaypointRelativePos": 2.15,
       "constraints": {
         "maxVelocity": 0.7,
         "maxAcceleration": 3.5,
@@ -98,7 +156,7 @@
   "eventMarkers": [
     {
       "name": "Bloop Preload",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -114,7 +172,7 @@
       }
     },
     {
-      "name": "Bloop Middle",
+      "name": "Bloop And Shoot",
       "waypointRelativePos": 0.75,
       "command": {
         "type": "sequential",
@@ -145,9 +203,52 @@
               }
             },
             {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 1.0
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "intake"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
+            {
               "type": "named",
               "data": {
                 "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
               }
             }
           ]
@@ -163,7 +264,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0,
+    "rotation": -116.56505117707805,
     "rotateFast": false
   },
   "reversed": false,
