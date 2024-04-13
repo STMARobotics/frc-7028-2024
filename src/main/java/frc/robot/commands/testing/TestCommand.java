@@ -1,7 +1,7 @@
 package frc.robot.commands.testing;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
@@ -39,17 +39,18 @@ public class TestCommand extends Command {
 
   @Override
   public void execute() {
-    var shootingSettings = SHOOTER_INTERPOLATOR.calculate(1.34);
     switch (teststate) {
 
       case 0:
-        intakeSubsystem.intake();
-        timer.start();
+        if (!hasStopped) {
+          intakeSubsystem.runRollers(RotationsPerSecond.of(20));
+          timer.start();
+        }
         if (timer.hasElapsed(2) && !hasStopped) {
           intakeSubsystem.stop();
           hasStopped = true;
         }
-        if (timer.hasElapsed(5)) {
+        if (timer.hasElapsed(4) && hasStopped == true) {
           teststate++;
           timer.stop();
           timer.reset();
@@ -59,13 +60,15 @@ public class TestCommand extends Command {
         break;
 
       case 1:
-        intakeSubsystem.reverse();
-        timer.start();
+        if (!hasStopped) {
+          intakeSubsystem.runRollers(RotationsPerSecond.of(-20));
+          timer.start();
+        }
         if (timer.hasElapsed(2) && !hasStopped) {
           intakeSubsystem.stop();
           hasStopped = true;
         }
-        if (timer.hasElapsed(5)) {
+        if (timer.hasElapsed(4)) {
           teststate++;
           timer.stop();
           timer.reset();
@@ -75,7 +78,9 @@ public class TestCommand extends Command {
         break;
 
       case 2:
-        shooterSubsystem.prepareToShoot(shootingSettings.getVelocity());
+        if (!hasStopped) {
+          shooterSubsystem.prepareToShoot(RotationsPerSecond.of(20));
+        }
         if (shooterSubsystem.isReadyToShoot()) {
           shooterSubsystem.stop();
           timer.start();
@@ -88,7 +93,9 @@ public class TestCommand extends Command {
         break;
 
       case 3:
-        shooterSubsystem.reverse();
+        if (!hasStopped) {
+          shooterSubsystem.prepareToShoot(RotationsPerSecond.of(-20));
+        }
         if (shooterSubsystem.isReadyToShoot()) {
           shooterSubsystem.stop();
           timer.start();
@@ -101,8 +108,10 @@ public class TestCommand extends Command {
         break;
 
       case 4:
-        turretSubsystem.shoot();
-        timer.start();
+        if (!hasStopped) {
+          turretSubsystem.shoot();
+          timer.start();
+        }
         if (timer.hasElapsed(2) && !hasStopped) {
           turretSubsystem.stop();
           hasStopped = true;
@@ -116,8 +125,10 @@ public class TestCommand extends Command {
         break;
 
       case 5:
-        turretSubsystem.eject();
-        timer.start();
+        if (!hasStopped) {
+          turretSubsystem.eject();
+          timer.start();
+        }
         if (timer.hasElapsed(2) && !hasStopped) {
           turretSubsystem.stop();
           hasStopped = true;
@@ -131,39 +142,51 @@ public class TestCommand extends Command {
         break;
 
       case 6:
-        turretSubsystem.moveToYawPosition(Degrees.of(135));
+        if (!hasStopped) {
+        turretSubsystem.moveToYawPosition(Degrees.of(175));
+        }
         if (turretSubsystem.isAtYawTarget()) {
           turretSubsystem.prepareToIntake();
           timer.start();
+          hasStopped = true;
         }
         if (timer.hasElapsed(3)) {
           teststate++;
           timer.stop();
           timer.reset();
+          hasStopped = false;
         }
 
       case 7:
-        turretSubsystem.moveToYawPosition(Degrees.of(225));
+        if (!hasStopped) {
+        turretSubsystem.moveToYawPosition(Degrees.of(185));
+        }
         if (turretSubsystem.isAtYawTarget()) {
           turretSubsystem.prepareToIntake();
           timer.start();
+          hasStopped = true;
         }
         if (timer.hasElapsed(3)) {
           teststate++;
           timer.stop();
           timer.reset();
+          hasStopped = false;
         }
 
       case 8:
-        turretSubsystem.moveToPitchPosition(Degrees.of(30));
+        if (!hasStopped) {
+        turretSubsystem.moveToPitchPosition(Degrees.of(5));
+        }
         if (turretSubsystem.isAtPitchTarget()) {
           turretSubsystem.prepareToIntake();
           timer.start();
+          hasStopped = true;
         }
         if (timer.hasElapsed(3)) {
           teststate++;
           timer.stop();
           timer.reset();
+          hasStopped = false;
         }
     }
   }
