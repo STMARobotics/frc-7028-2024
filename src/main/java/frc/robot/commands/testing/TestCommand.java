@@ -79,31 +79,36 @@ public class TestCommand extends Command {
 
       case 2:
         if (!hasStopped) {
-          shooterSubsystem.prepareToShoot(RotationsPerSecond.of(20));
+          shooterSubsystem.prepareToShoot(RotationsPerSecond.of(40));
         }
         if (shooterSubsystem.isReadyToShoot()) {
           shooterSubsystem.stop();
           timer.start();
+          hasStopped = true;
         }
-        if (timer.hasElapsed(5)) {
+        if (timer.hasElapsed(3)) {
           teststate++;
           timer.stop();
           timer.reset();
+          hasStopped = false;
         }
         break;
 
       case 3:
         if (!hasStopped) {
-          shooterSubsystem.prepareToShoot(RotationsPerSecond.of(-20));
+          shooterSubsystem.prepareToShoot(RotationsPerSecond.of(-40));
         }
         if (shooterSubsystem.isReadyToShoot()) {
+
           shooterSubsystem.stop();
           timer.start();
+          hasStopped = true;
         }
-        if (timer.hasElapsed(5)) {
+        if (timer.hasElapsed(3)) {
           teststate++;
           timer.stop();
           timer.reset();
+          hasStopped = false;
         }
         break;
 
@@ -116,7 +121,7 @@ public class TestCommand extends Command {
           turretSubsystem.stop();
           hasStopped = true;
         }
-        if (timer.hasElapsed(5)) {
+        if (timer.hasElapsed(3)) {
           teststate++;
           timer.stop();
           timer.reset();
@@ -133,7 +138,7 @@ public class TestCommand extends Command {
           turretSubsystem.stop();
           hasStopped = true;
         }
-        if (timer.hasElapsed(5)) {
+        if (timer.hasElapsed(3)) {
           teststate++;
           timer.stop();
           timer.reset();
@@ -143,7 +148,7 @@ public class TestCommand extends Command {
 
       case 6:
         if (!hasStopped) {
-        turretSubsystem.moveToYawPosition(Degrees.of(175));
+        turretSubsystem.moveToYawPosition(Degrees.of(-160));
         }
         if (turretSubsystem.isAtYawTarget()) {
           turretSubsystem.prepareToIntake();
@@ -159,23 +164,7 @@ public class TestCommand extends Command {
 
       case 7:
         if (!hasStopped) {
-        turretSubsystem.moveToYawPosition(Degrees.of(185));
-        }
-        if (turretSubsystem.isAtYawTarget()) {
-          turretSubsystem.prepareToIntake();
-          timer.start();
-          hasStopped = true;
-        }
-        if (timer.hasElapsed(3)) {
-          teststate++;
-          timer.stop();
-          timer.reset();
-          hasStopped = false;
-        }
-
-      case 8:
-        if (!hasStopped) {
-        turretSubsystem.moveToPitchPosition(Degrees.of(5));
+        turretSubsystem.moveToPitchPosition(Degrees.of(10));
         }
         if (turretSubsystem.isAtPitchTarget()) {
           turretSubsystem.prepareToIntake();
