@@ -37,7 +37,7 @@ public class SpeakerOrBlinkCommand extends Command {
     this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
         .alongWith(new LEDBlinkCommand(ledSubsystem, kPurple, 0.05));
     this.shootCommand = new ShootTeleopCommand(drivetrain, shooter, turretSubsystem, ledSubsystem,
-        xSupplier, ySupplier, SPEAKER_RED_TELE, SPEAKER_BLUE_TELE, SHOOTER_INTERPOLATOR);
+        xSupplier, ySupplier, SPEAKER_RED_TELE, SPEAKER_BLUE_TELE, SHOOTER_INTERPOLATOR, 0);
 
     addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
   }
