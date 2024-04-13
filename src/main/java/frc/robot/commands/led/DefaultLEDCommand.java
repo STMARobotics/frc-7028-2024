@@ -1,6 +1,7 @@
 package frc.robot.commands.led;
 
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
 import java.util.function.BooleanSupplier;
 
@@ -62,7 +63,7 @@ public class DefaultLEDCommand extends Command {
             .until(() -> getMode() != LEDMode.MODE_ROBOT_DISABLED).schedule();
         break;
       case MODE_TEST:
-        new LEDAlternateCommand(ledSubsystem, Color.kBlack, Color.kOrange, Seconds.one())
+        new LEDAlternateCommand(ledSubsystem, Color.kBlack, NOTE_COLOR, Seconds.one())
           .until(() -> getMode() != LEDMode.MODE_TEST).schedule();
         break;
       default:
@@ -80,7 +81,7 @@ public class DefaultLEDCommand extends Command {
       return LEDMode.MODE_NOTE_IN_TURRET;
     } else if (!DriverStation.isDSAttached()) {
       return LEDMode.MODE_DS_DISCONNECT;
-    } else if (RobotState.isDisabled()) {
+    } else if (RobotState.isDisabled() && !RobotState.isTest()) {
       return LEDMode.MODE_ROBOT_DISABLED;
     } else if (RobotState.isTest()) {
       return LEDMode.MODE_TEST;

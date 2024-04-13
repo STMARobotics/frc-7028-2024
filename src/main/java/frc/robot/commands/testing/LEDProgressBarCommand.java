@@ -37,26 +37,26 @@ public class LEDProgressBarCommand extends Command {
 
   private void animate(LEDStrips ledStrips) {
 
-    if (tests <= 16) {
+    if (tests <= 21) {
       for (int strip = 0; strip < ledStrips.getStripCount(); strip++) {
         int index;
         for (index = 0; index < ledStrips.getStripSize(strip); index++) {
           if (index < tests) {
-            if (index < 2) {
+            if (index < 3) {
               ledStrips.setLED(strip, index, Color.kRed);
-            } else if (index < 4) {
-              ledStrips.setLED(strip, index, Color.kOrange);
             } else if (index < 6) {
+              ledStrips.setLED(strip, index, Color.kOrange);
+            } else if (index < 9) {
               ledStrips.setLED(strip, index, Color.kYellow);
-            } else if (index < 8) {
-              ledStrips.setLED(strip, index, Color.kLimeGreen);
-            } else if (index < 10) {
-              ledStrips.setLED(strip, index, Color.kBlue);
             } else if (index < 12) {
+              ledStrips.setLED(strip, index, Color.kLimeGreen);
+            } else if (index < 15) {
+              ledStrips.setLED(strip, index, Color.kBlue);
+            } else if (index < 18) {
               ledStrips.setLED(strip, index, Color.kPurple);
-            } else if (index < 14) {
+            } else if (index < 21) {
               ledStrips.setLED(strip, index, Color.kPink);
-            } else if (index < 16) {
+            } else if (index < 24) {
               ledStrips.setLED(strip, index, Color.kWhite);
             }
           } else {
@@ -83,7 +83,7 @@ public class LEDProgressBarCommand extends Command {
 
   @Override
   public void execute() {
-    tests = intSupplier.getAsInt();
+    tests = (intSupplier.getAsInt()*3);
   }
 
   @Override
