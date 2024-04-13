@@ -1,0 +1,277 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.4055808813372015,
+        "y": 2.8350912842176568
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.30742528151723,
+        "y": 1.9282649091613973
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.2636792642006345,
+        "y": 0.7131175665860102
+      },
+      "prevControl": {
+        "x": 4.089001102111302,
+        "y": 1.1685017291807922
+      },
+      "nextControl": {
+        "x": 9.476335619337906,
+        "y": 0.39572833531631907
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.143300848005206,
+        "y": 3.4698697467570376
+      },
+      "prevControl": {
+        "x": 7.272747527951198,
+        "y": 1.4929882491343938
+      },
+      "nextControl": {
+        "x": 8.733926567538791,
+        "y": 4.811082318197888
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.534131875281295,
+        "y": 4.730358408085237
+      },
+      "prevControl": {
+        "x": 6.241505382306074,
+        "y": 3.990496555041166
+      },
+      "nextControl": {
+        "x": 4.262083962764417,
+        "y": 4.848245836842551
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.084804976627497,
+        "y": 3.578688911763789
+      },
+      "prevControl": {
+        "x": 6.021327130373559,
+        "y": 3.4789380105076004
+      },
+      "nextControl": {
+        "x": 6.119912435377657,
+        "y": 3.63385777551404
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.534131875281295,
+        "y": 4.730358408085237
+      },
+      "prevControl": {
+        "x": 5.647934199611861,
+        "y": 4.09920375763125
+      },
+      "nextControl": {
+        "x": 4.262083962764417,
+        "y": 4.8845188918448015
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.225810907762167,
+        "y": 3.7237811317727902
+      },
+      "prevControl": {
+        "x": 4.62481451278692,
+        "y": 4.38576438556386
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.15,
+      "rotationDegrees": 18.42594875649607,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.5,
+      "rotationDegrees": 47.82396705077249,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 2.15,
+      "rotationDegrees": 53.4396864028099,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.5,
+      "rotationDegrees": -21.600000000000023,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4.65,
+      "rotationDegrees": -118.47608396752554,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4.1,
+      "rotationDegrees": -23.877592207651293,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.3,
+      "maxWaypointRelativePos": 2.15,
+      "constraints": {
+        "maxVelocity": 0.7,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Bloop Preload",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "bloopNorth"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Bloop And Shoot",
+      "waypointRelativePos": 0.75,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "bloopWest"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "bloopWest"
+              }
+            },
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 1.0
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "intake"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "scoreSpeakerWhileMoving"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.75,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -116.56505117707805,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Four Bloop Steal",
+  "previewStartingState": {
+    "rotation": 0.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

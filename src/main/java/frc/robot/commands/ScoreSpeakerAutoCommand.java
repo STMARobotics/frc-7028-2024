@@ -1,21 +1,16 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static edu.wpi.first.wpilibj.util.Color.kBlue;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
-import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD;
-import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
-import static java.lang.Math.PI;
 
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
@@ -107,15 +102,6 @@ public class ScoreSpeakerAutoCommand extends Command {
     // Calculate ready state
     var isShooterReady = shooter.isReadyToShoot();
     
-    // Decide the direction to turn, then set the robot rotation target so the turret's shooting yaw limit on that
-    // side is pointed at the speaker
-    Rotation2d robotTargetDirection = angleToSpeaker.minus(fromRadians(PI)); // Turret is on the back of the robot
-    if (robotTargetDirection.minus(robotPose.getRotation()).getRadians() > 0) {
-      robotTargetDirection = robotTargetDirection.minus(DRIVETRAIN_YAW_LIMIT_FORWARD);
-    } else {
-      robotTargetDirection = robotTargetDirection.minus(DRIVETRAIN_YAW_LIMIT_REVERSE);
-    }
-
     // Set the turret position
     turretSubsystem.moveToShootingYawPosition(turretYawTarget);
     turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());

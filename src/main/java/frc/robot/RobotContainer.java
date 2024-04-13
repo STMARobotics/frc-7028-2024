@@ -123,10 +123,10 @@ public class RobotContainer {
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
 
     // Driver camera
-    driverTab.add(new HttpCamera("photonvision_Port_1184_Output_MJPEG_Server", "http://10.70.28.11:1184"))
+    driverTab.add(new HttpCamera("photonvision_Port_1182_Output_MJPEG_Server", "http://10.70.28.11:1182"))
         .withWidget(BuiltInWidgets.kCameraStream)
         .withProperties(Map.of("showCrosshair", true, "showControls", false))
-        .withSize(4, 5).withPosition(2, 0);
+        .withSize(4, 4).withPosition(2, 0);
 
     // Note sensor
     driverTab.addBoolean("Turret", turretSubsystem::hasNote)
