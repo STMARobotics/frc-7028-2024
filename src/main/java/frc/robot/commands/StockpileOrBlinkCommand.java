@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.wpilibj.DriverStation.Alliance.Red;
 import static edu.wpi.first.wpilibj.util.Color.kRed;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_BLUE;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
@@ -12,6 +13,8 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -38,15 +41,16 @@ public class StockpileOrBlinkCommand extends Command {
     this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
         .alongWith(new LEDBlinkCommand(ledSubsystem, kRed, 0.05));
     this.stockpile = new ShootTeleopCommand(drivetrain, shooter, turretSubsystem, ledSubsystem,
-        xSupplier, ySupplier, STOCKPILE_RED, STOCKPILE_BLUE, STOCKPILE_INTERPOLATOR);
+        xSupplier, ySupplier, STOCKPILE_RED, STOCKPILE_BLUE, STOCKPILE_INTERPOLATOR, 0.3);
 
     addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
   }
 
   @Override
   public void initialize() {
+    var alliance = DriverStation.getAlliance().map(dsAlliance -> dsAlliance).orElse(Alliance.Blue);
     Pose2d robotPose = drivetrain.getState().Pose;
-    if (robotPose.getX() > 5.3 && robotPose.getX() < 11.25) {
+    if (alliance == Red && robotPose.getX() > 5.3 || alliance == Alliance.Blue && robotPose.getX() < 11.25) {
       selectedCommand = stockpile;
     } else {
       selectedCommand = dontShootCommand;

@@ -41,6 +41,7 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.math.VelocityPitchInterpolator;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
@@ -70,6 +71,8 @@ public class ShootTeleopCommand extends Command {
   private final Translation2d targetRed;
   private final Translation2d targetBlue;
   private final VelocityPitchInterpolator lookupTable;
+  private final double velocityMultiplier;
+  private final double maxVelocity;
 
   private Translation2d targetTranslation;
 
@@ -88,7 +91,8 @@ public class ShootTeleopCommand extends Command {
   public ShootTeleopCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
       TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem,
       Supplier<Measure<Velocity<Distance>>> xSupplier, Supplier<Measure<Velocity<Distance>>> ySupplier,
-      Translation2d targetRed, Translation2d targetBlue, VelocityPitchInterpolator lookupTable) {
+      Translation2d targetRed, Translation2d targetBlue, VelocityPitchInterpolator lookupTable,
+      double velcotiyMultiplier) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
@@ -98,6 +102,8 @@ public class ShootTeleopCommand extends Command {
     this.targetRed = targetRed;
     this.targetBlue = targetBlue;
     this.lookupTable = lookupTable;
+    this.velocityMultiplier = velcotiyMultiplier;
+    this.maxVelocity = DrivetrainConstants.MAX_VELOCITY.in(MetersPerSecond) * velocityMultiplier;
 
     addRequirements(drivetrain, shooter, turretSubsystem);
 
@@ -136,9 +142,10 @@ public class ShootTeleopCommand extends Command {
         SHOOT_WHILE_MOVING_COEFFICIENT * (distanceToTarget / shootingSettings.getVelocity().in(RotationsPerSecond));
 
     // Calculate the predicted offset of the target compared to current pose (in meters)
+    var currentChassisSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
     var targetPredictedOffset =
-        new Translation2d((drivetrain.getCurrentFieldChassisSpeeds().vxMetersPerSecond * timeUntilScored), 
-            (drivetrain.getCurrentFieldChassisSpeeds().vyMetersPerSecond * timeUntilScored));
+        new Translation2d((currentChassisSpeeds.vxMetersPerSecond * timeUntilScored), 
+            (currentChassisSpeeds.vyMetersPerSecond * timeUntilScored));
 
     var predictedTargetTranslation = targetTranslation.minus(targetPredictedOffset);
 
@@ -157,8 +164,11 @@ public class ShootTeleopCommand extends Command {
     var isInTurretRange = TurretSubsystem.isYawInShootingRange(turretYawTarget);
 
     // Get driver translation speeds
-    chassisSpeeds.vxMetersPerSecond = xSupplier.get().in(MetersPerSecond) * 0.35;
-    chassisSpeeds.vyMetersPerSecond = ySupplier.get().in(MetersPerSecond) * 0.35;
+    chassisSpeeds.vxMetersPerSecond = xSupplier.get().in(MetersPerSecond) * velocityMultiplier;
+    chassisSpeeds.vyMetersPerSecond = ySupplier.get().in(MetersPerSecond) * velocityMultiplier;
+
+    var magnitude = Math.hypot(currentChassisSpeeds.vxMetersPerSecond, currentChassisSpeeds.vyMetersPerSecond);
+    var isDrivetrainReady = magnitude - maxVelocity <= 0.2;
 
     // Aim drivetrain
     // NOTE: Slew rate limit needs to be applied so the robot slows properly (see 2022 robot doing "stoppies")
@@ -209,7 +219,7 @@ public class ShootTeleopCommand extends Command {
 
     var isPitchReady = turretSubsystem.isAtPitchTarget();
     var isYawReady = turretSubsystem.isAtYawTarget();
-    if (isShooterReady && isPitchReady && isYawReady) {
+    if (isShooterReady && isPitchReady && isYawReady && isDrivetrainReady) {
       // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot and start timer
       turretSubsystem.shoot();
       isShooting = true;
@@ -220,7 +230,7 @@ public class ShootTeleopCommand extends Command {
       ledSubsystem.setUpdater(l -> l.setAll(kGreen));
     } else {
       ledSubsystem.setUpdater(l -> 
-          l.setLEDSegments(kBlue, isShooterReady, isInTurretRange, isPitchReady, isYawReady));
+          l.setLEDSegments(kBlue, isShooterReady, isInTurretRange, isPitchReady, isYawReady, isDrivetrainReady));
     }
   }
 
