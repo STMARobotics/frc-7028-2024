@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.BabyBirdCommand;
 import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectCommand;
@@ -79,7 +78,7 @@ public class RobotContainer {
 
   private final AutoCommands autoCommands = new AutoCommands(
       drivetrain, shooterSubsystem, turretSubsystem, intakeSubsystem, ledSubsystem);
-  
+
   public RobotContainer() {
     // Configure control binding scheme
     if (DEMO_MODE) {
@@ -112,9 +111,9 @@ public class RobotContainer {
         controlBindings.translationX(),
         controlBindings.translationY(),
         controlBindings.omega()));
-    
+
     ledSubsystem.setDefaultCommand(new DefaultLEDCommand(ledSubsystem, turretSubsystem::hasNote));
-    
+
     turretSubsystem.setDefaultCommand(new DefaultTurretCommand(turretSubsystem));
   }
 
@@ -131,11 +130,11 @@ public class RobotContainer {
     // Note sensor
     driverTab.addBoolean("Turret", turretSubsystem::hasNote)
         .withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0);
-    
+
     // Turret
     driverTab.addNumber("Pitch", () -> turretSubsystem.getPitch().in(Degrees))
         .withWidget(BuiltInWidgets.kTextView).withPosition(6, 1);
-    
+
     driverTab.addNumber("Yaw", () -> turretSubsystem.getYaw().in(Degrees))
         .withWidget(BuiltInWidgets.kTextView).withPosition(6, 2);
 
@@ -147,7 +146,7 @@ public class RobotContainer {
         pose = new Pose2d();
       }
       field2d.setRobotPose(pose);
-      return String.format("(%.3f, %.3f) %.2f deg", 
+      return String.format("(%.3f, %.3f) %.2f deg",
           pose.getX(), pose.getY(), pose.getRotation().getDegrees());
     }).withSize(2, 1).withPosition(7, 2);
 
@@ -159,43 +158,43 @@ public class RobotContainer {
 
     // Intake
     controlBindings.intake().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
-    
+
     controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(runOnce(() -> {
       intakeSubsystem.stop();
       turretSubsystem.stop();
     }, intakeSubsystem, turretSubsystem)));
-    
+
     controlBindings.eject().ifPresent(trigger -> trigger.whileTrue(
-      new EjectCommand(intakeSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
-    
+        new EjectCommand(intakeSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
+
     controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(
-      new BabyBirdCommand(turretSubsystem, shooterSubsystem)
-          .deadlineWith(new LEDBlinkCommand(ledSubsystem, NOTE_COLOR, 0.1))));
+        new BabyBirdCommand(turretSubsystem, shooterSubsystem)
+            .deadlineWith(new LEDBlinkCommand(ledSubsystem, NOTE_COLOR, 0.1))));
 
     // Speaker
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
-      new SpeakerOrBlinkCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
+        new SpeakerOrBlinkCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem,
             controlBindings.translationX(), controlBindings.translationY(), controlBindings.omega())));
-    
+
     controlBindings.manualShoot().ifPresent(trigger -> trigger.whileTrue(new ManualShootCommand(
         turretSubsystem, shooterSubsystem, RotationsPerSecond.of(50), Degrees.of(35), Degrees.of(180))));
 
-    // Amp 
+    // Amp
     controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));
 
     controlBindings.stockpile().ifPresent(trigger -> trigger.whileTrue(new StockpileOrBlinkCommand(
         drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, controlBindings.translationX(),
         controlBindings.translationY(), controlBindings.omega())));
-    
+
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
       turretSubsystem.moveToPitchPosition(PITCH_LIMIT_FORWARD);
       turretSubsystem.moveToYawPosition(INTAKE_YAW);
     })));
-    
+
     // Testing
     controlBindings.tuneShooting().ifPresent(trigger -> trigger.whileTrue(
-      new TuneShootingCommand(turretSubsystem, shooterSubsystem, ledSubsystem, () -> drivetrain.getState().Pose)));
+        new TuneShootingCommand(turretSubsystem, shooterSubsystem, ledSubsystem, () -> drivetrain.getState().Pose)));
 
     // Demo shots
     controlBindings.demoToss1().ifPresent(trigger -> trigger.whileTrue(
@@ -207,14 +206,13 @@ public class RobotContainer {
             RotationsPerSecond.of(30), Degrees.of(20), Degrees.of(180))));
 
     controlBindings.seedFieldRelative().ifPresent(trigger -> trigger.onTrue(
-      runOnce(drivetrain::seedFieldRelative, drivetrain)
-    ));
+        runOnce(drivetrain::seedFieldRelative, drivetrain)));
   }
 
   public void populateSysIdDashboard() {
     var tab = Shuffleboard.getTab("Drive SysId");
     int columnIndex = 0;
-    
+
     // Column 0 Drive
     tab.add("Drive Quasi Fwd", drivetrain.sysIdDriveQuasiCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Drive Quasi Rev", drivetrain.sysIdDriveQuasiCommand(kReverse)).withPosition(columnIndex, 1);
@@ -270,16 +268,15 @@ public class RobotContainer {
     tab.add("Tur Roll Quasi Fwd", turretSubsystem.sysIdRollerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Tur Roll Quasi Rev", turretSubsystem.sysIdRollerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Tur Roll Dynam Fwd", turretSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
-    tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);    
+    tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
   }
 
   public void populateTestingDashboard() {
     var tab = Shuffleboard.getTab("Testing");
     tab.addNumber("Number of Tests Run", () -> testCommand.getTestState());
     tab.addBoolean("Has Stopped", () -> testCommand.getHasStopped());
-    tab.add("Start Testing", testCommand);
-    tab.add("lights", new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState));
-    tab.add("add test state", new InstantCommand(testCommand::addTestState));
+    tab.add("Start Testing", testCommand
+        .deadlineWith(new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)));
   }
 
   public void setAlliance(Alliance alliance) {

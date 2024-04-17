@@ -36,6 +36,7 @@ public class TestCommand extends Command {
   public void initialize() {
     timer.reset();
     teststate = 0;
+    hasStopped = false;
   }
 
   @Override
@@ -51,7 +52,7 @@ public class TestCommand extends Command {
           intakeSubsystem.stop();
           hasStopped = true;
         }
-        if (timer.hasElapsed(4) && hasStopped == true) {
+        if (timer.hasElapsed(4) && hasStopped) {
           teststate++;
           timer.stop();
           timer.reset();
@@ -162,6 +163,7 @@ public class TestCommand extends Command {
           timer.reset();
           hasStopped = false;
         }
+        break;
 
       case 7:
         if (!hasStopped) {
@@ -178,11 +180,8 @@ public class TestCommand extends Command {
           timer.reset();
           hasStopped = false;
         }
+        break;
     }
-  }
-
-  public void addTestState() {
-    teststate++;
   }
 
   public int getTestState() {

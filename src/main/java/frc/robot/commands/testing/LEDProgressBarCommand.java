@@ -31,6 +31,9 @@ public class LEDProgressBarCommand extends Command {
   public void initialize() {
     timer.stop();
     timer.reset();
+    ledsOn = true;
+    hasBlinked = 0;
+    tests = 0;
 
     ledSubsystem.setUpdater(this::animate);
   }
