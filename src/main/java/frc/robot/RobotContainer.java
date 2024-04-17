@@ -270,10 +270,11 @@ public class RobotContainer {
     tab.add("Tur Roll Quasi Fwd", turretSubsystem.sysIdRollerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
     tab.add("Tur Roll Quasi Rev", turretSubsystem.sysIdRollerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
     tab.add("Tur Roll Dynam Fwd", turretSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
-    tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
+    tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);    
+  }
 
-    // Testing
-    tab = Shuffleboard.getTab("Testing");
+  public void populateTestingDashboard() {
+    var tab = Shuffleboard.getTab("Testing");
     tab.addNumber("Number of Tests Run", () -> testCommand.getTestState());
     tab.addBoolean("Has Stopped", () -> testCommand.getHasStopped());
     tab.add("Start Testing", testCommand);
