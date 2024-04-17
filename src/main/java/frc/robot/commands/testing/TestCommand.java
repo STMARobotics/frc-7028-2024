@@ -35,6 +35,7 @@ public class TestCommand extends Command {
   @Override
   public void initialize() {
     timer.reset();
+    teststate = 0;
   }
 
   @Override
@@ -148,7 +149,7 @@ public class TestCommand extends Command {
 
       case 6:
         if (!hasStopped) {
-        turretSubsystem.moveToYawPosition(Degrees.of(-160));
+          turretSubsystem.moveToYawPosition(Degrees.of(-160));
         }
         if (turretSubsystem.isAtYawTarget()) {
           turretSubsystem.prepareToIntake();
@@ -164,7 +165,7 @@ public class TestCommand extends Command {
 
       case 7:
         if (!hasStopped) {
-        turretSubsystem.moveToPitchPosition(Degrees.of(10));
+          turretSubsystem.moveToPitchPosition(Degrees.of(10));
         }
         if (turretSubsystem.isAtPitchTarget()) {
           turretSubsystem.prepareToIntake();
@@ -203,6 +204,5 @@ public class TestCommand extends Command {
     turretSubsystem.stop();
     intakeSubsystem.stop();
     turretSubsystem.prepareToIntake();
-    teststate = 0;
   }
 }
