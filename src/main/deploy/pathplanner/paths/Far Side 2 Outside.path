@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.417113363743722,
-        "y": 0.6
+        "y": 0.75
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.171968571536552,
-        "y": 1.3295824940487102
+        "y": 1.4795824940487103
       },
       "isLocked": false,
       "linkedName": "Far Side Outside 1"

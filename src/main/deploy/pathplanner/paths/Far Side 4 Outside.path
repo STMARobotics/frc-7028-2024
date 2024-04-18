@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.415348760522082,
-        "y": 4.05
+        "y": 4.2
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.427369482237943,
-        "y": 4.078637080529975
+        "y": 4.228637080529976
       },
       "isLocked": false,
       "linkedName": "Far Side Outside 3"
