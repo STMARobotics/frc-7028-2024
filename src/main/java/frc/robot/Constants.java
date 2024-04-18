@@ -299,6 +299,12 @@ public class Constants {
     public static final Translation2d STOCKPILE_RED = new Translation2d(Meters.of(15.698), Meters.of(6.7));
     public static final Translation2d STOCKPILE_BLUE = new Translation2d(Meters.of(0.5595), Meters.of(6.7));
 
+    public static final Translation2d STOCKPILE_MID_RED = new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
+    public static final Translation2d STOCKPILE_MID_BLUE = new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
+
+    //public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
+    //public static final Measure<Distance> FIELD_WIDTH = Meters.of(8.0137);
+
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);
     public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
