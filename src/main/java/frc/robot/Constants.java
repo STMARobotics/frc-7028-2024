@@ -161,7 +161,7 @@ public class Constants {
 
   public static class IntakeConstants {
     public static final int DEVICE_ID = 42;
-    public static final Measure<Current> PEAK_FORWARD_CURRENT = Amps.of(120);
+    public static final Measure<Current> PEAK_FORWARD_CURRENT = Amps.of(200);
     public static final Measure<Current> PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.negate();
     public static final Measure<Current> SUPPLY_CURRENT_LIMIT = Amps.of(30);
 
