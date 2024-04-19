@@ -287,12 +287,12 @@ public class Constants {
     public static final Translation2d SPEAKER_BLUE_TELE = new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(218.42));
 
     // Speaker targets for auto - except the first shot on the "far side"
-    public static final Translation2d SPEAKER_BLUE_AUTO = new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(208.42));
+    public static final Translation2d SPEAKER_BLUE_AUTO = new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(214.42));
     public static final Translation2d SPEAKER_RED_AUTO = SPEAKER_RED_TELE;
     
     // Speaker targets for the first shot in "far side" autos
     public static final Translation2d SPEAKER_BLUE_AUTO_FIRST_SHOT = 
-        new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(210.42));
+        new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(212.42));
     public static final Translation2d SPEAKER_RED_AUTO_FIRST_SHOT =
         new Translation2d(inchesToMeters(646.73) - SPEAKER_X_OFFSET, inchesToMeters(220.42));
 
@@ -301,9 +301,6 @@ public class Constants {
 
     public static final Translation2d STOCKPILE_MID_RED = new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
     public static final Translation2d STOCKPILE_MID_BLUE = new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
-
-    //public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
-    //public static final Measure<Distance> FIELD_WIDTH = Meters.of(8.0137);
 
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);
