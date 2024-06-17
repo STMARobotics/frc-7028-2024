@@ -172,7 +172,8 @@ public class AutoCommands {
   public Command shootMid() {
     return new ShootTeleopCommand(
           drivetrainSubsystem, shooterSubsystem, turretSubsystem, ledSubsystem, desiredX,
-          desiredY, STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3);
+          desiredY, STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)
+          .deadlineWith((new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1))));
   }
 
 }
