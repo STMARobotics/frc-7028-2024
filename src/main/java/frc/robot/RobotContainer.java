@@ -191,6 +191,14 @@ public class RobotContainer {
         drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, controlBindings.translationX(),
         controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)));
     
+    controlBindings.babyBomber().ifPresent(trigger -> trigger.whileTrue(
+      new BabyBirdCommand(
+        turretSubsystem, shooterSubsystem).deadlineWith(new LEDBlinkCommand(ledSubsystem, FLASH_COLOR, 0.1))
+      .andThen(new ShootTeleopCommand(
+        drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, controlBindings.translationX(),
+        controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)
+        .deadlineWith())))
+
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
       turretSubsystem.moveToPitchPosition(PITCH_LIMIT_FORWARD);
