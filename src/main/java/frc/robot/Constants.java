@@ -104,10 +104,10 @@ public class Constants {
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
             new Translation3d(inchesToMeters(11.227), inchesToMeters(-10.446), inchesToMeters(8.238)),
-            new Rotation3d(degreesToRadians(2), degreesToRadians(-23), degreesToRadians(-90))),
+            new Rotation3d(degreesToRadians(2), degreesToRadians(-21.0), degreesToRadians(-90))),
         new Transform3d(
             new Translation3d(inchesToMeters(11.227), inchesToMeters(10.446), inchesToMeters(8.238)),
-            new Rotation3d(0, degreesToRadians(-23.5), degreesToRadians(90)))
+            new Rotation3d(degreesToRadians(-2), degreesToRadians(-24.0), degreesToRadians(90)))
       };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
@@ -161,7 +161,7 @@ public class Constants {
 
   public static class IntakeConstants {
     public static final int DEVICE_ID = 42;
-    public static final Measure<Current> PEAK_FORWARD_CURRENT = Amps.of(120);
+    public static final Measure<Current> PEAK_FORWARD_CURRENT = Amps.of(200);
     public static final Measure<Current> PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.negate();
     public static final Measure<Current> SUPPLY_CURRENT_LIMIT = Amps.of(30);
 
@@ -287,17 +287,20 @@ public class Constants {
     public static final Translation2d SPEAKER_BLUE_TELE = new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(218.42));
 
     // Speaker targets for auto - except the first shot on the "far side"
-    public static final Translation2d SPEAKER_BLUE_AUTO = new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(208.42));
+    public static final Translation2d SPEAKER_BLUE_AUTO = new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(214.42));
     public static final Translation2d SPEAKER_RED_AUTO = SPEAKER_RED_TELE;
     
     // Speaker targets for the first shot in "far side" autos
     public static final Translation2d SPEAKER_BLUE_AUTO_FIRST_SHOT = 
-        new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(210.42));
+        new Translation2d(SPEAKER_X_OFFSET, inchesToMeters(212.42));
     public static final Translation2d SPEAKER_RED_AUTO_FIRST_SHOT =
         new Translation2d(inchesToMeters(646.73) - SPEAKER_X_OFFSET, inchesToMeters(220.42));
 
     public static final Translation2d STOCKPILE_RED = new Translation2d(Meters.of(15.698), Meters.of(6.7));
     public static final Translation2d STOCKPILE_BLUE = new Translation2d(Meters.of(0.5595), Meters.of(6.7));
+
+    public static final Translation2d STOCKPILE_MID_RED = new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
+    public static final Translation2d STOCKPILE_MID_BLUE = new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
 
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);

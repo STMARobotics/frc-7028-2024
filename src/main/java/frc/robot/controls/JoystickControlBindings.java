@@ -104,4 +104,9 @@ public class JoystickControlBindings implements ControlBindings {
     return Optional.of(rightJoystick.button(2));
   }
 
+  @Override
+  public Optional<Trigger> stockpileMiddle() {
+    return Optional.of(rightJoystick.button(4));
+  }
+
 }

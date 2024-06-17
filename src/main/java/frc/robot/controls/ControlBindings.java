@@ -122,4 +122,12 @@ public interface ControlBindings {
     return Optional.empty();
   }
 
+    /**
+   * Shoot a note into a stockpile by our amp
+   * @return
+   */
+  default Optional<Trigger> stockpileMiddle() {
+    return Optional.empty();
+  }
+
 }
