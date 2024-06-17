@@ -82,8 +82,9 @@ public class RobotContainer {
   private final Field2d field2d = new Field2d();
 
   private final AutoCommands autoCommands = new AutoCommands(
-      drivetrain, shooterSubsystem, turretSubsystem, intakeSubsystem, ledSubsystem);
-  
+      drivetrain, shooterSubsystem, turretSubsystem, intakeSubsystem, ledSubsystem, 
+      controlBindings.translationX(), controlBindings.translationY());
+
   public RobotContainer() {
     // Configure control binding scheme
     if (DEMO_MODE) {
@@ -196,12 +197,8 @@ public class RobotContainer {
         controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)));
     
     controlBindings.babyBomber().ifPresent(trigger -> trigger.whileTrue(
-      new BabyBirdCommand(
-        turretSubsystem, shooterSubsystem).deadlineWith(new LEDBlinkCommand(ledSubsystem, FLASH_COLOR, 0.1))
-      .andThen(new ShootTeleopCommand(
-        drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, controlBindings.translationX(),
-        controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)
-        .deadlineWith(new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1))))));
+      autoCommands.babyBird().deadlineWith(new LEDBlinkCommand(ledSubsystem, FLASH_COLOR, 0.5)).andThen(autoCommands.shootMid()
+          .deadlineWith(new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1)))).repeatedly()));
 
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
