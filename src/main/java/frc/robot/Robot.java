@@ -15,6 +15,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private boolean hasPopulatedSysIdDashboard = false;
+  private boolean hasPopulatedTestingDashboard = false;
 
   @Override
   public void robotInit() {
@@ -80,6 +81,10 @@ public class Robot extends TimedRobot {
     if (!hasPopulatedSysIdDashboard) {
       m_robotContainer.populateSysIdDashboard();
       hasPopulatedSysIdDashboard = true;
+    }
+    if (!hasPopulatedTestingDashboard) {
+      m_robotContainer.populateTestingDashboard();
+      hasPopulatedTestingDashboard = true;
     }
   }
 
