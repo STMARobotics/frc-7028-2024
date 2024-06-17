@@ -201,7 +201,7 @@ public class RobotContainer {
       .andThen(new ShootTeleopCommand(
         drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, controlBindings.translationX(),
         controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)
-        .deadlineWith(new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.one())))));
+        .deadlineWith(new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1))))));
 
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
