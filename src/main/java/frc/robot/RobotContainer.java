@@ -12,8 +12,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
-import static frc.robot.Constants.LEDConstants.FLASH_COLOR;
-import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
+import static frc.robot.Constants.LEDConstants.BABYBIRD_COLOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_BLUE;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_RED;
@@ -175,7 +174,7 @@ public class RobotContainer {
     
     controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(
       new BabyBirdCommand(turretSubsystem, shooterSubsystem)
-          .deadlineWith(new LEDBlinkCommand(ledSubsystem, NOTE_COLOR, 0.1))));
+          .deadlineWith(new LEDBlinkCommand(ledSubsystem, BABYBIRD_COLOR, 0.1))));
 
     // Speaker
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
@@ -197,7 +196,7 @@ public class RobotContainer {
         controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)));
     
     controlBindings.babyBomber().ifPresent(trigger -> trigger.whileTrue(
-      autoCommands.babyBird().deadlineWith(new LEDBlinkCommand(ledSubsystem, FLASH_COLOR, 0.5)).andThen(autoCommands.shootMid()
+      autoCommands.babyBird().deadlineWith(new LEDBlinkCommand(ledSubsystem, BABYBIRD_COLOR, 0.5)).andThen(autoCommands.shootMid()
           .deadlineWith(new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1)))).repeatedly()));
 
     // Misc

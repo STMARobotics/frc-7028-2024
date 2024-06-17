@@ -3,7 +3,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.Constants.LEDConstants.FLASH_COLOR;
+import static frc.robot.Constants.LEDConstants.BABYBIRD_COLOR;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_BLUE;
@@ -161,7 +161,7 @@ public class AutoCommands {
 
   public Command babyBird() {
     return new BabyBirdCommand(
-        turretSubsystem, shooterSubsystem).deadlineWith(new LEDBlinkCommand(ledSubsystem, FLASH_COLOR, 0.1));
+        turretSubsystem, shooterSubsystem).deadlineWith(new LEDBlinkCommand(ledSubsystem, BABYBIRD_COLOR, 0.1));
   }
 
   /**
