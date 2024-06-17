@@ -202,8 +202,5 @@ public class TestCommand extends Command {
     shooterSubsystem.stop();
     turretSubsystem.stop();
     intakeSubsystem.stop();
-    turretSubsystem.stopPitch();
-    turretSubsystem.stopYaw();
-    turretSubsystem.runRollers(RotationsPerSecond.zero());
   }
 }
