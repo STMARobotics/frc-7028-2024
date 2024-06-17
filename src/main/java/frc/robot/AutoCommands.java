@@ -9,14 +9,9 @@ import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_BLUE;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_RED;
 
-import java.util.function.Supplier;
-
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LEDConstants;
@@ -30,6 +25,8 @@ import frc.robot.commands.ShootTeleopCommand;
 import frc.robot.commands.led.LEDAlternateCommand;
 import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDMarqueeCommand;
+import frc.robot.controls.ControlBindings;
+import frc.robot.controls.JoystickControlBindings;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
@@ -49,20 +46,15 @@ public class AutoCommands {
   private final IntakeSubsystem intakeSubsystem;
   private final LEDSubsystem ledSubsystem;
 
-  private final Supplier<Measure<Velocity<Distance>>> desiredX;
-  private final Supplier<Measure<Velocity<Distance>>> desiredY;
+  private final ControlBindings controlBindings = new JoystickControlBindings();
 
   public AutoCommands(CommandSwerveDrivetrain drivetrainSubsystem, ShooterSubsystem shooterSubsystem,
-      TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem, 
-      Supplier<Measure<Velocity<Distance>>> desiredX, Supplier<Measure<Velocity<Distance>>> desiredY) {
+      TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem) {
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.intakeSubsystem = intakeSubsystem;
     this.ledSubsystem = ledSubsystem;
-    this.desiredX = desiredX;
-    this.desiredY = desiredY;
-
   }
 
   /**
@@ -171,8 +163,8 @@ public class AutoCommands {
 
   public Command shootMid() {
     return new ShootTeleopCommand(
-          drivetrainSubsystem, shooterSubsystem, turretSubsystem, ledSubsystem, desiredX,
-          desiredY, STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)
+          drivetrainSubsystem, shooterSubsystem, turretSubsystem, ledSubsystem, controlBindings.translationX(),
+          controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)
           .deadlineWith((new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1))));
   }
 

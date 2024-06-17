@@ -75,8 +75,7 @@ public class RobotContainer {
   private final Field2d field2d = new Field2d();
 
   private final AutoCommands autoCommands = new AutoCommands(
-      drivetrain, shooterSubsystem, turretSubsystem, intakeSubsystem, ledSubsystem, 
-      controlBindings.translationX(), controlBindings.translationY());
+      drivetrain, shooterSubsystem, turretSubsystem, intakeSubsystem, ledSubsystem);
 
   public RobotContainer() {
     // Configure control binding scheme
