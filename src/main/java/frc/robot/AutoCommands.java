@@ -151,13 +151,12 @@ public class AutoCommands {
    * Command to put the turret in intake position
    * @return new command
    */
-
   public Command babyBird() {
     return new BabyBirdCommand(
         turretSubsystem, shooterSubsystem).deadlineWith(new LEDBlinkCommand(ledSubsystem, BABYBIRD_COLOR, 0.1));
   }
 
-    /**
+  /**
    * Comand to shoot a note into the middle of the field
    * @param xSupplier X translation supplier
    * @param ySupplier Y translation supplier
