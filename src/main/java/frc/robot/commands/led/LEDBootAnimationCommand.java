@@ -10,11 +10,11 @@ import frc.robot.subsystems.LEDSubsystem;
 
 /** Command to run the boot animation on the LED strips */
 public class LEDBootAnimationCommand extends Command {
-  
+
   private static final int BLIP_SIZE = 5;
   private final LEDSubsystem ledSubsystem;
   private final Timer timer = new Timer();
-  
+
   private int blipIndex = -1;
   private boolean done = false;
   private boolean initialized = false;
@@ -40,7 +40,7 @@ public class LEDBootAnimationCommand extends Command {
         ledStrips.setAll(kBlack);
         initialized = true;
       }
-      for(int index = 0; index < ledStrips.getMirrorStripSize(); index++) {
+      for (int index = 0; index < ledStrips.getMirrorStripSize(); index++) {
         if (index <= blipIndex && index >= blipIndex - (BLIP_SIZE - 1)) {
           ledStrips.setMirrorLED(index, Color.kOrange);
         } else {
@@ -67,5 +67,4 @@ public class LEDBootAnimationCommand extends Command {
   public void end(boolean interrupted) {
     ledSubsystem.setUpdater(null);
   }
-
 }

@@ -5,9 +5,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static frc.robot.Constants.DrivetrainConstants.MAX_ANGULAR_VELOCITY;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -15,16 +12,18 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.Optional;
+import java.util.function.Supplier;
 
-/**
- * Control bindings for driving with joysticks
- */
+/** Control bindings for driving with joysticks */
 public class JoystickControlBindings implements ControlBindings {
 
   private final CommandJoystick leftJoystick = new CommandJoystick(0);
   private final CommandJoystick rightJoystick = new CommandJoystick(1);
-  private final MutableMeasure<Velocity<Distance>> translationX = MutableMeasure.zero(MetersPerSecond);
-  private final MutableMeasure<Velocity<Distance>> translationY = MutableMeasure.zero(MetersPerSecond);
+  private final MutableMeasure<Velocity<Distance>> translationX =
+      MutableMeasure.zero(MetersPerSecond);
+  private final MutableMeasure<Velocity<Distance>> translationY =
+      MutableMeasure.zero(MetersPerSecond);
   private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
 
   @Override
@@ -34,22 +33,26 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationX() {
-    return () -> translationX.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getY()), MetersPerSecond);
+    return () ->
+        translationX.mut_replace(
+            MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getY()), MetersPerSecond);
   }
 
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
-   return () -> translationY.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getX()), MetersPerSecond);
+    return () ->
+        translationY.mut_replace(
+            MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getX()), MetersPerSecond);
   }
-  
+
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
-    return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(rightJoystick.getX()), RadiansPerSecond);
+    return () ->
+        omega.mut_replace(
+            MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(rightJoystick.getX()),
+            RadiansPerSecond);
   }
-  
+
   private static double squareAxis(double value) {
     return Math.copySign(value * value, value);
   }
@@ -108,5 +111,4 @@ public class JoystickControlBindings implements ControlBindings {
   public Optional<Trigger> stockpileMiddle() {
     return Optional.of(rightJoystick.button(4));
   }
-
 }

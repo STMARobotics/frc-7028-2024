@@ -7,8 +7,6 @@ import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_TELE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED_TELE;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoubleEntry;
@@ -22,13 +20,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import java.util.function.Supplier;
 
 /**
- * Testing command for tuning shots. This is not intended to be used in-game. This command reads from the NetworkTables
- * to get shooter pitch, velocity, and yaw.
+ * Testing command for tuning shots. This is not intended to be used in-game. This command reads
+ * from the NetworkTables to get shooter pitch, velocity, and yaw.
  */
 public class TuneShootingCommand extends Command {
-  
+
   private final TurretSubsystem turretSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final LEDSubsystem ledSubsystem;
@@ -45,15 +44,17 @@ public class TuneShootingCommand extends Command {
 
   private MutableMeasure<Angle> pitchMeasure = MutableMeasure.zero(Degrees);
   private MutableMeasure<Angle> yawMeasure = MutableMeasure.zero(Degrees);
-  private MutableMeasure<Velocity<Angle>> topVelocityMeasure = MutableMeasure.zero(RotationsPerSecond);
-  private MutableMeasure<Velocity<Angle>> bottomVelocityMeasure = MutableMeasure.zero(RotationsPerSecond);
+  private MutableMeasure<Velocity<Angle>> topVelocityMeasure =
+      MutableMeasure.zero(RotationsPerSecond);
+  private MutableMeasure<Velocity<Angle>> bottomVelocityMeasure =
+      MutableMeasure.zero(RotationsPerSecond);
 
   public TuneShootingCommand(
       TurretSubsystem turretSubsystem,
       ShooterSubsystem shooterSubsystem,
       LEDSubsystem ledSubsystem,
       Supplier<Pose2d> poseSupplier) {
-    
+
     this.turretSubsystem = turretSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.ledSubsystem = ledSubsystem;
@@ -78,17 +79,20 @@ public class TuneShootingCommand extends Command {
   public void initialize() {
     shooting = false;
     var alliance = DriverStation.getAlliance();
-    speakerTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE_TELE : SPEAKER_RED_TELE;
+    speakerTranslation =
+        (alliance.isEmpty() || alliance.get() == Blue) ? SPEAKER_BLUE_TELE : SPEAKER_RED_TELE;
   }
-  
+
   @Override
   public void execute() {
-    var turretDistanceToSpeaker = 
+    var turretDistanceToSpeaker =
         TurretSubsystem.getTurretTranslation(poseSupplier.get()).getDistance(speakerTranslation);
     distancePublisher.accept(turretDistanceToSpeaker);
 
-    turretSubsystem.moveToPitchPosition(pitchMeasure.mut_replace(pitchSubscriber.get(0.0), Degrees));
-    turretSubsystem.moveToShootingYawPosition(yawMeasure.mut_replace(yawSubscriber.get(180.0), Degrees));
+    turretSubsystem.moveToPitchPosition(
+        pitchMeasure.mut_replace(pitchSubscriber.get(0.0), Degrees));
+    turretSubsystem.moveToShootingYawPosition(
+        yawMeasure.mut_replace(yawSubscriber.get(180.0), Degrees));
     shooterSubsystem.spinShooterWheels(
         topVelocityMeasure.mut_replace(topVelocitySubscriber.get(0.0), RotationsPerSecond),
         bottomVelocityMeasure.mut_replace(bottomVelocitySubscriber.get(10), RotationsPerSecond));

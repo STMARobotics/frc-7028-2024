@@ -5,9 +5,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static frc.robot.Constants.DrivetrainConstants.MAX_ANGULAR_VELOCITY;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -15,18 +12,20 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.Optional;
+import java.util.function.Supplier;
 
-/**
- * Control bindings for demos with joysticks
- */
+/** Control bindings for demos with joysticks */
 public class DemoControlBindings implements ControlBindings {
 
   private static final double DEMO_SPEED_FACTOR = 0.25;
 
   private final CommandJoystick leftJoystick = new CommandJoystick(0);
   private final CommandJoystick rightJoystick = new CommandJoystick(1);
-  private final MutableMeasure<Velocity<Distance>> translationX = MutableMeasure.zero(MetersPerSecond);
-  private final MutableMeasure<Velocity<Distance>> translationY = MutableMeasure.zero(MetersPerSecond);
+  private final MutableMeasure<Velocity<Distance>> translationX =
+      MutableMeasure.zero(MetersPerSecond);
+  private final MutableMeasure<Velocity<Distance>> translationY =
+      MutableMeasure.zero(MetersPerSecond);
   private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
 
   @Override
@@ -36,24 +35,29 @@ public class DemoControlBindings implements ControlBindings {
 
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationX() {
-    return () -> translationX.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * (-modifyAxis(leftJoystick.getY()) ), MetersPerSecond);
+    return () ->
+        translationX.mut_replace(
+            MAX_VELOCITY.in(MetersPerSecond) * (-modifyAxis(leftJoystick.getY())), MetersPerSecond);
   }
 
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
-   return () -> translationY.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(leftJoystick.getX()), MetersPerSecond);
+    return () ->
+        translationY.mut_replace(
+            MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(leftJoystick.getX()), MetersPerSecond);
   }
-  
+
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
-    return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -modifyAxis(rightJoystick.getX()), RadiansPerSecond);
+    return () ->
+        omega.mut_replace(
+            MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -modifyAxis(rightJoystick.getX()),
+            RadiansPerSecond);
   }
-  
+
   /**
    * Square the input and slow it down for demo
+   *
    * @param value axis value
    * @return modified value
    */
@@ -125,5 +129,4 @@ public class DemoControlBindings implements ControlBindings {
   public Optional<Trigger> seedFieldRelative() {
     return Optional.of(rightJoystick.button(13));
   }
-
 }

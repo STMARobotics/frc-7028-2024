@@ -4,10 +4,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.TurretSubsystem;
 
 /**
- * Default command for the turret. This commands puts the turret in the intake position and turns it off.
+ * Default command for the turret. This commands puts the turret in the intake position and turns it
+ * off.
  */
 public class DefaultTurretCommand extends Command {
-  
+
   private final TurretSubsystem turretSubsystem;
 
   public DefaultTurretCommand(TurretSubsystem turretSubsystem) {
@@ -33,5 +34,4 @@ public class DefaultTurretCommand extends Command {
   public void end(boolean interrupted) {
     turretSubsystem.stop();
   }
-
 }

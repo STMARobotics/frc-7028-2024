@@ -8,8 +8,6 @@ import static edu.wpi.first.wpilibj.util.Color.kGreen;
 import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -20,10 +18,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import java.util.function.Supplier;
 
 /**
- * This command automatically scores in the speaker while the robot is moving. It does not do anything with the
- * drivetrain, only shooting when the turret can reach.
+ * This command automatically scores in the speaker while the robot is moving. It does not do
+ * anything with the drivetrain, only shooting when the turret can reach.
  */
 public class ScoreSpeakerAutoCommand extends Command {
 
@@ -33,7 +32,7 @@ public class ScoreSpeakerAutoCommand extends Command {
   private final LEDSubsystem ledSubsystem;
   private final Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier;
   private final Supplier<Pose2d> poseSupplier;
-    
+
   // Reusable objects to prevent reallocation (to reduce memory pressure)
   private final MutableMeasure<Angle> turretYawTarget = MutableMeasure.zero(Rotations);
 
@@ -43,9 +42,14 @@ public class ScoreSpeakerAutoCommand extends Command {
 
   private boolean isShooting = false;
 
-  public ScoreSpeakerAutoCommand(ShooterSubsystem shooter, TurretSubsystem turretSubsystem,
-      LEDSubsystem ledSubsystem, Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier, Supplier<Pose2d> poseSupplier,
-      Translation2d targetRed, Translation2d targetBlue) {
+  public ScoreSpeakerAutoCommand(
+      ShooterSubsystem shooter,
+      TurretSubsystem turretSubsystem,
+      LEDSubsystem ledSubsystem,
+      Supplier<ChassisSpeeds> fieldRelativeSpeedSupplier,
+      Supplier<Pose2d> poseSupplier,
+      Translation2d targetRed,
+      Translation2d targetBlue) {
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;
@@ -67,7 +71,7 @@ public class ScoreSpeakerAutoCommand extends Command {
   @Override
   public void execute() {
     var robotPose = poseSupplier.get();
-    
+
     // Translation to the center of the turret
     var turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);
 
@@ -78,14 +82,16 @@ public class ScoreSpeakerAutoCommand extends Command {
     var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
 
     // Calculate time to hit speaker
-    var timeUntilScored = 
-        SHOOT_WHILE_MOVING_COEFFICIENT * (distanceToSpeaker / shootingSettings.getVelocity().in(RotationsPerSecond));
+    var timeUntilScored =
+        SHOOT_WHILE_MOVING_COEFFICIENT
+            * (distanceToSpeaker / shootingSettings.getVelocity().in(RotationsPerSecond));
 
     // Calculate the predicted offset of the speaker compared to current pose (in meters)
     var fieldRelativeSpeed = fieldRelativeSpeedSupplier.get();
-    var speakerPredictedOffset = new Translation2d(
-        fieldRelativeSpeed.vxMetersPerSecond * timeUntilScored, 
-        fieldRelativeSpeed.vyMetersPerSecond * timeUntilScored);
+    var speakerPredictedOffset =
+        new Translation2d(
+            fieldRelativeSpeed.vxMetersPerSecond * timeUntilScored,
+            fieldRelativeSpeed.vyMetersPerSecond * timeUntilScored);
 
     var predictedSpeakerTranslation = speakerTranslation.minus(speakerPredictedOffset);
 
@@ -93,15 +99,16 @@ public class ScoreSpeakerAutoCommand extends Command {
 
     // Calculate the angle to the speaker
     var angleToSpeaker = predictedSpeakerTranslation.minus(turretTranslation).getAngle();
-    
+
     // Calculate required turret angle, accounting for the robot heading
-    turretYawTarget.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
+    turretYawTarget.mut_replace(
+        angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
 
     shootingSettings = SHOOTER_INTERPOLATOR.calculate(predictedDist);
-    
+
     // Calculate ready state
     var isShooterReady = shooter.isReadyToShoot();
-    
+
     // Set the turret position
     turretSubsystem.moveToShootingYawPosition(turretYawTarget);
     turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
@@ -109,8 +116,12 @@ public class ScoreSpeakerAutoCommand extends Command {
 
     var isPitchReady = turretSubsystem.isAtPitchTarget();
     var isYawReady = turretSubsystem.isAtYawTarget();
-    if (isShooterReady && isPitchReady && isYawReady && TurretSubsystem.isYawInShootingRange(turretYawTarget)) {
-      // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot and start timer
+    if (isShooterReady
+        && isPitchReady
+        && isYawReady
+        && TurretSubsystem.isYawInShootingRange(turretYawTarget)) {
+      // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot
+      // and start timer
       turretSubsystem.shoot();
       isShooting = true;
     }
@@ -119,8 +130,8 @@ public class ScoreSpeakerAutoCommand extends Command {
     if (isShooting) {
       ledSubsystem.setUpdater(l -> l.setAll(kGreen));
     } else {
-      ledSubsystem.setUpdater(l -> 
-          l.setLEDSegments(kBlue, isShooterReady, isPitchReady, isYawReady));
+      ledSubsystem.setUpdater(
+          l -> l.setLEDSegments(kBlue, isShooterReady, isPitchReady, isYawReady));
     }
   }
 
@@ -136,5 +147,4 @@ public class ScoreSpeakerAutoCommand extends Command {
     ledSubsystem.setUpdater(null);
     turretSubsystem.stopRollers();
   }
-
 }

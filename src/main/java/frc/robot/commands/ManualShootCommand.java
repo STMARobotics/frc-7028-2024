@@ -11,11 +11,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
-/**
- * Command to manually shoot with predefined settings
- */
+/** Command to manually shoot with predefined settings */
 public class ManualShootCommand extends Command {
-  
+
   private final TurretSubsystem turretSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final Measure<Velocity<Angle>> shooterVelocity;
@@ -24,15 +22,19 @@ public class ManualShootCommand extends Command {
 
   private final Timer shootTimer = new Timer();
 
-  public ManualShootCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
-      Measure<Velocity<Angle>> shooterVelocity, Measure<Angle> pitchAngle, Measure<Angle> yawAngle) {
-    
+  public ManualShootCommand(
+      TurretSubsystem turretSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      Measure<Velocity<Angle>> shooterVelocity,
+      Measure<Angle> pitchAngle,
+      Measure<Angle> yawAngle) {
+
     this.turretSubsystem = turretSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.shooterVelocity = shooterVelocity;
     this.pitchAngle = pitchAngle;
     this.yawAngle = yawAngle;
-  
+
     addRequirements(turretSubsystem, shooterSubsystem);
   }
 
@@ -46,7 +48,7 @@ public class ManualShootCommand extends Command {
 
   @Override
   public void execute() {
-    if(shooterSubsystem.isReadyToShoot() && turretSubsystem.isAtYawAndPitchTarget()) {
+    if (shooterSubsystem.isReadyToShoot() && turretSubsystem.isAtYawAndPitchTarget()) {
       turretSubsystem.shoot();
       shootTimer.start();
     }
@@ -63,5 +65,4 @@ public class ManualShootCommand extends Command {
     shooterSubsystem.stop();
     shootTimer.stop();
   }
-
 }

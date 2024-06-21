@@ -9,7 +9,7 @@ import frc.robot.subsystems.LEDSubsystem;
 
 /** Runs an LED marquee effect */
 public class LEDMarqueeCommand extends Command {
-  
+
   private static final int MARQUEE_SIZE = 15;
   private final LEDSubsystem ledSubsystem;
   private final int hue;
@@ -17,14 +17,15 @@ public class LEDMarqueeCommand extends Command {
   private final int minValue;
   private final int valueStep;
   private final double duration;
-  
+
   private final Timer timer = new Timer();
-  
+
   private boolean initialized = false;
   private int frame = 0;
 
   /**
    * Constructor
+   *
    * @param ledSubsystem LED subsystem
    * @param hue hue
    * @param saturation saturation
@@ -33,7 +34,12 @@ public class LEDMarqueeCommand extends Command {
    * @param duration duration of each frame
    */
   public LEDMarqueeCommand(
-      LEDSubsystem ledSubsystem, int hue, int saturation, int minValue, int valueStep, double duration) {
+      LEDSubsystem ledSubsystem,
+      int hue,
+      int saturation,
+      int minValue,
+      int valueStep,
+      double duration) {
     this.ledSubsystem = ledSubsystem;
     this.hue = hue;
     this.saturation = saturation;
@@ -61,7 +67,7 @@ public class LEDMarqueeCommand extends Command {
       if (frame == 0) {
         frame = ledStrips.getMirrorStripSize();
       }
-      for(int index = 0; index < ledStrips.getMirrorStripSize(); index++) {
+      for (int index = 0; index < ledStrips.getMirrorStripSize(); index++) {
         int value = minValue + ((index + frame) % MARQUEE_SIZE) * valueStep;
         ledStrips.setMirrorHSV(index, hue, saturation, value);
       }
@@ -69,7 +75,7 @@ public class LEDMarqueeCommand extends Command {
     }
     ledStrips.refresh();
   }
-  
+
   @Override
   public boolean runsWhenDisabled() {
     return true;
@@ -79,5 +85,4 @@ public class LEDMarqueeCommand extends Command {
   public void end(boolean interrupted) {
     ledSubsystem.setUpdater(null);
   }
-
 }

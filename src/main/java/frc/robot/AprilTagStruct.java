@@ -1,14 +1,13 @@
 package frc.robot;
 
-import java.nio.ByteBuffer;
-
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.util.struct.Struct;
+import java.nio.ByteBuffer;
 
 /**
- * Struct for publishing AprilTag data to the NetworkTables. Advantage Scope can render this.
- * See https://www.chiefdelphi.com/t/publishing-apriltags-for-advantagescope/455749
+ * Struct for publishing AprilTag data to the NetworkTables. Advantage Scope can render this. See
+ * https://www.chiefdelphi.com/t/publishing-apriltags-for-advantagescope/455749
  */
 public class AprilTagStruct implements Struct<AprilTag> {
   @Override

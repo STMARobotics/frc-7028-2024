@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-//This is probably really janky, and it is untested on hardware but its fine I think
+// This is probably really janky, and it is untested on hardware but its fine I think
 
 package frc.robot.subsystems;
 
@@ -27,7 +27,6 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -38,7 +37,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 /**
- * Subsystem for the intake. The intake is controlled by one TalonFX motor controller to run the rollers.
+ * Subsystem for the intake. The intake is controlled by one TalonFX motor controller to run the
+ * rollers.
  */
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -47,13 +47,21 @@ public class IntakeSubsystem extends SubsystemBase {
   // Motor request objects
   private final VelocityTorqueCurrentFOC rollerControl = new VelocityTorqueCurrentFOC(0.0);
   private final TorqueCurrentFOC sysIdControl = new TorqueCurrentFOC(0.0);
-  
+
   // SysId routine - NOTE: the output type is amps, NOT volts (even though it says volts)
   // https://www.chiefdelphi.com/t/sysid-with-ctre-swerve-characterization/452631/8
-  private final SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(Volts.of(5).per(Seconds.of(1)), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism((amps) -> rollerMotor.setControl(sysIdControl.withOutput(amps.in(Volts))), null, this));
-    
+  private final SysIdRoutine rollerSysIdRoutine =
+      new SysIdRoutine(
+          new SysIdRoutine.Config(
+              Volts.of(5).per(Seconds.of(1)),
+              Volts.of(30),
+              null,
+              SysIdRoutineSignalLogger.logState()),
+          new SysIdRoutine.Mechanism(
+              (amps) -> rollerMotor.setControl(sysIdControl.withOutput(amps.in(Volts))),
+              null,
+              this));
+
   public IntakeSubsystem() {
     var rollerConfig = new TalonFXConfiguration();
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -69,12 +77,16 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {
-    return rollerSysIdRoutine.dynamic(direction).withName("SysId intake dynam " + direction)
+    return rollerSysIdRoutine
+        .dynamic(direction)
+        .withName("SysId intake dynam " + direction)
         .finallyDo(this::stop);
   }
 
   public Command sysIdRollerQuasistaticCommand(Direction direction) {
-    return rollerSysIdRoutine.quasistatic(direction).withName("SysId intake quasi " + direction)
+    return rollerSysIdRoutine
+        .quasistatic(direction)
+        .withName("SysId intake quasi " + direction)
         .finallyDo(this::stop);
   }
 
@@ -85,13 +97,12 @@ public class IntakeSubsystem extends SubsystemBase {
   public void reverse() {
     runRollers(REVERSE_VELOCITY);
   }
-  
+
   public void stop() {
     rollerMotor.stopMotor();
   }
-  
+
   private void runRollers(Measure<Velocity<Angle>> velocity) {
     rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
   }
-  
 }

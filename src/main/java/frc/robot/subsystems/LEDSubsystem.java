@@ -3,22 +3,19 @@ package frc.robot.subsystems;
 import static edu.wpi.first.wpilibj.util.Color.kBlack;
 import static frc.robot.Constants.LEDConstants.DEVICE_ID;
 
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
-/**
- * Subsystem to handle LED lighting
- */
+/** Subsystem to handle LED lighting */
 public class LEDSubsystem extends SubsystemBase {
-  
+
   private static final int[] STRIP_SIZES = {20, 18, 20, 33};
   private static final int LED_COUNT = Arrays.stream(STRIP_SIZES).sum();
   private static final int STRIP_COUNT = STRIP_SIZES.length;
@@ -26,7 +23,8 @@ public class LEDSubsystem extends SubsystemBase {
   // Number of LEDs for mirror annimations. This is int math, so it'll drop the remainder.
   private static final int MIRROR_LENGTH = LED_COUNT / 2;
 
-  private final AtomicReference<Consumer<LEDStrips>> ledUpdateConsumer = new AtomicReference<Consumer<LEDStrips>>(null);
+  private final AtomicReference<Consumer<LEDStrips>> ledUpdateConsumer =
+      new AtomicReference<Consumer<LEDStrips>>(null);
   private final Notifier ledNotifier;
   private final LEDStripMethods ledStripMethods = new LEDStripMethods();
 
@@ -37,24 +35,28 @@ public class LEDSubsystem extends SubsystemBase {
     leds.setLength(LED_COUNT);
     leds.setData(buffer);
     leds.start();
-    ledNotifier = new Notifier(() ->  {
-      var value = ledUpdateConsumer.get();
-      if (value == null) {
-        // There is no updater, just turn the LEDs off
-        ledStripMethods.setAll(Color.kBlack);
-      } else {
-        // Call the consumer to update the LEDs on this notifier thread
-        value.accept(ledStripMethods);
-      }
-    });
+    ledNotifier =
+        new Notifier(
+            () -> {
+              var value = ledUpdateConsumer.get();
+              if (value == null) {
+                // There is no updater, just turn the LEDs off
+                ledStripMethods.setAll(Color.kBlack);
+              } else {
+                // Call the consumer to update the LEDs on this notifier thread
+                value.accept(ledStripMethods);
+              }
+            });
     ledNotifier.setName("LEDs");
     ledNotifier.startPeriodic(0.02);
   }
 
   /**
-   * Sets the current LED update callback. Pass an LEDStrips consumer that will be called on a background thread when
-   * it's time to refresh. The updater should update the LEDs with a "set" method and then call {@link #refresh()},
-   * unless the method is documented to perform a refresh automatically.
+   * Sets the current LED update callback. Pass an LEDStrips consumer that will be called on a
+   * background thread when it's time to refresh. The updater should update the LEDs with a "set"
+   * method and then call {@link #refresh()}, unless the method is documented to perform a refresh
+   * automatically.
+   *
    * @param updater consumer that gets called when it's time to refresh
    */
   public void setUpdater(Consumer<LEDStrips> updater) {
@@ -62,8 +64,9 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   /**
-   * Calculates the index for an LED on a strip. The strips serpentine - index 0 and 2 start at the bottom of the robot,
-   * 1 and 3 start at the top.
+   * Calculates the index for an LED on a strip. The strips serpentine - index 0 and 2 start at the
+   * bottom of the robot, 1 and 3 start at the top.
+   *
    * @param stripId ID of the strip [0,3]
    * @param ledId ID of the LED on the strip, always at the bottom of the robot
    * @return LED index in the buffer
@@ -105,7 +108,8 @@ public class LEDSubsystem extends SubsystemBase {
         index = STRIP_SIZES[0] + STRIP_SIZES[1] + STRIP_SIZES[2] + (STRIP_SIZES[3] / 2) + 1;
         index += ledId;
       } else {
-        // Segment across the left side of the robot (front to back), and across the back left (left to right)
+        // Segment across the left side of the robot (front to back), and across the back left (left
+        // to right)
         index = ledId - STRIP_SIZES[3] / 2;
       }
     } else {
@@ -117,11 +121,9 @@ public class LEDSubsystem extends SubsystemBase {
     return index;
   }
 
-  /**
-   * Implementation of {@link LEDStrips} for the LEDs managed by this subsystem
-   */
+  /** Implementation of {@link LEDStrips} for the LEDs managed by this subsystem */
   private class LEDStripMethods implements LEDStrips {
-    
+
     @Override
     public void setLED(int stripId, int ledId, Color color) {
       buffer.setLED(calculateUpdateIndex(stripId, ledId), color);
@@ -135,7 +137,7 @@ public class LEDSubsystem extends SubsystemBase {
     @Override
     public void setMirrorLED(int ledId, Color color) {
       buffer.setLED(calculateMirrorIndex(0, ledId), color);
-      buffer.setLED(calculateMirrorIndex(1, ledId), color);      
+      buffer.setLED(calculateMirrorIndex(1, ledId), color);
     }
 
     @Override
@@ -153,7 +155,7 @@ public class LEDSubsystem extends SubsystemBase {
     public void setRGB(int stripId, int ledId, int r, int g, int b) {
       buffer.setRGB(calculateUpdateIndex(stripId, ledId), r, g, b);
     }
-    
+
     @Override
     public void refresh() {
       leds.setData(buffer);
@@ -179,16 +181,16 @@ public class LEDSubsystem extends SubsystemBase {
     public void setLEDSegments(Color color, boolean... segmentValues) {
       // Only lights up the side strips, strips 1 and 2. Front and back stay off.
       int ledsPerStatus = getStripSize(1) / segmentValues.length;
-      for(int stripId = 1; stripId < LEDSubsystem.STRIP_COUNT; stripId++) {
+      for (int stripId = 1; stripId < LEDSubsystem.STRIP_COUNT; stripId++) {
         int ledIndex = 0;
         // Light up the segments
         for (int segmentId = 0; segmentId < segmentValues.length; segmentId++) {
-          for(;ledIndex < (ledsPerStatus * (segmentId + 1)); ledIndex++) {
+          for (; ledIndex < (ledsPerStatus * (segmentId + 1)); ledIndex++) {
             setLED(stripId, ledIndex, segmentValues[segmentId] ? color : Color.kBlack);
           }
         }
         // Turn off the remaining LEDs on the strip (remainder of strip size / segments)
-        for(;ledIndex < getStripSize(stripId); ledIndex++) {
+        for (; ledIndex < getStripSize(stripId); ledIndex++) {
           setLED(stripId, ledIndex, kBlack);
         }
       }
@@ -227,5 +229,4 @@ public class LEDSubsystem extends SubsystemBase {
       return MIRROR_LENGTH;
     }
   }
-
 }

@@ -4,8 +4,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.wpilibj.util.Color.kBlue;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
@@ -17,10 +15,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import java.util.function.Supplier;
 
 /**
- * This command bloops a note out of the shooter at a fixed speed and turret pitch. It will turn the turret to a field
- * oriented angle, flipping it when on the RED alliance.
+ * This command bloops a note out of the shooter at a fixed speed and turret pitch. It will turn the
+ * turret to a field oriented angle, flipping it when on the RED alliance.
  */
 public class BloopCommand extends Command {
 
@@ -28,31 +27,37 @@ public class BloopCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final LEDSubsystem ledSubsystem;
   private final Supplier<Rotation2d> rotationSupplier;
-    
+
   // Reusable object to prevent reallocation (to reduce memory pressure)
   private final MutableMeasure<Angle> turretYawTarget = MutableMeasure.zero(Rotations);
-  
+
   private final Rotation2d fieldOrientedTurretRotation;
   private final Measure<Angle> turretPitch;
   private final Measure<Velocity<Angle>> shooterVelocity;
-  
+
   private Rotation2d allianceFieldOrientedTurretAngle;
   private boolean isShooting = false;
 
   /**
    * Constructor
+   *
    * @param shooter shooter
    * @param turretSubsystem turret
    * @param ledSubsystem LED subsystem
    * @param poseSupplier supplier for the robot's current pose
-   * @param fieldOrientedTurretAngle the field oriented angle to turn the turret. Specify the angle for the BLUE
-   *    alliance, and it will be flipped when on RED (like PathPlanner)
+   * @param fieldOrientedTurretAngle the field oriented angle to turn the turret. Specify the angle
+   *     for the BLUE alliance, and it will be flipped when on RED (like PathPlanner)
    * @param turretPitch the pitch angle for the turret
    * @param shooterVelocity shooter wheel velocity
    */
-  public BloopCommand(ShooterSubsystem shooter, TurretSubsystem turretSubsystem,
-      LEDSubsystem ledSubsystem, Supplier<Rotation2d> rotationSupplier,
-      Rotation2d fieldOrientedTurretAngle, Measure<Angle> turretPitch, Measure<Velocity<Angle>> shooterVelocity) {
+  public BloopCommand(
+      ShooterSubsystem shooter,
+      TurretSubsystem turretSubsystem,
+      LEDSubsystem ledSubsystem,
+      Supplier<Rotation2d> rotationSupplier,
+      Rotation2d fieldOrientedTurretAngle,
+      Measure<Angle> turretPitch,
+      Measure<Velocity<Angle>> shooterVelocity) {
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;
@@ -70,7 +75,8 @@ public class BloopCommand extends Command {
     var alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == Alliance.Red) {
       // Flip the angle for the RED alliance
-      allianceFieldOrientedTurretAngle = Rotation2d.fromDegrees(180).minus(allianceFieldOrientedTurretAngle);
+      allianceFieldOrientedTurretAngle =
+          Rotation2d.fromDegrees(180).minus(allianceFieldOrientedTurretAngle);
     }
 
     isShooting = false;
@@ -83,7 +89,7 @@ public class BloopCommand extends Command {
     // Calculate required turret angle, accounting for the robot heading
     turretYawTarget.mut_replace(
         allianceFieldOrientedTurretAngle.minus(robotRotation).getRotations(), Rotations);
-    
+
     // Set the turret position and shooter speed
     turretSubsystem.moveToShootingYawPosition(turretYawTarget);
     turretSubsystem.moveToPitchPosition(turretPitch);
@@ -93,8 +99,12 @@ public class BloopCommand extends Command {
     var isShooterReady = shooter.isReadyToShoot();
     var isPitchReady = turretSubsystem.isAtPitchTarget();
     var isYawReady = turretSubsystem.isAtYawTarget();
-    if (isShooterReady && isPitchReady && isYawReady && TurretSubsystem.isYawInShootingRange(turretYawTarget)) {
-      // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot and start timer
+    if (isShooterReady
+        && isPitchReady
+        && isYawReady
+        && TurretSubsystem.isYawInShootingRange(turretYawTarget)) {
+      // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot
+      // and start timer
       turretSubsystem.shoot();
       isShooting = true;
     }
@@ -103,7 +113,8 @@ public class BloopCommand extends Command {
     if (isShooting) {
       ledSubsystem.setUpdater(l -> l.setAll(kGreen));
     } else {
-      ledSubsystem.setUpdater(l -> l.setLEDSegments(kBlue, isShooterReady, isPitchReady, isYawReady));
+      ledSubsystem.setUpdater(
+          l -> l.setLEDSegments(kBlue, isShooterReady, isPitchReady, isYawReady));
     }
   }
 
@@ -119,5 +130,4 @@ public class BloopCommand extends Command {
     ledSubsystem.setUpdater(null);
     turretSubsystem.stopRollers();
   }
-
 }

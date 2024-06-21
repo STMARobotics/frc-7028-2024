@@ -4,20 +4,19 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.util.List;
-
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
+import java.util.List;
 
 /**
- * Table that will interpolate velocity and pitch based on distance.
- * WARNING: An instance of VelocityAngleInterpolator returns one mutable ShootingSettings object from calculate.
- * Calls to calculate() will mutate the object returned from previous calls to calculate(). This should be fine in
- * normal single-threaded robot code, but something to watch out for.
+ * Table that will interpolate velocity and pitch based on distance. WARNING: An instance of
+ * VelocityAngleInterpolator returns one mutable ShootingSettings object from calculate. Calls to
+ * calculate() will mutate the object returned from previous calls to calculate(). This should be
+ * fine in normal single-threaded robot code, but something to watch out for.
  */
 public class VelocityPitchInterpolator {
 
@@ -28,10 +27,11 @@ public class VelocityPitchInterpolator {
 
   /**
    * Constructor that takes a list of settings that will be loaded to the table.
+   *
    * @param settingsList list of settings
    */
   public VelocityPitchInterpolator(List<ShootingSettings> settingsList) {
-    for(ShootingSettings settings : settingsList) {
+    for (ShootingSettings settings : settingsList) {
       var distance = settings.distance.in(Meters);
       distanceVelocityMap.put(distance, settings.velocity.in(RotationsPerSecond));
       distancePitchMap.put(distance, settings.pitch.in(Radians));
@@ -40,8 +40,10 @@ public class VelocityPitchInterpolator {
 
   /**
    * Calculates the shooter velocity and pitch by interpolating based on the distance.
+   *
    * @param distance distance to the target
-   * @return shooter settings. The same instance of ShooterSettings is mutated and returned for every call.
+   * @return shooter settings. The same instance of ShooterSettings is mutated and returned for
+   *     every call.
    */
   public ShootingSettings calculate(double distance) {
     shootingSettings.distance.mut_replace(distance, Meters);
@@ -50,16 +52,16 @@ public class VelocityPitchInterpolator {
     return shootingSettings;
   }
 
-  /**
-   * Shooter settings
-   */
+  /** Shooter settings */
   public static class ShootingSettings {
     private final MutableMeasure<Distance> distance = MutableMeasure.zero(Meters);
-    private final MutableMeasure<Velocity<Angle>> velocity = MutableMeasure.zero(RotationsPerSecond);
+    private final MutableMeasure<Velocity<Angle>> velocity =
+        MutableMeasure.zero(RotationsPerSecond);
     private final MutableMeasure<Angle> pitch = MutableMeasure.zero(Radians);
 
     /**
      * Sets the distance
+     *
      * @param distance distance
      * @return this
      */
@@ -70,6 +72,7 @@ public class VelocityPitchInterpolator {
 
     /**
      * Sets the pitch
+     *
      * @param pitch shooter pitch
      * @return this
      */
@@ -80,6 +83,7 @@ public class VelocityPitchInterpolator {
 
     /**
      * Sets the shooter velocity
+     *
      * @param velocity velocity
      * @return this
      */
@@ -90,6 +94,7 @@ public class VelocityPitchInterpolator {
 
     /**
      * Gets the shooter pitch
+     *
      * @return pitch
      */
     public Measure<Angle> getPitch() {
@@ -98,6 +103,7 @@ public class VelocityPitchInterpolator {
 
     /**
      * Gets the distance to the target
+     *
      * @return distance
      */
     public Measure<Distance> getDistance() {
@@ -106,12 +112,11 @@ public class VelocityPitchInterpolator {
 
     /**
      * Gets the shooter velocity
+     *
      * @return shooter velocity
      */
     public Measure<Velocity<Angle>> getVelocity() {
       return velocity;
     }
-
   }
-
 }

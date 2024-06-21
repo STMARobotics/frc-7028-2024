@@ -6,8 +6,6 @@ import static frc.robot.Constants.ShootingConstants.STOCKPILE_BLUE;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_RED;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
@@ -21,9 +19,11 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import java.util.function.Supplier;
 
 /**
- * Command to make a choice between stockpiling or strobing the LEDs if the robot is not in the mid-court between wings
+ * Command to make a choice between stockpiling or strobing the LEDs if the robot is not in the
+ * mid-court between wings
  */
 public class StockpileOrBlinkCommand extends Command {
 
@@ -32,16 +32,31 @@ public class StockpileOrBlinkCommand extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private Command selectedCommand;
 
-  public StockpileOrBlinkCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
-      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem,
-      Supplier<Measure<Velocity<Distance>>> xSupplier, Supplier<Measure<Velocity<Distance>>> ySupplier,
+  public StockpileOrBlinkCommand(
+      CommandSwerveDrivetrain drivetrain,
+      ShooterSubsystem shooter,
+      TurretSubsystem turretSubsystem,
+      LEDSubsystem ledSubsystem,
+      Supplier<Measure<Velocity<Distance>>> xSupplier,
+      Supplier<Measure<Velocity<Distance>>> ySupplier,
       Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
-    
+
     this.drivetrain = drivetrain;
-    this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
-        .alongWith(new LEDBlinkCommand(ledSubsystem, kRed, 0.05));
-    this.stockpile = new ShootTeleopCommand(drivetrain, shooter, turretSubsystem, ledSubsystem,
-        xSupplier, ySupplier, STOCKPILE_RED, STOCKPILE_BLUE, STOCKPILE_INTERPOLATOR, 0.3);
+    this.dontShootCommand =
+        new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
+            .alongWith(new LEDBlinkCommand(ledSubsystem, kRed, 0.05));
+    this.stockpile =
+        new ShootTeleopCommand(
+            drivetrain,
+            shooter,
+            turretSubsystem,
+            ledSubsystem,
+            xSupplier,
+            ySupplier,
+            STOCKPILE_RED,
+            STOCKPILE_BLUE,
+            STOCKPILE_INTERPOLATOR,
+            0.3);
 
     addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
   }
@@ -50,7 +65,8 @@ public class StockpileOrBlinkCommand extends Command {
   public void initialize() {
     var alliance = DriverStation.getAlliance().map(dsAlliance -> dsAlliance).orElse(Alliance.Blue);
     Pose2d robotPose = drivetrain.getState().Pose;
-    if (alliance == Red && robotPose.getX() > 5.3 || alliance == Alliance.Blue && robotPose.getX() < 11.25) {
+    if (alliance == Red && robotPose.getX() > 5.3
+        || alliance == Alliance.Blue && robotPose.getX() < 11.25) {
       selectedCommand = stockpile;
     } else {
       selectedCommand = dontShootCommand;
@@ -72,5 +88,4 @@ public class StockpileOrBlinkCommand extends Command {
   public void end(boolean interrupted) {
     selectedCommand.end(interrupted);
   }
-  
 }

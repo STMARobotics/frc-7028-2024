@@ -5,9 +5,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static frc.robot.Constants.DrivetrainConstants.MAX_ANGULAR_VELOCITY;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -15,17 +12,20 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.Optional;
+import java.util.function.Supplier;
 
-/**
- * Control bindings using an XBox controller
- */
+/** Control bindings using an XBox controller */
 public class XBoxControlBindings implements ControlBindings {
 
   private final CommandXboxController driverController = new CommandXboxController(0);
 
-  // Mutable measure objects to reduce memory pressure by not creating new instances on each iteration
-  private final MutableMeasure<Velocity<Distance>> translationX = MutableMeasure.zero(MetersPerSecond);
-  private final MutableMeasure<Velocity<Distance>> translationY = MutableMeasure.zero(MetersPerSecond);
+  // Mutable measure objects to reduce memory pressure by not creating new instances on each
+  // iteration
+  private final MutableMeasure<Velocity<Distance>> translationX =
+      MutableMeasure.zero(MetersPerSecond);
+  private final MutableMeasure<Velocity<Distance>> translationY =
+      MutableMeasure.zero(MetersPerSecond);
   private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
 
   @Override
@@ -35,26 +35,33 @@ public class XBoxControlBindings implements ControlBindings {
 
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationX() {
-    return () -> translationX.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftY()), MetersPerSecond);
+    return () ->
+        translationX.mut_replace(
+            MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftY()),
+            MetersPerSecond);
   }
-  
+
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
-    return () -> translationY.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftX()), MetersPerSecond);
+    return () ->
+        translationY.mut_replace(
+            MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftX()),
+            MetersPerSecond);
   }
-  
+
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
-    return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(driverController.getRightX() * 0.8), RadiansPerSecond);
+    return () ->
+        omega.mut_replace(
+            MAX_ANGULAR_VELOCITY.in(RadiansPerSecond)
+                * -squareAxis(driverController.getRightX() * 0.8),
+            RadiansPerSecond);
   }
-  
+
   private static double squareAxis(double value) {
     return Math.copySign(value * value, value);
   }
-  
+
   public Optional<Trigger> intake() {
     return Optional.of(driverController.rightBumper());
   }
@@ -87,7 +94,6 @@ public class XBoxControlBindings implements ControlBindings {
   @Override
   public Optional<Trigger> scoreAmp() {
     return Optional.of(driverController.leftTrigger());
-    
   }
 
   @Override
@@ -104,5 +110,4 @@ public class XBoxControlBindings implements ControlBindings {
   public Optional<Trigger> liftShooter() {
     return Optional.empty();
   }
-
 }

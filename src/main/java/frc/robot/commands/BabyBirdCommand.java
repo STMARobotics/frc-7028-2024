@@ -7,8 +7,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 /**
- * Command to "feed the robot shooter" from the human player station. Tilts the shooter up so the human player can
- * drop a note in.
+ * Command to "feed the robot shooter" from the human player station. Tilts the shooter up so the
+ * human player can drop a note in.
  */
 public class BabyBirdCommand extends Command {
 
@@ -19,7 +19,7 @@ public class BabyBirdCommand extends Command {
   private boolean sensorCleared = false;
 
   public BabyBirdCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem) {
-    
+
     this.turretSubsystem = turretSubsystem;
     this.shooterSubsystem = shooterSubsystem;
 
@@ -58,5 +58,4 @@ public class BabyBirdCommand extends Command {
     turretSubsystem.runRollers(RotationsPerSecond.zero());
     shooterSubsystem.stop();
   }
-  
 }

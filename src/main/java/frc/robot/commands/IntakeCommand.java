@@ -6,11 +6,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
-/**
- * Command to intake a note from the floor to the turret
- */
+/** Command to intake a note from the floor to the turret */
 public class IntakeCommand extends Command {
-  
+
   private final IntakeSubsystem intakeSubsystem;
   private final TurretSubsystem turretSubsystem;
 
@@ -25,7 +23,7 @@ public class IntakeCommand extends Command {
   public void initialize() {
     turretSubsystem.prepareToIntake();
   }
-  
+
   @Override
   public void execute() {
     if (turretSubsystem.isInIntakePosition()) {
@@ -46,5 +44,4 @@ public class IntakeCommand extends Command {
     turretSubsystem.stopYaw();
     turretSubsystem.runRollers(RotationsPerSecond.zero());
   }
-
 }

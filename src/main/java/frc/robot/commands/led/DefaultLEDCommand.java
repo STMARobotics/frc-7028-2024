@@ -2,18 +2,15 @@ package frc.robot.commands.led;
 
 import static edu.wpi.first.units.Units.Seconds;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDStrips;
 import frc.robot.subsystems.LEDSubsystem;
+import java.util.function.BooleanSupplier;
 
-/**
- * Default LED command to make the LEDs dance or indicate when a note is being held.
- */
+/** Default LED command to make the LEDs dance or indicate when a note is being held. */
 public class DefaultLEDCommand extends Command {
 
   private enum LEDMode {
@@ -39,26 +36,31 @@ public class DefaultLEDCommand extends Command {
   }
 
   private void updateLeds(LEDStrips strips) {
-    // DO NOT schedule commands here, this is on a the LED callback thread and the scheduler is not threadsafe.
-    // execute() handles all of the cases where the LEDs should be on. If this is called, the LEDs should be off.
+    // DO NOT schedule commands here, this is on a the LED callback thread and the scheduler is not
+    // threadsafe.
+    // execute() handles all of the cases where the LEDs should be on. If this is called, the LEDs
+    // should be off.
     strips.setAll(Color.kBlack);
   }
 
   @Override
   public void execute() {
     // Based on the mode, schedule a command to do the animation.
-    switch(getMode()) {
+    switch (getMode()) {
       case MODE_DS_DISCONNECT:
         new LEDAlternateCommand(ledSubsystem, Color.kDarkRed, Color.kIndianRed, Seconds.of(0.5))
-            .until(() -> getMode() != LEDMode.MODE_DS_DISCONNECT).schedule();
+            .until(() -> getMode() != LEDMode.MODE_DS_DISCONNECT)
+            .schedule();
         break;
       case MODE_NOTE_IN_TURRET:
         new LEDMarqueeCommand(ledSubsystem, 3, 255, 0, 15, .07)
-            .until(() -> getMode() != LEDMode.MODE_NOTE_IN_TURRET).schedule();
+            .until(() -> getMode() != LEDMode.MODE_NOTE_IN_TURRET)
+            .schedule();
         break;
       case MODE_ROBOT_DISABLED:
         new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.one())
-            .until(() -> getMode() != LEDMode.MODE_ROBOT_DISABLED).schedule();
+            .until(() -> getMode() != LEDMode.MODE_ROBOT_DISABLED)
+            .schedule();
         break;
       default:
         // Don't do anything for default. LEDs will go off.
@@ -66,8 +68,9 @@ public class DefaultLEDCommand extends Command {
   }
 
   /**
-   * Gets the LED mode. This is used instead of putting the if block in {@link #updateLeds(LEDStrips)} so the mode can
-   * be checked as a condition to cancel sub-commands
+   * Gets the LED mode. This is used instead of putting the if block in {@link
+   * #updateLeds(LEDStrips)} so the mode can be checked as a condition to cancel sub-commands
+   *
    * @return LED mode
    */
   private LEDMode getMode() {
@@ -81,7 +84,7 @@ public class DefaultLEDCommand extends Command {
       return LEDMode.MODE_DEFAULT;
     }
   }
-  
+
   @Override
   public boolean runsWhenDisabled() {
     return true;
@@ -91,5 +94,4 @@ public class DefaultLEDCommand extends Command {
   public void end(boolean interrupted) {
     ledSubsystem.setUpdater(null);
   }
-  
 }

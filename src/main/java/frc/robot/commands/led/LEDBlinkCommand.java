@@ -1,6 +1,5 @@
 package frc.robot.commands.led;
 
-
 import static edu.wpi.first.wpilibj.util.Color.kBlack;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -9,9 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDStrips;
 import frc.robot.subsystems.LEDSubsystem;
 
-/**
- * Command to blink the LEDs at an interval.
- */
+/** Command to blink the LEDs at an interval. */
 public class LEDBlinkCommand extends Command {
 
   private final LEDSubsystem ledSubsystem;
@@ -24,6 +21,7 @@ public class LEDBlinkCommand extends Command {
 
   /**
    * Constructor
+   *
    * @param ledSubsystem led subsystem
    * @param color color to make the LEDs when they're on
    * @param interval interval to blink the LEDs
@@ -35,7 +33,7 @@ public class LEDBlinkCommand extends Command {
 
     addRequirements(ledSubsystem);
   }
-  
+
   @Override
   public void initialize() {
     timer.reset();
@@ -59,5 +57,4 @@ public class LEDBlinkCommand extends Command {
   public void end(boolean interrupted) {
     ledSubsystem.setUpdater(null);
   }
-
 }

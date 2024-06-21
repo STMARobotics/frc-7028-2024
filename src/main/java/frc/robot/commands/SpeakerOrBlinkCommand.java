@@ -5,8 +5,6 @@ import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_TELE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED_TELE;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -17,6 +15,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import java.util.function.Supplier;
 
 /**
  * Command to make a choice between shooting or strobing the LEDs if there's no note in the turret
@@ -28,16 +27,31 @@ public class SpeakerOrBlinkCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private Command selectedCommand;
 
-  public SpeakerOrBlinkCommand(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter,
-      TurretSubsystem turretSubsystem, LEDSubsystem ledSubsystem,
-      Supplier<Measure<Velocity<Distance>>> xSupplier, Supplier<Measure<Velocity<Distance>>> ySupplier,
+  public SpeakerOrBlinkCommand(
+      CommandSwerveDrivetrain drivetrain,
+      ShooterSubsystem shooter,
+      TurretSubsystem turretSubsystem,
+      LEDSubsystem ledSubsystem,
+      Supplier<Measure<Velocity<Distance>>> xSupplier,
+      Supplier<Measure<Velocity<Distance>>> ySupplier,
       Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
-    
+
     this.turretSubsystem = turretSubsystem;
-    this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
-        .alongWith(new LEDBlinkCommand(ledSubsystem, kPurple, 0.05));
-    this.shootCommand = new ShootTeleopCommand(drivetrain, shooter, turretSubsystem, ledSubsystem,
-        xSupplier, ySupplier, SPEAKER_RED_TELE, SPEAKER_BLUE_TELE, SHOOTER_INTERPOLATOR, 0);
+    this.dontShootCommand =
+        new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
+            .alongWith(new LEDBlinkCommand(ledSubsystem, kPurple, 0.05));
+    this.shootCommand =
+        new ShootTeleopCommand(
+            drivetrain,
+            shooter,
+            turretSubsystem,
+            ledSubsystem,
+            xSupplier,
+            ySupplier,
+            SPEAKER_RED_TELE,
+            SPEAKER_BLUE_TELE,
+            SHOOTER_INTERPOLATOR,
+            0);
 
     addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
   }
@@ -66,5 +80,4 @@ public class SpeakerOrBlinkCommand extends Command {
   public void end(boolean interrupted) {
     selectedCommand.end(interrupted);
   }
-  
 }
