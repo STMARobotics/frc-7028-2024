@@ -100,6 +100,11 @@ public class JoystickControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> babyBomber() {
+    return Optional.of(leftJoystick.povDown());
+  }
+
+  @Override
   public Optional<Trigger> liftShooter() {
     return Optional.of(rightJoystick.button(2));
   }

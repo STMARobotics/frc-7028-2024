@@ -107,6 +107,11 @@ public class DemoControlBindings implements ControlBindings {
   }
 
   @Override
+  public Optional<Trigger> babyBomber() {
+    return Optional.empty();
+  }
+
+  @Override
   public Optional<Trigger> liftShooter() {
     return Optional.empty();
   }
