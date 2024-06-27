@@ -44,10 +44,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private final VelocityTorqueCurrentFOC topControl = new VelocityTorqueCurrentFOC(0.0);
   private final VelocityTorqueCurrentFOC bottomControl = new VelocityTorqueCurrentFOC(0.0);
 
-  private final StatusSignal<Double> bottomVelocity;
-  private final StatusSignal<Double> bottomAcceleration;
-  private final StatusSignal<Double> topVelocity;
-  private final StatusSignal<Double> topAcceleration;
+  private final StatusSignal<Measure<Velocity<Angle>>> bottomVelocity;
+  private final StatusSignal<Measure<Velocity<Velocity<Angle>>>> bottomAcceleration;
+  private final StatusSignal<Measure<Velocity<Angle>>> topVelocity;
+  private final StatusSignal<Measure<Velocity<Velocity<Angle>>>> topAcceleration;
 
   private final TorqueCurrentFOC sysIdControl = new TorqueCurrentFOC(0.0);
 
@@ -110,9 +110,8 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param velocity velocity for both sets of wheels
    */
   public void spinShooterWheels(Measure<Velocity<Angle>> velocity) {
-    var targetVelocity = velocity.in(RotationsPerSecond);
-    topMotor.setControl(topControl.withVelocity(targetVelocity));
-    bottomMotor.setControl(bottomControl.withVelocity(targetVelocity));
+    topMotor.setControl(topControl.withVelocity(velocity));
+    bottomMotor.setControl(bottomControl.withVelocity(velocity));
   }
 
   /**
@@ -123,8 +122,8 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void spinShooterWheels(
       Measure<Velocity<Angle>> topVelocity, Measure<Velocity<Angle>> bottomVelocity) {
-    topMotor.setControl(topControl.withVelocity(topVelocity.in(RotationsPerSecond)));
-    bottomMotor.setControl(bottomControl.withVelocity(bottomVelocity.in(RotationsPerSecond)));
+    topMotor.setControl(topControl.withVelocity(topVelocity));
+    bottomMotor.setControl(bottomControl.withVelocity(bottomVelocity));
   }
 
   /**
@@ -159,8 +158,10 @@ public class ShooterSubsystem extends SubsystemBase {
     var compensatedBottom =
         BaseStatusSignal.getLatencyCompensatedValue(bottomVelocity, bottomAcceleration);
 
-    return Math.abs(compensatedBottom - bottomControl.Velocity) < errorToleranceRPS
-        && Math.abs(compensatedTop - topControl.Velocity) < errorToleranceRPS;
+    return Math.abs(compensatedBottom.in(RotationsPerSecond) - bottomControl.Velocity)
+            < errorToleranceRPS
+        && Math.abs(compensatedTop.in(RotationsPerSecond) - topControl.Velocity)
+            < errorToleranceRPS;
   }
 
   /** Stops the shooter */

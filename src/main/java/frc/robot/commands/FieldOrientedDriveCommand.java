@@ -11,9 +11,9 @@ import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_DEADBAND;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.util.ChassisSpeedsRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Angle;
@@ -49,7 +49,7 @@ public class FieldOrientedDriveCommand extends Command {
           .withRotationalDeadband(
               MAX_ANGULAR_VELOCITY.times(ROTATIONAL_DEADBAND).in(RadiansPerSecond))
           .withDriveRequestType(DriveRequestType.Velocity)
-          .withSteerRequestType(SteerRequestType.MotionMagic);
+          .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
   // Desired chassis speeds. Defined here to prevent reallocation.
   private ChassisSpeeds desiredChassisSpeeds = new ChassisSpeeds();

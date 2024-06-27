@@ -6,11 +6,11 @@ import static frc.robot.Constants.DrivetrainConstants.PIGEON_MOUNT_POSE_CONFIG;
 import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAMES;
 import static frc.robot.Constants.VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -136,12 +136,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   @Override
-  protected boolean checkIsOnCanFD(String name) {
-    // Hack for CTRE's library sometimes saying the network is not CAN-FD
-    return true;
-  }
-
-  @Override
   public void simulationPeriodic() {
     /* Assume 20ms update rate, get battery voltage from WPILib */
     updateSimState(0.02, RobotController.getBatteryVoltage());
@@ -155,7 +149,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
    * @return robot oriented chassis speeds
    */
   public ChassisSpeeds getCurrentRobotChassisSpeeds() {
-    return getState().speeds;
+    return getState().Speeds;
   }
 
   /**
@@ -169,7 +163,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       return new ChassisSpeeds();
     }
     var robotAngle = state.Pose.getRotation();
-    var chassisSpeeds = state.speeds;
+    var chassisSpeeds = state.Speeds;
     var fieldSpeeds =
         new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
             .rotateBy(robotAngle);

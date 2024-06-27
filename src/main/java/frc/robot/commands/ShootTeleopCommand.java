@@ -22,11 +22,11 @@ import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
 import static java.lang.Math.PI;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.ForwardReference;
-import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardReferenceValue;
+import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import com.pathplanner.lib.util.ChassisSpeedsRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -80,14 +80,14 @@ public class ShootTeleopCommand extends Command {
   private final SwerveRequest.FieldCentricFacingAngle swerveRequestFacing =
       new SwerveRequest.FieldCentricFacingAngle()
           .withDriveRequestType(DriveRequestType.Velocity)
-          .withSteerRequestType(SteerRequestType.MotionMagic)
+          .withSteerRequestType(SteerRequestType.MotionMagicExpo)
           .withVelocityX(0.0)
           .withVelocityY(0.0);
 
   private final SwerveRequest.FieldCentric swerveRequestRotation =
       new SwerveRequest.FieldCentric()
           .withDriveRequestType(DriveRequestType.Velocity)
-          .withSteerRequestType(SteerRequestType.MotionMagic);
+          .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
   private boolean isShooting = false;
 
@@ -116,12 +116,10 @@ public class ShootTeleopCommand extends Command {
 
     addRequirements(drivetrain, shooter, turretSubsystem);
 
-    swerveRequestFacing.ForwardReference = ForwardReference.RedAlliance;
+    swerveRequestFacing.ForwardReference = ForwardReferenceValue.RedAlliance;
     swerveRequestFacing.HeadingController = new PhoenixPIDController(THETA_kP, THETA_kI, THETA_kD);
     swerveRequestFacing.HeadingController.enableContinuousInput(-PI, PI);
     swerveRequestFacing.HeadingController.setTolerance(AIM_TOLERANCE.in(Radians));
-
-    swerveRequestFacing.ForwardReference = ForwardReference.RedAlliance;
   }
 
   @Override

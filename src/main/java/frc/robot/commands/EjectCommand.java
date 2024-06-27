@@ -1,8 +1,8 @@
 package frc.robot.commands;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -19,7 +19,7 @@ public class EjectCommand extends Command {
   private final SwerveRequest.RobotCentric swerveRequest =
       new SwerveRequest.RobotCentric()
           .withDriveRequestType(DriveRequestType.Velocity)
-          .withSteerRequestType(SteerRequestType.MotionMagic)
+          .withSteerRequestType(SteerRequestType.MotionMagicExpo)
           .withVelocityX(-0.5);
 
   public EjectCommand(

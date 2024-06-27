@@ -18,7 +18,7 @@ import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_RED;
 import static frc.robot.Constants.TurretConstants.INTAKE_YAW;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.cscore.HttpCamera;
