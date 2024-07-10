@@ -90,7 +90,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.stopMotor();
   }
   
-  private void runRollers(Measure<Velocity<Angle>> velocity) {
+  public void runRollers(Measure<Velocity<Angle>> velocity) {
     rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
   }
   
