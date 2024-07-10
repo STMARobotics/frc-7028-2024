@@ -103,11 +103,11 @@ public class Constants {
      */
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
         new Transform3d(
-            new Translation3d(inchesToMeters(11.227), inchesToMeters(-10.446), inchesToMeters(8.238)),
-            new Rotation3d(degreesToRadians(2), degreesToRadians(-21.0), degreesToRadians(-90))),
+            new Translation3d(inchesToMeters(11.227), inchesToMeters(-10.196), inchesToMeters(8.238)),
+            new Rotation3d(degreesToRadians(0.4), degreesToRadians(-24.6), degreesToRadians(-90))),
         new Transform3d(
-            new Translation3d(inchesToMeters(11.227), inchesToMeters(10.446), inchesToMeters(8.238)),
-            new Rotation3d(degreesToRadians(-2), degreesToRadians(-24.0), degreesToRadians(90)))
+            new Translation3d(inchesToMeters(11.227), inchesToMeters(10.196), inchesToMeters(8.238)),
+            new Rotation3d(degreesToRadians(0), degreesToRadians(-24.6), degreesToRadians(90)))
       };
 
     public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
@@ -117,7 +117,7 @@ public class Constants {
      * Minimum target ambiguity. Targets with higher ambiguity will be discarded. Not appliable when multiple tags are
      * in view in a single camera.
      */
-    public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
+    public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.15;
     public static final Measure<Distance> SINGLE_TAG_DISTANCE_THRESHOLD = Meters.of(5.0);
 
     // These Standard Deviations can be increased to "trust" vision measurements more. They are scaled based distance.
@@ -208,7 +208,7 @@ public class Constants {
     public static final Translation2d ROBOT_TO_TURRET = new Translation2d(Inches.of(-5.508), Inches.zero());
 
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs()
-        .withKP(120)
+        .withKP(140)
         .withKI(0.0)
         .withKD(0.0)
         .withKS(0.59)
@@ -324,17 +324,17 @@ public class Constants {
     public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
       new ShootingSettings().distance(Meters.of(1.0400968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(34.0)),
       new ShootingSettings().distance(Meters.of(1.4400968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(28.0)),
-      new ShootingSettings().distance(Meters.of(1.8500968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(20.5)),
-      new ShootingSettings().distance(Meters.of(2.3800968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(16.5)),
-      new ShootingSettings().distance(Meters.of(3.1500968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(9.75)),
-      new ShootingSettings().distance(Meters.of(3.7900968)).velocity(RotationsPerSecond.of(52)).pitch(Degrees.of(7.0)),
-      new ShootingSettings().distance(Meters.of(4.5200968)).velocity(RotationsPerSecond.of(57)).pitch(Degrees.of(3.0)),
-      new ShootingSettings().distance(Meters.of(4.599)).velocity(RotationsPerSecond.of(68)).pitch(Degrees.of(1.5)),
+      new ShootingSettings().distance(Meters.of(1.8500968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(19)),
+      new ShootingSettings().distance(Meters.of(2.3800968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(13.5)),
+      new ShootingSettings().distance(Meters.of(3.1500968)).velocity(RotationsPerSecond.of(50)).pitch(Degrees.of(8.5)),
+      new ShootingSettings().distance(Meters.of(3.7900968)).velocity(RotationsPerSecond.of(52)).pitch(Degrees.of(5.0)),
+      new ShootingSettings().distance(Meters.of(4.5200968)).velocity(RotationsPerSecond.of(57)).pitch(Degrees.of(2)),
+      new ShootingSettings().distance(Meters.of(4.599)).velocity(RotationsPerSecond.of(68)).pitch(Degrees.of(1)),
       new ShootingSettings().distance(Meters.of(4.798)).velocity(RotationsPerSecond.of(68)).pitch(Degrees.of(0.975)),
-      new ShootingSettings().distance(Meters.of(5.00)).velocity(RotationsPerSecond.of(68)).pitch(Degrees.of(0.75)),
-      new ShootingSettings().distance(Meters.of(5.192)).velocity(RotationsPerSecond.of(68)).pitch(Degrees.of(0.05)),
-      new ShootingSettings().distance(Meters.of(5.396)).velocity(RotationsPerSecond.of(62.8)).pitch(Degrees.of(0.05)),
-      new ShootingSettings().distance(Meters.of(5.677)).velocity(RotationsPerSecond.of(59.5)).pitch(Degrees.of(0.005))
+      new ShootingSettings().distance(Meters.of(5.00)).velocity(RotationsPerSecond.of(60)).pitch(Degrees.of(0)),
+      new ShootingSettings().distance(Meters.of(5.396)).velocity(RotationsPerSecond.of(58)).pitch(Degrees.of(0)),
+      new ShootingSettings().distance(Meters.of(5.677)).velocity(RotationsPerSecond.of(55)).pitch(Degrees.of(0)),
+      new ShootingSettings().distance(Meters.of(6.350)).velocity(RotationsPerSecond.of(54)).pitch(Degrees.of(0))
     ));
 
     public static final VelocityPitchInterpolator STOCKPILE_INTERPOLATOR = new VelocityPitchInterpolator(List.of(
