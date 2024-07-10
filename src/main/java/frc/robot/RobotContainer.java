@@ -11,7 +11,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
-import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_BLUE;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_RED;
@@ -35,7 +34,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.BabyBirdCommand;
 import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
@@ -45,7 +43,6 @@ import frc.robot.commands.SpeakerOrBlinkCommand;
 import frc.robot.commands.StockpileOrBlinkCommand;
 import frc.robot.commands.TuneShootingCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
-import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
 import frc.robot.commands.testing.LEDProgressBarCommand;
 import frc.robot.commands.testing.TestCommand;
@@ -171,9 +168,7 @@ public class RobotContainer {
     controlBindings.eject().ifPresent(trigger -> trigger.whileTrue(
         new EjectCommand(intakeSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
 
-    controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(
-        new BabyBirdCommand(turretSubsystem, shooterSubsystem)
-            .deadlineWith(new LEDBlinkCommand(ledSubsystem, NOTE_COLOR, 0.1))));
+    controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(autoCommands.babyBird()));
 
     // Speaker
     controlBindings.scoreSpeaker().ifPresent(trigger -> trigger.whileTrue(
@@ -194,6 +189,11 @@ public class RobotContainer {
         drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, controlBindings.translationX(),
         controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)));
     
+    controlBindings.babyBomber().ifPresent(trigger -> trigger.whileTrue(
+        autoCommands.babyBird()
+          .andThen(autoCommands.shootMid(controlBindings.translationX(), controlBindings.translationY()))
+          .repeatedly()));
+
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
       turretSubsystem.moveToPitchPosition(PITCH_LIMIT_FORWARD);
