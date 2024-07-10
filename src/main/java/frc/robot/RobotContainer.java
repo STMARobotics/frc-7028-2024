@@ -11,7 +11,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
-import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_BLUE;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_RED;
@@ -32,7 +31,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.BabyBirdCommand;
 import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
@@ -42,8 +40,9 @@ import frc.robot.commands.SpeakerOrBlinkCommand;
 import frc.robot.commands.StockpileOrBlinkCommand;
 import frc.robot.commands.TuneShootingCommand;
 import frc.robot.commands.led.DefaultLEDCommand;
-import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDBootAnimationCommand;
+import frc.robot.commands.testing.LEDProgressBarCommand;
+import frc.robot.commands.testing.TestCommand;
 import frc.robot.controls.ControlBindings;
 import frc.robot.controls.DemoControlBindings;
 import frc.robot.controls.JoystickControlBindings;
@@ -71,6 +70,8 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+  private final TestCommand testCommand =
+      new TestCommand(intakeSubsystem, shooterSubsystem, turretSubsystem);
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
   private final SendableChooser<Command> autoChooser;
@@ -198,13 +199,7 @@ public class RobotContainer {
                     new EjectCommand(
                         intakeSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
 
-    controlBindings
-        .babyBird()
-        .ifPresent(
-            trigger ->
-                trigger.whileTrue(
-                    new BabyBirdCommand(turretSubsystem, shooterSubsystem)
-                        .deadlineWith(new LEDBlinkCommand(ledSubsystem, NOTE_COLOR, 0.1))));
+    controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(autoCommands.babyBird()));
 
     // Speaker
     controlBindings
@@ -266,6 +261,18 @@ public class RobotContainer {
                         STOCKPILE_MID_BLUE,
                         STOCKPILE_INTERPOLATOR,
                         0.3)));
+
+    controlBindings
+        .babyBomber()
+        .ifPresent(
+            trigger ->
+                trigger.whileTrue(
+                    autoCommands
+                        .babyBird()
+                        .andThen(
+                            autoCommands.shootMid(
+                                controlBindings.translationX(), controlBindings.translationY()))
+                        .repeatedly()));
 
     // Misc
     controlBindings
@@ -413,6 +420,16 @@ public class RobotContainer {
         .withPosition(columnIndex, 2);
     tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse))
         .withPosition(columnIndex, 3);
+  }
+
+  public void populateTestingDashboard() {
+    var tab = Shuffleboard.getTab("Testing");
+    tab.addNumber("Number of Tests Run", () -> testCommand.getTestState());
+    tab.addBoolean("Has Stopped", () -> testCommand.getHasStopped());
+    tab.add(
+        "Start Testing",
+        testCommand.deadlineWith(
+            new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)));
   }
 
   public void setAlliance(Alliance alliance) {

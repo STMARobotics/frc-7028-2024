@@ -3,25 +3,36 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.Constants.LEDConstants.BABYBIRD_COLOR;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
+import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
+import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_BLUE;
+import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_RED;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.ShootingConstants;
+import frc.robot.commands.BabyBirdCommand;
 import frc.robot.commands.BloopCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ScoreAmpCommand;
 import frc.robot.commands.ScoreSpeakerAutoCommand;
+import frc.robot.commands.ShootTeleopCommand;
 import frc.robot.commands.led.LEDAlternateCommand;
+import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.commands.led.LEDMarqueeCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import java.util.function.Supplier;
 
 /**
  * Non-static command factory for creating commands. See
@@ -177,5 +188,40 @@ public class AutoCommands {
   public Command scoreAmp() {
     return new ScoreAmpCommand(turretSubsystem, shooterSubsystem)
         .deadlineWith(new LEDMarqueeCommand(ledSubsystem, 70, 255, 0, 15, 0.08));
+  }
+
+  /**
+   * Command to put the turret in intake position
+   *
+   * @return new command
+   */
+  public Command babyBird() {
+    return new BabyBirdCommand(turretSubsystem, shooterSubsystem)
+        .deadlineWith(new LEDBlinkCommand(ledSubsystem, BABYBIRD_COLOR, 0.1));
+  }
+
+  /**
+   * Comand to shoot a note into the middle of the field
+   *
+   * @param xSupplier X translation supplier
+   * @param ySupplier Y translation supplier
+   * @return new command
+   */
+  public Command shootMid(
+      Supplier<Measure<Velocity<Distance>>> xSupplier,
+      Supplier<Measure<Velocity<Distance>>> ySupplier) {
+    return new ShootTeleopCommand(
+            drivetrainSubsystem,
+            shooterSubsystem,
+            turretSubsystem,
+            ledSubsystem,
+            xSupplier,
+            ySupplier,
+            STOCKPILE_MID_RED,
+            STOCKPILE_MID_BLUE,
+            STOCKPILE_INTERPOLATOR,
+            0.3)
+        .deadlineWith(
+            (new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1))));
   }
 }

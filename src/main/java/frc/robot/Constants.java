@@ -263,6 +263,7 @@ public class Constants {
     public static final int DEVICE_ID = 9;
 
     public static final Color NOTE_COLOR = Color.fromHSV(3, 255, 255);
+    public static final Color BABYBIRD_COLOR = Color.fromHSV(255, 255, 255);
   }
 
   public static class ShootingConstants {

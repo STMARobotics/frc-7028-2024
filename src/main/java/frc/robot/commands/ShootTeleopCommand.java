@@ -259,6 +259,11 @@ public class ShootTeleopCommand extends Command {
   }
 
   @Override
+  public boolean isFinished() {
+    return !turretSubsystem.hasNote();
+  }
+
+  @Override
   public void end(boolean interrupted) {
     shooter.stop();
     turretSubsystem.prepareToIntake();

@@ -1,6 +1,7 @@
 package frc.robot.commands.led;
 
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotState;
@@ -17,7 +18,8 @@ public class DefaultLEDCommand extends Command {
     MODE_DS_DISCONNECT,
     MODE_NOTE_IN_TURRET,
     MODE_ROBOT_DISABLED,
-    MODE_DEFAULT;
+    MODE_DEFAULT,
+    MODE_TEST;
   }
 
   private final LEDSubsystem ledSubsystem;
@@ -62,6 +64,11 @@ public class DefaultLEDCommand extends Command {
             .until(() -> getMode() != LEDMode.MODE_ROBOT_DISABLED)
             .schedule();
         break;
+      case MODE_TEST:
+        new LEDAlternateCommand(ledSubsystem, Color.kBlack, NOTE_COLOR, Seconds.one())
+            .until(() -> getMode() != LEDMode.MODE_TEST)
+            .schedule();
+        break;
       default:
         // Don't do anything for default. LEDs will go off.
     }
@@ -78,6 +85,8 @@ public class DefaultLEDCommand extends Command {
       return LEDMode.MODE_NOTE_IN_TURRET;
     } else if (!DriverStation.isDSAttached()) {
       return LEDMode.MODE_DS_DISCONNECT;
+    } else if (RobotState.isTest()) {
+      return LEDMode.MODE_TEST;
     } else if (RobotState.isDisabled()) {
       return LEDMode.MODE_ROBOT_DISABLED;
     } else {

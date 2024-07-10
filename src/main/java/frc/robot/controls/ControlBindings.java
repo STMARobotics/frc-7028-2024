@@ -106,6 +106,13 @@ public interface ControlBindings {
   Optional<Trigger> babyBird();
 
   /**
+   * Baby bird pickup and shoot to middle
+   *
+   * @return trigger
+   */
+  Optional<Trigger> babyBomber();
+
+  /**
    * Lifts the shooter to max pitch and facing backwards
    *
    * @return trigger
