@@ -117,7 +117,7 @@ public class Constants {
      * Minimum target ambiguity. Targets with higher ambiguity will be discarded. Not appliable when multiple tags are
      * in view in a single camera.
      */
-    public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.15;
+    public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
     public static final Measure<Distance> SINGLE_TAG_DISTANCE_THRESHOLD = Meters.of(5.0);
 
     // These Standard Deviations can be increased to "trust" vision measurements more. They are scaled based distance.
