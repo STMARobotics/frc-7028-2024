@@ -218,7 +218,7 @@ public class Constants {
         .withMotionMagicAcceleration(10.0)
         .withMotionMagicCruiseVelocity(2.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.476807);
+    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(-0.35505078125);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
     public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
@@ -299,8 +299,8 @@ public class Constants {
     public static final Translation2d STOCKPILE_RED = new Translation2d(Meters.of(15.698), Meters.of(6.7));
     public static final Translation2d STOCKPILE_BLUE = new Translation2d(Meters.of(0.5595), Meters.of(6.7));
 
-    public static final Translation2d STOCKPILE_MID_RED = new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
-    public static final Translation2d STOCKPILE_MID_BLUE = new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
+    public static final Translation2d STOCKPILE_MID_RED = new Translation2d(Meters.of(9.65), Meters.of(7));
+    public static final Translation2d STOCKPILE_MID_BLUE = new Translation2d(Meters.of(6.89175), Meters.of(7));
 
     public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
     public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);
