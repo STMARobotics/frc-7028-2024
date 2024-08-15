@@ -191,8 +191,9 @@ public class RobotContainer {
         controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)));
     
     controlBindings.babyBomber().ifPresent(trigger -> trigger.whileTrue(
-      new BabyBomberCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, null, null, 
-      STOCKPILE_MID_BLUE, STOCKPILE_MID_RED, STOCKPILE_INTERPOLATOR, 0)));
+      new BabyBomberCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, 
+      controlBindings.translationX(), controlBindings.translationY(), 
+      STOCKPILE_MID_BLUE, STOCKPILE_MID_RED, STOCKPILE_INTERPOLATOR, 0.3)));
 
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
