@@ -113,7 +113,7 @@ public class RobotContainer {
         controlBindings.translationY(),
         controlBindings.omega()));
 
-    ledSubsystem.setDefaultCommand(new DefaultLEDCommand(ledSubsystem, turretSubsystem::hasNote));
+    ledSubsystem.setDefaultCommand(new DefaultLEDCommand(ledSubsystem, turretSubsystem::hasNote, drivetrain::isCameraConnected));
 
     turretSubsystem.setDefaultCommand(new DefaultTurretCommand(turretSubsystem));
   }

@@ -39,8 +39,9 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
 
-  private final Thread photonThread = new Thread(new PhotonRunnable(APRILTAG_CAMERA_NAMES, ROBOT_TO_CAMERA_TRANSFORMS,
-      this::addVisionMeasurement, () -> getState().Pose));
+  private final PhotonRunnable photonRunnable = new PhotonRunnable(APRILTAG_CAMERA_NAMES, ROBOT_TO_CAMERA_TRANSFORMS,
+      this::addVisionMeasurement, () -> getState().Pose);
+  private final Thread photonThread = new Thread(photonRunnable);
 
   private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
   private final SwerveRequest.SysIdSwerveTranslation translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -78,6 +79,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     configNeutralMode(NeutralModeValue.Brake);
 
     configurePathPlanner();
+  }
+
+  public boolean isCameraConnected() {
+    return photonRunnable.isCameraConnected();
   }
 
   private void configurePathPlanner() {

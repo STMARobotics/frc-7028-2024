@@ -1,6 +1,7 @@
 package frc.robot.commands.led;
 
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.Constants.LEDConstants.CAMERA_DISCONNECT_COLOR;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
 
 import java.util.function.BooleanSupplier;
@@ -22,15 +23,18 @@ public class DefaultLEDCommand extends Command {
     MODE_NOTE_IN_TURRET,
     MODE_ROBOT_DISABLED,
     MODE_DEFAULT,
-    MODE_TEST;
+    MODE_TEST,
+    MODE_CAMERA_DISCONNECTED;
   }
 
   private final LEDSubsystem ledSubsystem;
   private final BooleanSupplier noteInTurret;
-
-  public DefaultLEDCommand(LEDSubsystem ledSubsystem, BooleanSupplier noteInTurret) {
+  private final BooleanSupplier isCameraConnected;
+  
+  public DefaultLEDCommand(LEDSubsystem ledSubsystem, BooleanSupplier noteInTurret, BooleanSupplier isCameraConnected) {
     this.ledSubsystem = ledSubsystem;
     this.noteInTurret = noteInTurret;
+    this.isCameraConnected = isCameraConnected;
 
     addRequirements(ledSubsystem);
   }
@@ -66,6 +70,9 @@ public class DefaultLEDCommand extends Command {
         new LEDAlternateCommand(ledSubsystem, Color.kBlack, NOTE_COLOR, Seconds.one())
           .until(() -> getMode() != LEDMode.MODE_TEST).schedule();
         break;
+      case MODE_CAMERA_DISCONNECTED:
+        new LEDAlternateCommand(ledSubsystem, CAMERA_DISCONNECT_COLOR, Color.kBlack, Seconds.of(0.2));
+        break;
       default:
         // Don't do anything for default. LEDs will go off.
     }
@@ -77,7 +84,9 @@ public class DefaultLEDCommand extends Command {
    * @return LED mode
    */
   private LEDMode getMode() {
-    if (noteInTurret.getAsBoolean()) {
+    if (!isCameraConnected.getAsBoolean()) {
+      return LEDMode.MODE_CAMERA_DISCONNECTED;
+    } else if (noteInTurret.getAsBoolean()) {
       return LEDMode.MODE_NOTE_IN_TURRET;
     } else if (!DriverStation.isDSAttached()) {
       return LEDMode.MODE_DS_DISCONNECT;

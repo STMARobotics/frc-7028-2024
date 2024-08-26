@@ -54,6 +54,8 @@ public class PhotonRunnable implements Runnable {
 
   private final Supplier<Pose2d> poseSupplier;
 
+  public boolean isCameraConnected;
+
   @SuppressWarnings("unchecked")
   private final StructArrayPublisher<AprilTag>[] aprilTagPublishers = new StructArrayPublisher[2];
    
@@ -100,6 +102,17 @@ public class PhotonRunnable implements Runnable {
       photonPoseEstimators[i] = new PhotonPoseEstimator(
           layout, MULTI_TAG_PNP_ON_COPROCESSOR, new PhotonCamera(cameraNames[i]), robotToCameras[i]);
     }
+    final PhotonCamera leftCamera = new PhotonCamera("Left");
+    final PhotonCamera rightCamera = new PhotonCamera("Right");
+    if (leftCamera.isConnected() && rightCamera.isConnected()) {
+      isCameraConnected = true;
+      leftCamera.close();
+      rightCamera.close();
+    }
+  }
+
+  public boolean isCameraConnected() {
+    return isCameraConnected;
   }
 
   @Override
