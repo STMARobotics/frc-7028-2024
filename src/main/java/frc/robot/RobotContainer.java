@@ -190,9 +190,9 @@ public class RobotContainer {
         controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)));
     
     controlBindings.babyBomber().ifPresent(trigger -> trigger.whileTrue(
-      autoCommands.babyBird()
-      .andThen(autoCommands.shootMid(controlBindings.translationX(), controlBindings.translationY()))
-      .repeatedly()));
+        autoCommands.babyBird()
+          .andThen(autoCommands.shootMid(controlBindings.translationX(), controlBindings.translationY()))
+          .repeatedly()));
 
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
