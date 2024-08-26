@@ -34,7 +34,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.BabyBomberCommand;
 import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
@@ -191,9 +190,9 @@ public class RobotContainer {
         controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)));
     
     controlBindings.babyBomber().ifPresent(trigger -> trigger.whileTrue(
-      new BabyBomberCommand(drivetrain, shooterSubsystem, turretSubsystem, ledSubsystem, 
-      controlBindings.translationX(), controlBindings.translationY(), 
-      STOCKPILE_MID_BLUE, STOCKPILE_MID_RED, STOCKPILE_INTERPOLATOR, 0.3)));
+      autoCommands.babyBirdNoDrop()
+      .andThen(autoCommands.shootMid(controlBindings.translationX(), controlBindings.translationY()))
+      .repeatedly()));
 
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
