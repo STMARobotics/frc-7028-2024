@@ -14,8 +14,6 @@ import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_BLUE;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_RED;
-import static frc.robot.Constants.TurretConstants.INTAKE_YAW;
-import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 
 import java.util.Map;
 
@@ -190,9 +188,9 @@ public class RobotContainer {
         controlBindings.translationY(), STOCKPILE_MID_RED, STOCKPILE_MID_BLUE, STOCKPILE_INTERPOLATOR, 0.3)));
     
     controlBindings.babyBomber().ifPresent(trigger -> trigger.whileTrue(
-      autoCommands.babyBirdNoDrop()
-      .andThen(autoCommands.shootMid(controlBindings.translationX(), controlBindings.translationY()))
-      .repeatedly()));
+        autoCommands.babyBirdNoDrop()
+            .andThen(autoCommands.shootMid(controlBindings.translationX(), controlBindings.translationY()))
+            .repeatedly()));
 
     // Misc
     controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
