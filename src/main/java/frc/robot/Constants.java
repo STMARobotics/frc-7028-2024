@@ -105,11 +105,11 @@ public class Constants {
      */
     public static final Transform3d[] ROBOT_TO_CAMERA_TRANSFORMS = {
       new Transform3d(
-          new Translation3d(inchesToMeters(11.227), inchesToMeters(-10.446), inchesToMeters(8.238)),
-          new Rotation3d(degreesToRadians(2), degreesToRadians(-21.0), degreesToRadians(-90))),
+          new Translation3d(inchesToMeters(11.227), inchesToMeters(-10.196), inchesToMeters(8.238)),
+          new Rotation3d(degreesToRadians(0.4), degreesToRadians(-24.6), degreesToRadians(-90))),
       new Transform3d(
-          new Translation3d(inchesToMeters(11.227), inchesToMeters(10.446), inchesToMeters(8.238)),
-          new Rotation3d(degreesToRadians(-2), degreesToRadians(-24.0), degreesToRadians(90)))
+          new Translation3d(inchesToMeters(11.227), inchesToMeters(10.196), inchesToMeters(8.238)),
+          new Rotation3d(degreesToRadians(0), degreesToRadians(-24.6), degreesToRadians(90)))
     };
 
     public static final Distance FIELD_LENGTH = Meters.of(16.54175);
@@ -201,13 +201,13 @@ public class Constants {
         new Translation2d(Inches.of(-5.508), Inches.zero());
 
     public static final SlotConfigs YAW_SLOT_CONFIGS =
-        new SlotConfigs().withKP(120).withKI(0.0).withKD(0.0).withKS(0.59).withKV(0.5).withKA(0.0);
+        new SlotConfigs().withKP(140).withKI(0.0).withKD(0.0).withKS(0.59).withKV(0.5).withKA(0.0);
     public static final MotionMagicConfigs YAW_MOTION_MAGIC_CONFIGS =
         new MotionMagicConfigs()
             .withMotionMagicAcceleration(10.0)
             .withMotionMagicCruiseVelocity(2.0);
 
-    public static Angle PITCH_MAGNETIC_OFFSET = Rotations.of(0.476807);
+    public static Angle PITCH_MAGNETIC_OFFSET = Rotations.of(-0.35505078125);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
     public static Angle PITCH_LIMIT_FORWARD = Rotations.of(0.115);
     public static Angle PITCH_LIMIT_REVERSE = Rotations.of(0.001);
@@ -291,9 +291,9 @@ public class Constants {
         new Translation2d(Meters.of(0.5595), Meters.of(6.7));
 
     public static final Translation2d STOCKPILE_MID_RED =
-        new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
+        new Translation2d(Meters.of(9.65), Meters.of(7));
     public static final Translation2d STOCKPILE_MID_BLUE =
-        new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
+        new Translation2d(Meters.of(6.89175), Meters.of(7));
 
     public static final Time SHOOT_TIME = Seconds.of(0.5);
     public static final Angle AIM_TOLERANCE = Degrees.of(1.5);
@@ -329,47 +329,47 @@ public class Constants {
                 new ShootingSettings()
                     .distance(Meters.of(1.8500968))
                     .velocity(RotationsPerSecond.of(50))
-                    .pitch(Degrees.of(20.5)),
+                    .pitch(Degrees.of(19)),
                 new ShootingSettings()
                     .distance(Meters.of(2.3800968))
                     .velocity(RotationsPerSecond.of(50))
-                    .pitch(Degrees.of(16.5)),
+                    .pitch(Degrees.of(13.5)),
                 new ShootingSettings()
                     .distance(Meters.of(3.1500968))
                     .velocity(RotationsPerSecond.of(50))
-                    .pitch(Degrees.of(9.75)),
+                    .pitch(Degrees.of(8.5)),
                 new ShootingSettings()
                     .distance(Meters.of(3.7900968))
                     .velocity(RotationsPerSecond.of(52))
-                    .pitch(Degrees.of(7.0)),
+                    .pitch(Degrees.of(5.0)),
                 new ShootingSettings()
                     .distance(Meters.of(4.5200968))
                     .velocity(RotationsPerSecond.of(57))
-                    .pitch(Degrees.of(3.0)),
+                    .pitch(Degrees.of(2)),
                 new ShootingSettings()
                     .distance(Meters.of(4.599))
                     .velocity(RotationsPerSecond.of(68))
-                    .pitch(Degrees.of(1.5)),
+                    .pitch(Degrees.of(1)),
                 new ShootingSettings()
                     .distance(Meters.of(4.798))
                     .velocity(RotationsPerSecond.of(68))
                     .pitch(Degrees.of(0.975)),
                 new ShootingSettings()
                     .distance(Meters.of(5.00))
-                    .velocity(RotationsPerSecond.of(68))
-                    .pitch(Degrees.of(0.75)),
-                new ShootingSettings()
-                    .distance(Meters.of(5.192))
-                    .velocity(RotationsPerSecond.of(68))
-                    .pitch(Degrees.of(0.05)),
+                    .velocity(RotationsPerSecond.of(60))
+                    .pitch(Degrees.of(0)),
                 new ShootingSettings()
                     .distance(Meters.of(5.396))
-                    .velocity(RotationsPerSecond.of(62.8))
-                    .pitch(Degrees.of(0.05)),
+                    .velocity(RotationsPerSecond.of(58))
+                    .pitch(Degrees.of(0)),
                 new ShootingSettings()
                     .distance(Meters.of(5.677))
-                    .velocity(RotationsPerSecond.of(59.5))
-                    .pitch(Degrees.of(0.005))));
+                    .velocity(RotationsPerSecond.of(55))
+                    .pitch(Degrees.of(0)),
+                new ShootingSettings()
+                    .distance(Meters.of(6.350))
+                    .velocity(RotationsPerSecond.of(54))
+                    .pitch(Degrees.of(0))));
 
     public static final VelocityPitchInterpolator STOCKPILE_INTERPOLATOR =
         new VelocityPitchInterpolator(
