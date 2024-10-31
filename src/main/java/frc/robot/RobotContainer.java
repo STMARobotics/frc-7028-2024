@@ -94,7 +94,6 @@ public class RobotContainer {
     autoCommands.registerPPNamedCommands();
     autoChooser = AutoBuilder.buildAutoChooser();
 
-    drivetrain.getDaqThread().setThreadPriority(99);
     drivetrain.registerTelemetry(drivetrainTelemetry::telemeterize);
 
     configureDefaultCommands();
@@ -325,7 +324,7 @@ public class RobotContainer {
 
     controlBindings
         .seedFieldRelative()
-        .ifPresent(trigger -> trigger.onTrue(runOnce(drivetrain::seedFieldRelative, drivetrain)));
+        .ifPresent(trigger -> trigger.onTrue(runOnce(drivetrain::seedFieldCentric, drivetrain)));
   }
 
   public void populateSysIdDashboard() {
@@ -428,7 +427,7 @@ public class RobotContainer {
     tab.addBoolean("Has Stopped", () -> testCommand.getHasStopped());
     tab.add(
         "Start Testing",
-        testCommand.deadlineWith(
+        testCommand.deadlineFor(
             new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)));
   }
 

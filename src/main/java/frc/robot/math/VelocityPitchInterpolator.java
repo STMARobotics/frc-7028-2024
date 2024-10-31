@@ -5,11 +5,12 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutDistance;
 import java.util.List;
 
 /**
@@ -54,10 +55,9 @@ public class VelocityPitchInterpolator {
 
   /** Shooter settings */
   public static class ShootingSettings {
-    private final MutableMeasure<Distance> distance = MutableMeasure.zero(Meters);
-    private final MutableMeasure<Velocity<Angle>> velocity =
-        MutableMeasure.zero(RotationsPerSecond);
-    private final MutableMeasure<Angle> pitch = MutableMeasure.zero(Radians);
+    private final MutDistance distance = Meters.mutable(0);
+    private final MutAngularVelocity velocity = RotationsPerSecond.mutable(0);
+    private final MutAngle pitch = Radians.mutable(0);
 
     /**
      * Sets the distance
@@ -65,7 +65,7 @@ public class VelocityPitchInterpolator {
      * @param distance distance
      * @return this
      */
-    public ShootingSettings distance(Measure<Distance> distance) {
+    public ShootingSettings distance(Distance distance) {
       this.distance.mut_replace(distance);
       return this;
     }
@@ -76,7 +76,7 @@ public class VelocityPitchInterpolator {
      * @param pitch shooter pitch
      * @return this
      */
-    public ShootingSettings pitch(Measure<Angle> pitch) {
+    public ShootingSettings pitch(Angle pitch) {
       this.pitch.mut_replace(pitch);
       return this;
     }
@@ -87,7 +87,7 @@ public class VelocityPitchInterpolator {
      * @param velocity velocity
      * @return this
      */
-    public ShootingSettings velocity(Measure<Velocity<Angle>> velocity) {
+    public ShootingSettings velocity(AngularVelocity velocity) {
       this.velocity.mut_replace(velocity);
       return this;
     }
@@ -97,7 +97,7 @@ public class VelocityPitchInterpolator {
      *
      * @return pitch
      */
-    public Measure<Angle> getPitch() {
+    public Angle getPitch() {
       return pitch;
     }
 
@@ -106,7 +106,7 @@ public class VelocityPitchInterpolator {
      *
      * @return distance
      */
-    public Measure<Distance> getDistance() {
+    public Distance getDistance() {
       return distance;
     }
 
@@ -115,7 +115,7 @@ public class VelocityPitchInterpolator {
      *
      * @return shooter velocity
      */
-    public Measure<Velocity<Angle>> getVelocity() {
+    public AngularVelocity getVelocity() {
       return velocity;
     }
   }

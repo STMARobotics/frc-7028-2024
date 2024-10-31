@@ -5,10 +5,8 @@ import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_TELE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED_TELE;
 
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.led.LEDBlinkCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -32,9 +30,9 @@ public class SpeakerOrBlinkCommand extends Command {
       ShooterSubsystem shooter,
       TurretSubsystem turretSubsystem,
       LEDSubsystem ledSubsystem,
-      Supplier<Measure<Velocity<Distance>>> xSupplier,
-      Supplier<Measure<Velocity<Distance>>> ySupplier,
-      Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
+      Supplier<LinearVelocity> xSupplier,
+      Supplier<LinearVelocity> ySupplier,
+      Supplier<AngularVelocity> rotationSupplier) {
 
     this.turretSubsystem = turretSubsystem;
     this.dontShootCommand =

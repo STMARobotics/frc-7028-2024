@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radian;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static frc.robot.Constants.LEDConstants.NOTE_COLOR;
@@ -12,9 +13,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
@@ -42,12 +42,10 @@ public class TuneShootingCommand extends Command {
   private boolean shooting = false;
   private Translation2d speakerTranslation;
 
-  private MutableMeasure<Angle> pitchMeasure = MutableMeasure.zero(Degrees);
-  private MutableMeasure<Angle> yawMeasure = MutableMeasure.zero(Degrees);
-  private MutableMeasure<Velocity<Angle>> topVelocityMeasure =
-      MutableMeasure.zero(RotationsPerSecond);
-  private MutableMeasure<Velocity<Angle>> bottomVelocityMeasure =
-      MutableMeasure.zero(RotationsPerSecond);
+  private MutAngle pitchMeasure = Radian.mutable(0);
+  private MutAngle yawMeasure = Radian.mutable(0);
+  private MutAngularVelocity topVelocityMeasure = RotationsPerSecond.mutable(0);
+  private MutAngularVelocity bottomVelocityMeasure = RotationsPerSecond.mutable(0);
 
   public TuneShootingCommand(
       TurretSubsystem turretSubsystem,

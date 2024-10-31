@@ -11,8 +11,7 @@ import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIE
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
@@ -34,7 +33,7 @@ public class ScoreSpeakerAutoCommand extends Command {
   private final Supplier<Pose2d> poseSupplier;
 
   // Reusable objects to prevent reallocation (to reduce memory pressure)
-  private final MutableMeasure<Angle> turretYawTarget = MutableMeasure.zero(Rotations);
+  private final MutAngle turretYawTarget = Rotations.mutable(0);
 
   private final Translation2d targetRed;
   private final Translation2d targetBlue;

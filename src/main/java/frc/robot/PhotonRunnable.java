@@ -88,7 +88,7 @@ public class PhotonRunnable implements Runnable {
     photonPoseEstimators = new PhotonPoseEstimator[cameraNames.length];
     waitHandles = new int[cameraNames.length];
 
-    var layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    var layout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
     // Origin will always be blue
     layout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 

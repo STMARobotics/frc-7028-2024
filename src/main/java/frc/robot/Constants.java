@@ -32,12 +32,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Current;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.math.VelocityPitchInterpolator;
 import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;
@@ -48,18 +50,17 @@ public class Constants {
   public static final String CANIVORE_BUS_NAME = "canivore";
 
   public static final class DrivetrainConstants {
-    public static final Measure<Distance> TRACKWIDTH = Inches.of(20.5);
-    public static final Measure<Distance> WHEELBASE = Inches.of(21.125);
+    public static final Distance TRACKWIDTH = Inches.of(20.5);
+    public static final Distance WHEELBASE = Inches.of(21.125);
 
     // Theoretical free speed of L3 Kraken with FOC (Falcon 500 is faster)
-    public static final Measure<Velocity<Distance>> MAX_VELOCITY = FeetPerSecond.of(16.5);
+    public static final LinearVelocity MAX_VELOCITY = FeetPerSecond.of(16.5);
     // Here we calculate the theoretical maximum angular velocity. You can also replace this with a
     // measured amount.
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
         (DrivetrainConstants.MAX_VELOCITY.in(MetersPerSecond)
             / Math.hypot(TRACKWIDTH.in(Meters) / 2.0, WHEELBASE.in(Meters) / 2.0));
-    public static final Measure<Velocity<Angle>> MAX_ANGULAR_VELOCITY =
-        RadiansPerSecond.of(PI * 4 * 0.8);
+    public static final AngularVelocity MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 4 * 0.8);
 
     public static final MountPoseConfigs PIGEON_MOUNT_POSE_CONFIG =
         new MountPoseConfigs()
@@ -73,9 +74,9 @@ public class Constants {
     public static final double TRANSLATION_DEADBAND = 0.05;
     public static final double ROTATIONAL_DEADBAND = 0.03;
 
-    public static final Measure<Velocity<Velocity<Distance>>> TRANSLATION_RATE_LIMIT =
+    public static final LinearAcceleration TRANSLATION_RATE_LIMIT =
         MetersPerSecondPerSecond.of(20.0);
-    public static final Measure<Velocity<Velocity<Angle>>> ROTATION_RATE_LIMIT =
+    public static final AngularAcceleration ROTATION_RATE_LIMIT =
         RadiansPerSecond.per(Second).of(8.0 * PI);
   }
 
@@ -111,8 +112,8 @@ public class Constants {
           new Rotation3d(degreesToRadians(-2), degreesToRadians(-24.0), degreesToRadians(90)))
     };
 
-    public static final Measure<Distance> FIELD_LENGTH = Meters.of(16.54175);
-    public static final Measure<Distance> FIELD_WIDTH = Meters.of(8.0137);
+    public static final Distance FIELD_LENGTH = Meters.of(16.54175);
+    public static final Distance FIELD_WIDTH = Meters.of(8.0137);
 
     /**
      * Minimum target ambiguity. Targets with higher ambiguity will be discarded. Not appliable when
@@ -120,7 +121,7 @@ public class Constants {
      */
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
 
-    public static final Measure<Distance> SINGLE_TAG_DISTANCE_THRESHOLD = Meters.of(5.0);
+    public static final Distance SINGLE_TAG_DISTANCE_THRESHOLD = Meters.of(5.0);
 
     // These Standard Deviations can be increased to "trust" vision measurements more. They are
     // scaled based distance.
@@ -135,9 +136,9 @@ public class Constants {
     public static final int DEVICE_ID_TOP = 50;
     public static final int DEVICE_ID_BOTTOM = 51;
 
-    public static final Measure<Current> PEAK_FORWARD_CURRENT = Amps.of(220);
-    public static final Measure<Current> PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.negate();
-    public static final Measure<Current> SUPPLY_CURRENT_LIMIT = Amps.of(80);
+    public static final Current PEAK_FORWARD_CURRENT = Amps.of(220);
+    public static final Current PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.times(-1);
+    public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(80);
 
     public static final SlotConfigs SLOT_CONFIG_TOP =
         new SlotConfigs().withKP(10.0).withKI(0.0).withKD(0.0).withKS(6.5).withKV(0.15);
@@ -147,24 +148,24 @@ public class Constants {
 
     public static final double SENSOR_TO_MECHANISM_RATIO = 1.0;
 
-    public static final Measure<Velocity<Angle>> ERROR_TOLERANCE = RotationsPerSecond.of(1.5);
-    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
+    public static final AngularVelocity ERROR_TOLERANCE = RotationsPerSecond.of(1.5);
+    public static final AngularVelocity REVERSE_VELOCITY = RotationsPerSecond.of(-10.0);
 
-    public static final Measure<Velocity<Angle>> AMP_TOP_VELOCITY = RotationsPerSecond.of(5.0);
-    public static final Measure<Velocity<Angle>> AMP_BOTTOM_VELOCITY = RotationsPerSecond.of(15.0);
+    public static final AngularVelocity AMP_TOP_VELOCITY = RotationsPerSecond.of(5.0);
+    public static final AngularVelocity AMP_BOTTOM_VELOCITY = RotationsPerSecond.of(15.0);
   }
 
   public static class IntakeConstants {
     public static final int DEVICE_ID = 42;
-    public static final Measure<Current> PEAK_FORWARD_CURRENT = Amps.of(200);
-    public static final Measure<Current> PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.negate();
-    public static final Measure<Current> SUPPLY_CURRENT_LIMIT = Amps.of(30);
+    public static final Current PEAK_FORWARD_CURRENT = Amps.of(200);
+    public static final Current PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.times(-1);
+    public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(30);
 
     public static final SlotConfigs SLOT_CONFIGS =
         new SlotConfigs().withKP(7.0).withKI(0.0).withKD(0.0).withKS(9.5).withKV(0.07);
     public static final double SENSOR_TO_MECHANISM_RATIO = 1.0;
-    public static final Measure<Velocity<Angle>> INTAKE_VELOCITY = RotationsPerSecond.of(70.0);
-    public static final Measure<Velocity<Angle>> REVERSE_VELOCITY = RotationsPerSecond.of(-20.0);
+    public static final AngularVelocity INTAKE_VELOCITY = RotationsPerSecond.of(70.0);
+    public static final AngularVelocity REVERSE_VELOCITY = RotationsPerSecond.of(-20.0);
   }
 
   public static class TurretConstants {
@@ -175,28 +176,25 @@ public class Constants {
     public static final int DEVICE_ID_ROLLER_MOTOR = 41;
     public static final int DEVICE_ID_NOTE_SENSOR = 3;
 
-    public static final Measure<Current> YAW_STATOR_CURRENT_LIMIT = Amps.of(100);
-    public static final Measure<Current> YAW_SUPPLY_CURRENT_LIMIT = Amps.of(40);
+    public static final Current YAW_STATOR_CURRENT_LIMIT = Amps.of(100);
+    public static final Current YAW_SUPPLY_CURRENT_LIMIT = Amps.of(40);
 
-    public static final Measure<Current> PITCH_STATOR_CURRENT_LIMIT = Amps.of(40);
-    public static final Measure<Current> PITCH_SUPPLY_CURRENT_LIMIT = Amps.of(30);
+    public static final Current PITCH_STATOR_CURRENT_LIMIT = Amps.of(40);
+    public static final Current PITCH_SUPPLY_CURRENT_LIMIT = Amps.of(30);
 
-    public static final Measure<Current> ROLLER_PEAK_FORWARD_CURRENT = Amps.of(60);
-    public static final Measure<Current> ROLLER_PEAK_REVERSE_CURRENT =
-        ROLLER_PEAK_FORWARD_CURRENT.negate();
-    public static final Measure<Current> ROLLER_SUPPLY_CURRENT_LIMIT = Amps.of(40);
+    public static final Current ROLLER_PEAK_FORWARD_CURRENT = Amps.of(60);
+    public static final Current ROLLER_PEAK_REVERSE_CURRENT = ROLLER_PEAK_FORWARD_CURRENT.times(-1);
+    public static final Current ROLLER_SUPPLY_CURRENT_LIMIT = Amps.of(40);
 
-    public static final Measure<Angle> YAW_MAGNETIC_OFFSET = Rotations.of(-0.407715);
+    public static final Angle YAW_MAGNETIC_OFFSET = Rotations.of(-0.407715);
     public static final double YAW_ROTOR_TO_SENSOR_RATIO = (170 / 10) * 4.0;
     // NOTE: Yaw limits are set using turret encoder angles, so they're 180-degrees off from robot
-    public static final Measure<Angle> YAW_LIMIT_FORWARD = Rotations.of(0.48);
-    public static final Measure<Angle> YAW_LIMIT_REVERSE = Rotations.of(-0.46);
+    public static final Angle YAW_LIMIT_FORWARD = Rotations.of(0.48);
+    public static final Angle YAW_LIMIT_REVERSE = Rotations.of(-0.46);
 
     // Range turret can shoot from without needing to turn the drivetrain
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_FORWARD =
-        YAW_LIMIT_FORWARD.minus(Degrees.of(1.0));
-    public static final Measure<Angle> YAW_SHOOT_LIMIT_REVERSE =
-        YAW_LIMIT_REVERSE.minus(Degrees.of(1.0));
+    public static final Angle YAW_SHOOT_LIMIT_FORWARD = YAW_LIMIT_FORWARD.minus(Degrees.of(1.0));
+    public static final Angle YAW_SHOOT_LIMIT_REVERSE = YAW_LIMIT_REVERSE.minus(Degrees.of(1.0));
 
     // Distance from robot center to turret center
     public static final Translation2d ROBOT_TO_TURRET =
@@ -209,10 +207,10 @@ public class Constants {
             .withMotionMagicAcceleration(10.0)
             .withMotionMagicCruiseVelocity(2.0);
 
-    public static Measure<Angle> PITCH_MAGNETIC_OFFSET = Rotations.of(0.476807);
+    public static Angle PITCH_MAGNETIC_OFFSET = Rotations.of(0.476807);
     public static double PITCH_ROTOR_TO_SENSOR_RATIO = (348.0 / 20.0) * 9.0;
-    public static Measure<Angle> PITCH_LIMIT_FORWARD = Rotations.of(0.115);
-    public static Measure<Angle> PITCH_LIMIT_REVERSE = Rotations.of(0.001);
+    public static Angle PITCH_LIMIT_FORWARD = Rotations.of(0.115);
+    public static Angle PITCH_LIMIT_REVERSE = Rotations.of(0.001);
     public static final SlotConfigs PITCH_SLOT_CONFIGS =
         new SlotConfigs()
             .withKP(145)
@@ -231,31 +229,30 @@ public class Constants {
     public static final SlotConfigs ROLLER_SLOT_CONFIGS =
         new SlotConfigs().withKP(5.0).withKI(0.0).withKD(0.0).withKS(12);
 
-    public static final Measure<Velocity<Angle>> INTAKE_VELOCITY = RotationsPerSecond.of(7);
-    public static final Measure<Velocity<Angle>> EJECT_VELOCITY = RotationsPerSecond.of(-10);
-    public static final Measure<Velocity<Angle>> SHOOT_VELOCITY = RotationsPerSecond.of(20);
+    public static final AngularVelocity INTAKE_VELOCITY = RotationsPerSecond.of(7);
+    public static final AngularVelocity EJECT_VELOCITY = RotationsPerSecond.of(-10);
+    public static final AngularVelocity SHOOT_VELOCITY = RotationsPerSecond.of(20);
 
-    public static final Measure<Angle> INTAKE_YAW = Radians.of(PI);
-    public static final Measure<Angle> INTAKE_PITCH = Radians.of(0.003);
+    public static final Angle INTAKE_YAW = Radians.of(PI);
+    public static final Angle INTAKE_PITCH = Radians.of(0.003);
 
-    public static final Measure<Angle> AMP_YAW = Degrees.of(180);
-    public static final Measure<Angle> AMP_PITCH = Degrees.of(27);
+    public static final Angle AMP_YAW = Degrees.of(180);
+    public static final Angle AMP_PITCH = Degrees.of(27);
 
-    public static final Measure<Angle> YAW_TOLERANCE = Degrees.of(1.0);
-    public static final Measure<Angle> PITCH_TOLERANCE = Degrees.of(1);
+    public static final Angle YAW_TOLERANCE = Degrees.of(1.0);
+    public static final Angle PITCH_TOLERANCE = Degrees.of(1);
 
-    public static final Measure<Angle> INTAKE_YAW_TOLERANCE = Degrees.of(3.0);
-    public static final Measure<Angle> INTAKE_PITCH_TOLERANCE = Degrees.of(3.0);
+    public static final Angle INTAKE_YAW_TOLERANCE = Degrees.of(3.0);
+    public static final Angle INTAKE_PITCH_TOLERANCE = Degrees.of(3.0);
 
-    public static final Measure<Angle> BABY_BIRD_YAW = Degrees.of(180.0);
-    public static final Measure<Angle> BABY_BIRD_PITCH = Degrees.of(29.0);
-    public static final Measure<Velocity<Angle>> BABY_BIRD_ROLLER_VELOCITY =
-        RotationsPerSecond.of(-25);
+    public static final Angle BABY_BIRD_YAW = Degrees.of(180.0);
+    public static final Angle BABY_BIRD_PITCH = Degrees.of(29.0);
+    public static final AngularVelocity BABY_BIRD_ROLLER_VELOCITY = RotationsPerSecond.of(-25);
 
-    public static final Measure<Distance> NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(250.0);
+    public static final Distance NOTE_SENSOR_DISTANCE_THRESHOLD = Millimeter.of(250.0);
 
     /** Correction for note not launching perfectly straight from shooter wheels */
-    public static final Measure<Angle> SHOOTING_YAW_CORRECTION = Degrees.of(1);
+    public static final Angle SHOOTING_YAW_CORRECTION = Degrees.of(1);
   }
 
   public static class LEDConstants {
@@ -298,12 +295,10 @@ public class Constants {
     public static final Translation2d STOCKPILE_MID_BLUE =
         new Translation2d(Meters.of(16.54175 / 2.0), Meters.of(6.25));
 
-    public static final Measure<Time> SHOOT_TIME = Seconds.of(0.5);
-    public static final Measure<Angle> AIM_TOLERANCE = Degrees.of(1.5);
-    public static final Measure<Velocity<Distance>> ROBOT_SPEED_TOLERANCE =
-        MetersPerSecond.of(0.05);
-    public static final Measure<Velocity<Angle>> ROBOT_ROTATION_TOLERANCE =
-        DegreesPerSecond.of(15.0);
+    public static final Time SHOOT_TIME = Seconds.of(0.5);
+    public static final Angle AIM_TOLERANCE = Degrees.of(1.5);
+    public static final LinearVelocity ROBOT_SPEED_TOLERANCE = MetersPerSecond.of(0.05);
+    public static final AngularVelocity ROBOT_ROTATION_TOLERANCE = DegreesPerSecond.of(15.0);
 
     /** A constant used applied to estimate the note's time of flight */
     public static final double SHOOT_WHILE_MOVING_COEFFICIENT = 4;
@@ -312,7 +307,7 @@ public class Constants {
      * Margin inside the turret shooting limits to avoid getting to the edge and being unable to
      * reach
      */
-    public static final Measure<Angle> DRIVETRAIN_MARGIN = Degrees.of(10);
+    public static final Angle DRIVETRAIN_MARGIN = Degrees.of(10);
 
     // Forward and reverse targets for the drivetrain when the turret is out of range
     public static final Rotation2d DRIVETRAIN_YAW_LIMIT_FORWARD =

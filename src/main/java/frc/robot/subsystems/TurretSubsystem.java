@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
@@ -75,10 +76,11 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -109,13 +111,13 @@ public class TurretSubsystem extends SubsystemBase {
   private final TorqueCurrentFOC rollerSysIdControl = new TorqueCurrentFOC(0.0);
   private final VoltageOut voltageControl = new VoltageOut(0.0).withEnableFOC(true);
 
-  private final StatusSignal<Measure<Angle>> yawPosition;
-  private final StatusSignal<Measure<Velocity<Angle>>> yawVelocity;
-  private final StatusSignal<Measure<Angle>> pitchPosition;
-  private final StatusSignal<Measure<Velocity<Angle>>> pitchVelocity;
+  private final StatusSignal<Angle> yawPosition;
+  private final StatusSignal<AngularVelocity> yawVelocity;
+  private final StatusSignal<Angle> pitchPosition;
+  private final StatusSignal<AngularVelocity> pitchVelocity;
 
   // Reusable object to reduce memory pressure from reallocation
-  private final MutableMeasure<Angle> yawAngle = MutableMeasure.zero(Rotations);
+  private final MutAngle yawAngle = Rotations.mutable(0);
 
   // SysId routines
   private final SysIdRoutine yawSysIdRoutine =
@@ -140,10 +142,7 @@ public class TurretSubsystem extends SubsystemBase {
   private final SysIdRoutine rollerSysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
-              Volts.of(5).per(Seconds.of(1)),
-              Volts.of(30),
-              null,
-              SysIdRoutineSignalLogger.logState()),
+              Volts.of(5).per(Second), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
           new SysIdRoutine.Mechanism(
               (amps) -> rollerMotor.setControl(rollerSysIdControl.withOutput(amps.in(Volts))),
               null,
@@ -290,7 +289,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @param pitch pitch
    */
-  public void moveToPitchPosition(Measure<Angle> pitch) {
+  public void moveToPitchPosition(Angle pitch) {
     pitchMotor.setControl(pitchControl.withPosition(pitch.in(Rotations)));
   }
 
@@ -324,7 +323,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @param velocity velocity for rollers
    */
-  public void runRollers(Measure<Velocity<Angle>> velocity) {
+  public void runRollers(AngularVelocity velocity) {
     rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
   }
 
@@ -408,7 +407,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @param yaw robot relative yaw
    */
-  public void moveToYawPosition(Measure<Angle> yaw) {
+  public void moveToYawPosition(Angle yaw) {
     yawMotor.setControl(yawControl.withPosition(translateYaw(yaw)));
   }
 
@@ -420,7 +419,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @param yaw robot relative yaw
    */
-  public void moveToShootingYawPosition(Measure<Angle> yaw) {
+  public void moveToShootingYawPosition(Angle yaw) {
     // Clamp to shooting range, and correct for the fact that the shooter doesn't shoot straight
     var targetYaw =
         MathUtil.clamp(
@@ -436,7 +435,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @return pitch
    */
-  public Measure<Angle> getPitch() {
+  public Measure<AngleUnit> getPitch() {
     BaseStatusSignal.refreshAll(pitchPosition, pitchVelocity);
     return BaseStatusSignal.getLatencyCompensatedValue(pitchPosition, pitchVelocity);
   }
@@ -446,7 +445,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @return yaw
    */
-  public Measure<Angle> getYaw() {
+  public Measure<AngleUnit> getYaw() {
     BaseStatusSignal.refreshAll(yawPosition, yawVelocity);
     var compensatedYaw = BaseStatusSignal.getLatencyCompensatedValue(yawPosition, yawVelocity);
     return yawAngle.mut_replace(translateYaw(compensatedYaw), Rotations);
@@ -480,7 +479,7 @@ public class TurretSubsystem extends SubsystemBase {
    * @param angle angle to check
    * @return true if in range, false if out of range
    */
-  public static boolean isYawInShootingRange(Measure<Angle> angle) {
+  public static boolean isYawInShootingRange(Angle angle) {
     var angleRotations = translateYaw(angle);
     return angleRotations < YAW_SHOOT_LIMIT_FORWARD.in(Rotations)
         && angleRotations > YAW_SHOOT_LIMIT_REVERSE.in(Rotations);
@@ -503,9 +502,9 @@ public class TurretSubsystem extends SubsystemBase {
    */
   private static boolean isInTolerance(
       double target,
-      StatusSignal<Measure<Angle>> value,
-      StatusSignal<Measure<Velocity<Angle>>> slope,
-      Measure<Angle> tolerance) {
+      StatusSignal<Angle> value,
+      StatusSignal<AngularVelocity> slope,
+      Angle tolerance) {
     var compensated = BaseStatusSignal.getLatencyCompensatedValue(value, slope);
     return Math.abs(target - compensated.in(Rotations)) < tolerance.in(Rotations);
   }
@@ -517,7 +516,7 @@ public class TurretSubsystem extends SubsystemBase {
    * @param yaw robot centric yaw to convert to turret yaw, or turret yaw to translate to robot yaw
    * @return translated yaw in rotations
    */
-  private static double translateYaw(Measure<Angle> yaw) {
+  private static double translateYaw(Measure<AngleUnit> yaw) {
     return Math.IEEEremainder(yaw.in(Rotations) + 0.5, 1);
   }
 }

@@ -2,8 +2,7 @@ package frc.robot.commands.led;
 
 import static edu.wpi.first.units.Units.Seconds;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,8 +31,7 @@ public class LEDAlternateCommand extends Command {
    * @param color2 second color to light up the LEDs
    * @param interval interval to swap the colors
    */
-  public LEDAlternateCommand(
-      LEDSubsystem ledSubsystem, Color color1, Color color2, Measure<Time> interval) {
+  public LEDAlternateCommand(LEDSubsystem ledSubsystem, Color color1, Color color2, Time interval) {
     this.ledSubsystem = ledSubsystem;
     this.color1 = color1;
     this.color2 = color2;

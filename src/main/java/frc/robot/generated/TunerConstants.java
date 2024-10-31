@@ -8,9 +8,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -40,7 +38,7 @@ public class TunerConstants {
 
   // Theoretical free speed (m/s) at 12v applied output;
   // This needs to be tuned to your individual robot
-  private static final Measure<Velocity<Distance>> kSpeedAt12VoltsMps =
+  private static final LinearVelocity kSpeedAt12VoltsMps =
       Constants.DrivetrainConstants.MAX_VELOCITY;
 
   // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;

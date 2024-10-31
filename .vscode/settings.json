@@ -34,8 +34,26 @@
     "source.fixAll.spotlessGradle": "explicit"
   },
   "editor.detectIndentation": false,
-  "java.format.settings.url": ".vscode/eclipse-formatter.xml",
   "java.inlayHints.parameterNames.enabled": "none",
   "spotlessGradle.format.enable": true,
-  "spotlessGradle.diagnostics.enable": true
+  "spotlessGradle.diagnostics.enable": true,
+  "java.format.enabled": false,
+  "[java]": {
+    "files.trimTrailingWhitespace": false,
+    "spotlessGradle.diagnostics.enable": true,
+    "spotlessGradle.format.enable": true,
+    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.spotlessGradle": true
+    }
+  },
+  "[gradle]": {
+    "files.trimTrailingWhitespace": false,
+    "spotlessGradle.diagnostics.enable": true,
+    "spotlessGradle.format.enable": true,
+    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.spotlessGradle": true
+    }
+  }
 }

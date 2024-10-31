@@ -3,9 +3,8 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.Constants.ShootingConstants.SHOOT_TIME;
 
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -16,18 +15,18 @@ public class ManualShootCommand extends Command {
 
   private final TurretSubsystem turretSubsystem;
   private final ShooterSubsystem shooterSubsystem;
-  private final Measure<Velocity<Angle>> shooterVelocity;
-  private final Measure<Angle> pitchAngle;
-  private final Measure<Angle> yawAngle;
+  private final AngularVelocity shooterVelocity;
+  private final Angle pitchAngle;
+  private final Angle yawAngle;
 
   private final Timer shootTimer = new Timer();
 
   public ManualShootCommand(
       TurretSubsystem turretSubsystem,
       ShooterSubsystem shooterSubsystem,
-      Measure<Velocity<Angle>> shooterVelocity,
-      Measure<Angle> pitchAngle,
-      Measure<Angle> yawAngle) {
+      AngularVelocity shooterVelocity,
+      Angle pitchAngle,
+      Angle yawAngle) {
 
     this.turretSubsystem = turretSubsystem;
     this.shooterSubsystem = shooterSubsystem;

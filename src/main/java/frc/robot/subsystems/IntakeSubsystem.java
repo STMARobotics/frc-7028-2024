@@ -8,7 +8,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.IntakeConstants.DEVICE_ID;
@@ -27,9 +27,7 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -53,10 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SysIdRoutine rollerSysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
-              Volts.of(5).per(Seconds.of(1)),
-              Volts.of(30),
-              null,
-              SysIdRoutineSignalLogger.logState()),
+              Volts.of(5).per(Second), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
           new SysIdRoutine.Mechanism(
               (amps) -> rollerMotor.setControl(sysIdControl.withOutput(amps.in(Volts))),
               null,
@@ -102,7 +97,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.stopMotor();
   }
 
-  public void runRollers(Measure<Velocity<Angle>> velocity) {
+  public void runRollers(AngularVelocity velocity) {
     rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
   }
 }

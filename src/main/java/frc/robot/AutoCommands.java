@@ -11,9 +11,7 @@ import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_RED;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LEDConstants;
@@ -168,7 +166,7 @@ public class AutoCommands {
    */
   public Command intakeToTurret() {
     return new IntakeCommand(intakeSubsystem, turretSubsystem)
-        .deadlineWith(new LEDAlternateCommand(ledSubsystem, NOTE_COLOR, Color.kBlue, Seconds.one()))
+        .deadlineFor(new LEDAlternateCommand(ledSubsystem, NOTE_COLOR, Color.kBlue, Seconds.one()))
         .andThen(
             ledSubsystem.runOnce(
                 () ->
@@ -187,7 +185,7 @@ public class AutoCommands {
    */
   public Command scoreAmp() {
     return new ScoreAmpCommand(turretSubsystem, shooterSubsystem)
-        .deadlineWith(new LEDMarqueeCommand(ledSubsystem, 70, 255, 0, 15, 0.08));
+        .deadlineFor(new LEDMarqueeCommand(ledSubsystem, 70, 255, 0, 15, 0.08));
   }
 
   /**
@@ -197,7 +195,7 @@ public class AutoCommands {
    */
   public Command babyBird() {
     return new BabyBirdCommand(turretSubsystem, shooterSubsystem)
-        .deadlineWith(new LEDBlinkCommand(ledSubsystem, BABYBIRD_COLOR, 0.1));
+        .deadlineFor(new LEDBlinkCommand(ledSubsystem, BABYBIRD_COLOR, 0.1));
   }
 
   /**
@@ -207,9 +205,7 @@ public class AutoCommands {
    * @param ySupplier Y translation supplier
    * @return new command
    */
-  public Command shootMid(
-      Supplier<Measure<Velocity<Distance>>> xSupplier,
-      Supplier<Measure<Velocity<Distance>>> ySupplier) {
+  public Command shootMid(Supplier<LinearVelocity> xSupplier, Supplier<LinearVelocity> ySupplier) {
     return new ShootTeleopCommand(
             drivetrainSubsystem,
             shooterSubsystem,
@@ -221,7 +217,7 @@ public class AutoCommands {
             STOCKPILE_MID_BLUE,
             STOCKPILE_INTERPOLATOR,
             0.3)
-        .deadlineWith(
+        .deadlineFor(
             (new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1))));
   }
 }

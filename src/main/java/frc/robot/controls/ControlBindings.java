@@ -1,9 +1,7 @@
 package frc.robot.controls;
 
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -26,21 +24,21 @@ public interface ControlBindings {
    *
    * @return velocity supplier
    */
-  Supplier<Measure<Velocity<Distance>>> translationX();
+  Supplier<LinearVelocity> translationX();
 
   /**
    * Supplier for the driver desired Y speed
    *
    * @return velocity supplier
    */
-  Supplier<Measure<Velocity<Distance>>> translationY();
+  Supplier<LinearVelocity> translationY();
 
   /**
    * Supplier for the drive desired omega rotation
    *
    * @return velocity supplier
    */
-  Supplier<Measure<Velocity<Angle>>> omega();
+  Supplier<AngularVelocity> omega();
 
   /**
    * Intake off the floor and into the turret

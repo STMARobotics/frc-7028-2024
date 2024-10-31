@@ -25,20 +25,17 @@ import static java.lang.Math.PI;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.SwerveRequest.ForwardReferenceValue;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
-import com.pathplanner.lib.util.ChassisSpeedsRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.math.ChassisSpeedsRateLimiter;
 import frc.robot.math.VelocityPitchInterpolator;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
@@ -58,8 +55,8 @@ public class ShootTeleopCommand extends Command {
   private final TurretSubsystem turretSubsystem;
   private final LEDSubsystem ledSubsystem;
 
-  private final Supplier<Measure<Velocity<Distance>>> xSupplier;
-  private final Supplier<Measure<Velocity<Distance>>> ySupplier;
+  private final Supplier<LinearVelocity> xSupplier;
+  private final Supplier<LinearVelocity> ySupplier;
 
   private final ChassisSpeedsRateLimiter rateLimiter =
       new ChassisSpeedsRateLimiter(
@@ -68,7 +65,7 @@ public class ShootTeleopCommand extends Command {
 
   // Reusable objects to prevent reallocation (to reduce memory pressure)
   private final ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-  private final MutableMeasure<Angle> turretYawTarget = MutableMeasure.zero(Rotations);
+  private final MutAngle turretYawTarget = Rotations.mutable(0);
   private final Translation2d targetRed;
   private final Translation2d targetBlue;
   private final VelocityPitchInterpolator lookupTable;
@@ -96,8 +93,8 @@ public class ShootTeleopCommand extends Command {
       ShooterSubsystem shooter,
       TurretSubsystem turretSubsystem,
       LEDSubsystem ledSubsystem,
-      Supplier<Measure<Velocity<Distance>>> xSupplier,
-      Supplier<Measure<Velocity<Distance>>> ySupplier,
+      Supplier<LinearVelocity> xSupplier,
+      Supplier<LinearVelocity> ySupplier,
       Translation2d targetRed,
       Translation2d targetBlue,
       VelocityPitchInterpolator lookupTable,
@@ -116,7 +113,7 @@ public class ShootTeleopCommand extends Command {
 
     addRequirements(drivetrain, shooter, turretSubsystem);
 
-    swerveRequestFacing.ForwardReference = ForwardReferenceValue.RedAlliance;
+    swerveRequestFacing.ForwardPerspective = ForwardPerspectiveValue.BlueAlliance;
     swerveRequestFacing.HeadingController = new PhoenixPIDController(THETA_kP, THETA_kI, THETA_kD);
     swerveRequestFacing.HeadingController.enableContinuousInput(-PI, PI);
     swerveRequestFacing.HeadingController.setTolerance(AIM_TOLERANCE.in(Radians));

@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import static com.ctre.phoenix6.signals.NeutralModeValue.Coast;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.CANIVORE_BUS_NAME;
 import static frc.robot.Constants.ShooterConstants.AMP_BOTTOM_VELOCITY;
@@ -27,9 +27,8 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -44,10 +43,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private final VelocityTorqueCurrentFOC topControl = new VelocityTorqueCurrentFOC(0.0);
   private final VelocityTorqueCurrentFOC bottomControl = new VelocityTorqueCurrentFOC(0.0);
 
-  private final StatusSignal<Measure<Velocity<Angle>>> bottomVelocity;
-  private final StatusSignal<Measure<Velocity<Velocity<Angle>>>> bottomAcceleration;
-  private final StatusSignal<Measure<Velocity<Angle>>> topVelocity;
-  private final StatusSignal<Measure<Velocity<Velocity<Angle>>>> topAcceleration;
+  private final StatusSignal<AngularVelocity> bottomVelocity;
+  private final StatusSignal<AngularAcceleration> bottomAcceleration;
+  private final StatusSignal<AngularVelocity> topVelocity;
+  private final StatusSignal<AngularAcceleration> topAcceleration;
 
   private final TorqueCurrentFOC sysIdControl = new TorqueCurrentFOC(0.0);
 
@@ -56,10 +55,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final SysIdRoutine sysIdRoutine =
       new SysIdRoutine(
           new SysIdRoutine.Config(
-              Volts.of(3.0).per(Seconds.of(1)),
-              Volts.of(25),
-              null,
-              SysIdRoutineSignalLogger.logState()),
+              Volts.of(3.0).per(Second), Volts.of(25), null, SysIdRoutineSignalLogger.logState()),
           new SysIdRoutine.Mechanism(
               (amps) -> {
                 topMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
@@ -109,7 +105,7 @@ public class ShooterSubsystem extends SubsystemBase {
    *
    * @param velocity velocity for both sets of wheels
    */
-  public void spinShooterWheels(Measure<Velocity<Angle>> velocity) {
+  public void spinShooterWheels(AngularVelocity velocity) {
     topMotor.setControl(topControl.withVelocity(velocity));
     bottomMotor.setControl(bottomControl.withVelocity(velocity));
   }
@@ -120,8 +116,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param topVelocity velocity for top set of wheels
    * @param bottomVelocity velocity for bottom set of wheels
    */
-  public void spinShooterWheels(
-      Measure<Velocity<Angle>> topVelocity, Measure<Velocity<Angle>> bottomVelocity) {
+  public void spinShooterWheels(AngularVelocity topVelocity, AngularVelocity bottomVelocity) {
     topMotor.setControl(topControl.withVelocity(topVelocity));
     bottomMotor.setControl(bottomControl.withVelocity(bottomVelocity));
   }
@@ -131,7 +126,7 @@ public class ShooterSubsystem extends SubsystemBase {
    *
    * @param shooterVelocity
    */
-  public void prepareToShoot(Measure<Velocity<Angle>> shooterVelocity) {
+  public void prepareToShoot(AngularVelocity shooterVelocity) {
     spinShooterWheels(shooterVelocity);
   }
 

@@ -5,10 +5,9 @@ import static edu.wpi.first.wpilibj.util.Color.kBlue;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,11 +28,11 @@ public class BloopCommand extends Command {
   private final Supplier<Rotation2d> rotationSupplier;
 
   // Reusable object to prevent reallocation (to reduce memory pressure)
-  private final MutableMeasure<Angle> turretYawTarget = MutableMeasure.zero(Rotations);
+  private final MutAngle turretYawTarget = Rotations.mutable(0);
 
   private final Rotation2d fieldOrientedTurretRotation;
-  private final Measure<Angle> turretPitch;
-  private final Measure<Velocity<Angle>> shooterVelocity;
+  private final Angle turretPitch;
+  private final AngularVelocity shooterVelocity;
 
   private Rotation2d allianceFieldOrientedTurretAngle;
   private boolean isShooting = false;
@@ -56,8 +55,8 @@ public class BloopCommand extends Command {
       LEDSubsystem ledSubsystem,
       Supplier<Rotation2d> rotationSupplier,
       Rotation2d fieldOrientedTurretAngle,
-      Measure<Angle> turretPitch,
-      Measure<Velocity<Angle>> shooterVelocity) {
+      Angle turretPitch,
+      AngularVelocity shooterVelocity) {
     this.shooter = shooter;
     this.turretSubsystem = turretSubsystem;
     this.ledSubsystem = ledSubsystem;

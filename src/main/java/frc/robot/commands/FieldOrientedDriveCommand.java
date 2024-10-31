@@ -14,13 +14,11 @@ import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.util.ChassisSpeedsRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.math.ChassisSpeedsRateLimiter;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.Supplier;
 
@@ -34,9 +32,9 @@ import java.util.function.Supplier;
  */
 public class FieldOrientedDriveCommand extends Command {
   private final CommandSwerveDrivetrain drivetrainSubsystem;
-  private final Supplier<Measure<Velocity<Distance>>> translationXSupplier;
-  private final Supplier<Measure<Velocity<Distance>>> translationYSupplier;
-  private final Supplier<Measure<Velocity<Angle>>> rotationSupplier;
+  private final Supplier<LinearVelocity> translationXSupplier;
+  private final Supplier<LinearVelocity> translationYSupplier;
+  private final Supplier<AngularVelocity> rotationSupplier;
 
   private final ChassisSpeedsRateLimiter rateLimiter =
       new ChassisSpeedsRateLimiter(
@@ -64,9 +62,9 @@ public class FieldOrientedDriveCommand extends Command {
    */
   public FieldOrientedDriveCommand(
       CommandSwerveDrivetrain drivetrainSubsystem,
-      Supplier<Measure<Velocity<Distance>>> translationXSupplier,
-      Supplier<Measure<Velocity<Distance>>> translationYSupplier,
-      Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
+      Supplier<LinearVelocity> translationXSupplier,
+      Supplier<LinearVelocity> translationYSupplier,
+      Supplier<AngularVelocity> rotationSupplier) {
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;

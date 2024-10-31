@@ -7,10 +7,8 @@ import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_RED;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,9 +35,9 @@ public class StockpileOrBlinkCommand extends Command {
       ShooterSubsystem shooter,
       TurretSubsystem turretSubsystem,
       LEDSubsystem ledSubsystem,
-      Supplier<Measure<Velocity<Distance>>> xSupplier,
-      Supplier<Measure<Velocity<Distance>>> ySupplier,
-      Supplier<Measure<Velocity<Angle>>> rotationSupplier) {
+      Supplier<LinearVelocity> xSupplier,
+      Supplier<LinearVelocity> ySupplier,
+      Supplier<AngularVelocity> rotationSupplier) {
 
     this.drivetrain = drivetrain;
     this.dontShootCommand =

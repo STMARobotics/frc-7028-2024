@@ -47,4 +47,9 @@ public class AprilTagStruct implements Struct<AprilTag> {
     bb.put((byte) value.ID);
     Pose3d.struct.pack(bb, value.pose);
   }
+
+  @Override
+  public String getTypeName() {
+    return "7028:AprilTag";
+  }
 }
