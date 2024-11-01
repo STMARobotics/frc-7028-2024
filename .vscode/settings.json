@@ -45,7 +45,7 @@
     "spotlessGradle.format.enable": true,
     "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
     "editor.codeActionsOnSave": {
-      "source.fixAll.spotlessGradle": true
+      "source.fixAll.spotlessGradle": "explicit"
     }
   },
   "[gradle]": {
@@ -54,7 +54,12 @@
     "spotlessGradle.format.enable": true,
     "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
     "editor.codeActionsOnSave": {
-      "source.fixAll.spotlessGradle": true
+      "source.fixAll.spotlessGradle": "explicit"
+    }
+  },
+  "[gradle][java]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.spotlessGradle": "explicit"
     }
   }
 }
