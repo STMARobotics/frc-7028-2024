@@ -104,6 +104,8 @@ tasks.withType(JavaCompile) {
 
 spotless {
   java {
+    importOrder()
+    removeUnusedImports()
     eclipse().configFile('.vscode/eclipse-formatter.xml')
   }
 }
