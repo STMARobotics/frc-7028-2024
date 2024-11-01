@@ -137,7 +137,7 @@ public class Constants {
     public static final int DEVICE_ID_BOTTOM = 51;
 
     public static final Current PEAK_FORWARD_CURRENT = Amps.of(220);
-    public static final Current PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.times(-1);
+    public static final Current PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.unaryMinus();
     public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(80);
 
     public static final SlotConfigs SLOT_CONFIG_TOP =
@@ -158,7 +158,7 @@ public class Constants {
   public static class IntakeConstants {
     public static final int DEVICE_ID = 42;
     public static final Current PEAK_FORWARD_CURRENT = Amps.of(200);
-    public static final Current PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.times(-1);
+    public static final Current PEAK_REVERSE_CURRENT = PEAK_FORWARD_CURRENT.unaryMinus();
     public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(30);
 
     public static final SlotConfigs SLOT_CONFIGS =
@@ -183,7 +183,8 @@ public class Constants {
     public static final Current PITCH_SUPPLY_CURRENT_LIMIT = Amps.of(30);
 
     public static final Current ROLLER_PEAK_FORWARD_CURRENT = Amps.of(60);
-    public static final Current ROLLER_PEAK_REVERSE_CURRENT = ROLLER_PEAK_FORWARD_CURRENT.times(-1);
+    public static final Current ROLLER_PEAK_REVERSE_CURRENT =
+        ROLLER_PEAK_FORWARD_CURRENT.unaryMinus();
     public static final Current ROLLER_SUPPLY_CURRENT_LIMIT = Amps.of(40);
 
     public static final Angle YAW_MAGNETIC_OFFSET = Rotations.of(-0.407715);
