@@ -156,8 +156,7 @@ public class ShootTeleopCommand extends Command {
     var angleToTarget = predictedTargetTranslation.minus(turretTranslation).getAngle();
 
     // Calculate required turret angle, accounting for the robot heading
-    turretYawTarget.mut_replace(
-        angleToTarget.minus(robotPose.getRotation()).getRotations(), Rotations);
+    turretYawTarget.mut_replace(angleToTarget.minus(robotPose.getRotation()).getRotations(), Rotations);
 
     shootingSettings = lookupTable.calculate(predictedDist);
 
@@ -187,8 +186,7 @@ public class ShootTeleopCommand extends Command {
 
       var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
       drivetrain.setControl(
-          swerveRequestRotation
-              .withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
+          swerveRequestRotation.withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
               .withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
               .withRotationalRate(0.0));
 
@@ -218,8 +216,7 @@ public class ShootTeleopCommand extends Command {
       }
 
       drivetrain.setControl(
-          swerveRequestFacing
-              .withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
+          swerveRequestFacing.withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
               .withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
               .withTargetDirection(robotTargetDirection));
     }
@@ -238,13 +235,7 @@ public class ShootTeleopCommand extends Command {
       ledSubsystem.setUpdater(l -> l.setAll(kGreen));
     } else {
       ledSubsystem.setUpdater(
-          l -> l.setLEDSegments(
-              kBlue,
-              isShooterReady,
-              isInTurretRange,
-              isPitchReady,
-              isYawReady,
-              isDrivetrainReady));
+          l -> l.setLEDSegments(kBlue, isShooterReady, isInTurretRange, isPitchReady, isYawReady, isDrivetrainReady));
     }
   }
 

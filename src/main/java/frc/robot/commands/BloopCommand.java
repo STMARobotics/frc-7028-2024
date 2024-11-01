@@ -85,8 +85,7 @@ public class BloopCommand extends Command {
     var robotRotation = rotationSupplier.get();
 
     // Calculate required turret angle, accounting for the robot heading
-    turretYawTarget.mut_replace(
-        allianceFieldOrientedTurretAngle.minus(robotRotation).getRotations(), Rotations);
+    turretYawTarget.mut_replace(allianceFieldOrientedTurretAngle.minus(robotRotation).getRotations(), Rotations);
 
     // Set the turret position and shooter speed
     turretSubsystem.moveToShootingYawPosition(turretYawTarget);
@@ -97,10 +96,7 @@ public class BloopCommand extends Command {
     var isShooterReady = shooter.isReadyToShoot();
     var isPitchReady = turretSubsystem.isAtPitchTarget();
     var isYawReady = turretSubsystem.isAtYawTarget();
-    if (isShooterReady
-        && isPitchReady
-        && isYawReady
-        && TurretSubsystem.isYawInShootingRange(turretYawTarget)) {
+    if (isShooterReady && isPitchReady && isYawReady && TurretSubsystem.isYawInShootingRange(turretYawTarget)) {
       // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot
       // and start timer
       turretSubsystem.shoot();
@@ -111,8 +107,7 @@ public class BloopCommand extends Command {
     if (isShooting) {
       ledSubsystem.setUpdater(l -> l.setAll(kGreen));
     } else {
-      ledSubsystem.setUpdater(
-          l -> l.setLEDSegments(kBlue, isShooterReady, isPitchReady, isYawReady));
+      ledSubsystem.setUpdater(l -> l.setLEDSegments(kBlue, isShooterReady, isPitchReady, isYawReady));
     }
   }
 

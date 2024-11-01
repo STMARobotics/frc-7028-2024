@@ -49,11 +49,10 @@ public class DrivetrainTelemetry {
       DataLogManager.getLog()
           .appendDoubleArray(
               logEntry,
-              new double[] { pose.getX(), pose.getY(), pose.getRotation().getDegrees() },
-              (long) (Timer.getFPGATimestamp() * 1000000));
+                new double[] { pose.getX(), pose.getY(), pose.getRotation().getDegrees() },
+                (long) (Timer.getFPGATimestamp() * 1000000));
       DataLogManager.getLog()
-          .appendDouble(
-              odomEntry, state.OdometryPeriod, (long) (Timer.getFPGATimestamp() * 1000000));
+          .appendDouble(odomEntry, state.OdometryPeriod, (long) (Timer.getFPGATimestamp() * 1000000));
 
       // Publish module states and targets
       publishModuleStates(state.ModuleStates, moduleStatePublisher);
@@ -68,8 +67,7 @@ public class DrivetrainTelemetry {
    * @param states swerve module states to publish
    * @param publisher NT publisher
    */
-  private static void publishModuleStates(
-      SwerveModuleState[] states, DoubleArrayPublisher publisher) {
+  private static void publishModuleStates(SwerveModuleState[] states, DoubleArrayPublisher publisher) {
     var moduleStates = new double[states.length * 2];
     for (int i = 0; i < states.length; i++) {
       var moduleState = states[i];

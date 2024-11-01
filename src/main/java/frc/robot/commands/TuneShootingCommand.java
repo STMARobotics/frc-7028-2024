@@ -86,13 +86,11 @@ public class TuneShootingCommand extends Command {
         .getDistance(speakerTranslation);
     distancePublisher.accept(turretDistanceToSpeaker);
 
-    turretSubsystem.moveToPitchPosition(
-        pitchMeasure.mut_replace(pitchSubscriber.get(0.0), Degrees));
-    turretSubsystem.moveToShootingYawPosition(
-        yawMeasure.mut_replace(yawSubscriber.get(180.0), Degrees));
+    turretSubsystem.moveToPitchPosition(pitchMeasure.mut_replace(pitchSubscriber.get(0.0), Degrees));
+    turretSubsystem.moveToShootingYawPosition(yawMeasure.mut_replace(yawSubscriber.get(180.0), Degrees));
     shooterSubsystem.spinShooterWheels(
         topVelocityMeasure.mut_replace(topVelocitySubscriber.get(0.0), RotationsPerSecond),
-        bottomVelocityMeasure.mut_replace(bottomVelocitySubscriber.get(10), RotationsPerSecond));
+          bottomVelocityMeasure.mut_replace(bottomVelocitySubscriber.get(10), RotationsPerSecond));
     var turretReady = turretSubsystem.isAtYawAndPitchTarget();
     var shooterReady = shooterSubsystem.isReadyToShoot();
     ledSubsystem.setUpdater(l -> l.setLEDSegments(NOTE_COLOR, turretReady, shooterReady));

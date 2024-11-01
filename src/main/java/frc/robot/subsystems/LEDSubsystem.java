@@ -23,8 +23,7 @@ public class LEDSubsystem extends SubsystemBase {
   // Number of LEDs for mirror annimations. This is int math, so it'll drop the remainder.
   private static final int MIRROR_LENGTH = LED_COUNT / 2;
 
-  private final AtomicReference<Consumer<LEDStrips>> ledUpdateConsumer = new AtomicReference<Consumer<LEDStrips>>(
-      null);
+  private final AtomicReference<Consumer<LEDStrips>> ledUpdateConsumer = new AtomicReference<Consumer<LEDStrips>>(null);
   private final Notifier ledNotifier;
   private final LEDStripMethods ledStripMethods = new LEDStripMethods();
 
@@ -35,17 +34,16 @@ public class LEDSubsystem extends SubsystemBase {
     leds.setLength(LED_COUNT);
     leds.setData(buffer);
     leds.start();
-    ledNotifier = new Notifier(
-        () -> {
-          var value = ledUpdateConsumer.get();
-          if (value == null) {
-            // There is no updater, just turn the LEDs off
-            ledStripMethods.setAll(Color.kBlack);
-          } else {
-            // Call the consumer to update the LEDs on this notifier thread
-            value.accept(ledStripMethods);
-          }
-        });
+    ledNotifier = new Notifier(() -> {
+      var value = ledUpdateConsumer.get();
+      if (value == null) {
+        // There is no updater, just turn the LEDs off
+        ledStripMethods.setAll(Color.kBlack);
+      } else {
+        // Call the consumer to update the LEDs on this notifier thread
+        value.accept(ledStripMethods);
+      }
+    });
     ledNotifier.setName("LEDs");
     ledNotifier.startPeriodic(0.02);
   }

@@ -32,21 +32,20 @@ public class DemoControlBindings implements ControlBindings {
 
   @Override
   public Supplier<LinearVelocity> translationX() {
-    return () -> translationX.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * (-modifyAxis(leftJoystick.getY())), MetersPerSecond);
+    return () -> translationX
+        .mut_replace(MAX_VELOCITY.in(MetersPerSecond) * (-modifyAxis(leftJoystick.getY())), MetersPerSecond);
   }
 
   @Override
   public Supplier<LinearVelocity> translationY() {
-    return () -> translationY.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(leftJoystick.getX()), MetersPerSecond);
+    return () -> translationY
+        .mut_replace(MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(leftJoystick.getX()), MetersPerSecond);
   }
 
   @Override
   public Supplier<AngularVelocity> omega() {
-    return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -modifyAxis(rightJoystick.getX()),
-        RadiansPerSecond);
+    return () -> omega
+        .mut_replace(MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -modifyAxis(rightJoystick.getX()), RadiansPerSecond);
   }
 
   /**

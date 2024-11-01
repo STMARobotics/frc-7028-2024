@@ -28,8 +28,7 @@ public class ChassisSpeedsRateLimiter {
    * @param rotationRateLimit The angular acceleration limit
    * @param initialValue The initial chassis speeds value
    */
-  public ChassisSpeedsRateLimiter(
-      double translationRateLimit, double rotationRateLimit, ChassisSpeeds initialValue) {
+  public ChassisSpeedsRateLimiter(double translationRateLimit, double rotationRateLimit, ChassisSpeeds initialValue) {
     this.translationRateLimit = translationRateLimit;
     this.rotationRateLimit = rotationRateLimit;
     reset(initialValue);
@@ -78,8 +77,8 @@ public class ChassisSpeedsRateLimiter {
 
     prevVal.omegaRadiansPerSecond += MathUtil.clamp(
         input.omegaRadiansPerSecond - prevVal.omegaRadiansPerSecond,
-        -rotationRateLimit * elapsedTime,
-        rotationRateLimit * elapsedTime);
+          -rotationRateLimit * elapsedTime,
+          rotationRateLimit * elapsedTime);
 
     Vector<N2> prevVelVector = VecBuilder.fill(prevVal.vxMetersPerSecond, prevVal.vyMetersPerSecond);
     Vector<N2> targetVelVector = VecBuilder.fill(input.vxMetersPerSecond, input.vyMetersPerSecond);

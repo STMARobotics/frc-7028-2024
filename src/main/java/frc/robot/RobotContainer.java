@@ -76,7 +76,11 @@ public class RobotContainer {
   private final Field2d field2d = new Field2d();
 
   private final AutoCommands autoCommands = new AutoCommands(
-      drivetrain, shooterSubsystem, turretSubsystem, intakeSubsystem, ledSubsystem);
+      drivetrain,
+      shooterSubsystem,
+      turretSubsystem,
+      intakeSubsystem,
+      ledSubsystem);
 
   public RobotContainer() {
     // Configure control binding scheme
@@ -121,83 +125,57 @@ public class RobotContainer {
     driverTab.add("Auto", autoChooser).withPosition(0, 0).withSize(2, 1);
 
     // Driver camera
-    driverTab
-        .add(
-            new HttpCamera("photonvision_Port_1182_Output_MJPEG_Server", "http://10.70.28.11:1182"))
+    driverTab.add(new HttpCamera("photonvision_Port_1182_Output_MJPEG_Server", "http://10.70.28.11:1182"))
         .withWidget(BuiltInWidgets.kCameraStream)
         .withProperties(Map.of("showCrosshair", true, "showControls", false))
         .withSize(4, 4)
         .withPosition(2, 0);
 
     // Note sensor
-    driverTab
-        .addBoolean("Turret", turretSubsystem::hasNote)
-        .withWidget(BuiltInWidgets.kBooleanBox)
-        .withPosition(6, 0);
+    driverTab.addBoolean("Turret", turretSubsystem::hasNote).withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0);
 
     // Turret
-    driverTab
-        .addNumber("Pitch", () -> turretSubsystem.getPitch().in(Degrees))
+    driverTab.addNumber("Pitch", () -> turretSubsystem.getPitch().in(Degrees))
         .withWidget(BuiltInWidgets.kTextView)
         .withPosition(6, 1);
 
-    driverTab
-        .addNumber("Yaw", () -> turretSubsystem.getYaw().in(Degrees))
+    driverTab.addNumber("Yaw", () -> turretSubsystem.getYaw().in(Degrees))
         .withWidget(BuiltInWidgets.kTextView)
         .withPosition(6, 2);
 
     // Pose estimation
     driverTab.add(field2d).withPosition(7, 0).withSize(4, 2).withPosition(7, 0);
-    driverTab
-        .addString(
-            "Pose",
-            () -> {
-              var pose = drivetrain.getState().Pose;
-              if (pose == null) {
-                pose = new Pose2d();
-              }
-              field2d.setRobotPose(pose);
-              return String.format(
-                  "(%.3f, %.3f) %.2f deg",
-                  pose.getX(), pose.getY(), pose.getRotation().getDegrees());
-            })
-        .withSize(2, 1)
-        .withPosition(7, 2);
+    driverTab.addString("Pose", () -> {
+      var pose = drivetrain.getState().Pose;
+      if (pose == null) {
+        pose = new Pose2d();
+      }
+      field2d.setRobotPose(pose);
+      return String.format("(%.3f, %.3f) %.2f deg", pose.getX(), pose.getY(), pose.getRotation().getDegrees());
+    }).withSize(2, 1).withPosition(7, 2);
   }
 
   private void configureButtonBindings() {
     // Driving
-    controlBindings
-        .wheelsToX()
-        .ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
+    controlBindings.wheelsToX().ifPresent(trigger -> trigger.whileTrue(drivetrain.applyRequest(() -> brake)));
 
     // Intake
     controlBindings.intake().ifPresent(trigger -> trigger.onTrue(autoCommands.intakeToTurret()));
 
-    controlBindings
-        .intakeStop()
-        .ifPresent(
-            trigger -> trigger.onTrue(
-                runOnce(
-                    () -> {
-                      intakeSubsystem.stop();
-                      turretSubsystem.stop();
-                    },
-                    intakeSubsystem,
-                    turretSubsystem)));
+    controlBindings.intakeStop().ifPresent(trigger -> trigger.onTrue(runOnce(() -> {
+      intakeSubsystem.stop();
+      turretSubsystem.stop();
+    }, intakeSubsystem, turretSubsystem)));
 
-    controlBindings
-        .eject()
+    controlBindings.eject()
         .ifPresent(
-            trigger -> trigger.whileTrue(
-                new EjectCommand(
-                    intakeSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
+            trigger -> trigger
+                .whileTrue(new EjectCommand(intakeSubsystem, turretSubsystem, shooterSubsystem, drivetrain)));
 
     controlBindings.babyBird().ifPresent(trigger -> trigger.whileTrue(autoCommands.babyBird()));
 
     // Speaker
-    controlBindings
-        .scoreSpeaker()
+    controlBindings.scoreSpeaker()
         .ifPresent(
             trigger -> trigger.whileTrue(
                 new SpeakerOrBlinkCommand(
@@ -209,8 +187,7 @@ public class RobotContainer {
                     controlBindings.translationY(),
                     controlBindings.omega())));
 
-    controlBindings
-        .manualShoot()
+    controlBindings.manualShoot()
         .ifPresent(
             trigger -> trigger.whileTrue(
                 new ManualShootCommand(
@@ -223,8 +200,7 @@ public class RobotContainer {
     // Amp
     controlBindings.scoreAmp().ifPresent(trigger -> trigger.whileTrue(autoCommands.scoreAmp()));
 
-    controlBindings
-        .stockpile()
+    controlBindings.stockpile()
         .ifPresent(
             trigger -> trigger.whileTrue(
                 new StockpileOrBlinkCommand(
@@ -236,8 +212,7 @@ public class RobotContainer {
                     controlBindings.translationY(),
                     controlBindings.omega())));
 
-    controlBindings
-        .stockpileMiddle()
+    controlBindings.stockpileMiddle()
         .ifPresent(
             trigger -> trigger.whileTrue(
                 new ShootTeleopCommand(
@@ -252,31 +227,21 @@ public class RobotContainer {
                     STOCKPILE_INTERPOLATOR,
                     0.3)));
 
-    controlBindings
-        .babyBomber()
+    controlBindings.babyBomber()
         .ifPresent(
             trigger -> trigger.whileTrue(
-                autoCommands
-                    .babyBird()
-                    .andThen(
-                        autoCommands.shootMid(
-                            controlBindings.translationX(), controlBindings.translationY()))
+                autoCommands.babyBird()
+                    .andThen(autoCommands.shootMid(controlBindings.translationX(), controlBindings.translationY()))
                     .repeatedly()));
 
     // Misc
-    controlBindings
-        .liftShooter()
-        .ifPresent(
-            trigger -> trigger.whileTrue(
-                turretSubsystem.run(
-                    () -> {
-                      turretSubsystem.moveToPitchPosition(PITCH_LIMIT_FORWARD);
-                      turretSubsystem.moveToYawPosition(INTAKE_YAW);
-                    })));
+    controlBindings.liftShooter().ifPresent(trigger -> trigger.whileTrue(turretSubsystem.run(() -> {
+      turretSubsystem.moveToPitchPosition(PITCH_LIMIT_FORWARD);
+      turretSubsystem.moveToYawPosition(INTAKE_YAW);
+    })));
 
     // Testing
-    controlBindings
-        .tuneShooting()
+    controlBindings.tuneShooting()
         .ifPresent(
             trigger -> trigger.whileTrue(
                 new TuneShootingCommand(
@@ -286,8 +251,7 @@ public class RobotContainer {
                     () -> drivetrain.getState().Pose)));
 
     // Demo shots
-    controlBindings
-        .demoToss1()
+    controlBindings.demoToss1()
         .ifPresent(
             trigger -> trigger.whileTrue(
                 new ManualShootCommand(
@@ -297,8 +261,7 @@ public class RobotContainer {
                     Degrees.of(25),
                     Degrees.of(180))));
 
-    controlBindings
-        .demoToss2()
+    controlBindings.demoToss2()
         .ifPresent(
             trigger -> trigger.whileTrue(
                 new ManualShootCommand(
@@ -308,8 +271,7 @@ public class RobotContainer {
                     Degrees.of(20),
                     Degrees.of(180))));
 
-    controlBindings
-        .seedFieldRelative()
+    controlBindings.seedFieldRelative()
         .ifPresent(trigger -> trigger.onTrue(runOnce(drivetrain::seedFieldCentric, drivetrain)));
   }
 
@@ -318,93 +280,61 @@ public class RobotContainer {
     int columnIndex = 0;
 
     // Column 0 Drive
-    tab.add("Drive Quasi Fwd", drivetrain.sysIdDriveQuasiCommand(kForward))
-        .withPosition(columnIndex, 0);
-    tab.add("Drive Quasi Rev", drivetrain.sysIdDriveQuasiCommand(kReverse))
-        .withPosition(columnIndex, 1);
-    tab.add("Drive Dynam Fwd", drivetrain.sysIdDriveDynamCommand(kForward))
-        .withPosition(columnIndex, 2);
-    tab.add("Drive Dynam Rev", drivetrain.sysIdDriveDynamCommand(kReverse))
-        .withPosition(columnIndex, 3);
+    tab.add("Drive Quasi Fwd", drivetrain.sysIdDriveQuasiCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Drive Quasi Rev", drivetrain.sysIdDriveQuasiCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Drive Dynam Fwd", drivetrain.sysIdDriveDynamCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Drive Dynam Rev", drivetrain.sysIdDriveDynamCommand(kReverse)).withPosition(columnIndex, 3);
     tab.add("Slip Test", drivetrain.sysIdDriveSlipCommand()).withPosition(columnIndex, 4);
 
     // Column 2 Steer
     columnIndex += 2;
-    tab.add("Steer Quasi Fwd", drivetrain.sysIdSteerQuasiCommand(kForward))
-        .withPosition(columnIndex, 0);
-    tab.add("Steer Quasi Rev", drivetrain.sysIdSteerQuasiCommand(kReverse))
-        .withPosition(columnIndex, 1);
-    tab.add("Steer Dynam Fwd", drivetrain.sysIdSteerDynamCommand(kForward))
-        .withPosition(columnIndex, 2);
-    tab.add("Steer Dynam Rev", drivetrain.sysIdSteerDynamCommand(kReverse))
-        .withPosition(columnIndex, 3);
+    tab.add("Steer Quasi Fwd", drivetrain.sysIdSteerQuasiCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Steer Quasi Rev", drivetrain.sysIdSteerQuasiCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Steer Dynam Fwd", drivetrain.sysIdSteerDynamCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Steer Dynam Rev", drivetrain.sysIdSteerDynamCommand(kReverse)).withPosition(columnIndex, 3);
 
     // Column 4 Rotation
     columnIndex += 2;
-    tab.add("Rotate Quasi Fwd", drivetrain.sysIdRotationQuasiCommand(kForward))
-        .withPosition(columnIndex, 0);
-    tab.add("Rotate Quasi Rev", drivetrain.sysIdRotationQuasiCommand(kReverse))
-        .withPosition(columnIndex, 1);
-    tab.add("Rotate Dynam Fwd", drivetrain.sysIdRotationDynamCommand(kForward))
-        .withPosition(columnIndex, 2);
-    tab.add("Rotate Dynam Rev", drivetrain.sysIdRotationDynamCommand(kReverse))
-        .withPosition(columnIndex, 3);
+    tab.add("Rotate Quasi Fwd", drivetrain.sysIdRotationQuasiCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Rotate Quasi Rev", drivetrain.sysIdRotationQuasiCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Rotate Dynam Fwd", drivetrain.sysIdRotationDynamCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Rotate Dynam Rev", drivetrain.sysIdRotationDynamCommand(kReverse)).withPosition(columnIndex, 3);
 
     tab = Shuffleboard.getTab("Sub SysId");
     // Intake
     columnIndex = 0;
-    tab.add("Intake Quasi Fwd", intakeSubsystem.sysIdRollerQuasistaticCommand(kForward))
-        .withPosition(columnIndex, 0);
-    tab.add("Intake Quasi Rev", intakeSubsystem.sysIdRollerQuasistaticCommand(kReverse))
-        .withPosition(columnIndex, 1);
-    tab.add("Intake Dynam Fwd", intakeSubsystem.sysIdRollerDynamicCommand(kForward))
-        .withPosition(columnIndex, 2);
-    tab.add("Intake Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse))
-        .withPosition(columnIndex, 3);
+    tab.add("Intake Quasi Fwd", intakeSubsystem.sysIdRollerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Intake Quasi Rev", intakeSubsystem.sysIdRollerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Intake Dynam Fwd", intakeSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Intake Dynam Rev", intakeSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
     // Shooter
     columnIndex += 2;
-    tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistaticCommand(kForward))
-        .withPosition(columnIndex, 0);
-    tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse))
-        .withPosition(columnIndex, 1);
-    tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDynamicCommand(kForward))
-        .withPosition(columnIndex, 2);
-    tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDynamicCommand(kReverse))
-        .withPosition(columnIndex, 3);
+    tab.add("Shoot Quasi Fwd", shooterSubsystem.sysIdShooterQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Shoot Quasi Rev", shooterSubsystem.sysIdShooterQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Shoot Dynam Fwd", shooterSubsystem.sysIdShooterDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Shoot Dynam Rev", shooterSubsystem.sysIdShooterDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
     // Turret yaw
     columnIndex += 2;
-    tab.add("Tur Yaw Quasi Fwd", turretSubsystem.sysIdYawQuasistaticCommand(kForward))
-        .withPosition(columnIndex, 0);
-    tab.add("Tur Yaw Quasi Rev", turretSubsystem.sysIdYawQuasistaticCommand(kReverse))
-        .withPosition(columnIndex, 1);
-    tab.add("Tur Yaw Dynam Fwd", turretSubsystem.sysIdYawDynamicCommand(kForward))
-        .withPosition(columnIndex, 2);
-    tab.add("Tur Yaw Dynam Rev", turretSubsystem.sysIdYawDynamicCommand(kReverse))
-        .withPosition(columnIndex, 3);
+    tab.add("Tur Yaw Quasi Fwd", turretSubsystem.sysIdYawQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Tur Yaw Quasi Rev", turretSubsystem.sysIdYawQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Tur Yaw Dynam Fwd", turretSubsystem.sysIdYawDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Tur Yaw Dynam Rev", turretSubsystem.sysIdYawDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
     // Turret pitch
     columnIndex += 2;
-    tab.add("Tur Pitch Quasi Fwd", turretSubsystem.sysIdPitchQuasistaticCommand(kForward))
-        .withPosition(columnIndex, 0);
-    tab.add("Tur Pitch Quasi Rev", turretSubsystem.sysIdPitchQuasistaticCommand(kReverse))
-        .withPosition(columnIndex, 1);
-    tab.add("Tur Pitch Dynam Fwd", turretSubsystem.sysIdPitchDynamicCommand(kForward))
-        .withPosition(columnIndex, 2);
-    tab.add("Tur Pitch Dynam Rev", turretSubsystem.sysIdPitchDynamicCommand(kReverse))
-        .withPosition(columnIndex, 3);
+    tab.add("Tur Pitch Quasi Fwd", turretSubsystem.sysIdPitchQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Tur Pitch Quasi Rev", turretSubsystem.sysIdPitchQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Tur Pitch Dynam Fwd", turretSubsystem.sysIdPitchDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Tur Pitch Dynam Rev", turretSubsystem.sysIdPitchDynamicCommand(kReverse)).withPosition(columnIndex, 3);
 
     // Turret rollers
     columnIndex += 2;
-    tab.add("Tur Roll Quasi Fwd", turretSubsystem.sysIdRollerQuasistaticCommand(kForward))
-        .withPosition(columnIndex, 0);
-    tab.add("Tur Roll Quasi Rev", turretSubsystem.sysIdRollerQuasistaticCommand(kReverse))
-        .withPosition(columnIndex, 1);
-    tab.add("Tur Roll Dynam Fwd", turretSubsystem.sysIdRollerDynamicCommand(kForward))
-        .withPosition(columnIndex, 2);
-    tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse))
-        .withPosition(columnIndex, 3);
+    tab.add("Tur Roll Quasi Fwd", turretSubsystem.sysIdRollerQuasistaticCommand(kForward)).withPosition(columnIndex, 0);
+    tab.add("Tur Roll Quasi Rev", turretSubsystem.sysIdRollerQuasistaticCommand(kReverse)).withPosition(columnIndex, 1);
+    tab.add("Tur Roll Dynam Fwd", turretSubsystem.sysIdRollerDynamicCommand(kForward)).withPosition(columnIndex, 2);
+    tab.add("Tur Roll Dynam Rev", turretSubsystem.sysIdRollerDynamicCommand(kReverse)).withPosition(columnIndex, 3);
   }
 
   public void populateTestingDashboard() {
@@ -413,13 +343,11 @@ public class RobotContainer {
     tab.addBoolean("Has Stopped", () -> testCommand.getHasStopped());
     tab.add(
         "Start Testing",
-        testCommand.deadlineFor(
-            new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)));
+          testCommand.deadlineFor(new LEDProgressBarCommand(ledSubsystem, testCommand::getTestState)));
   }
 
   public void setAlliance(Alliance alliance) {
-    drivetrain.setOperatorPerspectiveForward(
-        alliance == Alliance.Red ? Rotation2d.fromDegrees(180) : new Rotation2d());
+    drivetrain.setOperatorPerspectiveForward(alliance == Alliance.Red ? Rotation2d.fromDegrees(180) : new Rotation2d());
   }
 
   public Command getAutonomousCommand() {

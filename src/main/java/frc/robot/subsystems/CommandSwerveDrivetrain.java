@@ -52,13 +52,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   private final SysIdRoutine translationSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, null, null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism(
-          (volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
+      new SysIdRoutine.Mechanism((volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
 
   private final SysIdRoutine steerSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, Volts.of(3), null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism(
-          (volts) -> setControl(steerCharacterization.withVolts(volts)), null, this));
+      new SysIdRoutine.Mechanism((volts) -> setControl(steerCharacterization.withVolts(volts)), null, this));
 
   private final SysIdRoutine rotationSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(
@@ -74,10 +72,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
           this));
 
   private final SysIdRoutine slipSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism(
-          (volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
+      new SysIdRoutine.Config(Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
 
   private Notifier simNotifier = null;
   private double lastSimTime;
@@ -107,27 +103,25 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
       AutoBuilder.configure(
           () -> getState().Pose, // Supplier of current robot pose
-          this::resetPose, // Consumer for seeding pose against auto
-          () -> getState().Speeds, // Supplier of current robot speeds
-          (speeds, feedforwards) -> this.setControl(
-              // Consumer of ChassisSpeeds to drive the robot
-              autoRequest.withSpeeds(speeds)
-                  .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                  .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
-          new PPHolonomicDriveController(
-              new PIDConstants(
-                  AutoDriveConstants.TRANSLATION_kP,
-                  AutoDriveConstants.TRANSLATION_kI,
-                  AutoDriveConstants.TRANSLATION_kD),
-              new PIDConstants(
-                  AutoDriveConstants.THETA_kP,
-                  AutoDriveConstants.THETA_kI,
-                  AutoDriveConstants.THETA_kD)),
-          robotConfig,
-          () -> DriverStation.getAlliance()
-              .map(alliance -> alliance == DriverStation.Alliance.Red)
-              .orElse(false),
-          this); // Subsystem for requirements
+            this::resetPose, // Consumer for seeding pose against auto
+            () -> getState().Speeds, // Supplier of current robot speeds
+            (speeds, feedforwards) -> this.setControl(
+                // Consumer of ChassisSpeeds to drive the robot
+                autoRequest.withSpeeds(speeds)
+                    .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                    .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
+            new PPHolonomicDriveController(
+                new PIDConstants(
+                    AutoDriveConstants.TRANSLATION_kP,
+                    AutoDriveConstants.TRANSLATION_kI,
+                    AutoDriveConstants.TRANSLATION_kD),
+                new PIDConstants(
+                    AutoDriveConstants.THETA_kP,
+                    AutoDriveConstants.THETA_kI,
+                    AutoDriveConstants.THETA_kD)),
+            robotConfig,
+            () -> DriverStation.getAlliance().map(alliance -> alliance == DriverStation.Alliance.Red).orElse(false),
+            this); // Subsystem for requirements
     } catch (Exception e) {
       DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
     }
@@ -166,55 +160,47 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     var chassisSpeeds = state.Speeds;
     var fieldSpeeds = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
         .rotateBy(robotAngle);
-    return new ChassisSpeeds(
-        fieldSpeeds.getX(), fieldSpeeds.getY(), chassisSpeeds.omegaRadiansPerSecond);
+    return new ChassisSpeeds(fieldSpeeds.getX(), fieldSpeeds.getY(), chassisSpeeds.omegaRadiansPerSecond);
   }
 
   public Command sysIdDriveQuasiCommand(Direction direction) {
-    return translationSysIdRoutine
-        .quasistatic(direction)
+    return translationSysIdRoutine.quasistatic(direction)
         .withName("SysId Drive Quasistatic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyRobotSpeeds()));
   }
 
   public Command sysIdDriveDynamCommand(SysIdRoutine.Direction direction) {
-    return translationSysIdRoutine
-        .dynamic(direction)
+    return translationSysIdRoutine.dynamic(direction)
         .withName("SysId Drive Dynamic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyRobotSpeeds()));
   }
 
   public Command sysIdSteerQuasiCommand(Direction direction) {
-    return steerSysIdRoutine
-        .quasistatic(direction)
+    return steerSysIdRoutine.quasistatic(direction)
         .withName("SysId Steer Quasistatic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyRobotSpeeds()));
   }
 
   public Command sysIdSteerDynamCommand(SysIdRoutine.Direction direction) {
-    return steerSysIdRoutine
-        .dynamic(direction)
+    return steerSysIdRoutine.dynamic(direction)
         .withName("SysId Steer Dynamic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyRobotSpeeds()));
   }
 
   public Command sysIdRotationDynamCommand(SysIdRoutine.Direction direction) {
-    return rotationSysIdRoutine
-        .dynamic(direction)
+    return rotationSysIdRoutine.dynamic(direction)
         .withName("SysId Rotate Dynamic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyRobotSpeeds()));
   }
 
   public Command sysIdRotationQuasiCommand(SysIdRoutine.Direction direction) {
-    return rotationSysIdRoutine
-        .quasistatic(direction)
+    return rotationSysIdRoutine.quasistatic(direction)
         .withName("SysId Rotate Quasistatic " + direction)
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyRobotSpeeds()));
   }
 
   public Command sysIdDriveSlipCommand() {
-    return slipSysIdRoutine
-        .quasistatic(SysIdRoutine.Direction.kForward)
+    return slipSysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward)
         .withName("SysId Drive Slip")
         .finallyDo(() -> this.setControl(new SwerveRequest.ApplyRobotSpeeds()));
   }

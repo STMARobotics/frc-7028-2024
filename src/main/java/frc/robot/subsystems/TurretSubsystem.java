@@ -127,8 +127,7 @@ public class TurretSubsystem extends SubsystemBase {
           this));
 
   private final SysIdRoutine pitchSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Volts.of(0.5).per(Seconds), Volts.of(2.0), null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Config(Volts.of(0.5).per(Seconds), Volts.of(2.0), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism(
           (volts) -> pitchMotor.setControl(voltageControl.withOutput(volts.in(Volts))),
           null,
@@ -137,8 +136,7 @@ public class TurretSubsystem extends SubsystemBase {
   // NOTE: the output type for the rollers is amps, NOT volts (even though it says volts)
   // https://www.chiefdelphi.com/t/sysid-with-ctre-swerve-characterization/452631/8
   private final SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Volts.of(5).per(Second), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Config(Volts.of(5).per(Second), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism(
           (amps) -> rollerMotor.setControl(rollerSysIdControl.withOutput(amps.in(Volts))),
           null,
@@ -223,43 +221,35 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public Command sysIdYawDynamicCommand(Direction direction) {
-    return yawSysIdRoutine
-        .dynamic(direction)
-        .withName("SysId turret yaw dynam " + direction)
-        .finallyDo(this::stopYaw);
+    return yawSysIdRoutine.dynamic(direction).withName("SysId turret yaw dynam " + direction).finallyDo(this::stopYaw);
   }
 
   public Command sysIdYawQuasistaticCommand(Direction direction) {
-    return yawSysIdRoutine
-        .quasistatic(direction)
+    return yawSysIdRoutine.quasistatic(direction)
         .withName("SysId turret yaw quasi " + direction)
         .finallyDo(this::stopYaw);
   }
 
   public Command sysIdPitchDynamicCommand(Direction direction) {
-    return pitchSysIdRoutine
-        .dynamic(direction)
+    return pitchSysIdRoutine.dynamic(direction)
         .withName("SysId turret pitch dynam " + direction)
         .finallyDo(this::stopPitch);
   }
 
   public Command sysIdPitchQuasistaticCommand(Direction direction) {
-    return pitchSysIdRoutine
-        .quasistatic(direction)
+    return pitchSysIdRoutine.quasistatic(direction)
         .withName("SysId turret pitch quasi " + direction)
         .finallyDo(this::stopPitch);
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {
-    return rollerSysIdRoutine
-        .dynamic(direction)
+    return rollerSysIdRoutine.dynamic(direction)
         .withName("SysId turret rollers dynam " + direction)
         .finallyDo(this::stopRollers);
   }
 
   public Command sysIdRollerQuasistaticCommand(Direction direction) {
-    return rollerSysIdRoutine
-        .quasistatic(direction)
+    return rollerSysIdRoutine.quasistatic(direction)
         .withName("SysId turret rollers quasi " + direction)
         .finallyDo(this::stopRollers);
   }
@@ -371,8 +361,7 @@ public class TurretSubsystem extends SubsystemBase {
   public boolean isInIntakePosition() {
     BaseStatusSignal.refreshAll(yawPosition, yawVelocity, pitchPosition, pitchVelocity);
     return isInTolerance(yawControl.Position, yawPosition, yawVelocity, INTAKE_YAW_TOLERANCE)
-        && isInTolerance(
-            pitchControl.Position, pitchPosition, pitchVelocity, INTAKE_PITCH_TOLERANCE);
+        && isInTolerance(pitchControl.Position, pitchPosition, pitchVelocity, INTAKE_PITCH_TOLERANCE);
   }
 
   /**
@@ -417,8 +406,8 @@ public class TurretSubsystem extends SubsystemBase {
     // Clamp to shooting range, and correct for the fact that the shooter doesn't shoot straight
     var targetYaw = MathUtil.clamp(
         translateYaw(yaw.plus(SHOOTING_YAW_CORRECTION)),
-        YAW_SHOOT_LIMIT_REVERSE.in(Rotations),
-        YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
+          YAW_SHOOT_LIMIT_REVERSE.in(Rotations),
+          YAW_SHOOT_LIMIT_FORWARD.in(Rotations));
 
     yawMotor.setControl(yawControl.withPosition(targetYaw));
   }

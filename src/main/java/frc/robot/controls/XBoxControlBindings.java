@@ -32,24 +32,21 @@ public class XBoxControlBindings implements ControlBindings {
 
   @Override
   public Supplier<LinearVelocity> translationX() {
-    return () -> translationX.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftY()),
-        MetersPerSecond);
+    return () -> translationX
+        .mut_replace(MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftY()), MetersPerSecond);
   }
 
   @Override
   public Supplier<LinearVelocity> translationY() {
-    return () -> translationY.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftX()),
-        MetersPerSecond);
+    return () -> translationY
+        .mut_replace(MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(driverController.getLeftX()), MetersPerSecond);
   }
 
   @Override
   public Supplier<AngularVelocity> omega() {
     return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond)
-            * -squareAxis(driverController.getRightX() * 0.8),
-        RadiansPerSecond);
+        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(driverController.getRightX() * 0.8),
+          RadiansPerSecond);
   }
 
   private static double squareAxis(double value) {

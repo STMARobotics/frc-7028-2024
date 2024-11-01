@@ -30,21 +30,20 @@ public class JoystickControlBindings implements ControlBindings {
 
   @Override
   public Supplier<LinearVelocity> translationX() {
-    return () -> translationX.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getY()), MetersPerSecond);
+    return () -> translationX
+        .mut_replace(MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getY()), MetersPerSecond);
   }
 
   @Override
   public Supplier<LinearVelocity> translationY() {
-    return () -> translationY.mut_replace(
-        MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getX()), MetersPerSecond);
+    return () -> translationY
+        .mut_replace(MAX_VELOCITY.in(MetersPerSecond) * -squareAxis(leftJoystick.getX()), MetersPerSecond);
   }
 
   @Override
   public Supplier<AngularVelocity> omega() {
-    return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(rightJoystick.getX()),
-        RadiansPerSecond);
+    return () -> omega
+        .mut_replace(MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -squareAxis(rightJoystick.getX()), RadiansPerSecond);
   }
 
   private static double squareAxis(double value) {

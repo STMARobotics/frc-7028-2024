@@ -15,7 +15,11 @@ import java.util.function.BooleanSupplier;
 public class DefaultLEDCommand extends Command {
 
   private enum LEDMode {
-    MODE_DS_DISCONNECT, MODE_NOTE_IN_TURRET, MODE_ROBOT_DISABLED, MODE_DEFAULT, MODE_TEST;
+    MODE_DS_DISCONNECT,
+    MODE_NOTE_IN_TURRET,
+    MODE_ROBOT_DISABLED,
+    MODE_DEFAULT,
+    MODE_TEST;
   }
 
   private final LEDSubsystem ledSubsystem;
@@ -51,8 +55,7 @@ public class DefaultLEDCommand extends Command {
             .schedule();
         break;
       case MODE_NOTE_IN_TURRET:
-        new LEDMarqueeCommand(ledSubsystem, 3, 255, 0, 15, .07)
-            .until(() -> getMode() != LEDMode.MODE_NOTE_IN_TURRET)
+        new LEDMarqueeCommand(ledSubsystem, 3, 255, 0, 15, .07).until(() -> getMode() != LEDMode.MODE_NOTE_IN_TURRET)
             .schedule();
         break;
       case MODE_ROBOT_DISABLED:

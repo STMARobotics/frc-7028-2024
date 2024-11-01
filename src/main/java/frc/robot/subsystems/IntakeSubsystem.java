@@ -49,8 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
   // SysId routine - NOTE: the output type is amps, NOT volts (even though it says volts)
   // https://www.chiefdelphi.com/t/sysid-with-ctre-swerve-characterization/452631/8
   private final SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Volts.of(5).per(Second), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Config(Volts.of(5).per(Second), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism(
           (amps) -> rollerMotor.setControl(sysIdControl.withOutput(amps.in(Volts))),
           null,
@@ -71,17 +70,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command sysIdRollerDynamicCommand(Direction direction) {
-    return rollerSysIdRoutine
-        .dynamic(direction)
-        .withName("SysId intake dynam " + direction)
-        .finallyDo(this::stop);
+    return rollerSysIdRoutine.dynamic(direction).withName("SysId intake dynam " + direction).finallyDo(this::stop);
   }
 
   public Command sysIdRollerQuasistaticCommand(Direction direction) {
-    return rollerSysIdRoutine
-        .quasistatic(direction)
-        .withName("SysId intake quasi " + direction)
-        .finallyDo(this::stop);
+    return rollerSysIdRoutine.quasistatic(direction).withName("SysId intake quasi " + direction).finallyDo(this::stop);
   }
 
   public void intake() {

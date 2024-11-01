@@ -170,10 +170,7 @@ public class AutoCommands {
         .andThen(
             ledSubsystem.runOnce(
                 () -> ledSubsystem.setUpdater(
-                    (leds) -> leds.setAll(
-                        turretSubsystem.hasNote()
-                            ? LEDConstants.NOTE_COLOR
-                            : Color.kBlack))));
+                    (leds) -> leds.setAll(turretSubsystem.hasNote() ? LEDConstants.NOTE_COLOR : Color.kBlack))));
   }
 
   /**
@@ -214,8 +211,6 @@ public class AutoCommands {
         STOCKPILE_MID_RED,
         STOCKPILE_MID_BLUE,
         STOCKPILE_INTERPOLATOR,
-        0.3)
-        .deadlineFor(
-            (new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1))));
+        0.3).deadlineFor((new LEDAlternateCommand(ledSubsystem, Color.kBlue, Color.kOrange, Seconds.of(0.1))));
   }
 }

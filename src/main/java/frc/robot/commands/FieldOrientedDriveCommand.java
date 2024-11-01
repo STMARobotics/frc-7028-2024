@@ -43,8 +43,7 @@ public class FieldOrientedDriveCommand extends Command {
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MAX_VELOCITY.times(TRANSLATION_DEADBAND).in(MetersPerSecond))
-      .withRotationalDeadband(
-          MAX_ANGULAR_VELOCITY.times(ROTATIONAL_DEADBAND).in(RadiansPerSecond))
+      .withRotationalDeadband(MAX_ANGULAR_VELOCITY.times(ROTATIONAL_DEADBAND).in(RadiansPerSecond))
       .withDriveRequestType(DriveRequestType.Velocity)
       .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
@@ -85,8 +84,7 @@ public class FieldOrientedDriveCommand extends Command {
     desiredChassisSpeeds.omegaRadiansPerSecond = rotationSupplier.get().in(RadiansPerSecond);
     var limitedCassisSpeeds = rateLimiter.calculate(desiredChassisSpeeds);
     drivetrainSubsystem.setControl(
-        drive
-            .withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
+        drive.withVelocityX(limitedCassisSpeeds.vxMetersPerSecond)
             .withVelocityY(limitedCassisSpeeds.vyMetersPerSecond)
             .withRotationalRate(limitedCassisSpeeds.omegaRadiansPerSecond));
   }

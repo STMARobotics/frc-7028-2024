@@ -53,15 +53,11 @@ public class ShooterSubsystem extends SubsystemBase {
   // SysId routine - NOTE: the output type is amps, NOT volts (even though it says volts)
   // https://www.chiefdelphi.com/t/sysid-with-ctre-swerve-characterization/452631/8
   private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(
-          Volts.of(3.0).per(Second), Volts.of(25), null, SysIdRoutineSignalLogger.logState()),
-      new SysIdRoutine.Mechanism(
-          (amps) -> {
-            topMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
-            bottomMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
-          },
-          null,
-          this));
+      new SysIdRoutine.Config(Volts.of(3.0).per(Second), Volts.of(25), null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism((amps) -> {
+        topMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
+        bottomMotor.setControl(sysIdControl.withOutput(amps.in(Volts)));
+      }, null, this));
 
   public ShooterSubsystem() {
     // Configure shooter motors
@@ -86,17 +82,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command sysIdShooterDynamicCommand(Direction direction) {
-    return sysIdRoutine
-        .dynamic(direction)
-        .withName("Shooter dynam " + direction)
-        .finallyDo(this::stop);
+    return sysIdRoutine.dynamic(direction).withName("Shooter dynam " + direction).finallyDo(this::stop);
   }
 
   public Command sysIdShooterQuasistaticCommand(Direction direction) {
-    return sysIdRoutine
-        .quasistatic(direction)
-        .withName("Shooter quasi " + direction)
-        .finallyDo(this::stop);
+    return sysIdRoutine.quasistatic(direction).withName("Shooter quasi " + direction).finallyDo(this::stop);
   }
 
   /**

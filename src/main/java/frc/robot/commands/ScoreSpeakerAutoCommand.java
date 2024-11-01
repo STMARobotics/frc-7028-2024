@@ -98,8 +98,7 @@ public class ScoreSpeakerAutoCommand extends Command {
     var angleToSpeaker = predictedSpeakerTranslation.minus(turretTranslation).getAngle();
 
     // Calculate required turret angle, accounting for the robot heading
-    turretYawTarget.mut_replace(
-        angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
+    turretYawTarget.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
 
     shootingSettings = SHOOTER_INTERPOLATOR.calculate(predictedDist);
 
@@ -113,10 +112,7 @@ public class ScoreSpeakerAutoCommand extends Command {
 
     var isPitchReady = turretSubsystem.isAtPitchTarget();
     var isYawReady = turretSubsystem.isAtYawTarget();
-    if (isShooterReady
-        && isPitchReady
-        && isYawReady
-        && TurretSubsystem.isYawInShootingRange(turretYawTarget)) {
+    if (isShooterReady && isPitchReady && isYawReady && TurretSubsystem.isYawInShootingRange(turretYawTarget)) {
       // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot
       // and start timer
       turretSubsystem.shoot();
@@ -127,8 +123,7 @@ public class ScoreSpeakerAutoCommand extends Command {
     if (isShooting) {
       ledSubsystem.setUpdater(l -> l.setAll(kGreen));
     } else {
-      ledSubsystem.setUpdater(
-          l -> l.setLEDSegments(kBlue, isShooterReady, isPitchReady, isYawReady));
+      ledSubsystem.setUpdater(l -> l.setLEDSegments(kBlue, isShooterReady, isPitchReady, isYawReady));
     }
   }
 

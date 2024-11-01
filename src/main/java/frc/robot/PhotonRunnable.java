@@ -93,13 +93,8 @@ public class PhotonRunnable implements Runnable {
 
     for (int i = 0; i < cameraNames.length; i++) {
       var cameraTable = NetworkTableInstance.getDefault().getTable("photonvision").getSubTable(cameraNames[i]);
-      rawBytesSubscribers[i] = cameraTable
-          .getRawTopic("rawBytes")
-          .subscribe(
-              "rawBytes",
-              new byte[] {},
-              PubSubOption.periodic(0.01),
-              PubSubOption.sendAll(true));
+      rawBytesSubscribers[i] = cameraTable.getRawTopic("rawBytes")
+          .subscribe("rawBytes", new byte[] {}, PubSubOption.periodic(0.01), PubSubOption.sendAll(true));
       waitHandles[i] = rawBytesSubscribers[i].getHandle();
       photonPoseEstimators[i] = new PhotonPoseEstimator(
           layout,
@@ -134,9 +129,8 @@ public class PhotonRunnable implements Runnable {
 
         // Get AprilTag data
         var photonResults = getLatestResult(cameraIndex);
-        if (photonResults.hasTargets()
-            && (photonResults.targets.size() > 1
-                || (photonResults.targets.get(0).getPoseAmbiguity() < APRILTAG_AMBIGUITY_THRESHOLD))) {
+        if (photonResults.hasTargets() && (photonResults.targets.size() > 1
+            || (photonResults.targets.get(0).getPoseAmbiguity() < APRILTAG_AMBIGUITY_THRESHOLD))) {
 
           // Send the AprilTag(s) to NT for AdvantageScope
           aprilTagPublisher.accept(
@@ -144,30 +138,23 @@ public class PhotonRunnable implements Runnable {
                   .map(
                       target -> getTargetPose(
                           target,
-                          currentRobotPose,
-                          photonPoseEstimator.getRobotToCameraTransform()))
+                            currentRobotPose,
+                            photonPoseEstimator.getRobotToCameraTransform()))
                   .toArray(AprilTag[]::new));
 
-          photonPoseEstimator
-              .update(photonResults)
-              .ifPresent(
-                  estimatedRobotPose -> {
-                    var estimatedPose = estimatedRobotPose.estimatedPose;
-                    // Make sure the measurement is on the field
-                    if (estimatedPose.getX() > 0.0
-                        && estimatedPose.getX() <= FIELD_LENGTH.in(Meters)
-                        && estimatedPose.getY() > 0.0
-                        && estimatedPose.getY() <= FIELD_WIDTH.in(Meters)) {
+          photonPoseEstimator.update(photonResults).ifPresent(estimatedRobotPose -> {
+            var estimatedPose = estimatedRobotPose.estimatedPose;
+            // Make sure the measurement is on the field
+            if (estimatedPose.getX() > 0.0 && estimatedPose.getX() <= FIELD_LENGTH.in(Meters)
+                && estimatedPose.getY() > 0.0 && estimatedPose.getY() <= FIELD_WIDTH.in(Meters)) {
 
-                      var stdDevs = getEstimationStdDevs(
-                          estimatedPose.toPose2d(),
-                          photonResults.getTargets(),
-                          photonPoseEstimator.getFieldTags());
-                      poseConsumer.addVisionMeasurement(
-                          estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds,
-                          stdDevs);
-                    }
-                  });
+              var stdDevs = getEstimationStdDevs(
+                  estimatedPose.toPose2d(),
+                    photonResults.getTargets(),
+                    photonPoseEstimator.getFieldTags());
+              poseConsumer.addVisionMeasurement(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds, stdDevs);
+            }
+          });
         } else {
           // No tags, send empty array to NT
           aprilTagPublisher.accept(emptyAprilTagArray);
@@ -186,11 +173,8 @@ public class PhotonRunnable implements Runnable {
    * @param robotToCamera transform from robot to the camera that saw the target
    * @return an AprilTag with an ID and pose
    */
-  private static AprilTag getTargetPose(
-      PhotonTrackedTarget target, Pose2d robotPose, Transform3d robotToCamera) {
-    var targetPose = new Pose3d(robotPose)
-        .transformBy(robotToCamera)
-        .transformBy(target.getBestCameraToTarget());
+  private static AprilTag getTargetPose(PhotonTrackedTarget target, Pose2d robotPose, Transform3d robotToCamera) {
+    var targetPose = new Pose3d(robotPose).transformBy(robotToCamera).transformBy(target.getBestCameraToTarget());
     return new AprilTag(target.getFiducialId(), targetPose);
   }
 
@@ -230,7 +214,9 @@ public class PhotonRunnable implements Runnable {
    * @param fieldLayout tag poses
    */
   private static Matrix<N3, N1> getEstimationStdDevs(
-      Pose2d estimatedPose, List<PhotonTrackedTarget> targets, AprilTagFieldLayout fieldLayout) {
+      Pose2d estimatedPose,
+      List<PhotonTrackedTarget> targets,
+      AprilTagFieldLayout fieldLayout) {
 
     var estStdDevs = VisionConstants.SINGLE_TAG_STD_DEVS;
     int numTags = 0;

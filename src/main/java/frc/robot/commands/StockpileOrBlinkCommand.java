@@ -61,8 +61,7 @@ public class StockpileOrBlinkCommand extends Command {
   public void initialize() {
     var alliance = DriverStation.getAlliance().map(dsAlliance -> dsAlliance).orElse(Alliance.Blue);
     Pose2d robotPose = drivetrain.getState().Pose;
-    if (alliance == Red && robotPose.getX() > 5.3
-        || alliance == Alliance.Blue && robotPose.getX() < 11.25) {
+    if (alliance == Red && robotPose.getX() > 5.3 || alliance == Alliance.Blue && robotPose.getX() < 11.25) {
       selectedCommand = stockpile;
     } else {
       selectedCommand = dontShootCommand;
