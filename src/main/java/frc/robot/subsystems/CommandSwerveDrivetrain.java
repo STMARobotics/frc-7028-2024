@@ -6,6 +6,7 @@ import static frc.robot.Constants.DrivetrainConstants.PIGEON_MOUNT_POSE_CONFIG;
 import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAMES;
 import static frc.robot.Constants.VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -18,8 +19,8 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -34,6 +35,8 @@ import java.util.function.Supplier;
  * in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
+
+  private static final double SIM_LOOP_PERIOD = 0.005; // 5 ms
 
   private final Thread photonThread = new Thread(
       new PhotonRunnable(
@@ -59,9 +62,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   private final SysIdRoutine rotationSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(
-          Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
+          /* This is in radians per second², but SysId only supports "volts per second" */
+          Volts.of(Math.PI / 6).per(Second),
+          /* This is in radians per second, but SysId only supports "volts" */
+          Volts.of(Math.PI),
+          null,
+          SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism(
-          (volts) -> setControl(rotationCharacterization.withRotationalRate(volts.in(Volts))),
+          (output) -> setControl(rotationCharacterization.withRotationalRate(output.in(Volts))),
           null,
           this));
 
@@ -71,10 +79,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
       new SysIdRoutine.Mechanism(
           (volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
 
-  public CommandSwerveDrivetrain(
-      SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
-    super(driveTrainConstants, modules);
+  private Notifier simNotifier = null;
+  private double lastSimTime;
 
+  public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
+    super(driveTrainConstants, modules);
+    if (Utils.isSimulation()) {
+      startSimThread();
+    }
     tareEverything();
 
     // Start PhotonVision thread
@@ -90,59 +102,54 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   private void configurePathPlanner() {
-    double driveBaseRadius = 0;
-    for (var moduleLocation : this.getModuleLocations()) {
-      driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
-    }
-
-    RobotConfig robotConfig;
     try {
-      robotConfig = RobotConfig.fromGUISettings();
-    } catch (Exception e) {
-      throw new RuntimeException("Failed to load PathPlanner RobotConfig", e);
-    }
+      var robotConfig = RobotConfig.fromGUISettings();
 
-    AutoBuilder.configure(
-        () -> this.getState().Pose, // Supplier of current robot pose
-        this::resetPose, // Consumer for seeding pose against auto
-        this::getCurrentRobotChassisSpeeds,
-        (speeds, feedforward) -> this.setControl(
-            autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
-        new PPHolonomicDriveController(
-            new PIDConstants(
-                AutoDriveConstants.TRANSLATION_kP,
-                AutoDriveConstants.TRANSLATION_kI,
-                AutoDriveConstants.TRANSLATION_kD),
-            new PIDConstants(
-                AutoDriveConstants.THETA_kP,
-                AutoDriveConstants.THETA_kI,
-                AutoDriveConstants.THETA_kD)),
-        robotConfig,
-        () -> DriverStation.getAlliance()
-            .map(alliance -> alliance == DriverStation.Alliance.Red)
-            .orElse(false),
-        this); // Subsystem for requirements
+      AutoBuilder.configure(
+          () -> getState().Pose, // Supplier of current robot pose
+          this::resetPose, // Consumer for seeding pose against auto
+          () -> getState().Speeds, // Supplier of current robot speeds
+          (speeds, feedforwards) -> this.setControl(
+              // Consumer of ChassisSpeeds to drive the robot
+              autoRequest.withSpeeds(speeds)
+                  .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                  .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
+          new PPHolonomicDriveController(
+              new PIDConstants(
+                  AutoDriveConstants.TRANSLATION_kP,
+                  AutoDriveConstants.TRANSLATION_kI,
+                  AutoDriveConstants.TRANSLATION_kD),
+              new PIDConstants(
+                  AutoDriveConstants.THETA_kP,
+                  AutoDriveConstants.THETA_kI,
+                  AutoDriveConstants.THETA_kD)),
+          robotConfig,
+          () -> DriverStation.getAlliance()
+              .map(alliance -> alliance == DriverStation.Alliance.Red)
+              .orElse(false),
+          this); // Subsystem for requirements
+    } catch (Exception e) {
+      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+    }
+  }
+
+  private void startSimThread() {
+    lastSimTime = Utils.getCurrentTimeSeconds();
+
+    /* Run simulation at a faster rate so PID gains behave more reasonably */
+    simNotifier = new Notifier(() -> {
+      final double currentTime = Utils.getCurrentTimeSeconds();
+      double deltaTime = currentTime - lastSimTime;
+      lastSimTime = currentTime;
+
+      /* use the measured time delta, get battery voltage from WPILib */
+      updateSimState(deltaTime, RobotController.getBatteryVoltage());
+    });
+    simNotifier.startPeriodic(SIM_LOOP_PERIOD);
   }
 
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
     return run(() -> this.setControl(requestSupplier.get()));
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    /* Assume 20ms update rate, get battery voltage from WPILib */
-    updateSimState(0.02, RobotController.getBatteryVoltage());
-    SmartDashboard.putString(
-        "Command", getCurrentCommand() == null ? "" : getCurrentCommand().getName());
-  }
-
-  /**
-   * Gets the current robot-oriented chassis speeds
-   *
-   * @return robot oriented chassis speeds
-   */
-  public ChassisSpeeds getCurrentRobotChassisSpeeds() {
-    return getState().Speeds;
   }
 
   /**
