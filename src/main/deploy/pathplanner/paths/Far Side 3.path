@@ -1,5 +1,5 @@
 {
-  "version": 1.0,
+  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 5.586050470346556,
-        "y": 1.6199439416422694
+        "y": 1.6199439416422687
       },
       "isLocked": false,
       "linkedName": "Far Side 2"
@@ -20,12 +20,12 @@
         "y": 2.363541569188402
       },
       "prevControl": {
-        "x": 4.379053675578808,
-        "y": 2.398896908247729
+        "x": 4.520475031816117,
+        "y": 2.540318264485039
       },
       "nextControl": {
-        "x": 4.308342997460153,
-        "y": 2.3281862301290746
+        "x": 4.166921641222844,
+        "y": 2.186764873891765
       },
       "isLocked": false,
       "linkedName": null
@@ -47,8 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.1,
-      "rotationDegrees": -15.0,
-      "rotateFast": false
+      "rotationDegrees": -14.999999999999998
     }
   ],
   "constraintZones": [
@@ -60,14 +59,18 @@
         "maxVelocity": 0.7,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
       }
     }
   ],
+  "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "Intake and Shoot M2",
       "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -104,6 +107,7 @@
     {
       "name": "Intake M1",
       "waypointRelativePos": 1.75,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -123,18 +127,19 @@
     "maxVelocity": 4.75,
     "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -13.449999999999989,
-    "rotateFast": false
+    "rotation": -13.449999999999989
   },
   "reversed": false,
   "folder": "Far Side",
-  "previewStartingState": {
-    "rotation": -10.0,
-    "velocity": 0
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

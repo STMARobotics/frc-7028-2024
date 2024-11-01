@@ -107,7 +107,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     try {
       robotConfig = RobotConfig.fromGUISettings();
     } catch (Exception e) {
-      throw new RuntimeException("Failed to load PathPlanner RobotConfig");
+      throw new RuntimeException("Failed to load PathPlanner RobotConfig", e);
     }
 
     AutoBuilder.configure(

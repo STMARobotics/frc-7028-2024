@@ -1,5 +1,5 @@
 {
-  "version": 1.0,
+  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
@@ -20,12 +20,12 @@
         "y": 4.811029529035802
       },
       "prevControl": {
-        "x": 4.487334475575739,
-        "y": 4.846384868095129
+        "x": 4.628755831813051,
+        "y": 4.987806224332437
       },
       "nextControl": {
-        "x": 4.416623797457085,
-        "y": 4.775674189976475
+        "x": 4.2752024412197756,
+        "y": 4.634252833739166
       },
       "isLocked": false,
       "linkedName": null
@@ -54,14 +54,18 @@
         "maxVelocity": 0.7,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
       }
     }
   ],
+  "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "Intake and Shoot M2",
       "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -98,6 +102,7 @@
     {
       "name": "Intake M1",
       "waypointRelativePos": 1.75,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "sequential",
         "data": {
@@ -117,18 +122,19 @@
     "maxVelocity": 4.75,
     "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.09541665161623016,
-    "rotateFast": false
+    "rotation": -0.09541665161623016
   },
   "reversed": false,
   "folder": "Far Side Outside",
-  "previewStartingState": {
-    "rotation": -1.1262428050419078,
-    "velocity": 0
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }
