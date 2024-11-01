@@ -20,60 +20,60 @@ import java.util.function.Supplier;
  */
 public class SpeakerOrBlinkCommand extends Command {
 
-	private final Command shootCommand;
-	private final Command dontShootCommand;
-	private final TurretSubsystem turretSubsystem;
-	private Command selectedCommand;
+  private final Command shootCommand;
+  private final Command dontShootCommand;
+  private final TurretSubsystem turretSubsystem;
+  private Command selectedCommand;
 
-	public SpeakerOrBlinkCommand(
-			CommandSwerveDrivetrain drivetrain,
-			ShooterSubsystem shooter,
-			TurretSubsystem turretSubsystem,
-			LEDSubsystem ledSubsystem,
-			Supplier<LinearVelocity> xSupplier,
-			Supplier<LinearVelocity> ySupplier,
-			Supplier<AngularVelocity> rotationSupplier) {
+  public SpeakerOrBlinkCommand(
+      CommandSwerveDrivetrain drivetrain,
+      ShooterSubsystem shooter,
+      TurretSubsystem turretSubsystem,
+      LEDSubsystem ledSubsystem,
+      Supplier<LinearVelocity> xSupplier,
+      Supplier<LinearVelocity> ySupplier,
+      Supplier<AngularVelocity> rotationSupplier) {
 
-		this.turretSubsystem = turretSubsystem;
-		this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
-				.alongWith(new LEDBlinkCommand(ledSubsystem, kPurple, 0.05));
-		this.shootCommand = new ShootTeleopCommand(
-				drivetrain,
-				shooter,
-				turretSubsystem,
-				ledSubsystem,
-				xSupplier,
-				ySupplier,
-				SPEAKER_RED_TELE,
-				SPEAKER_BLUE_TELE,
-				SHOOTER_INTERPOLATOR,
-				0);
+    this.turretSubsystem = turretSubsystem;
+    this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
+        .alongWith(new LEDBlinkCommand(ledSubsystem, kPurple, 0.05));
+    this.shootCommand = new ShootTeleopCommand(
+        drivetrain,
+        shooter,
+        turretSubsystem,
+        ledSubsystem,
+        xSupplier,
+        ySupplier,
+        SPEAKER_RED_TELE,
+        SPEAKER_BLUE_TELE,
+        SHOOTER_INTERPOLATOR,
+        0);
 
-		addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
-	}
+    addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
+  }
 
-	@Override
-	public void initialize() {
-		if (turretSubsystem.hasNote()) {
-			selectedCommand = shootCommand;
-		} else {
-			selectedCommand = dontShootCommand;
-		}
-		selectedCommand.initialize();
-	}
+  @Override
+  public void initialize() {
+    if (turretSubsystem.hasNote()) {
+      selectedCommand = shootCommand;
+    } else {
+      selectedCommand = dontShootCommand;
+    }
+    selectedCommand.initialize();
+  }
 
-	@Override
-	public void execute() {
-		selectedCommand.execute();
-	}
+  @Override
+  public void execute() {
+    selectedCommand.execute();
+  }
 
-	@Override
-	public boolean isFinished() {
-		return selectedCommand.isFinished();
-	}
+  @Override
+  public boolean isFinished() {
+    return selectedCommand.isFinished();
+  }
 
-	@Override
-	public void end(boolean interrupted) {
-		selectedCommand.end(interrupted);
-	}
+  @Override
+  public void end(boolean interrupted) {
+    selectedCommand.end(interrupted);
+  }
 }

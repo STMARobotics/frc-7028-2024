@@ -40,63 +40,63 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
  */
 public class IntakeSubsystem extends SubsystemBase {
 
-	private final TalonFX rollerMotor = new TalonFX(DEVICE_ID, CANIVORE_BUS_NAME);
+  private final TalonFX rollerMotor = new TalonFX(DEVICE_ID, CANIVORE_BUS_NAME);
 
-	// Motor request objects
-	private final VelocityTorqueCurrentFOC rollerControl = new VelocityTorqueCurrentFOC(0.0);
-	private final TorqueCurrentFOC sysIdControl = new TorqueCurrentFOC(0.0);
+  // Motor request objects
+  private final VelocityTorqueCurrentFOC rollerControl = new VelocityTorqueCurrentFOC(0.0);
+  private final TorqueCurrentFOC sysIdControl = new TorqueCurrentFOC(0.0);
 
-	// SysId routine - NOTE: the output type is amps, NOT volts (even though it says volts)
-	// https://www.chiefdelphi.com/t/sysid-with-ctre-swerve-characterization/452631/8
-	private final SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
-			new SysIdRoutine.Config(
-					Volts.of(5).per(Second), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
-			new SysIdRoutine.Mechanism(
-					(amps) -> rollerMotor.setControl(sysIdControl.withOutput(amps.in(Volts))),
-					null,
-					this));
+  // SysId routine - NOTE: the output type is amps, NOT volts (even though it says volts)
+  // https://www.chiefdelphi.com/t/sysid-with-ctre-swerve-characterization/452631/8
+  private final SysIdRoutine rollerSysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(
+          Volts.of(5).per(Second), Volts.of(30), null, SysIdRoutineSignalLogger.logState()),
+      new SysIdRoutine.Mechanism(
+          (amps) -> rollerMotor.setControl(sysIdControl.withOutput(amps.in(Volts))),
+          null,
+          this));
 
-	public IntakeSubsystem() {
-		var rollerConfig = new TalonFXConfiguration();
-		rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-		rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-		rollerConfig.Feedback.SensorToMechanismRatio = SENSOR_TO_MECHANISM_RATIO;
-		rollerConfig.Slot0 = Slot0Configs.from(SLOT_CONFIGS);
-		rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = PEAK_FORWARD_CURRENT.in(Amps);
-		rollerConfig.TorqueCurrent.PeakReverseTorqueCurrent = PEAK_REVERSE_CURRENT.in(Amps);
-		rollerConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
-		rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+  public IntakeSubsystem() {
+    var rollerConfig = new TalonFXConfiguration();
+    rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    rollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    rollerConfig.Feedback.SensorToMechanismRatio = SENSOR_TO_MECHANISM_RATIO;
+    rollerConfig.Slot0 = Slot0Configs.from(SLOT_CONFIGS);
+    rollerConfig.TorqueCurrent.PeakForwardTorqueCurrent = PEAK_FORWARD_CURRENT.in(Amps);
+    rollerConfig.TorqueCurrent.PeakReverseTorqueCurrent = PEAK_REVERSE_CURRENT.in(Amps);
+    rollerConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
+    rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-		rollerMotor.getConfigurator().apply(rollerConfig);
-	}
+    rollerMotor.getConfigurator().apply(rollerConfig);
+  }
 
-	public Command sysIdRollerDynamicCommand(Direction direction) {
-		return rollerSysIdRoutine
-				.dynamic(direction)
-				.withName("SysId intake dynam " + direction)
-				.finallyDo(this::stop);
-	}
+  public Command sysIdRollerDynamicCommand(Direction direction) {
+    return rollerSysIdRoutine
+        .dynamic(direction)
+        .withName("SysId intake dynam " + direction)
+        .finallyDo(this::stop);
+  }
 
-	public Command sysIdRollerQuasistaticCommand(Direction direction) {
-		return rollerSysIdRoutine
-				.quasistatic(direction)
-				.withName("SysId intake quasi " + direction)
-				.finallyDo(this::stop);
-	}
+  public Command sysIdRollerQuasistaticCommand(Direction direction) {
+    return rollerSysIdRoutine
+        .quasistatic(direction)
+        .withName("SysId intake quasi " + direction)
+        .finallyDo(this::stop);
+  }
 
-	public void intake() {
-		runRollers(INTAKE_VELOCITY);
-	}
+  public void intake() {
+    runRollers(INTAKE_VELOCITY);
+  }
 
-	public void reverse() {
-		runRollers(REVERSE_VELOCITY);
-	}
+  public void reverse() {
+    runRollers(REVERSE_VELOCITY);
+  }
 
-	public void stop() {
-		rollerMotor.stopMotor();
-	}
+  public void stop() {
+    rollerMotor.stopMotor();
+  }
 
-	public void runRollers(AngularVelocity velocity) {
-		rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
-	}
+  public void runRollers(AngularVelocity velocity) {
+    rollerMotor.setControl(rollerControl.withVelocity(velocity.in(RotationsPerSecond)));
+  }
 }

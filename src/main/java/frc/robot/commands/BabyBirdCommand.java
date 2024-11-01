@@ -12,50 +12,50 @@ import frc.robot.subsystems.TurretSubsystem;
  */
 public class BabyBirdCommand extends Command {
 
-	private final TurretSubsystem turretSubsystem;
-	private final ShooterSubsystem shooterSubsystem;
+  private final TurretSubsystem turretSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
 
-	private boolean sensorTripped = false;
-	private boolean sensorCleared = false;
+  private boolean sensorTripped = false;
+  private boolean sensorCleared = false;
 
-	public BabyBirdCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem) {
+  public BabyBirdCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem) {
 
-		this.turretSubsystem = turretSubsystem;
-		this.shooterSubsystem = shooterSubsystem;
+    this.turretSubsystem = turretSubsystem;
+    this.shooterSubsystem = shooterSubsystem;
 
-		addRequirements(turretSubsystem, shooterSubsystem);
-	}
+    addRequirements(turretSubsystem, shooterSubsystem);
+  }
 
-	@Override
-	public void initialize() {
-		turretSubsystem.prepareToBabyBird();
-		shooterSubsystem.reverse();
-		sensorTripped = false;
-		sensorCleared = false;
-	}
+  @Override
+  public void initialize() {
+    turretSubsystem.prepareToBabyBird();
+    shooterSubsystem.reverse();
+    sensorTripped = false;
+    sensorCleared = false;
+  }
 
-	@Override
-	public void execute() {
-		if (turretSubsystem.hasNote()) {
-			sensorTripped = true;
-		}
-		if (sensorTripped && !turretSubsystem.hasNote()) {
-			turretSubsystem.intake();
-			shooterSubsystem.stop();
-			sensorCleared = true;
-		}
-	}
+  @Override
+  public void execute() {
+    if (turretSubsystem.hasNote()) {
+      sensorTripped = true;
+    }
+    if (sensorTripped && !turretSubsystem.hasNote()) {
+      turretSubsystem.intake();
+      shooterSubsystem.stop();
+      sensorCleared = true;
+    }
+  }
 
-	@Override
-	public boolean isFinished() {
-		return sensorTripped && sensorCleared && turretSubsystem.hasNote();
-	}
+  @Override
+  public boolean isFinished() {
+    return sensorTripped && sensorCleared && turretSubsystem.hasNote();
+  }
 
-	@Override
-	public void end(boolean interrupted) {
-		turretSubsystem.stopPitch();
-		turretSubsystem.stopYaw();
-		turretSubsystem.runRollers(RotationsPerSecond.zero());
-		shooterSubsystem.stop();
-	}
+  @Override
+  public void end(boolean interrupted) {
+    turretSubsystem.stopPitch();
+    turretSubsystem.stopYaw();
+    turretSubsystem.runRollers(RotationsPerSecond.zero());
+    shooterSubsystem.stop();
+  }
 }

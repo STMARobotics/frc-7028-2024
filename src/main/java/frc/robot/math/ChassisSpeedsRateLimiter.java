@@ -15,90 +15,90 @@ import edu.wpi.first.math.numbers.N2;
  * it separately with 2 X/Y slew rate limiters
  */
 public class ChassisSpeedsRateLimiter {
-	private double translationRateLimit;
-	private double rotationRateLimit;
+  private double translationRateLimit;
+  private double rotationRateLimit;
 
-	private ChassisSpeeds prevVal;
-	private double prevTime;
+  private ChassisSpeeds prevVal;
+  private double prevTime;
 
-	/**
-	 * Create a new chassis speeds limiter
-	 *
-	 * @param translationRateLimit The linear acceleration limit
-	 * @param rotationRateLimit The angular acceleration limit
-	 * @param initialValue The initial chassis speeds value
-	 */
-	public ChassisSpeedsRateLimiter(
-			double translationRateLimit, double rotationRateLimit, ChassisSpeeds initialValue) {
-		this.translationRateLimit = translationRateLimit;
-		this.rotationRateLimit = rotationRateLimit;
-		reset(initialValue);
-	}
+  /**
+   * Create a new chassis speeds limiter
+   *
+   * @param translationRateLimit The linear acceleration limit
+   * @param rotationRateLimit The angular acceleration limit
+   * @param initialValue The initial chassis speeds value
+   */
+  public ChassisSpeedsRateLimiter(
+      double translationRateLimit, double rotationRateLimit, ChassisSpeeds initialValue) {
+    this.translationRateLimit = translationRateLimit;
+    this.rotationRateLimit = rotationRateLimit;
+    reset(initialValue);
+  }
 
-	/**
-	 * Create a new chassis speeds limiter
-	 *
-	 * @param translationRateLimit The linear acceleration limit
-	 * @param rotationRateLimit The angular acceleration limit
-	 */
-	public ChassisSpeedsRateLimiter(double translationRateLimit, double rotationRateLimit) {
-		this(translationRateLimit, rotationRateLimit, new ChassisSpeeds());
-	}
+  /**
+   * Create a new chassis speeds limiter
+   *
+   * @param translationRateLimit The linear acceleration limit
+   * @param rotationRateLimit The angular acceleration limit
+   */
+  public ChassisSpeedsRateLimiter(double translationRateLimit, double rotationRateLimit) {
+    this(translationRateLimit, rotationRateLimit, new ChassisSpeeds());
+  }
 
-	/**
-	 * Reset the limiter
-	 *
-	 * @param value The chassis speeds to reset with
-	 */
-	public void reset(ChassisSpeeds value) {
-		this.prevVal = value;
-		this.prevTime = MathSharedStore.getTimestamp();
-	}
+  /**
+   * Reset the limiter
+   *
+   * @param value The chassis speeds to reset with
+   */
+  public void reset(ChassisSpeeds value) {
+    this.prevVal = value;
+    this.prevTime = MathSharedStore.getTimestamp();
+  }
 
-	/**
-	 * Set the acceleration limits
-	 *
-	 * @param translationRateLimit Linear acceleration limit
-	 * @param rotationRateLimit Angular acceleration limit
-	 */
-	public void setRateLimits(double translationRateLimit, double rotationRateLimit) {
-		this.translationRateLimit = translationRateLimit;
-		this.rotationRateLimit = rotationRateLimit;
-	}
+  /**
+   * Set the acceleration limits
+   *
+   * @param translationRateLimit Linear acceleration limit
+   * @param rotationRateLimit Angular acceleration limit
+   */
+  public void setRateLimits(double translationRateLimit, double rotationRateLimit) {
+    this.translationRateLimit = translationRateLimit;
+    this.rotationRateLimit = rotationRateLimit;
+  }
 
-	/**
-	 * Calculate the limited chassis speeds for a given input
-	 *
-	 * @param input The target chassis speeds
-	 * @return The limited chassis speeds
-	 */
-	public ChassisSpeeds calculate(ChassisSpeeds input) {
-		double currentTime = MathSharedStore.getTimestamp();
-		double elapsedTime = currentTime - prevTime;
+  /**
+   * Calculate the limited chassis speeds for a given input
+   *
+   * @param input The target chassis speeds
+   * @return The limited chassis speeds
+   */
+  public ChassisSpeeds calculate(ChassisSpeeds input) {
+    double currentTime = MathSharedStore.getTimestamp();
+    double elapsedTime = currentTime - prevTime;
 
-		prevVal.omegaRadiansPerSecond += MathUtil.clamp(
-				input.omegaRadiansPerSecond - prevVal.omegaRadiansPerSecond,
-				-rotationRateLimit * elapsedTime,
-				rotationRateLimit * elapsedTime);
+    prevVal.omegaRadiansPerSecond += MathUtil.clamp(
+        input.omegaRadiansPerSecond - prevVal.omegaRadiansPerSecond,
+        -rotationRateLimit * elapsedTime,
+        rotationRateLimit * elapsedTime);
 
-		Vector<N2> prevVelVector = VecBuilder.fill(prevVal.vxMetersPerSecond, prevVal.vyMetersPerSecond);
-		Vector<N2> targetVelVector = VecBuilder.fill(input.vxMetersPerSecond, input.vyMetersPerSecond);
-		Vector<N2> deltaVelVector = new Vector<>(targetVelVector.minus(prevVelVector));
-		double maxDelta = translationRateLimit * elapsedTime;
+    Vector<N2> prevVelVector = VecBuilder.fill(prevVal.vxMetersPerSecond, prevVal.vyMetersPerSecond);
+    Vector<N2> targetVelVector = VecBuilder.fill(input.vxMetersPerSecond, input.vyMetersPerSecond);
+    Vector<N2> deltaVelVector = new Vector<>(targetVelVector.minus(prevVelVector));
+    double maxDelta = translationRateLimit * elapsedTime;
 
-		if (deltaVelVector.norm() > maxDelta) {
-			Vector<N2> deltaUnitVector = deltaVelVector.div(deltaVelVector.norm());
-			Vector<N2> limitedDelta = deltaUnitVector.times(maxDelta);
-			Vector<N2> nextVelVector = new Vector<>(prevVelVector.plus(limitedDelta));
+    if (deltaVelVector.norm() > maxDelta) {
+      Vector<N2> deltaUnitVector = deltaVelVector.div(deltaVelVector.norm());
+      Vector<N2> limitedDelta = deltaUnitVector.times(maxDelta);
+      Vector<N2> nextVelVector = new Vector<>(prevVelVector.plus(limitedDelta));
 
-			prevVal.vxMetersPerSecond = nextVelVector.get(0, 0);
-			prevVal.vyMetersPerSecond = nextVelVector.get(1, 0);
-		} else {
-			prevVal.vxMetersPerSecond = targetVelVector.get(0, 0);
-			prevVal.vyMetersPerSecond = targetVelVector.get(1, 0);
-		}
+      prevVal.vxMetersPerSecond = nextVelVector.get(0, 0);
+      prevVal.vyMetersPerSecond = nextVelVector.get(1, 0);
+    } else {
+      prevVal.vxMetersPerSecond = targetVelVector.get(0, 0);
+      prevVal.vyMetersPerSecond = targetVelVector.get(1, 0);
+    }
 
-		prevTime = currentTime;
-		return prevVal;
-	}
+    prevTime = currentTime;
+    return prevVal;
+  }
 }

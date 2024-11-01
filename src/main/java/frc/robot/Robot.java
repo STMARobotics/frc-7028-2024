@@ -11,91 +11,91 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
-	private Command m_autonomousCommand;
-	private RobotContainer m_robotContainer;
-	private boolean hasPopulatedSysIdDashboard = false;
-	private boolean hasPopulatedTestingDashboard = false;
+  private Command m_autonomousCommand;
+  private RobotContainer m_robotContainer;
+  private boolean hasPopulatedSysIdDashboard = false;
+  private boolean hasPopulatedTestingDashboard = false;
 
-	@Override
-	public void robotInit() {
-		m_robotContainer = new RobotContainer();
+  @Override
+  public void robotInit() {
+    m_robotContainer = new RobotContainer();
 
-		SignalLogger.start(); // CTRE logger
-	}
+    SignalLogger.start(); // CTRE logger
+  }
 
-	@Override
-	public void robotPeriodic() {
-		CommandScheduler.getInstance().run();
-	}
+  @Override
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
 
-	@Override
-	public void disabledInit() {
-	}
+  @Override
+  public void disabledInit() {
+  }
 
-	@Override
-	public void disabledPeriodic() {
-	}
+  @Override
+  public void disabledPeriodic() {
+  }
 
-	@Override
-	public void disabledExit() {
-	}
+  @Override
+  public void disabledExit() {
+  }
 
-	@Override
-	public void autonomousInit() {
-		DriverStation.getAlliance().ifPresent(alliance -> m_robotContainer.setAlliance(alliance));
-		m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+  @Override
+  public void autonomousInit() {
+    DriverStation.getAlliance().ifPresent(alliance -> m_robotContainer.setAlliance(alliance));
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.schedule();
-		}
-	}
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+  }
 
-	@Override
-	public void autonomousPeriodic() {
-	}
+  @Override
+  public void autonomousPeriodic() {
+  }
 
-	@Override
-	public void autonomousExit() {
-	}
+  @Override
+  public void autonomousExit() {
+  }
 
-	@Override
-	public void teleopInit() {
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.cancel();
-		}
-		DriverStation.getAlliance().ifPresent(alliance -> m_robotContainer.setAlliance(alliance));
-	}
+  @Override
+  public void teleopInit() {
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    }
+    DriverStation.getAlliance().ifPresent(alliance -> m_robotContainer.setAlliance(alliance));
+  }
 
-	@Override
-	public void teleopPeriodic() {
-	}
+  @Override
+  public void teleopPeriodic() {
+  }
 
-	@Override
-	public void teleopExit() {
-	}
+  @Override
+  public void teleopExit() {
+  }
 
-	@Override
-	public void testInit() {
-		CommandScheduler.getInstance().cancelAll();
-		if (!hasPopulatedSysIdDashboard) {
-			m_robotContainer.populateSysIdDashboard();
-			hasPopulatedSysIdDashboard = true;
-		}
-		if (!hasPopulatedTestingDashboard) {
-			m_robotContainer.populateTestingDashboard();
-			hasPopulatedTestingDashboard = true;
-		}
-	}
+  @Override
+  public void testInit() {
+    CommandScheduler.getInstance().cancelAll();
+    if (!hasPopulatedSysIdDashboard) {
+      m_robotContainer.populateSysIdDashboard();
+      hasPopulatedSysIdDashboard = true;
+    }
+    if (!hasPopulatedTestingDashboard) {
+      m_robotContainer.populateTestingDashboard();
+      hasPopulatedTestingDashboard = true;
+    }
+  }
 
-	@Override
-	public void testPeriodic() {
-	}
+  @Override
+  public void testPeriodic() {
+  }
 
-	@Override
-	public void testExit() {
-	}
+  @Override
+  public void testExit() {
+  }
 
-	@Override
-	public void simulationPeriodic() {
-	}
+  @Override
+  public void simulationPeriodic() {
+  }
 }
