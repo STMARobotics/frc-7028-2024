@@ -25,65 +25,63 @@ import java.util.function.Supplier;
  */
 public class StockpileOrBlinkCommand extends Command {
 
-  private final Command stockpile;
-  private final Command dontShootCommand;
-  private final CommandSwerveDrivetrain drivetrain;
-  private Command selectedCommand;
+	private final Command stockpile;
+	private final Command dontShootCommand;
+	private final CommandSwerveDrivetrain drivetrain;
+	private Command selectedCommand;
 
-  public StockpileOrBlinkCommand(
-      CommandSwerveDrivetrain drivetrain,
-      ShooterSubsystem shooter,
-      TurretSubsystem turretSubsystem,
-      LEDSubsystem ledSubsystem,
-      Supplier<LinearVelocity> xSupplier,
-      Supplier<LinearVelocity> ySupplier,
-      Supplier<AngularVelocity> rotationSupplier) {
+	public StockpileOrBlinkCommand(
+			CommandSwerveDrivetrain drivetrain,
+			ShooterSubsystem shooter,
+			TurretSubsystem turretSubsystem,
+			LEDSubsystem ledSubsystem,
+			Supplier<LinearVelocity> xSupplier,
+			Supplier<LinearVelocity> ySupplier,
+			Supplier<AngularVelocity> rotationSupplier) {
 
-    this.drivetrain = drivetrain;
-    this.dontShootCommand =
-        new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
-            .alongWith(new LEDBlinkCommand(ledSubsystem, kRed, 0.05));
-    this.stockpile =
-        new ShootTeleopCommand(
-            drivetrain,
-            shooter,
-            turretSubsystem,
-            ledSubsystem,
-            xSupplier,
-            ySupplier,
-            STOCKPILE_RED,
-            STOCKPILE_BLUE,
-            STOCKPILE_INTERPOLATOR,
-            0.3);
+		this.drivetrain = drivetrain;
+		this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
+				.alongWith(new LEDBlinkCommand(ledSubsystem, kRed, 0.05));
+		this.stockpile = new ShootTeleopCommand(
+				drivetrain,
+				shooter,
+				turretSubsystem,
+				ledSubsystem,
+				xSupplier,
+				ySupplier,
+				STOCKPILE_RED,
+				STOCKPILE_BLUE,
+				STOCKPILE_INTERPOLATOR,
+				0.3);
 
-    addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
-  }
+		addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
+	}
 
-  @Override
-  public void initialize() {
-    var alliance = DriverStation.getAlliance().map(dsAlliance -> dsAlliance).orElse(Alliance.Blue);
-    Pose2d robotPose = drivetrain.getState().Pose;
-    if (alliance == Red && robotPose.getX() > 5.3
-        || alliance == Alliance.Blue && robotPose.getX() < 11.25) {
-      selectedCommand = stockpile;
-    } else {
-      selectedCommand = dontShootCommand;
-    }
-    selectedCommand.initialize();
-  }
+	@Override
+	public void initialize() {
+		var alliance = DriverStation.getAlliance().map(dsAlliance -> dsAlliance).orElse(Alliance.Blue);
+		Pose2d robotPose = drivetrain.getState().Pose;
+		if (alliance == Red && robotPose.getX() > 5.3
+				|| alliance == Alliance.Blue && robotPose.getX() < 11.25) {
+			selectedCommand = stockpile;
+		} else {
+			selectedCommand = dontShootCommand;
+		}
+		selectedCommand.initialize();
+	}
 
-  @Override
-  public void execute() {
-    selectedCommand.execute();
-  }
+	@Override
+	public void execute() {
+		selectedCommand.execute();
+	}
 
-  @Override
-  public boolean isFinished() {
-    return selectedCommand.isFinished();
-  }
+	@Override
+	public boolean isFinished() {
+		return selectedCommand.isFinished();
+	}
 
-  @Override
-  public void end(boolean interrupted) {
-    selectedCommand.end(interrupted);
-  }
+	@Override
+	public void end(boolean interrupted) {
+		selectedCommand.end(interrupted);
+	}
 }

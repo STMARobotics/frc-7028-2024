@@ -50,221 +50,214 @@ import java.util.function.Supplier;
  */
 public class ShootTeleopCommand extends Command {
 
-  private final CommandSwerveDrivetrain drivetrain;
-  private final ShooterSubsystem shooter;
-  private final TurretSubsystem turretSubsystem;
-  private final LEDSubsystem ledSubsystem;
+	private final CommandSwerveDrivetrain drivetrain;
+	private final ShooterSubsystem shooter;
+	private final TurretSubsystem turretSubsystem;
+	private final LEDSubsystem ledSubsystem;
 
-  private final Supplier<LinearVelocity> xSupplier;
-  private final Supplier<LinearVelocity> ySupplier;
+	private final Supplier<LinearVelocity> xSupplier;
+	private final Supplier<LinearVelocity> ySupplier;
 
-  private final ChassisSpeedsRateLimiter rateLimiter =
-      new ChassisSpeedsRateLimiter(
-          TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond),
-          ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
+	private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
+			TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond),
+			ROTATION_RATE_LIMIT.in(RadiansPerSecond.per(Second)));
 
-  // Reusable objects to prevent reallocation (to reduce memory pressure)
-  private final ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-  private final MutAngle turretYawTarget = Rotations.mutable(0);
-  private final Translation2d targetRed;
-  private final Translation2d targetBlue;
-  private final VelocityPitchInterpolator lookupTable;
-  private final double velocityMultiplier;
-  private final double maxVelocity;
+	// Reusable objects to prevent reallocation (to reduce memory pressure)
+	private final ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+	private final MutAngle turretYawTarget = Rotations.mutable(0);
+	private final Translation2d targetRed;
+	private final Translation2d targetBlue;
+	private final VelocityPitchInterpolator lookupTable;
+	private final double velocityMultiplier;
+	private final double maxVelocity;
 
-  private Translation2d targetTranslation;
+	private Translation2d targetTranslation;
 
-  private final SwerveRequest.FieldCentricFacingAngle swerveRequestFacing =
-      new SwerveRequest.FieldCentricFacingAngle()
-          .withDriveRequestType(DriveRequestType.Velocity)
-          .withSteerRequestType(SteerRequestType.MotionMagicExpo)
-          .withVelocityX(0.0)
-          .withVelocityY(0.0);
+	private final SwerveRequest.FieldCentricFacingAngle swerveRequestFacing = new SwerveRequest.FieldCentricFacingAngle()
+			.withDriveRequestType(DriveRequestType.Velocity)
+			.withSteerRequestType(SteerRequestType.MotionMagicExpo)
+			.withVelocityX(0.0)
+			.withVelocityY(0.0);
 
-  private final SwerveRequest.FieldCentric swerveRequestRotation =
-      new SwerveRequest.FieldCentric()
-          .withDriveRequestType(DriveRequestType.Velocity)
-          .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+	private final SwerveRequest.FieldCentric swerveRequestRotation = new SwerveRequest.FieldCentric()
+			.withDriveRequestType(DriveRequestType.Velocity)
+			.withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
-  private boolean isShooting = false;
+	private boolean isShooting = false;
 
-  public ShootTeleopCommand(
-      CommandSwerveDrivetrain drivetrain,
-      ShooterSubsystem shooter,
-      TurretSubsystem turretSubsystem,
-      LEDSubsystem ledSubsystem,
-      Supplier<LinearVelocity> xSupplier,
-      Supplier<LinearVelocity> ySupplier,
-      Translation2d targetRed,
-      Translation2d targetBlue,
-      VelocityPitchInterpolator lookupTable,
-      double velcotiyMultiplier) {
-    this.drivetrain = drivetrain;
-    this.shooter = shooter;
-    this.turretSubsystem = turretSubsystem;
-    this.ledSubsystem = ledSubsystem;
-    this.xSupplier = xSupplier;
-    this.ySupplier = ySupplier;
-    this.targetRed = targetRed;
-    this.targetBlue = targetBlue;
-    this.lookupTable = lookupTable;
-    this.velocityMultiplier = velcotiyMultiplier;
-    this.maxVelocity = DrivetrainConstants.MAX_VELOCITY.in(MetersPerSecond) * velocityMultiplier;
+	public ShootTeleopCommand(
+			CommandSwerveDrivetrain drivetrain,
+			ShooterSubsystem shooter,
+			TurretSubsystem turretSubsystem,
+			LEDSubsystem ledSubsystem,
+			Supplier<LinearVelocity> xSupplier,
+			Supplier<LinearVelocity> ySupplier,
+			Translation2d targetRed,
+			Translation2d targetBlue,
+			VelocityPitchInterpolator lookupTable,
+			double velcotiyMultiplier) {
+		this.drivetrain = drivetrain;
+		this.shooter = shooter;
+		this.turretSubsystem = turretSubsystem;
+		this.ledSubsystem = ledSubsystem;
+		this.xSupplier = xSupplier;
+		this.ySupplier = ySupplier;
+		this.targetRed = targetRed;
+		this.targetBlue = targetBlue;
+		this.lookupTable = lookupTable;
+		this.velocityMultiplier = velcotiyMultiplier;
+		this.maxVelocity = DrivetrainConstants.MAX_VELOCITY.in(MetersPerSecond) * velocityMultiplier;
 
-    addRequirements(drivetrain, shooter, turretSubsystem);
+		addRequirements(drivetrain, shooter, turretSubsystem);
 
-    swerveRequestFacing.ForwardPerspective = ForwardPerspectiveValue.BlueAlliance;
-    swerveRequestFacing.HeadingController = new PhoenixPIDController(THETA_kP, THETA_kI, THETA_kD);
-    swerveRequestFacing.HeadingController.enableContinuousInput(-PI, PI);
-    swerveRequestFacing.HeadingController.setTolerance(AIM_TOLERANCE.in(Radians));
-  }
+		swerveRequestFacing.ForwardPerspective = ForwardPerspectiveValue.BlueAlliance;
+		swerveRequestFacing.HeadingController = new PhoenixPIDController(THETA_kP, THETA_kI, THETA_kD);
+		swerveRequestFacing.HeadingController.enableContinuousInput(-PI, PI);
+		swerveRequestFacing.HeadingController.setTolerance(AIM_TOLERANCE.in(Radians));
+	}
 
-  @Override
-  public void initialize() {
-    swerveRequestFacing.HeadingController.reset();
-    rateLimiter.reset(drivetrain.getCurrentFieldChassisSpeeds());
-    var alliance = DriverStation.getAlliance();
-    targetTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? targetBlue : targetRed;
-    isShooting = false;
-  }
+	@Override
+	public void initialize() {
+		swerveRequestFacing.HeadingController.reset();
+		rateLimiter.reset(drivetrain.getCurrentFieldChassisSpeeds());
+		var alliance = DriverStation.getAlliance();
+		targetTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? targetBlue : targetRed;
+		isShooting = false;
+	}
 
-  @Override
-  public void execute() {
-    var robotPose = drivetrain.getState().Pose;
+	@Override
+	public void execute() {
+		var robotPose = drivetrain.getState().Pose;
 
-    // Translation to the center of the turret
-    var turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);
+		// Translation to the center of the turret
+		var turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);
 
-    // Distance between the robot and the target
-    var distanceToTarget = turretTranslation.getDistance(targetTranslation);
+		// Distance between the robot and the target
+		var distanceToTarget = turretTranslation.getDistance(targetTranslation);
 
-    // Lookup shooter settings for this distance
-    var shootingSettings = lookupTable.calculate(distanceToTarget);
+		// Lookup shooter settings for this distance
+		var shootingSettings = lookupTable.calculate(distanceToTarget);
 
-    // Calculate time to hit target
-    var timeUntilScored =
-        SHOOT_WHILE_MOVING_COEFFICIENT
-            * (distanceToTarget / shootingSettings.getVelocity().in(RotationsPerSecond));
+		// Calculate time to hit target
+		var timeUntilScored = SHOOT_WHILE_MOVING_COEFFICIENT
+				* (distanceToTarget / shootingSettings.getVelocity().in(RotationsPerSecond));
 
-    // Calculate the predicted offset of the target compared to current pose (in meters)
-    var currentChassisSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
-    var targetPredictedOffset =
-        new Translation2d(
-            (currentChassisSpeeds.vxMetersPerSecond * timeUntilScored),
-            (currentChassisSpeeds.vyMetersPerSecond * timeUntilScored));
+		// Calculate the predicted offset of the target compared to current pose (in meters)
+		var currentChassisSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
+		var targetPredictedOffset = new Translation2d(
+				(currentChassisSpeeds.vxMetersPerSecond * timeUntilScored),
+				(currentChassisSpeeds.vyMetersPerSecond * timeUntilScored));
 
-    var predictedTargetTranslation = targetTranslation.minus(targetPredictedOffset);
+		var predictedTargetTranslation = targetTranslation.minus(targetPredictedOffset);
 
-    var predictedDist = predictedTargetTranslation.getDistance(turretTranslation);
+		var predictedDist = predictedTargetTranslation.getDistance(turretTranslation);
 
-    // Calculate the angle to the target
-    var angleToTarget = predictedTargetTranslation.minus(turretTranslation).getAngle();
+		// Calculate the angle to the target
+		var angleToTarget = predictedTargetTranslation.minus(turretTranslation).getAngle();
 
-    // Calculate required turret angle, accounting for the robot heading
-    turretYawTarget.mut_replace(
-        angleToTarget.minus(robotPose.getRotation()).getRotations(), Rotations);
+		// Calculate required turret angle, accounting for the robot heading
+		turretYawTarget.mut_replace(
+				angleToTarget.minus(robotPose.getRotation()).getRotations(), Rotations);
 
-    shootingSettings = lookupTable.calculate(predictedDist);
+		shootingSettings = lookupTable.calculate(predictedDist);
 
-    // Calculate ready state
-    var isShooterReady = shooter.isReadyToShoot();
-    var isInTurretRange = TurretSubsystem.isYawInShootingRange(turretYawTarget);
+		// Calculate ready state
+		var isShooterReady = shooter.isReadyToShoot();
+		var isInTurretRange = TurretSubsystem.isYawInShootingRange(turretYawTarget);
 
-    // Get driver translation speeds
-    chassisSpeeds.vxMetersPerSecond = xSupplier.get().in(MetersPerSecond) * velocityMultiplier;
-    chassisSpeeds.vyMetersPerSecond = ySupplier.get().in(MetersPerSecond) * velocityMultiplier;
+		// Get driver translation speeds
+		chassisSpeeds.vxMetersPerSecond = xSupplier.get().in(MetersPerSecond) * velocityMultiplier;
+		chassisSpeeds.vyMetersPerSecond = ySupplier.get().in(MetersPerSecond) * velocityMultiplier;
 
-    var magnitude =
-        Math.hypot(currentChassisSpeeds.vxMetersPerSecond, currentChassisSpeeds.vyMetersPerSecond);
-    var isDrivetrainReady = magnitude - maxVelocity <= 0.2;
+		var magnitude = Math.hypot(currentChassisSpeeds.vxMetersPerSecond, currentChassisSpeeds.vyMetersPerSecond);
+		var isDrivetrainReady = magnitude - maxVelocity <= 0.2;
 
-    // Aim drivetrain
-    // NOTE: Slew rate limit needs to be applied so the robot slows properly (see 2022 robot doing
-    // "stoppies")
-    if (isInTurretRange) {
-      // Prepare shooter
-      shooter.prepareToShoot(shootingSettings.getVelocity());
+		// Aim drivetrain
+		// NOTE: Slew rate limit needs to be applied so the robot slows properly (see 2022 robot doing
+		// "stoppies")
+		if (isInTurretRange) {
+			// Prepare shooter
+			shooter.prepareToShoot(shootingSettings.getVelocity());
 
-      // Set the turret position
-      turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-      turretSubsystem.moveToShootingYawPosition(turretYawTarget);
+			// Set the turret position
+			turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
+			turretSubsystem.moveToShootingYawPosition(turretYawTarget);
 
-      // Turret can reach, stop robot
+			// Turret can reach, stop robot
 
-      var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
-      drivetrain.setControl(
-          swerveRequestRotation
-              .withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
-              .withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
-              .withRotationalRate(0.0));
+			var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
+			drivetrain.setControl(
+					swerveRequestRotation
+							.withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
+							.withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
+							.withRotationalRate(0.0));
 
-    } else {
-      // Turret cannot reach, turn robot
-      var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
+		} else {
+			// Turret cannot reach, turn robot
+			var limitedChassisSpeeds = rateLimiter.calculate(chassisSpeeds);
 
-      // Decide the direction to turn, then set the robot rotation target so the turret's shooting
-      // yaw limit on that
-      // side is pointed at the target
-      Rotation2d robotTargetDirection =
-          angleToTarget.minus(fromRadians(PI)); // Turret is on the back of the robot
-      if (robotTargetDirection.minus(robotPose.getRotation()).getRadians() > 0) {
-        robotTargetDirection = robotTargetDirection.minus(DRIVETRAIN_YAW_LIMIT_FORWARD);
-      } else {
-        robotTargetDirection = robotTargetDirection.minus(DRIVETRAIN_YAW_LIMIT_REVERSE);
-      }
+			// Decide the direction to turn, then set the robot rotation target so the turret's shooting
+			// yaw limit on that
+			// side is pointed at the target
+			Rotation2d robotTargetDirection = angleToTarget.minus(fromRadians(PI)); // Turret is on the back of the
+																					// robot
+			if (robotTargetDirection.minus(robotPose.getRotation()).getRadians() > 0) {
+				robotTargetDirection = robotTargetDirection.minus(DRIVETRAIN_YAW_LIMIT_FORWARD);
+			} else {
+				robotTargetDirection = robotTargetDirection.minus(DRIVETRAIN_YAW_LIMIT_REVERSE);
+			}
 
-      // If the drivetrain is getting close, start getting ready to shoot
-      if (Math.abs(robotPose.getRotation().minus(robotTargetDirection).getDegrees()) < 25) {
-        // Prepare the shooter
-        shooter.prepareToShoot(shootingSettings.getVelocity());
+			// If the drivetrain is getting close, start getting ready to shoot
+			if (Math.abs(robotPose.getRotation().minus(robotTargetDirection).getDegrees()) < 25) {
+				// Prepare the shooter
+				shooter.prepareToShoot(shootingSettings.getVelocity());
 
-        // Set the turret position
-        turretSubsystem.moveToShootingYawPosition(turretYawTarget);
-        turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
-      }
+				// Set the turret position
+				turretSubsystem.moveToShootingYawPosition(turretYawTarget);
+				turretSubsystem.moveToPitchPosition(shootingSettings.getPitch());
+			}
 
-      drivetrain.setControl(
-          swerveRequestFacing
-              .withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
-              .withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
-              .withTargetDirection(robotTargetDirection));
-    }
+			drivetrain.setControl(
+					swerveRequestFacing
+							.withVelocityX(limitedChassisSpeeds.vxMetersPerSecond)
+							.withVelocityY(limitedChassisSpeeds.vyMetersPerSecond)
+							.withTargetDirection(robotTargetDirection));
+		}
 
-    var isPitchReady = turretSubsystem.isAtPitchTarget();
-    var isYawReady = turretSubsystem.isAtYawTarget();
-    if (isShooterReady && isPitchReady && isYawReady && isDrivetrainReady) {
-      // Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot
-      // and start timer
-      turretSubsystem.shoot();
-      isShooting = true;
-    }
+		var isPitchReady = turretSubsystem.isAtPitchTarget();
+		var isYawReady = turretSubsystem.isAtYawTarget();
+		if (isShooterReady && isPitchReady && isYawReady && isDrivetrainReady) {
+			// Shooter is spun up, drivetrain is aimed, robot is stopped, and the turret is aimed - shoot
+			// and start timer
+			turretSubsystem.shoot();
+			isShooting = true;
+		}
 
-    // Update LEDs with ready state
-    if (isShooting) {
-      ledSubsystem.setUpdater(l -> l.setAll(kGreen));
-    } else {
-      ledSubsystem.setUpdater(
-          l ->
-              l.setLEDSegments(
-                  kBlue,
-                  isShooterReady,
-                  isInTurretRange,
-                  isPitchReady,
-                  isYawReady,
-                  isDrivetrainReady));
-    }
-  }
+		// Update LEDs with ready state
+		if (isShooting) {
+			ledSubsystem.setUpdater(l -> l.setAll(kGreen));
+		} else {
+			ledSubsystem.setUpdater(
+					l -> l.setLEDSegments(
+							kBlue,
+							isShooterReady,
+							isInTurretRange,
+							isPitchReady,
+							isYawReady,
+							isDrivetrainReady));
+		}
+	}
 
-  @Override
-  public boolean isFinished() {
-    return !turretSubsystem.hasNote();
-  }
+	@Override
+	public boolean isFinished() {
+		return !turretSubsystem.hasNote();
+	}
 
-  @Override
-  public void end(boolean interrupted) {
-    shooter.stop();
-    turretSubsystem.prepareToIntake();
-    drivetrain.setControl(new SwerveRequest.Idle());
-    ledSubsystem.setUpdater(null);
-  }
+	@Override
+	public void end(boolean interrupted) {
+		shooter.stop();
+		turretSubsystem.prepareToIntake();
+		drivetrain.setControl(new SwerveRequest.Idle());
+		ledSubsystem.setUpdater(null);
+	}
 }

@@ -11,60 +11,60 @@ import frc.robot.subsystems.LEDSubsystem;
 /** Command to run the boot animation on the LED strips */
 public class LEDBootAnimationCommand extends Command {
 
-  private static final int BLIP_SIZE = 5;
-  private final LEDSubsystem ledSubsystem;
-  private final Timer timer = new Timer();
+	private static final int BLIP_SIZE = 5;
+	private final LEDSubsystem ledSubsystem;
+	private final Timer timer = new Timer();
 
-  private int blipIndex = -1;
-  private boolean done = false;
-  private boolean initialized = false;
+	private int blipIndex = -1;
+	private boolean done = false;
+	private boolean initialized = false;
 
-  public LEDBootAnimationCommand(LEDSubsystem ledSubsystem) {
-    this.ledSubsystem = ledSubsystem;
+	public LEDBootAnimationCommand(LEDSubsystem ledSubsystem) {
+		this.ledSubsystem = ledSubsystem;
 
-    addRequirements(ledSubsystem);
-  }
+		addRequirements(ledSubsystem);
+	}
 
-  @Override
-  public void initialize() {
-    blipIndex = -1;
-    timer.start();
-    ledSubsystem.setUpdater(this::animate);
-    done = false;
-    initialized = false;
-  }
+	@Override
+	public void initialize() {
+		blipIndex = -1;
+		timer.start();
+		ledSubsystem.setUpdater(this::animate);
+		done = false;
+		initialized = false;
+	}
 
-  private void animate(LEDStrips ledStrips) {
-    if (timer.advanceIfElapsed(0.05) || !initialized) {
-      if (!initialized) {
-        ledStrips.setAll(kBlack);
-        initialized = true;
-      }
-      for (int index = 0; index < ledStrips.getMirrorStripSize(); index++) {
-        if (index <= blipIndex && index >= blipIndex - (BLIP_SIZE - 1)) {
-          ledStrips.setMirrorLED(index, Color.kOrange);
-        } else {
-          ledStrips.setMirrorLED(index, Color.kBlue);
-        }
-      }
-      blipIndex++;
-      ledStrips.refresh();
-      done = blipIndex - (BLIP_SIZE + 1) >= ledStrips.getMirrorStripSize();
-    }
-  }
+	private void animate(LEDStrips ledStrips) {
+		if (timer.advanceIfElapsed(0.05) || !initialized) {
+			if (!initialized) {
+				ledStrips.setAll(kBlack);
+				initialized = true;
+			}
+			for (int index = 0; index < ledStrips.getMirrorStripSize(); index++) {
+				if (index <= blipIndex && index >= blipIndex - (BLIP_SIZE - 1)) {
+					ledStrips.setMirrorLED(index, Color.kOrange);
+				} else {
+					ledStrips.setMirrorLED(index, Color.kBlue);
+				}
+			}
+			blipIndex++;
+			ledStrips.refresh();
+			done = blipIndex - (BLIP_SIZE + 1) >= ledStrips.getMirrorStripSize();
+		}
+	}
 
-  @Override
-  public boolean isFinished() {
-    return done;
-  }
+	@Override
+	public boolean isFinished() {
+		return done;
+	}
 
-  @Override
-  public boolean runsWhenDisabled() {
-    return true;
-  }
+	@Override
+	public boolean runsWhenDisabled() {
+		return true;
+	}
 
-  @Override
-  public void end(boolean interrupted) {
-    ledSubsystem.setUpdater(null);
-  }
+	@Override
+	public void end(boolean interrupted) {
+		ledSubsystem.setUpdater(null);
+	}
 }

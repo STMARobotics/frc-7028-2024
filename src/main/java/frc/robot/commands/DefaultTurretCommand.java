@@ -9,29 +9,29 @@ import frc.robot.subsystems.TurretSubsystem;
  */
 public class DefaultTurretCommand extends Command {
 
-  private final TurretSubsystem turretSubsystem;
+	private final TurretSubsystem turretSubsystem;
 
-  public DefaultTurretCommand(TurretSubsystem turretSubsystem) {
-    this.turretSubsystem = turretSubsystem;
+	public DefaultTurretCommand(TurretSubsystem turretSubsystem) {
+		this.turretSubsystem = turretSubsystem;
 
-    addRequirements(turretSubsystem);
-  }
+		addRequirements(turretSubsystem);
+	}
 
-  @Override
-  public void initialize() {
-    turretSubsystem.stopRollers();
-    turretSubsystem.prepareToIntake();
-  }
+	@Override
+	public void initialize() {
+		turretSubsystem.stopRollers();
+		turretSubsystem.prepareToIntake();
+	}
 
-  @Override
-  public void execute() {
-    if (turretSubsystem.isInIntakePosition()) {
-      turretSubsystem.stop();
-    }
-  }
+	@Override
+	public void execute() {
+		if (turretSubsystem.isInIntakePosition()) {
+			turretSubsystem.stop();
+		}
+	}
 
-  @Override
-  public void end(boolean interrupted) {
-    turretSubsystem.stop();
-  }
+	@Override
+	public void end(boolean interrupted) {
+		turretSubsystem.stop();
+	}
 }

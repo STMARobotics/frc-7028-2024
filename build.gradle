@@ -104,6 +104,6 @@ tasks.withType(JavaCompile) {
 
 spotless {
   java {
-    googleJavaFormat()
+    eclipse().configFile('.vscode/eclipse-formatter.xml')
   }
 }
