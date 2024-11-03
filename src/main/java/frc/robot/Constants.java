@@ -20,7 +20,6 @@ import static edu.wpi.first.units.Units.Seconds;
 import static java.lang.Math.PI;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.math.Matrix;
@@ -60,11 +59,6 @@ public class Constants {
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = (DrivetrainConstants.MAX_VELOCITY
         .in(MetersPerSecond) / Math.hypot(TRACKWIDTH.in(Meters) / 2.0, WHEELBASE.in(Meters) / 2.0));
     public static final AngularVelocity MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(PI * 4 * 0.8);
-
-    public static final MountPoseConfigs PIGEON_MOUNT_POSE_CONFIG = new MountPoseConfigs()
-        .withMountPosePitch(9.096435546875)
-        .withMountPoseRoll(-154.05722045898438)
-        .withMountPoseYaw(6.09066915512085);
   }
 
   public static final class TeleopDriveConstants {

@@ -63,7 +63,7 @@ public class RobotContainer {
 
   private final DrivetrainTelemetry drivetrainTelemetry = new DrivetrainTelemetry(MAX_VELOCITY.in(MetersPerSecond));
 
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
+  private final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();

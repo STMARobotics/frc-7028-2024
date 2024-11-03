@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.DrivetrainConstants.PIGEON_MOUNT_POSE_CONFIG;
 import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAMES;
 import static frc.robot.Constants.VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS;
 
@@ -89,8 +88,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     photonThread.setName("PhotonVision");
     photonThread.setDaemon(true);
     photonThread.start();
-
-    this.getPigeon2().getConfigurator().apply(PIGEON_MOUNT_POSE_CONFIG);
 
     configNeutralMode(NeutralModeValue.Brake);
 
