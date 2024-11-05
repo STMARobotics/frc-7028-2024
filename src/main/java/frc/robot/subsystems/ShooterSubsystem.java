@@ -27,6 +27,8 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Strategy;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 
 /** Subsystem for the shooter mechanism */
+@Logged(strategy = Strategy.OPT_IN)
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX topMotor = new TalonFX(DEVICE_ID_TOP, CANIVORE_BUS_NAME);
   private final TalonFX bottomMotor = new TalonFX(DEVICE_ID_BOTTOM, CANIVORE_BUS_NAME);
@@ -134,6 +137,7 @@ public class ShooterSubsystem extends SubsystemBase {
    *
    * @return true if the shooter is at the target velocity
    */
+  @Logged
   public boolean isReadyToShoot() {
     var errorToleranceRPS = ERROR_TOLERANCE.in(RotationsPerSecond);
     BaseStatusSignal.refreshAll(bottomVelocity, bottomAcceleration, topVelocity, topAcceleration);

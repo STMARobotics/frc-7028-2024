@@ -73,6 +73,8 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Strategy;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -92,6 +94,7 @@ import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
  * Subsystem for the turret. The turret has yaw and pitch control, and it has a set of rollers that
  * hold a note (a.k.a. indexer)
  */
+@Logged(strategy = Strategy.OPT_IN)
 public class TurretSubsystem extends SubsystemBase {
   private final TalonFX yawMotor = new TalonFX(DEVICE_ID_YAW_MOTOR, CANIVORE_BUS_NAME);
   private final CANcoder yawEncoder = new CANcoder(DEVICE_ID_YAW_ENCODER, CANIVORE_BUS_NAME);
@@ -259,6 +262,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @return true if the turret has a note, otherwise false
    */
+  @Logged
   public boolean hasNote() {
     var measure = noteSensor.getMeasurement();
     if (measure == null || measure.status != LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
@@ -346,6 +350,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @return true if the yaw and pitch are at their target positions
    */
+  @Logged
   public boolean isAtYawAndPitchTarget() {
     BaseStatusSignal.refreshAll(yawPosition, yawVelocity, pitchPosition, pitchVelocity);
     return isInTolerance(yawControl.Position, yawPosition, yawVelocity, YAW_TOLERANCE)
@@ -369,6 +374,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @return true if the yaw is at the target position
    */
+  @Logged
   public boolean isAtYawTarget() {
     BaseStatusSignal.refreshAll(yawPosition, yawVelocity);
     return isInTolerance(yawControl.Position, yawPosition, yawVelocity, YAW_TOLERANCE);
@@ -379,6 +385,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @return true if the pitch is at the target position
    */
+  @Logged
   public boolean isAtPitchTarget() {
     BaseStatusSignal.refreshAll(pitchPosition, pitchVelocity);
     return isInTolerance(pitchControl.Position, pitchPosition, pitchVelocity, PITCH_TOLERANCE);

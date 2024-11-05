@@ -21,6 +21,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.cscore.HttpCamera;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -55,6 +57,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import java.util.Map;
 
+@Logged
 public class RobotContainer {
 
   private static final boolean DEMO_MODE = false;
@@ -72,6 +75,7 @@ public class RobotContainer {
   private final TestCommand testCommand = new TestCommand(intakeSubsystem, shooterSubsystem, turretSubsystem);
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
+  @NotLogged
   private final SendableChooser<Command> autoChooser;
   private final Field2d field2d = new Field2d();
 
