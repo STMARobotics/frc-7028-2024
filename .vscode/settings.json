@@ -36,6 +36,7 @@
   },
   "editor.detectIndentation": false,
   "java.inlayHints.parameterNames.enabled": "none",
+  "java.settings.url": ".vscode/org.eclipse.jdt.core.prefs",
   "spotlessGradle.format.enable": true,
   "spotlessGradle.diagnostics.enable": true,
   "java.format.enabled": false,

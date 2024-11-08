@@ -1,0 +1,3 @@
+org.eclipse.jdt.core.compiler.problem.fallthroughCase=error
+org.eclipse.jdt.core.compiler.problem.missingDefaultCase=error
+org.eclipse.jdt.core.compiler.problem.incompleteEnumSwitch=error

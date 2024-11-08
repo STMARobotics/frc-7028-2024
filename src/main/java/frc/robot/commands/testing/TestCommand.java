@@ -180,6 +180,8 @@ public class TestCommand extends Command {
           hasStopped = false;
         }
         break;
+      default:
+        // NO-OP
     }
   }
 
