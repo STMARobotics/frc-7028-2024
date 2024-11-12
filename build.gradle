@@ -34,6 +34,7 @@ deploy {
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
+                    deleteOldFiles = true // delete old files from the roboRIO deploy folder - like old PP paths/autos
                 }
             }
         }
