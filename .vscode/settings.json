@@ -26,6 +26,7 @@
     },
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
+  "java.import.gradle.annotationProcessing.enabled": false,
   "editor.rulers": [
     120
   ],
