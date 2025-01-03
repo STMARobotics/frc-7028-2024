@@ -172,7 +172,8 @@ public class TunerConstants {
             kFrontLeftXPos,
             kFrontLeftYPos,
             kInvertLeftSide,
-            kFrontLeftSteerMotorInverted);
+            kFrontLeftSteerMotorInverted,
+            false);
   public static final SwerveModuleConstants FrontRight = ConstantCreator.withSteerMotorGearRatio(kMk4iSteerGearRatio)
       .createModuleConstants(
           kFrontRightSteerMotorId,
@@ -182,7 +183,8 @@ public class TunerConstants {
             kFrontRightXPos,
             kFrontRightYPos,
             kInvertRightSide,
-            kFrontRightSteerMotorInverted);
+            kFrontRightSteerMotorInverted,
+            false);
   public static final SwerveModuleConstants BackLeft = ConstantCreator.withSteerMotorGearRatio(kMk4SteerGearRatio)
       .createModuleConstants(
           kBackLeftSteerMotorId,
@@ -192,7 +194,8 @@ public class TunerConstants {
             kBackLeftXPos,
             kBackLeftYPos,
             kInvertLeftSide,
-            kBackLeftSteerMotorInverted);
+            kBackLeftSteerMotorInverted,
+            false);
   public static final SwerveModuleConstants BackRight = ConstantCreator.withSteerMotorGearRatio(kMk4SteerGearRatio)
       .createModuleConstants(
           kBackRightSteerMotorId,
@@ -202,7 +205,8 @@ public class TunerConstants {
             kBackRightXPos,
             kBackRightYPos,
             kInvertRightSide,
-            kBackRightSteerMotorInverted);
+            kBackRightSteerMotorInverted,
+            false);
 
   /**
    * Creates a CommandSwerveDrivetrain instance.
