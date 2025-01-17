@@ -6,6 +6,8 @@ import static frc.robot.Constants.VisionConstants.APRILTAG_CAMERA_NAMES;
 import static frc.robot.Constants.VisionConstants.ROBOT_TO_CAMERA_TRANSFORMS;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -33,7 +35,7 @@ import java.util.function.Supplier;
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem so it can be used
  * in command-based projects easily.
  */
-public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
+public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements Subsystem {
 
   private static final double SIM_LOOP_PERIOD = 0.005; // 5 ms
 
@@ -77,8 +79,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private Notifier simNotifier = null;
   private double lastSimTime;
 
-  public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
-    super(driveTrainConstants, modules);
+  public CommandSwerveDrivetrain(
+      SwerveDrivetrainConstants driveTrainConstants,
+      SwerveModuleConstants<?, ?, ?>... modules) {
+    super(TalonFX::new, TalonFX::new, CANcoder::new, driveTrainConstants, modules);
     if (Utils.isSimulation()) {
       startSimThread();
     }
