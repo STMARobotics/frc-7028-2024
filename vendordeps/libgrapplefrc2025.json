@@ -1,25 +1,25 @@
 {
-    "fileName": "libgrapplefrc2024.json",
+    "fileName": "libgrapplefrc2025.json",
     "name": "libgrapplefrc",
-    "version": "2024.3.1",
+    "version": "2025.0.2",
     "frcYear": "2025",
     "uuid": "8ef3423d-9532-4665-8339-206dae1d7168",
     "mavenUrls": [
         "https://storage.googleapis.com/grapple-frc-maven"
     ],
-    "jsonUrl": "https://storage.googleapis.com/grapple-frc-maven/libgrapplefrc2024.json",
+    "jsonUrl": "https://storage.googleapis.com/grapple-frc-maven/libgrapplefrc2025.json",
     "javaDependencies": [
         {
             "groupId": "au.grapplerobotics",
             "artifactId": "libgrapplefrcjava",
-            "version": "2024.3.1"
+            "version": "2025.0.2"
         }
     ],
     "jniDependencies": [
         {
             "groupId": "au.grapplerobotics",
             "artifactId": "libgrapplefrcdriver",
-            "version": "2024.3.1",
+            "version": "2025.0.2",
             "skipInvalidPlatforms": true,
             "isJar": false,
             "validPlatforms": [
@@ -37,7 +37,7 @@
         {
             "groupId": "au.grapplerobotics",
             "artifactId": "libgrapplefrccpp",
-            "version": "2024.3.1",
+            "version": "2025.0.2",
             "libName": "grapplefrc",
             "headerClassifier": "headers",
             "sharedLibrary": true,
@@ -55,7 +55,7 @@
         {
             "groupId": "au.grapplerobotics",
             "artifactId": "libgrapplefrcdriver",
-            "version": "2024.3.1",
+            "version": "2025.0.2",
             "libName": "grapplefrcdriver",
             "headerClassifier": "headers",
             "sharedLibrary": true,
