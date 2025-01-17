@@ -17,8 +17,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
@@ -28,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.AutoDriveConstants;
 import frc.robot.PhotonRunnable;
+import frc.robot.QuestNav;
 import frc.robot.subsystems.sysid.SysIdRoutineSignalLogger;
 import java.util.function.Supplier;
 
@@ -75,6 +80,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, 
   private final SysIdRoutine slipSysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(0.25).per(Second), null, null, SysIdRoutineSignalLogger.logState()),
       new SysIdRoutine.Mechanism((volts) -> setControl(translationCharacterization.withVolts(volts)), null, this));
+
+  private final QuestNav questNav = new QuestNav();
+
+  private final NetworkTable questTestTable = NetworkTableInstance.getDefault().getTable("questTest");
+  private final StructPublisher<Pose2d> questPoseEntry = questTestTable.getStructTopic("questPose", Pose2d.struct)
+      .publish();
+  private final StructPublisher<Pose2d> robotPoseEntry = questTestTable.getStructTopic("robotPose", Pose2d.struct)
+      .publish();
 
   private Notifier simNotifier = null;
   private double lastSimTime;
@@ -162,6 +175,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, 
     var fieldSpeeds = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
         .rotateBy(robotAngle);
     return new ChassisSpeeds(fieldSpeeds.getX(), fieldSpeeds.getY(), chassisSpeeds.omegaRadiansPerSecond);
+  }
+
+  @Override
+  public void resetPose(Pose2d pose) {
+    questNav.resetPose(pose);
+    super.resetPose(pose);
+  }
+
+  @Override
+  public void periodic() {
+    questNav.cleanUpQuestNavMessages();
+    questPoseEntry.set(questNav.getQuestPose());
+    robotPoseEntry.set(questNav.getRobotPose());
   }
 
   public Command sysIdDriveQuasiCommand(Direction direction) {
