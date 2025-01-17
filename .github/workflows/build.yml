@@ -6,8 +6,8 @@ name: CI Build
 on: [push]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  ci-build:
+    runs-on: ubuntu-22.04
 
     # Use the WPILib docker container
     container: wpilib/roborio-cross-ubuntu:2024-22.04
@@ -24,3 +24,22 @@ jobs:
 
     - name: Execute Gradle build
       run: ./gradlew test
+
+  spotless-check:
+    runs-on: ubuntu-22.04
+
+    # Use the WPILib docker container
+    container: wpilib/roborio-cross-ubuntu:2024-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+ 
+    # Declare the repository safe
+    - name: Add repository to git safe directories
+      run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Check formatting with Spotless
+      run: ./gradlew spotlessCheck
