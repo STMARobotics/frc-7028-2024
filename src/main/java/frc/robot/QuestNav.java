@@ -43,8 +43,8 @@ public class QuestNav {
   // Pose of the robot when the pose was reset
   private Pose2d resetPoseRobot = new Pose2d();
 
-  // Position of the quest on the robot (6" forward, centered side-to-side, pointed forward))
-  private final Transform2d robotToQuest = new Transform2d(inchesToMeters(6), 0.0, new Rotation2d());
+  // Position of the quest on the robot (13.5" forward, centered side-to-side, pointed forward))
+  private final Transform2d robotToQuest = new Transform2d(inchesToMeters(13.5), 0.0, new Rotation2d());
 
   /* Constructor */
   public QuestNav() {
@@ -119,7 +119,7 @@ public class QuestNav {
    * @param newPose new robot pose
    */
   public void resetPose(Pose2d newPose) {
-    resetPoseOculus = getUncorrectedOculusPose();
+    resetPoseOculus = getUncorrectedOculusPose().transformBy(robotToQuest.inverse());
     resetPoseRobot = newPose;
   }
 

@@ -275,8 +275,9 @@ public class RobotContainer {
                     Degrees.of(20),
                     Degrees.of(180))));
 
-    controlBindings.seedFieldRelative()
-        .ifPresent(trigger -> trigger.onTrue(runOnce(drivetrain::seedFieldCentric, drivetrain)));
+    controlBindings.seedFieldRelative().ifPresent(trigger -> trigger.onTrue(runOnce(() -> {
+      drivetrain.resetPose(new Pose2d());
+    }, drivetrain).ignoringDisable(true)));
   }
 
   public void populateSysIdDashboard() {
