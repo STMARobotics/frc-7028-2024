@@ -37,6 +37,7 @@ import frc.robot.commands.DefaultTurretCommand;
 import frc.robot.commands.EjectCommand;
 import frc.robot.commands.FieldOrientedDriveCommand;
 import frc.robot.commands.ManualShootCommand;
+import frc.robot.commands.PhotonVisionCommand;
 import frc.robot.commands.ShootTeleopCommand;
 import frc.robot.commands.SpeakerOrBlinkCommand;
 import frc.robot.commands.StockpileOrBlinkCommand;
@@ -106,6 +107,7 @@ public class RobotContainer {
     configureDashboard();
 
     new LEDBootAnimationCommand(ledSubsystem).schedule();
+    new PhotonVisionCommand(drivetrain::addVisionMeasurement).schedule();
 
     // Warm up PathPlanner https://pathplanner.dev/pplib-follow-a-single-path.html#java-warmup
     FollowPathCommand.warmupCommand().schedule();

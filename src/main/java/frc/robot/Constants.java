@@ -104,6 +104,9 @@ public class Constants {
     public static final Distance FIELD_LENGTH = Meters.of(16.54175);
     public static final Distance FIELD_WIDTH = Meters.of(8.0137);
 
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+
     /**
      * Minimum target ambiguity. Targets with higher ambiguity will be discarded. Not appliable when
      * multiple tags are in view in a single camera.
