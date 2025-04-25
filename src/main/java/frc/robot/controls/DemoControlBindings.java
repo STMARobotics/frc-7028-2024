@@ -13,7 +13,7 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -23,33 +23,33 @@ public class DemoControlBindings implements ControlBindings {
 
   private static final double DEMO_SPEED_FACTOR = 0.25;
 
-  private final CommandJoystick leftJoystick = new CommandJoystick(0);
-  private final CommandJoystick rightJoystick = new CommandJoystick(1);
+  private final CommandXboxController driverController = new CommandXboxController(0);
   private final MutableMeasure<Velocity<Distance>> translationX = MutableMeasure.zero(MetersPerSecond);
   private final MutableMeasure<Velocity<Distance>> translationY = MutableMeasure.zero(MetersPerSecond);
   private final MutableMeasure<Velocity<Angle>> omega = MutableMeasure.zero(RadiansPerSecond);
 
   @Override
   public Optional<Trigger> wheelsToX() {
-    return Optional.of(leftJoystick.button(3));
+    return Optional.of(driverController.leftBumper());
   }
 
+  
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationX() {
     return () -> translationX.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * (-modifyAxis(leftJoystick.getY()) ), MetersPerSecond);
+        MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(driverController.getLeftY()), MetersPerSecond);
   }
-
+  
   @Override
   public Supplier<Measure<Velocity<Distance>>> translationY() {
-   return () -> translationY.mut_replace(
-      MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(leftJoystick.getX()), MetersPerSecond);
+    return () -> translationY.mut_replace(
+        MAX_VELOCITY.in(MetersPerSecond) * -modifyAxis(driverController.getLeftX()), MetersPerSecond);
   }
   
   @Override
   public Supplier<Measure<Velocity<Angle>>> omega() {
     return () -> omega.mut_replace(
-        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -modifyAxis(rightJoystick.getX()), RadiansPerSecond);
+        MAX_ANGULAR_VELOCITY.in(RadiansPerSecond) * -modifyAxis(driverController.getRightX()), RadiansPerSecond);
   }
   
   /**
@@ -68,7 +68,7 @@ public class DemoControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> intakeStop() {
-    return Optional.of(leftJoystick.povUp());
+    return Optional.of(driverController.povUp());
   }
 
   @Override
@@ -103,7 +103,7 @@ public class DemoControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> babyBird() {
-    return Optional.of(leftJoystick.trigger());
+    return Optional.of(driverController.leftTrigger());
   }
 
   @Override
@@ -118,17 +118,17 @@ public class DemoControlBindings implements ControlBindings {
 
   @Override
   public Optional<Trigger> demoToss1() {
-    return Optional.of(rightJoystick.trigger());
+    return Optional.of(driverController.rightTrigger());
   }
 
   @Override
   public Optional<Trigger> demoToss2() {
-    return Optional.of(rightJoystick.povLeft());
+    return Optional.of(driverController.povLeft());
   }
 
   @Override
   public Optional<Trigger> seedFieldRelative() {
-    return Optional.of(rightJoystick.button(13));
+    return Optional.of(driverController.rightBumper());
   }
 
 }
