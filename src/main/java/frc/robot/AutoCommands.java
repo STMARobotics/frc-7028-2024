@@ -156,6 +156,18 @@ public class AutoCommands {
         turretSubsystem, shooterSubsystem).deadlineWith(new LEDBlinkCommand(ledSubsystem, BABYBIRD_COLOR, 0.1));
   }
 
+   /**
+   * Command to put the turret in intake position and leave it there
+   * @return new command
+   */
+  public Command babyBirdNoDrop() {
+    return new BabyBirdCommand(
+        turretSubsystem, shooterSubsystem) {
+          public void end(boolean interrupted) {
+          };
+        }.deadlineWith(new LEDBlinkCommand(ledSubsystem, BABYBIRD_COLOR, 0.1));
+  }
+
   /**
    * Comand to shoot a note into the middle of the field
    * @param xSupplier X translation supplier
