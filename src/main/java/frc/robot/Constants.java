@@ -274,6 +274,7 @@ public class Constants {
 
     public static final Color NOTE_COLOR = Color.fromHSV(3, 255, 255);
     public static final Color BABYBIRD_COLOR = Color.fromHSV(255, 255, 255);
+    public static final Color CAMERA_DISCONNECT_COLOR = Color.fromHSV(255, 0, 0);
   }
 
   public static class ShootingConstants {
