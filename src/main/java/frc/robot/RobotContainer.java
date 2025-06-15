@@ -60,7 +60,7 @@ import java.util.Map;
 @Logged
 public class RobotContainer {
 
-  private static final boolean DEMO_MODE = false;
+  private static final boolean DEMO_MODE = true;
 
   private final ControlBindings controlBindings;
 
