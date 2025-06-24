@@ -46,7 +46,7 @@ import java.util.List;
 
 public class Constants {
 
-  public static final String CANIVORE_BUS_NAME = "canivore";
+  public static final String CANIVORE_BUS_NAME = "rio";
 
   public static final class DrivetrainConstants {
     public static final Distance TRACKWIDTH = Inches.of(20.5);
