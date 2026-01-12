@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.common.dataflow.structures.Packet;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 /** Runnable that gets AprilTag data from PhotonVision. */
@@ -45,6 +43,8 @@ public class PhotonRunnable implements Runnable {
   // Array of subscriber wait handles for camera subtables, used to lookup camera index from wait
   // handle
   private final int[] waitHandles;
+  // Array of PhotonCameras for reading results
+  private final PhotonCamera[] photonCameras;
 
   // Consumer of pose estimates
   private final AddVisionMeasurement poseConsumer;
@@ -53,8 +53,6 @@ public class PhotonRunnable implements Runnable {
 
   @SuppressWarnings("unchecked")
   private final StructArrayPublisher<AprilTag>[] aprilTagPublishers = new StructArrayPublisher[2];
-
-  private final Packet packet = new Packet(1);
 
   public PhotonRunnable(
       String[] cameraNames,
@@ -85,6 +83,7 @@ public class PhotonRunnable implements Runnable {
 
     rawBytesSubscribers = new RawSubscriber[cameraNames.length];
     photonPoseEstimators = new PhotonPoseEstimator[cameraNames.length];
+    photonCameras = new PhotonCamera[cameraNames.length];
     waitHandles = new int[cameraNames.length];
 
     var layout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
@@ -96,11 +95,8 @@ public class PhotonRunnable implements Runnable {
       rawBytesSubscribers[i] = cameraTable.getRawTopic("rawBytes")
           .subscribe("rawBytes", new byte[] {}, PubSubOption.periodic(0.01), PubSubOption.sendAll(true));
       waitHandles[i] = rawBytesSubscribers[i].getHandle();
-      photonPoseEstimators[i] = new PhotonPoseEstimator(
-          layout,
-          MULTI_TAG_PNP_ON_COPROCESSOR,
-          new PhotonCamera(cameraNames[i]),
-          robotToCameras[i]);
+      photonPoseEstimators[i] = new PhotonPoseEstimator(layout, MULTI_TAG_PNP_ON_COPROCESSOR, robotToCameras[i]);
+      photonCameras[i] = new PhotonCamera(cameraNames[i]);
     }
   }
 
@@ -126,39 +122,43 @@ public class PhotonRunnable implements Runnable {
         int cameraIndex = getCameraIndex(signaledHandles[i]);
         var aprilTagPublisher = aprilTagPublishers[cameraIndex];
         var photonPoseEstimator = photonPoseEstimators[cameraIndex];
+        var photonCamera = photonCameras[cameraIndex];
 
         // Get AprilTag data
-        var photonResults = getLatestResult(cameraIndex);
-        if (photonResults.hasTargets() && (photonResults.targets.size() > 1
-            || (photonResults.targets.get(0).getPoseAmbiguity() < APRILTAG_AMBIGUITY_THRESHOLD))) {
+        var photonResults = photonCamera.getAllUnreadResults();
+        photonResults.forEach(photonResult -> {
+          if (photonResult.hasTargets() && (photonResult.targets.size() > 1
+              || (photonResult.targets.get(0).getPoseAmbiguity() < APRILTAG_AMBIGUITY_THRESHOLD))) {
 
-          // Send the AprilTag(s) to NT for AdvantageScope
-          aprilTagPublisher.accept(
-              photonResults.targets.stream()
-                  .map(
-                      target -> getTargetPose(
-                          target,
-                            currentRobotPose,
-                            photonPoseEstimator.getRobotToCameraTransform()))
-                  .toArray(AprilTag[]::new));
+            // Send the AprilTag(s) to NT for AdvantageScope
+            aprilTagPublisher.accept(
+                photonResult.targets.stream()
+                    .map(
+                        target -> getTargetPose(
+                            target,
+                              currentRobotPose,
+                              photonPoseEstimator.getRobotToCameraTransform()))
+                    .toArray(AprilTag[]::new));
 
-          photonPoseEstimator.update(photonResults).ifPresent(estimatedRobotPose -> {
-            var estimatedPose = estimatedRobotPose.estimatedPose;
-            // Make sure the measurement is on the field
-            if (estimatedPose.getX() > 0.0 && estimatedPose.getX() <= FIELD_LENGTH.in(Meters)
-                && estimatedPose.getY() > 0.0 && estimatedPose.getY() <= FIELD_WIDTH.in(Meters)) {
+            photonPoseEstimator.update(photonResult).ifPresent(estimatedRobotPose -> {
+              var estimatedPose = estimatedRobotPose.estimatedPose;
+              // Make sure the measurement is on the field
+              if (estimatedPose.getX() > 0.0 && estimatedPose.getX() <= FIELD_LENGTH.in(Meters)
+                  && estimatedPose.getY() > 0.0 && estimatedPose.getY() <= FIELD_WIDTH.in(Meters)) {
 
-              var stdDevs = getEstimationStdDevs(
-                  estimatedPose.toPose2d(),
-                    photonResults.getTargets(),
-                    photonPoseEstimator.getFieldTags());
-              poseConsumer.addVisionMeasurement(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds, stdDevs);
-            }
-          });
-        } else {
-          // No tags, send empty array to NT
-          aprilTagPublisher.accept(emptyAprilTagArray);
-        }
+                var stdDevs = getEstimationStdDevs(
+                    estimatedPose.toPose2d(),
+                      photonResult.getTargets(),
+                      photonPoseEstimator.getFieldTags());
+                poseConsumer
+                    .addVisionMeasurement(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds, stdDevs);
+              }
+            });
+          } else {
+            // No tags, send empty array to NT
+            aprilTagPublisher.accept(emptyAprilTagArray);
+          }
+        });
       }
     }
     Arrays.stream(rawBytesSubscribers).forEach(RawSubscriber::close);
@@ -191,19 +191,6 @@ public class PhotonRunnable implements Runnable {
       }
     }
     return -1;
-  }
-
-  public PhotonPipelineResult getLatestResult(int cameraIndex) {
-    packet.clear();
-    var result = new PhotonPipelineResult();
-    packet.setData(rawBytesSubscribers[cameraIndex].get(new byte[] {}));
-    if (packet.getSize() < 1) {
-      return result;
-    }
-    result = PhotonPipelineResult.serde.unpack(packet);
-    result.setTimestampSeconds(
-        (rawBytesSubscribers[cameraIndex].getLastChange() / 1e6) - result.getLatencyMillis() / 1e3);
-    return result;
   }
 
   /**

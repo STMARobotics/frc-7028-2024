@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static au.grapplerobotics.interfaces.LaserCanInterface.RangingMode.SHORT;
 import static com.ctre.phoenix6.signals.FeedbackSensorSourceValue.FusedCANcoder;
 import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
 import static edu.wpi.first.units.Units.Amps;
@@ -58,8 +59,7 @@ import static frc.robot.Constants.TurretConstants.YAW_TOLERANCE;
 
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
-import au.grapplerobotics.LaserCan.RangingMode;
-import au.grapplerobotics.LaserCan.TimingBudget;
+import au.grapplerobotics.interfaces.LaserCanInterface.TimingBudget;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -78,7 +78,6 @@ import edu.wpi.first.epilogue.Logged.Strategy;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -216,7 +215,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     // Configure the note sensor
     try {
-      noteSensor.setRangingMode(RangingMode.SHORT);
+      noteSensor.setRangingMode(SHORT);
       noteSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_20MS);
     } catch (ConfigurationFailedException e) {
       DriverStation.reportError("Failed to confgure turret LaserCAN: " + e.getMessage(), false);
@@ -424,7 +423,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @return pitch
    */
-  public Measure<AngleUnit> getPitch() {
+  public Angle getPitch() {
     BaseStatusSignal.refreshAll(pitchPosition, pitchVelocity);
     return BaseStatusSignal.getLatencyCompensatedValue(pitchPosition, pitchVelocity);
   }
@@ -434,7 +433,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @return yaw
    */
-  public Measure<AngleUnit> getYaw() {
+  public Angle getYaw() {
     BaseStatusSignal.refreshAll(yawPosition, yawVelocity);
     var compensatedYaw = BaseStatusSignal.getLatencyCompensatedValue(yawPosition, yawVelocity);
     return yawAngle.mut_replace(translateYaw(compensatedYaw), Rotations);
@@ -505,7 +504,7 @@ public class TurretSubsystem extends SubsystemBase {
    * @param yaw robot centric yaw to convert to turret yaw, or turret yaw to translate to robot yaw
    * @return translated yaw in rotations
    */
-  private static double translateYaw(Measure<AngleUnit> yaw) {
+  private static double translateYaw(Angle yaw) {
     return Math.IEEEremainder(yaw.in(Rotations) + 0.5, 1);
   }
 }
