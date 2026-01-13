@@ -37,7 +37,8 @@ public class StockpileOrBlinkCommand extends Command {
       LEDSubsystem ledSubsystem,
       Supplier<LinearVelocity> xSupplier,
       Supplier<LinearVelocity> ySupplier,
-      Supplier<AngularVelocity> rotationSupplier) {
+      Supplier<AngularVelocity> rotationSupplier,
+      Supplier<Pose2d> robotPoseSupplier) {
 
     this.drivetrain = drivetrain;
     this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
@@ -49,6 +50,7 @@ public class StockpileOrBlinkCommand extends Command {
         ledSubsystem,
         xSupplier,
         ySupplier,
+        robotPoseSupplier,
         STOCKPILE_RED,
         STOCKPILE_BLUE,
         STOCKPILE_INTERPOLATOR,

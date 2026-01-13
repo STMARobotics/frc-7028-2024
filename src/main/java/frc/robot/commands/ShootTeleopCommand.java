@@ -27,6 +27,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -57,6 +58,8 @@ public class ShootTeleopCommand extends Command {
 
   private final Supplier<LinearVelocity> xSupplier;
   private final Supplier<LinearVelocity> ySupplier;
+
+  private final Supplier<Pose2d> robotPoseSupplier;
 
   private final ChassisSpeedsRateLimiter rateLimiter = new ChassisSpeedsRateLimiter(
       TRANSLATION_RATE_LIMIT.in(MetersPerSecondPerSecond),
@@ -92,6 +95,7 @@ public class ShootTeleopCommand extends Command {
       LEDSubsystem ledSubsystem,
       Supplier<LinearVelocity> xSupplier,
       Supplier<LinearVelocity> ySupplier,
+      Supplier<Pose2d> robotPoseSupplier,
       Translation2d targetRed,
       Translation2d targetBlue,
       VelocityPitchInterpolator lookupTable,
@@ -102,6 +106,7 @@ public class ShootTeleopCommand extends Command {
     this.ledSubsystem = ledSubsystem;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
+    this.robotPoseSupplier = robotPoseSupplier;
     this.targetRed = targetRed;
     this.targetBlue = targetBlue;
     this.lookupTable = lookupTable;
@@ -127,7 +132,7 @@ public class ShootTeleopCommand extends Command {
 
   @Override
   public void execute() {
-    var robotPose = drivetrain.getState().Pose;
+    var robotPose = robotPoseSupplier.get();
 
     // Translation to the center of the turret
     var turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);

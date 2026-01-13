@@ -5,6 +5,7 @@ import static frc.robot.Constants.ShootingConstants.SHOOTER_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_TELE;
 import static frc.robot.Constants.ShootingConstants.SPEAKER_RED_TELE;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,7 +33,8 @@ public class SpeakerOrBlinkCommand extends Command {
       LEDSubsystem ledSubsystem,
       Supplier<LinearVelocity> xSupplier,
       Supplier<LinearVelocity> ySupplier,
-      Supplier<AngularVelocity> rotationSupplier) {
+      Supplier<AngularVelocity> rotationSupplier,
+      Supplier<Pose2d> robotPoseSupplier) {
 
     this.turretSubsystem = turretSubsystem;
     this.dontShootCommand = new FieldOrientedDriveCommand(drivetrain, xSupplier, ySupplier, rotationSupplier)
@@ -44,6 +46,7 @@ public class SpeakerOrBlinkCommand extends Command {
         ledSubsystem,
         xSupplier,
         ySupplier,
+        robotPoseSupplier,
         SPEAKER_RED_TELE,
         SPEAKER_BLUE_TELE,
         SHOOTER_INTERPOLATOR,

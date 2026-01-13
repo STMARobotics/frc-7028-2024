@@ -28,6 +28,7 @@ import frc.robot.commands.led.LEDMarqueeCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.QuestNavSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import java.util.function.Supplier;
@@ -43,18 +44,21 @@ public class AutoCommands {
   private final TurretSubsystem turretSubsystem;
   private final IntakeSubsystem intakeSubsystem;
   private final LEDSubsystem ledSubsystem;
+  private final QuestNavSubsystem questNavSubsystem;
 
   public AutoCommands(
       CommandSwerveDrivetrain drivetrainSubsystem,
       ShooterSubsystem shooterSubsystem,
       TurretSubsystem turretSubsystem,
       IntakeSubsystem intakeSubsystem,
-      LEDSubsystem ledSubsystem) {
+      LEDSubsystem ledSubsystem,
+      QuestNavSubsystem questNavSubsystem) {
     this.drivetrainSubsystem = drivetrainSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.turretSubsystem = turretSubsystem;
     this.intakeSubsystem = intakeSubsystem;
     this.ledSubsystem = ledSubsystem;
+    this.questNavSubsystem = questNavSubsystem;
   }
 
   /** Registers named commands for PathPlanner */
@@ -208,6 +212,7 @@ public class AutoCommands {
         ledSubsystem,
         xSupplier,
         ySupplier,
+        () -> questNavSubsystem.getLatestPose().toPose2d(),
         STOCKPILE_MID_RED,
         STOCKPILE_MID_BLUE,
         STOCKPILE_INTERPOLATOR,

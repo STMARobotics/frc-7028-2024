@@ -53,6 +53,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.QuestNavSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import java.util.Map;
@@ -72,6 +73,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+  private final QuestNavSubsystem questNavSubsystem = new QuestNavSubsystem();
   private final TestCommand testCommand = new TestCommand(intakeSubsystem, shooterSubsystem, turretSubsystem);
 
   private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
@@ -84,7 +86,8 @@ public class RobotContainer {
       shooterSubsystem,
       turretSubsystem,
       intakeSubsystem,
-      ledSubsystem);
+      ledSubsystem,
+      questNavSubsystem);
 
   public RobotContainer() {
     // Configure control binding scheme
@@ -189,7 +192,8 @@ public class RobotContainer {
                     ledSubsystem,
                     controlBindings.translationX(),
                     controlBindings.translationY(),
-                    controlBindings.omega())));
+                    controlBindings.omega(),
+                    () -> questNavSubsystem.getLatestPose().toPose2d())));
 
     controlBindings.manualShoot()
         .ifPresent(
@@ -214,7 +218,8 @@ public class RobotContainer {
                     ledSubsystem,
                     controlBindings.translationX(),
                     controlBindings.translationY(),
-                    controlBindings.omega())));
+                    controlBindings.omega(),
+                    () -> questNavSubsystem.getLatestPose().toPose2d())));
 
     controlBindings.stockpileMiddle()
         .ifPresent(
@@ -226,6 +231,7 @@ public class RobotContainer {
                     ledSubsystem,
                     controlBindings.translationX(),
                     controlBindings.translationY(),
+                    () -> questNavSubsystem.getLatestPose().toPose2d(),
                     STOCKPILE_MID_RED,
                     STOCKPILE_MID_BLUE,
                     STOCKPILE_INTERPOLATOR,

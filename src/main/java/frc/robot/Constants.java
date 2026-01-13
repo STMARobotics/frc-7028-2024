@@ -121,6 +121,12 @@ public class Constants {
     public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
   }
 
+  public static class QuestNavConstants {
+    public static Transform3d ROBOT_TO_QUEST = new Transform3d(
+        new Translation3d(Inches.of((29.0 / 2) - 16.725), Inches.of((29.0 / 2.0) - 5.762), Inches.of(24)),
+        new Rotation3d(0.0, 0.0, degreesToRadians(180)));
+  }
+
   public static class ShooterConstants {
     public static final int DEVICE_ID_TOP = 50;
     public static final int DEVICE_ID_BOTTOM = 51;
