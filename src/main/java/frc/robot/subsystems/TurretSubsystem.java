@@ -4,6 +4,7 @@ import static au.grapplerobotics.interfaces.LaserCanInterface.RangingMode.SHORT;
 import static com.ctre.phoenix6.signals.FeedbackSensorSourceValue.FusedCANcoder;
 import static com.ctre.phoenix6.signals.NeutralModeValue.Brake;
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -28,6 +29,7 @@ import static frc.robot.Constants.TurretConstants.INTAKE_PITCH_TOLERANCE;
 import static frc.robot.Constants.TurretConstants.INTAKE_VELOCITY;
 import static frc.robot.Constants.TurretConstants.INTAKE_YAW;
 import static frc.robot.Constants.TurretConstants.INTAKE_YAW_TOLERANCE;
+import static frc.robot.Constants.TurretConstants.MUZZLE_RADIUS;
 import static frc.robot.Constants.TurretConstants.NOTE_SENSOR_DISTANCE_THRESHOLD;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_FORWARD;
 import static frc.robot.Constants.TurretConstants.PITCH_LIMIT_REVERSE;
@@ -77,6 +79,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.Logged.Strategy;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
@@ -439,6 +442,15 @@ public class TurretSubsystem extends SubsystemBase {
     return yawAngle.mut_replace(translateYaw(compensatedYaw), Rotations);
   }
 
+  /**
+   * Gets the current yaw velocity
+   * 
+   * @return yaw velocity
+   */
+  public AngularVelocity getYawVelocity() {
+    return yawVelocity.refresh().getValue();
+  }
+
   /** Stops the roller motor */
   public void stopRollers() {
     rollerMotor.stopMotor();
@@ -475,6 +487,10 @@ public class TurretSubsystem extends SubsystemBase {
 
   public static Translation2d getTurretTranslation(Pose2d robotPose) {
     return robotPose.getTranslation().plus(ROBOT_TO_TURRET.rotateBy(robotPose.getRotation()));
+  }
+
+  public static Translation2d getTurretToMuzzle(Rotation2d turretFieldRotation) {
+    return new Translation2d(MUZZLE_RADIUS.in(Meters), turretFieldRotation);
   }
 
   /**

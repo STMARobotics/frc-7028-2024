@@ -11,6 +11,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kForward;
 import static edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction.kReverse;
 import static frc.robot.Constants.DrivetrainConstants.MAX_VELOCITY;
+import static frc.robot.Constants.ShootingConstants.SPEAKER_BLUE_TELE;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_INTERPOLATOR;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_BLUE;
 import static frc.robot.Constants.ShootingConstants.STOCKPILE_MID_RED;
@@ -24,7 +25,10 @@ import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -61,7 +65,7 @@ import java.util.Map;
 @Logged
 public class RobotContainer {
 
-  private static final boolean DEMO_MODE = true;
+  private static final boolean DEMO_MODE = false;
 
   private final ControlBindings controlBindings;
 
@@ -281,8 +285,14 @@ public class RobotContainer {
                     Degrees.of(20),
                     Degrees.of(180))));
 
-    controlBindings.seedFieldRelative()
-        .ifPresent(trigger -> trigger.onTrue(runOnce(drivetrain::seedFieldCentric, drivetrain)));
+    // Reset pose to 0.5m in front of blue speaker
+    controlBindings.seedFieldRelative().ifPresent(trigger -> trigger.onTrue(runOnce(() -> {
+      questNavSubsystem.resetPose(
+          new Pose3d(
+              new Translation3d(SPEAKER_BLUE_TELE.getX() + 0.5, SPEAKER_BLUE_TELE.getY(), 0.0),
+              new Rotation3d(0.0, 0.0, 0.0)));
+      drivetrain.seedFieldCentric();
+    }, questNavSubsystem, drivetrain)));
   }
 
   public void populateSysIdDashboard() {

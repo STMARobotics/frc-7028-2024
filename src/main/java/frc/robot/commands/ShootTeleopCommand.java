@@ -8,12 +8,14 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static edu.wpi.first.wpilibj.util.Color.kBlue;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kD;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kI;
 import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
+import static frc.robot.Constants.ShooterConstants.MECHANICAL_SHOT_DELAY;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
@@ -133,27 +135,84 @@ public class ShootTeleopCommand extends Command {
   @Override
   public void execute() {
     var robotPose = robotPoseSupplier.get();
+    var currentChassisSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
+
+    // --- 0. LATENCY COMPENSATION ---
+    // Predict where the robot will be when the note actually ejects using the mechanical shot delay
+    var futureTranslation = robotPose.getTranslation()
+        .plus(
+            new Translation2d(
+                currentChassisSpeeds.vxMetersPerSecond * MECHANICAL_SHOT_DELAY.in(Seconds),
+                currentChassisSpeeds.vyMetersPerSecond * MECHANICAL_SHOT_DELAY.in(Seconds)));
+
+    // Predict the robot's rotation too (important for Turret Transforms)
+    var futureRotation = robotPose.getRotation()
+        .plus(new Rotation2d(currentChassisSpeeds.omegaRadiansPerSecond * MECHANICAL_SHOT_DELAY.in(Seconds)));
+
+    // Use this Future Pose for all subsequent calculations
+    var futureRobotPose = new Pose2d(futureTranslation, futureRotation);
 
     // Translation to the center of the turret
-    var turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);
+    var turretTranslation = TurretSubsystem.getTurretTranslation(futureRobotPose);
 
-    // Distance between the robot and the target
-    var distanceToTarget = turretTranslation.getDistance(targetTranslation);
+    // --- PHYSICS-BASED PREDICTION START ---
 
-    // Lookup shooter settings for this distance
-    var shootingSettings = lookupTable.calculate(distanceToTarget);
+    // 1. Calculate the TOTAL effective velocity vector that gets imparted to the note.
 
-    // Calculate time to hit target
-    var timeUntilScored = SHOOT_WHILE_MOVING_COEFFICIENT
-        * (distanceToTarget / shootingSettings.getVelocity().in(RotationsPerSecond));
+    // A. Robot Linear Velocity
+    var vRobot = new Translation2d(currentChassisSpeeds.vxMetersPerSecond, currentChassisSpeeds.vyMetersPerSecond);
 
-    // Calculate the predicted offset of the target compared to current pose (in meters)
-    var currentChassisSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
-    var targetPredictedOffset = new Translation2d(
-        (currentChassisSpeeds.vxMetersPerSecond * timeUntilScored),
-        (currentChassisSpeeds.vyMetersPerSecond * timeUntilScored));
+    // B. Robot Angular Velocity Component (at Turret Center)
+    // Tangential Velocity = omega x r => (-w * ry, w * rx)
+    var omegaRobot = currentChassisSpeeds.omegaRadiansPerSecond;
+    var robotToTurret = turretTranslation.minus(futureRobotPose.getTranslation());
+    var vTanRobot = new Translation2d(-omegaRobot * robotToTurret.getY(), omegaRobot * robotToTurret.getX());
 
-    var predictedTargetTranslation = targetTranslation.minus(targetPredictedOffset);
+    // C. Turret Angular Velocity Component (at Muzzle)
+    // The turret adds its own rotation on top of the robot's rotation.
+    var turretVelocity = turretSubsystem.getYawVelocity().in(RadiansPerSecond);
+    var totalOmega = omegaRobot + turretVelocity;
+
+    // Vector from Turret Center to Muzzle (Field Relative)
+    // Use robot pose + current turret relative yaw
+    var turretFieldRotation = futureRobotPose.getRotation().plus(new Rotation2d(turretSubsystem.getYaw()));
+    var turretToMuzzle = TurretSubsystem.getTurretToMuzzle(turretFieldRotation);
+
+    // Tangential Velocity at Muzzle due to Total Rotation
+    var vTanTurret = new Translation2d(-totalOmega * turretToMuzzle.getY(), totalOmega * turretToMuzzle.getX());
+
+    // Sum all velocity vectors to get the "Effective Injection Velocity"
+    var effectiveShooterVelocity = vRobot.plus(vTanRobot).plus(vTanTurret);
+
+    // 2. Iteratively solve for the correct aim point (Fixes circular dependency)
+    var predictedTargetTranslation = targetTranslation;
+
+    // Initial guess
+    double dist = predictedTargetTranslation.getDistance(turretTranslation);
+    var shootingSettings = lookupTable.calculate(dist);
+
+    // Iterate 4 times to converge on the intersection of trajectory and target
+    for (int i = 0; i < 4; i++) {
+      dist = predictedTargetTranslation.getDistance(turretTranslation);
+      shootingSettings = lookupTable.calculate(dist);
+
+      var timeUntilScored = 0.0;
+      var rps = shootingSettings.getVelocity().in(RotationsPerSecond);
+      var pitchRads = shootingSettings.getPitch().in(Radians);
+
+      if (Math.abs(rps) > 1e-3) {
+        // Calculate flight time using horizontal velocity component:
+        // Horizontal Velocity = Total Velocity * cos(pitch)
+        // Time = Distance / Horizontal Velocity
+        timeUntilScored = SHOOT_WHILE_MOVING_COEFFICIENT * (dist / (rps * Math.cos(pitchRads)));
+      }
+
+      // The offset is how far the robot's velocity vector moves the note relative to a static shot
+      var targetPredictedOffset = effectiveShooterVelocity.times(timeUntilScored);
+
+      // Shift the virtual target opposite to the motion so we shoot "ahead"
+      predictedTargetTranslation = targetTranslation.minus(targetPredictedOffset);
+    }
 
     var predictedDist = predictedTargetTranslation.getDistance(turretTranslation);
 
@@ -161,7 +220,7 @@ public class ShootTeleopCommand extends Command {
     var angleToTarget = predictedTargetTranslation.minus(turretTranslation).getAngle();
 
     // Calculate required turret angle, accounting for the robot heading
-    turretYawTarget.mut_replace(angleToTarget.minus(robotPose.getRotation()).getRotations(), Rotations);
+    turretYawTarget.mut_replace(angleToTarget.minus(futureRobotPose.getRotation()).getRotations(), Rotations);
 
     shootingSettings = lookupTable.calculate(predictedDist);
 
