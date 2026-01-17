@@ -2,7 +2,7 @@ package frc.robot.houndutil;
 
 import java.util.function.Function;
 
-import com.techhounds.houndutil.houndlib.BallPhysics.ShotSolution;
+import frc.robot.houndutil.BallPhysics.ShotSolution;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;

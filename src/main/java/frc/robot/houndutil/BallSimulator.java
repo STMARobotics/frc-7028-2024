@@ -7,10 +7,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.techhounds.houndutil.houndlog.annotations.Log;
-import com.techhounds.houndutil.houndlog.annotations.LoggedObject;
-
-@LoggedObject
 public class BallSimulator {
     private static final double OUT_OF_BOUNDS_MARGIN = 1.0;
     private static final double FIXED_DT = 0.001; // 1 ms
@@ -74,7 +70,6 @@ public class BallSimulator {
         }
     }
 
-    @Log
     public Pose3d[] getBallPoses() {
         Pose3d[] poses = new Pose3d[balls.size()];
 

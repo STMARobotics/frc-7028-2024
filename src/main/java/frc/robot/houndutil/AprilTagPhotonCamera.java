@@ -12,10 +12,6 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import com.techhounds.houndutil.houndlog.FaultLogger;
-import com.techhounds.houndutil.houndlog.annotations.Log;
-import com.techhounds.houndutil.houndlog.annotations.LoggedObject;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
@@ -38,7 +34,6 @@ import edu.wpi.first.wpilibj.RobotBase;
  * Note: you must enable multi-tag PNP on the PhotonVision web UI for each
  * camera for the correct pose strategy to activate.
  */
-@LoggedObject
 public class AprilTagPhotonCamera {
     /**
      * Common constants for a camera intended to view AprilTags. Should be able to
@@ -74,18 +69,12 @@ public class AprilTagPhotonCamera {
     protected Transform3d robotToCam;
 
     // all used for logging only
-    @Log
     protected Pose3d estimatedRobotPose = new Pose3d();
-    @Log
     protected Pose3d estimatedTrigPose = new Pose3d();
-    @Log
     protected Pose3d[] detectedAprilTags = new Pose3d[] { Pose3d.kZero };
-    @Log
     protected Pose3d[] detectedTrigAprilTags = new Pose3d[] { Pose3d.kZero };
-    @Log
     protected boolean hasPose = false;
     protected boolean hasTrigPose = false;
-    @Log
     protected int targetCount = 0;
 
     protected List<Pair<EstimatedRobotPose, Matrix<N3, N1>>> estimatedRobotPoses = new ArrayList<Pair<EstimatedRobotPose, Matrix<N3, N1>>>();
@@ -132,7 +121,6 @@ public class AprilTagPhotonCamera {
 
             cameraSim.enableDrawWireframe(true);
         }
-        FaultLogger.register(photonCamera);
     }
 
     /**
