@@ -186,7 +186,6 @@ public class ShootTeleopCommand extends Command {
     var stationarySolution = BallPhysics
         .solveBallisticWithIncomingAngle(turretPos, targetPose, currentPitch.in(Radians));
     try {
-
       var predictedSolution = ShootOnTheFlyCalculator.calculateEffectiveTargetLocation(
           robotPose2D,
             targetPose,
