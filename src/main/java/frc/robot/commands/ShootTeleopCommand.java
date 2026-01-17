@@ -164,10 +164,6 @@ public class ShootTeleopCommand extends Command {
 
     var robotPose2D = new Pose2d(robotPose.getX(), robotPose.getY(), robotPose.getRotation());
 
-    var targetPredictedOffset = new Translation2d(
-        (currentChassisSpeeds.vxMetersPerSecond * timeUntilScored),
-        (currentChassisSpeeds.vyMetersPerSecond * timeUntilScored));
-
     // To implement or find: dist to projective vel
     Function<Double, Double> distanceToProjectileVelFunc;
 

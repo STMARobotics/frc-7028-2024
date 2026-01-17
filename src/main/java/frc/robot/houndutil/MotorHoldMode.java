@@ -5,6 +5,6 @@ package frc.robot.houndutil;
  * interoperability between motor types.
  */
 public enum MotorHoldMode {
-    BRAKE,
-    COAST;
+  BRAKE,
+  COAST;
 }

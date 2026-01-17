@@ -5,9 +5,9 @@ package frc.robot.houndutil;
  * expression.
  */
 public class BooleanContainer {
-    public boolean value;
+  public boolean value;
 
-    public BooleanContainer(boolean value) {
-        this.value = value;
-    }
+  public BooleanContainer(boolean value) {
+    this.value = value;
+  }
 }

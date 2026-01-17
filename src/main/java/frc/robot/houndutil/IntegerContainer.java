@@ -5,9 +5,9 @@ package frc.robot.houndutil;
  * expression. see: {@link com.techhounds.houndutil.houndlib.leds.LEDPatterns}
  */
 public class IntegerContainer {
-    public int value;
+  public int value;
 
-    public IntegerContainer(int value) {
-        this.value = value;
-    }
+  public IntegerContainer(int value) {
+    this.value = value;
+  }
 }
