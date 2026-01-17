@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.math.geometry.Rotation2d.fromRadians;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Radians;
@@ -32,12 +33,15 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.TurretConstants;
+import frc.robot.houndutil.BallPhysics;
 import frc.robot.houndutil.ChassisAccelerations;
 import frc.robot.houndutil.ShootOnTheFlyCalculator;
 import frc.robot.math.ChassisSpeedsRateLimiter;
@@ -50,6 +54,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
+ *
  * This command automatically shoots at a target while a supplier (the driver) is translating the
  * robot. This command will slow translation, and take of rotation to make sure the turret can reach
  * the target.
@@ -60,6 +65,7 @@ public class ShootTeleopCommand extends Command {
   private static final double timeTolerance = 0;
   private static final Double targetHeight = 0.0;
   private static final Rotation3d targetRotation = null;
+  private static final double turretZ = 0.0;
   private final CommandSwerveDrivetrain drivetrain;
   private final ShooterSubsystem shooter;
   private final TurretSubsystem turretSubsystem;
@@ -144,7 +150,7 @@ public class ShootTeleopCommand extends Command {
 
   @Override
   public void execute() {
-    var robotPose = drivetrain.getState().Pose;
+    var robotPose = drivetrain.getState();
 
     // Translation to the center of the turret
     var turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);
@@ -167,7 +173,20 @@ public class ShootTeleopCommand extends Command {
     // To implement or find: dist to projective vel
     Function<Double, Double> distanceToProjectileVelFunc;
 
+    var currentPitch = turretSubsystem.getPitch();
+    var currentYaw = turretSubsystem.getYaw();
+
+    var curTurTranslation2D = TurretSubsystem.getTurretTranslation(robotPose2D);
+    var turretPos = new Pose3d(
+        new Translation3d(
+            curTurTranslation2D.getX(),
+            curTurTranslation2D.getY(),
+            turretZ + TurretConstants.MUZZLE_RADIUS.in(Meters) * Math.sin(turretSubsystem.getPitch().in(Radians))),
+        new Rotation3d(Radians.zero(), currentPitch, currentYaw));
+    var stationarySolution = BallPhysics
+        .solveBallisticWithIncomingAngle(turretPos, targetPose, currentPitch.in(Radians));
     try {
+
       var predictedSolution = ShootOnTheFlyCalculator.calculateEffectiveTargetLocation(
           robotPose2D,
             targetPose,

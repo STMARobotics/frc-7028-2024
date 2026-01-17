@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Millimeter;
+import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
@@ -121,6 +122,12 @@ public class Constants {
     public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
   }
 
+  public static class QuestNavConstants {
+    public static Transform3d ROBOT_TO_QUEST = new Transform3d(
+        new Translation3d(Inches.of((39.0 / 2) + 6), Inches.zero(), Inches.of(11.5)),
+        new Rotation3d(0.0, 0.0, 0.0));
+  }
+
   public static class ShooterConstants {
     public static final int DEVICE_ID_TOP = 50;
     public static final int DEVICE_ID_BOTTOM = 51;
@@ -148,6 +155,8 @@ public class Constants {
 
     public static final AngularVelocity AMP_TOP_VELOCITY = RotationsPerSecond.of(5.0);
     public static final AngularVelocity AMP_BOTTOM_VELOCITY = RotationsPerSecond.of(15.0);
+
+    public static final Time MECHANICAL_SHOT_DELAY = Milliseconds.of(0.1);
   }
 
   public static class IntakeConstants {
@@ -196,6 +205,8 @@ public class Constants {
 
     // Distance from robot center to turret center
     public static final Translation2d ROBOT_TO_TURRET = new Translation2d(Inches.of(-5.508), Inches.zero());
+    // TODO: measure actual muzzle radius
+    public static final Distance MUZZLE_RADIUS = Inches.of(8);
 
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs().withKP(140)
         .withKI(0.0)
