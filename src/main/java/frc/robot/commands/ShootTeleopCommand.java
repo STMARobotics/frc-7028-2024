@@ -48,6 +48,7 @@ import java.util.function.Supplier;
 
 import frc.robot.houndutil.ChassisAccelerations;
 import frc.robot.houndutil.ShootOnTheFlyCalculator;
+import frc.robot.houndutil.ShootOnTheFlyCalculator.InterceptSolution;
 /**
  * This command automatically shoots at a target while a supplier (the driver) is translating the
  * robot. This command will slow translation, and take of rotation to make sure the turret can reach
@@ -159,16 +160,21 @@ public class ShootTeleopCommand extends Command {
                 (currentChassisSpeeds.vyMetersPerSecond * timeUntilScored));
       
             try {
-              var newPredictedShootOnTheFlySolution = ShootOnTheFlyCalculator.solveShootOnTheFly(robotPose, getTargetPose(), currentChassisSpeeds, getChasisAcceleration(), getTargetSpeedInRPS(), maxIterations, timeTolerance);
+              InterceptSolution newPredictedShootOnTheFlySolution = ShootOnTheFlyCalculator.solveShootOnTheFly(
+                robotPose, 
+                getTargetPose(), 
+                currentChassisSpeeds, 
+                getChasisAcceleration(), 
+                getTargetSpeedInRPS(), 
+                maxIterations, 
+                timeTolerance);
 
-              if (newPredictedShootOnTheFlySolution()) {
-              var solution = newPredictedShootOnTheFlySolution.get();
+             var solution = newPredictedShootOnTheFlySolution.effectiveTargetPose();
               targetPredictedOffset = new Translation2d(
-                  solution.targetOffset.getX(),
-                  solution.targetOffset.getY());
-            }
+                  solution.getX(),
+                  solution.getY());
             } catch (Exception e) {
-              // TODO: handle exception
+              return;
             }
             
             
