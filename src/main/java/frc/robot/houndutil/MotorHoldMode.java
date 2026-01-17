@@ -1,4 +1,4 @@
-package com.techhounds.houndutil.houndlib;
+package frc.robot.houndutil;
 
 /**
  * Enum class that represents the two possible idle modes for a motor. Used for

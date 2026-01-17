@@ -1,4 +1,4 @@
-package com.techhounds.houndutil.houndlib;
+package frc.robot.houndutil;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;

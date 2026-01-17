@@ -1,4 +1,4 @@
-package com.techhounds.houndutil.houndlib;
+package frc.robot.houndutil;
 
 public class BallConstants {
     public final double mass;

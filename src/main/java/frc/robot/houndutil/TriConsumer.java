@@ -1,4 +1,4 @@
-package com.techhounds.houndutil.houndlib;
+package frc.robot.houndutil;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;

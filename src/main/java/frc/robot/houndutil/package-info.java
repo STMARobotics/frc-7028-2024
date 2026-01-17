@@ -10,4 +10,4 @@
  * <li>configurators for REV devices</li>
  * </ul>
  */
-package com.techhounds.houndutil.houndlib;
+package frc.robot.houndutil;

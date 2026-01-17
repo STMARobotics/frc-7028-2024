@@ -1,4 +1,4 @@
-package com.techhounds.houndutil.houndlib;
+package frc.robot.houndutil;
 
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose3d;

@@ -1,4 +1,4 @@
-package com.techhounds.houndutil.houndlib;
+package frc.robot.houndutil;
 
 /**
  * A container for a double value, used for passing by reference into a lambda
