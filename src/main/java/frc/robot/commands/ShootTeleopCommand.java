@@ -181,7 +181,7 @@ public class ShootTeleopCommand extends Command {
             maxIterations,
             AccelerationMultiplier);
 
-      var targetPredictedOffset = new Translation2d(predictedSolution, solution.getY());
+      var targetPredictedOffset = new Translation2d(predictedSolution.getX(), predictedSolution.getY());
 
       var predictedTargetTranslation = targetTranslation.minus(targetPredictedOffset);
 
