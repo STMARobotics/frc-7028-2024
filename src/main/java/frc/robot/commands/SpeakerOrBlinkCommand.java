@@ -50,7 +50,7 @@ public class SpeakerOrBlinkCommand extends Command {
         SPEAKER_RED_TELE,
         SPEAKER_BLUE_TELE,
         SHOOTER_INTERPOLATOR,
-        1.0);
+        0.30);
 
     addRequirements(drivetrain, shooter, turretSubsystem, ledSubsystem);
   }

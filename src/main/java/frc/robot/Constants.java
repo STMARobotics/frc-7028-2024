@@ -124,7 +124,7 @@ public class Constants {
 
   public static class QuestNavConstants {
     public static Transform3d ROBOT_TO_QUEST = new Transform3d(
-        new Translation3d(Inches.of((39.0 / 2) + 6), Inches.zero(), Inches.of(11.5)),
+        new Translation3d(Inches.of((39.0 / 2.0) - 6.0), Inches.zero(), Inches.of(11.5)),
         new Rotation3d(0.0, 0.0, 0.0));
   }
 
@@ -156,7 +156,7 @@ public class Constants {
     public static final AngularVelocity AMP_TOP_VELOCITY = RotationsPerSecond.of(5.0);
     public static final AngularVelocity AMP_BOTTOM_VELOCITY = RotationsPerSecond.of(15.0);
 
-    public static final Time MECHANICAL_SHOT_DELAY = Milliseconds.of(0.1);
+    public static final Time MECHANICAL_SHOT_DELAY = Milliseconds.of(0.2);
   }
 
   public static class IntakeConstants {
@@ -205,7 +205,7 @@ public class Constants {
 
     // Distance from robot center to turret center
     public static final Translation2d ROBOT_TO_TURRET = new Translation2d(Inches.of(-5.508), Inches.zero());
-    // TODO: measure actual muzzle radius
+    // Distance from turret center to where the note launches
     public static final Distance MUZZLE_RADIUS = Inches.of(8);
 
     public static final SlotConfigs YAW_SLOT_CONFIGS = new SlotConfigs().withKP(140)
