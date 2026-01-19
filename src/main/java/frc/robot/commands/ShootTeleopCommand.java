@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.wpilibj.DriverStation.Alliance.Blue;
 import static edu.wpi.first.wpilibj.util.Color.kBlue;
@@ -18,7 +17,6 @@ import static frc.robot.Constants.AutoDriveConstants.THETA_kP;
 import static frc.robot.Constants.ShootingConstants.AIM_TOLERANCE;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_FORWARD;
 import static frc.robot.Constants.ShootingConstants.DRIVETRAIN_YAW_LIMIT_REVERSE;
-import static frc.robot.Constants.ShootingConstants.SHOOT_WHILE_MOVING_COEFFICIENT;
 import static frc.robot.Constants.TeleopDriveConstants.ROTATION_RATE_LIMIT;
 import static frc.robot.Constants.TeleopDriveConstants.TRANSLATION_RATE_LIMIT;
 import static java.lang.Math.PI;
@@ -28,20 +26,16 @@ import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.TurretConstants;
-import frc.robot.houndutil.BallPhysics;
 import frc.robot.houndutil.ChassisAccelerations;
 import frc.robot.houndutil.ShootOnTheFlyCalculator;
 import frc.robot.math.ChassisSpeedsRateLimiter;
@@ -163,35 +157,21 @@ public class ShootTeleopCommand extends Command {
     var shootingSettings = lookupTable.calculate(distanceToTarget);
 
     // Calculate time to hit target
-    var timeUntilScored = SHOOT_WHILE_MOVING_COEFFICIENT
-        * (distanceToTarget / shootingSettings.getVelocity().in(RotationsPerSecond));
+    // var timeUntilScored = SHOOT_WHILE_MOVING_COEFFICIENT
+    // * (distanceToTarget / shootingSettings.getVelocity().in(RotationsPerSecond));
 
     // Calculate the predicted offset of the target compared to current pose (in meters)
     var currentChassisSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
     var tempCurrentTime = System.currentTimeMillis();
-
-    var robotPose2D = new Pose2d(robotPose.getX(), robotPose.getY(), robotPose.getRotation());
 
     // To implement or find: dist to projective vel
     Function<Double, Double> distanceToProjectileVelFunc = (predictedDist) -> {
       return lookupTable.calculate(predictedDist).getDistance().in(Meters);
     };
 
-    var currentPitch = turretSubsystem.getPitch();
-    var currentYaw = turretSubsystem.getYaw();
-
-    var curTurTranslation2D = TurretSubsystem.getTurretTranslation(robotPose2D);
-    var turretPos = new Pose3d(
-        new Translation3d(
-            curTurTranslation2D.getX(),
-            curTurTranslation2D.getY(),
-            turretZ + TurretConstants.MUZZLE_RADIUS.in(Meters) * Math.sin(turretSubsystem.getPitch().in(Radians))),
-        new Rotation3d(Radians.zero(), currentPitch, currentYaw));
-    var stationarySolution = BallPhysics
-        .solveBallisticWithIncomingAngle(turretPos, targetPose, currentPitch.in(Radians));
     try {
       var predictedSolution = ShootOnTheFlyCalculator.calculateEffectiveTargetLocation(
-          robotPose2D,
+          robotPose,
             targetPose,
             currentChassisSpeeds,
             getChasisAcceleration(currentChassisSpeeds, previousChassisSpeed, tempCurrentTime),
