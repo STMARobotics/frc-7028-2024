@@ -47,7 +47,7 @@ public final class BallPhysics {
     return direction.times(magnitude);
   }
 
-  private static Rotation3d integrateRotation(Rotation3d current, TranslDistanceation3d omega, doublDistancee dt) {
+  private static Rotation3d integrateRotation(Rotation3d current, Translation3d omega, double dt) {
 
     Rotation3d delta = new Rotation3d(omega.getX() * dt, omega.getY() * dt, omega.getZ() * dt);
 
