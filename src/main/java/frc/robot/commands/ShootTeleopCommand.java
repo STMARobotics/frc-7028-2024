@@ -81,6 +81,7 @@ public class ShootTeleopCommand extends Command {
   // Reusable objects to prevent reallocation (to reduce memory pressure)
   private final ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
   private ChassisSpeeds previousChassisSpeed = new ChassisSpeeds();
+  private long previousChassisSpeedTime = 0;
   private final MutAngle turretYawTarget = Rotations.mutable(0);
   private final Translation2d targetRed;
   private final Translation2d targetBlue;
@@ -148,6 +149,7 @@ public class ShootTeleopCommand extends Command {
     targetTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? targetBlue : targetRed;
     isShooting = false;
     previousChassisSpeed = drivetrain.getCurrentFieldChassisSpeeds();
+    previousChassisSpeedTime = System.currentTimeMillis();
   }
 
   @Override
@@ -170,6 +172,7 @@ public class ShootTeleopCommand extends Command {
 
     // Calculate the predicted offset of the target compared to current pose (in meters)
     var currentChassisSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
+    var tempCurrentTime = System.currentTimeMillis();
   
 
     var robotPose2D = new Pose2d(robotPose.getX(), robotPose.getY(), robotPose.getRotation());
@@ -194,7 +197,7 @@ public class ShootTeleopCommand extends Command {
           robotPose2D,
             targetPose,
             currentChassisSpeeds,
-            getChasisAcceleration(currentChassisSpeeds, previousChassisSpeed),
+            getChasisAcceleration(currentChassisSpeeds, previousChassisSpeed, tempCurrentTime),
             distanceToProjectileVelFunc,
             maxIterations,
             AccelerationMultiplier);
@@ -295,6 +298,7 @@ public class ShootTeleopCommand extends Command {
       return;
     }
     previousChassisSpeed = currentChassisSpeeds;
+    previousChassisSpeedTime = tempCurrentTime;
 
   }
 
@@ -307,8 +311,10 @@ public class ShootTeleopCommand extends Command {
     throw new UnsupportedOperationException("Unimplemented method 'getTargetSpeedInRPS'");
   }
 
-  private ChassisAccelerations getChasisAcceleration(ChassisSpeeds currentSpeed, ChassisSpeeds previousSpeed) {
-    return new ChassisAccelerations(currentSpeed, previousSpeed, 0.02);
+  private ChassisAccelerations getChasisAcceleration(ChassisSpeeds currentSpeed, ChassisSpeeds previousSpeed, long currentTimeMillis) {
+   double timeDiffrence = (currentTimeMillis - previousChassisSpeedTime)/1000.0;
+  
+    return new ChassisAccelerations(currentSpeed, previousSpeed, timeDiffrence);
   }
 
   @Override
