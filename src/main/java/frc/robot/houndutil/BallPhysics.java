@@ -1,8 +1,10 @@
 package frc.robot.houndutil;
 
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 public final class BallPhysics {
@@ -105,14 +107,13 @@ public final class BallPhysics {
     return new ShotSolution(launchPitch, launchSpeed, T);
   }
 
-  public static ShotSolution solveBallisticWithSpeed(Pose3d shooterPose, Pose3d targetPose, double launchSpeed) {
-
-    Translation3d s = shooterPose.getTranslation();
+  public static ShotSolution solveBallisticWithSpeed(Pose2d shooterPose, Pose3d targetPose, double launchSpeed) {
+    Translation2d s = shooterPose.getTranslation();
     Translation3d t = targetPose.getTranslation();
 
     double dx = t.getX() - s.getX();
     double dy = t.getY() - s.getY();
-    double dz = t.getZ() - s.getZ();
+    double dz = t.getZ() - 0; // TOTD MM 2026-01-19 - we will need the real height of the shooter
 
     double d = Math.hypot(dx, dy);
     if (d < 1e-9) {

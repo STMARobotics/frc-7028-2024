@@ -87,17 +87,14 @@ public class ShootTeleopCommand extends Command {
   private final Translation2d targetBlue;
   private final VelocityPitchInterpolator lookupTable;
   private final double velocityMultiplier;
-  private final double AccelerationMultiplier;
+  private final double AccelerationMultiplier = 1.0;
   private final double maxVelocity;
-
+  private Translation2d targetTranslation = new Translation2d();
   private final Pose3d targetPose = new Pose3d(
       targetTranslation.getX(),
       targetTranslation.getY(),
       targetHeight,
       targetRotation);
-
-  private Translation2d targetTranslation;
-
   private final SwerveRequest.FieldCentricFacingAngle swerveRequestFacing = new SwerveRequest.FieldCentricFacingAngle()
       .withDriveRequestType(DriveRequestType.Velocity)
       .withSteerRequestType(SteerRequestType.MotionMagicExpo)
@@ -154,11 +151,10 @@ public class ShootTeleopCommand extends Command {
 
   @Override
   public void execute() {
-    
-    var robotPose = drivetrain.getState();
+    var robotPose = drivetrain.getState().Pose;
 
     // Translation to the center of the turret
-    var turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);
+    Translation2d turretTranslation = TurretSubsystem.getTurretTranslation(robotPose);
 
     // Distance between the robot and the target
     var distanceToTarget = turretTranslation.getDistance(targetTranslation);
@@ -173,12 +169,13 @@ public class ShootTeleopCommand extends Command {
     // Calculate the predicted offset of the target compared to current pose (in meters)
     var currentChassisSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
     var tempCurrentTime = System.currentTimeMillis();
-  
 
     var robotPose2D = new Pose2d(robotPose.getX(), robotPose.getY(), robotPose.getRotation());
 
     // To implement or find: dist to projective vel
-    Function<Double, Double> distanceToProjectileVelFunc;
+    Function<Double, Double> distanceToProjectileVelFunc = (predictedDist) -> {
+      return lookupTable.calculate(predictedDist).getDistance().in(Meters);
+    };
 
     var currentPitch = turretSubsystem.getPitch();
     var currentYaw = turretSubsystem.getYaw();
@@ -311,9 +308,12 @@ public class ShootTeleopCommand extends Command {
     throw new UnsupportedOperationException("Unimplemented method 'getTargetSpeedInRPS'");
   }
 
-  private ChassisAccelerations getChasisAcceleration(ChassisSpeeds currentSpeed, ChassisSpeeds previousSpeed, long currentTimeMillis) {
-   double timeDiffrence = (currentTimeMillis - previousChassisSpeedTime)/1000.0;
-  
+  private ChassisAccelerations getChasisAcceleration(
+      ChassisSpeeds currentSpeed,
+      ChassisSpeeds previousSpeed,
+      long currentTimeMillis) {
+    double timeDiffrence = (currentTimeMillis - previousChassisSpeedTime) / 1000.0;
+
     return new ChassisAccelerations(currentSpeed, previousSpeed, timeDiffrence);
   }
 
