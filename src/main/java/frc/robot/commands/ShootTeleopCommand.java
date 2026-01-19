@@ -80,6 +80,7 @@ public class ShootTeleopCommand extends Command {
 
   // Reusable objects to prevent reallocation (to reduce memory pressure)
   private final ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+  private ChassisSpeeds previousChassisSpeed = new ChassisSpeeds();
   private final MutAngle turretYawTarget = Rotations.mutable(0);
   private final Translation2d targetRed;
   private final Translation2d targetBlue;
@@ -146,10 +147,12 @@ public class ShootTeleopCommand extends Command {
     var alliance = DriverStation.getAlliance();
     targetTranslation = (alliance.isEmpty() || alliance.get() == Blue) ? targetBlue : targetRed;
     isShooting = false;
+    previousChassisSpeed = drivetrain.getCurrentFieldChassisSpeeds();
   }
 
   @Override
   public void execute() {
+    
     var robotPose = drivetrain.getState();
 
     // Translation to the center of the turret
@@ -167,6 +170,7 @@ public class ShootTeleopCommand extends Command {
 
     // Calculate the predicted offset of the target compared to current pose (in meters)
     var currentChassisSpeeds = drivetrain.getCurrentFieldChassisSpeeds();
+  
 
     var robotPose2D = new Pose2d(robotPose.getX(), robotPose.getY(), robotPose.getRotation());
 
@@ -190,7 +194,7 @@ public class ShootTeleopCommand extends Command {
           robotPose2D,
             targetPose,
             currentChassisSpeeds,
-            getChasisAcceleration(),
+            getChasisAcceleration(currentChassisSpeeds, previousChassisSpeed),
             distanceToProjectileVelFunc,
             maxIterations,
             AccelerationMultiplier);
@@ -290,6 +294,7 @@ public class ShootTeleopCommand extends Command {
     } catch (Exception e) {
       return;
     }
+    previousChassisSpeed = currentChassisSpeeds;
 
   }
 
@@ -302,9 +307,8 @@ public class ShootTeleopCommand extends Command {
     throw new UnsupportedOperationException("Unimplemented method 'getTargetSpeedInRPS'");
   }
 
-  private ChassisAccelerations getChasisAcceleration() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getChasisAcceleration'");
+  private ChassisAccelerations getChasisAcceleration(ChassisSpeeds currentSpeed, ChassisSpeeds previousSpeed) {
+    return new ChassisAccelerations(currentSpeed, previousSpeed, 0.02);
   }
 
   @Override
