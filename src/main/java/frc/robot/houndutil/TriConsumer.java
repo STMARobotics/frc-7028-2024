@@ -14,14 +14,14 @@ import java.util.function.BiConsumer;
  */
 @FunctionalInterface
 public interface TriConsumer<A, B, C> {
-    void accept(A a, B b, C c);
+  void accept(A a, B b, C c);
 
-    default TriConsumer<A, B, C> andThen(TriConsumer<? super A, ? super B, ? super C> after) {
-        Objects.requireNonNull(after);
+  default TriConsumer<A, B, C> andThen(TriConsumer<? super A, ? super B, ? super C> after) {
+    Objects.requireNonNull(after);
 
-        return (a, b, c) -> {
-            accept(a, b, c);
-            after.accept(a, b, c);
-        };
-    }
+    return (a, b, c) -> {
+      accept(a, b, c);
+      after.accept(a, b, c);
+    };
+  }
 }
