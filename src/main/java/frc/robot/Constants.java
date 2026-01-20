@@ -11,7 +11,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Millimeter;
-import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
@@ -155,8 +154,6 @@ public class Constants {
 
     public static final AngularVelocity AMP_TOP_VELOCITY = RotationsPerSecond.of(5.0);
     public static final AngularVelocity AMP_BOTTOM_VELOCITY = RotationsPerSecond.of(15.0);
-
-    public static final Time MECHANICAL_SHOT_DELAY = Milliseconds.of(0.2);
   }
 
   public static class IntakeConstants {
