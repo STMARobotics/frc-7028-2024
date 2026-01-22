@@ -78,7 +78,7 @@ public class ScoreSpeakerAutoCommand extends Command {
     var distanceToSpeaker = turretTranslation.getDistance(speakerTranslation);
 
     // Lookup shooter settings for this distance
-    var shootingSettings = SHOOTER_INTERPOLATOR.calculate(distanceToSpeaker);
+    var shootingSettings = SHOOTER_INTERPOLATOR.get(distanceToSpeaker);
 
     // Calculate time to hit speaker
     var timeUntilScored = SHOOT_WHILE_MOVING_COEFFICIENT
@@ -100,7 +100,7 @@ public class ScoreSpeakerAutoCommand extends Command {
     // Calculate required turret angle, accounting for the robot heading
     turretYawTarget.mut_replace(angleToSpeaker.minus(robotPose.getRotation()).getRotations(), Rotations);
 
-    shootingSettings = SHOOTER_INTERPOLATOR.calculate(predictedDist);
+    shootingSettings = SHOOTER_INTERPOLATOR.get(predictedDist);
 
     // Calculate ready state
     var isShooterReady = shooter.isReadyToShoot();

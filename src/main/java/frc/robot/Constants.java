@@ -30,6 +30,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Angle;
@@ -41,9 +43,6 @@ import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.math.VelocityPitchInterpolator;
-import frc.robot.math.VelocityPitchInterpolator.ShootingSettings;
-import java.util.List;
 
 public class Constants {
 
@@ -322,74 +321,46 @@ public class Constants {
     public static final Rotation2d DRIVETRAIN_YAW_LIMIT_REVERSE = new Rotation2d(
         TurretConstants.YAW_SHOOT_LIMIT_REVERSE.plus(DRIVETRAIN_MARGIN));
 
-    public static final VelocityPitchInterpolator SHOOTER_INTERPOLATOR = new VelocityPitchInterpolator(
-        List.of(
-            new ShootingSettings().distance(Meters.of(1.0400968))
-                .velocity(RotationsPerSecond.of(50))
-                .pitch(Degrees.of(34.0)),
-              new ShootingSettings().distance(Meters.of(1.4400968))
-                  .velocity(RotationsPerSecond.of(50))
-                  .pitch(Degrees.of(28.0)),
-              new ShootingSettings().distance(Meters.of(1.8500968))
-                  .velocity(RotationsPerSecond.of(50))
-                  .pitch(Degrees.of(19)),
-              new ShootingSettings().distance(Meters.of(2.3800968))
-                  .velocity(RotationsPerSecond.of(50))
-                  .pitch(Degrees.of(13.5)),
-              new ShootingSettings().distance(Meters.of(3.1500968))
-                  .velocity(RotationsPerSecond.of(50))
-                  .pitch(Degrees.of(8.5)),
-              new ShootingSettings().distance(Meters.of(3.7900968))
-                  .velocity(RotationsPerSecond.of(52))
-                  .pitch(Degrees.of(5.0)),
-              new ShootingSettings().distance(Meters.of(4.5200968))
-                  .velocity(RotationsPerSecond.of(57))
-                  .pitch(Degrees.of(2)),
-              new ShootingSettings().distance(Meters.of(4.599))
-                  .velocity(RotationsPerSecond.of(68))
-                  .pitch(Degrees.of(1)),
-              new ShootingSettings().distance(Meters.of(4.798))
-                  .velocity(RotationsPerSecond.of(68))
-                  .pitch(Degrees.of(0.975)),
-              new ShootingSettings().distance(Meters.of(5.00)).velocity(RotationsPerSecond.of(60)).pitch(Degrees.of(0)),
-              new ShootingSettings().distance(Meters.of(5.396))
-                  .velocity(RotationsPerSecond.of(58))
-                  .pitch(Degrees.of(0)),
-              new ShootingSettings().distance(Meters.of(5.677))
-                  .velocity(RotationsPerSecond.of(55))
-                  .pitch(Degrees.of(0)),
-              new ShootingSettings().distance(Meters.of(6.350))
-                  .velocity(RotationsPerSecond.of(54))
-                  .pitch(Degrees.of(0))));
+    public static final InterpolatingTreeMap<Double, ShootingSettings> SHOOTER_INTERPOLATOR = createShooterInterpolator();
 
-    public static final VelocityPitchInterpolator STOCKPILE_INTERPOLATOR = new VelocityPitchInterpolator(
-        List.of(
-            new ShootingSettings().distance(Meters.of(1)).velocity(RotationsPerSecond.of(8)).pitch(Degrees.of(0.05)),
-              new ShootingSettings().distance(Meters.of(2)).velocity(RotationsPerSecond.of(13)).pitch(Degrees.of(0.05)),
-              new ShootingSettings().distance(Meters.of(3)).velocity(RotationsPerSecond.of(17)).pitch(Degrees.of(0.05)),
-              new ShootingSettings().distance(Meters.of(4)).velocity(RotationsPerSecond.of(20)).pitch(Degrees.of(0.05)),
-              new ShootingSettings().distance(Meters.of(5)).velocity(RotationsPerSecond.of(24)).pitch(Degrees.of(0.05)),
-              new ShootingSettings().distance(Meters.of(5.99))
-                  .velocity(RotationsPerSecond.of(28))
-                  .pitch(Degrees.of(0.05)),
-              new ShootingSettings().distance(Meters.of(6)).velocity(RotationsPerSecond.of(37)).pitch(Degrees.of(42.0)),
-              new ShootingSettings().distance(Meters.of(7)).velocity(RotationsPerSecond.of(37)).pitch(Degrees.of(36.0)),
-              new ShootingSettings().distance(Meters.of(8)).velocity(RotationsPerSecond.of(37)).pitch(Degrees.of(30.0)),
-              new ShootingSettings().distance(Meters.of(9)).velocity(RotationsPerSecond.of(39)).pitch(Degrees.of(26.0)),
-              new ShootingSettings().distance(Meters.of(10))
-                  .velocity(RotationsPerSecond.of(41))
-                  .pitch(Degrees.of(22.0)),
-              new ShootingSettings().distance(Meters.of(11))
-                  .velocity(RotationsPerSecond.of(43))
-                  .pitch(Degrees.of(22.0)),
-              new ShootingSettings().distance(Meters.of(12))
-                  .velocity(RotationsPerSecond.of(49))
-                  .pitch(Degrees.of(22.0)),
-              new ShootingSettings().distance(Meters.of(13))
-                  .velocity(RotationsPerSecond.of(54))
-                  .pitch(Degrees.of(22.0)),
-              new ShootingSettings().distance(Meters.of(14))
-                  .velocity(RotationsPerSecond.of(60))
-                  .pitch(Degrees.of(22.0))));
+    private static InterpolatingTreeMap<Double, ShootingSettings> createShooterInterpolator() {
+      var map = new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), ShootingSettings::interpolate);
+      map.put(1.0400968, new ShootingSettings(50, 34.0));
+      map.put(1.4400968, new ShootingSettings(50, 28.0));
+      map.put(1.8500968, new ShootingSettings(50, 19));
+      map.put(2.3800968, new ShootingSettings(50, 13.5));
+      map.put(3.1500968, new ShootingSettings(50, 8.5));
+      map.put(3.7900968, new ShootingSettings(52, 5.0));
+      map.put(4.5200968, new ShootingSettings(57, 2));
+      map.put(4.599, new ShootingSettings(68, 1));
+      map.put(4.798, new ShootingSettings(68, 0.975));
+      map.put(5.00, new ShootingSettings(60, 0));
+      map.put(5.396, new ShootingSettings(58, 0));
+      map.put(5.677, new ShootingSettings(55, 0));
+      map.put(6.350, new ShootingSettings(54, 0));
+      return map;
+    }
+
+    public static final InterpolatingTreeMap<Double, ShootingSettings> STOCKPILE_INTERPOLATOR = createStockpileInterpolator();
+
+    private static InterpolatingTreeMap<Double, ShootingSettings> createStockpileInterpolator() {
+      var map = new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), ShootingSettings::interpolate);
+      map.put(1.0, new ShootingSettings(8, 0.05));
+      map.put(2.0, new ShootingSettings(13, 0.05));
+      map.put(3.0, new ShootingSettings(17, 0.05));
+      map.put(4.0, new ShootingSettings(20, 0.05));
+      map.put(5.0, new ShootingSettings(24, 0.05));
+      map.put(5.99, new ShootingSettings(28, 0.05));
+      map.put(6.0, new ShootingSettings(37, 42.0));
+      map.put(7.0, new ShootingSettings(37, 36.0));
+      map.put(8.0, new ShootingSettings(37, 30.0));
+      map.put(9.0, new ShootingSettings(39, 26.0));
+      map.put(10.0, new ShootingSettings(41, 22.0));
+      map.put(11.0, new ShootingSettings(43, 22.0));
+      map.put(12.0, new ShootingSettings(49, 22.0));
+      map.put(13.0, new ShootingSettings(54, 22.0));
+      map.put(14.0, new ShootingSettings(60, 22.0));
+      return map;
+    }
   }
 }

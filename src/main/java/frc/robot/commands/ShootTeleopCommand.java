@@ -32,14 +32,15 @@ import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.ShootingSettings;
 import frc.robot.math.ChassisSpeedsRateLimiter;
-import frc.robot.math.VelocityPitchInterpolator;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -72,7 +73,7 @@ public class ShootTeleopCommand extends Command {
   private final MutAngle turretYawTarget = Rotations.mutable(0);
   private final Translation2d targetRed;
   private final Translation2d targetBlue;
-  private final VelocityPitchInterpolator lookupTable;
+  private final InterpolatingTreeMap<Double, ShootingSettings> lookupTable;
   private final double velocityMultiplier;
   private final double maxVelocity;
 
@@ -100,7 +101,7 @@ public class ShootTeleopCommand extends Command {
       Supplier<Pose2d> robotPoseSupplier,
       Translation2d targetRed,
       Translation2d targetBlue,
-      VelocityPitchInterpolator lookupTable,
+      InterpolatingTreeMap<Double, ShootingSettings> lookupTable,
       double velcotiyMultiplier) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
@@ -189,12 +190,12 @@ public class ShootTeleopCommand extends Command {
 
     // Initial guess
     double dist = predictedTargetTranslation.getDistance(turretTranslation);
-    var shootingSettings = lookupTable.calculate(dist);
+    var shootingSettings = lookupTable.get(dist);
 
     // Iterate 4 times to converge on the intersection of trajectory and target
     for (int i = 0; i < 4; i++) {
       dist = predictedTargetTranslation.getDistance(turretTranslation);
-      shootingSettings = lookupTable.calculate(dist);
+      shootingSettings = lookupTable.get(dist);
 
       var timeUntilScored = 0.0;
       var rps = shootingSettings.getVelocity().in(RotationsPerSecond);
@@ -222,7 +223,7 @@ public class ShootTeleopCommand extends Command {
     // Calculate required turret angle, accounting for the robot heading
     turretYawTarget.mut_replace(angleToTarget.minus(futureRobotPose.getRotation()).getRotations(), Rotations);
 
-    shootingSettings = lookupTable.calculate(predictedDist);
+    shootingSettings = lookupTable.get(predictedDist);
 
     // Calculate ready state
     var isShooterReady = shooter.isReadyToShoot();
